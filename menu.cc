@@ -232,7 +232,7 @@ draw_menu_system(struct _menusystem *ms)
     if (y + offs == ms->hilited)
       scr_putbar((SCREENWID - ms->maxoptlen - 8) / 2,
                  ms->ystart + (y + (has_title ? 3 : 1)) * FONTHEI - 3,
-                 ms->maxoptlen + 8, FONTHEI + 3, blink_color, blink_color, blink_color);
+                 ms->maxoptlen + 8, FONTHEI + 3, blink_color, blink_color, blink_color, 128);
     if (len)
       scr_writetext_center(ms->ystart + (y + (has_title ? 3 : 1)) * FONTHEI, ms->moption[y+offs].oname);
   }
@@ -642,7 +642,7 @@ men_hiscores_background_proc(void *ms)
       get_hiscores_string(cs, &pos, &points, &name);
       if (cs == hiscores_hilited) {
         int clen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20 + 10;
-        scr_putbar(hiscores_xpos - 5, (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45 - 3, clen, FONTHEI + 3, blink_color, blink_color, blink_color);
+        scr_putbar(hiscores_xpos - 5, (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45 - 3, clen, FONTHEI + 3, blink_color, blink_color, blink_color, 128);
       }
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, pos);
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 10 + hiscores_maxlen_points - scr_textlength(points) , (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, points);
@@ -826,12 +826,12 @@ draw_input_box(int x, int y, int len, int cursor, char *txt)
 {
   static int col = 0;
 
-  scr_putbar(x, y, len * FONTMAXWID, FONTHEI);
+  scr_putbar(x, y, len * FONTMAXWID, FONTHEI, 0, 0, 0, 128);
   scr_writetext(x+1,y, txt);
 
   if ((input_box_cursor_state & 4) && ((cursor >= 0) && (cursor < len)))
-    scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI, (fontcol + 14 - col) * 0xf, (fontcol + 14 - col) * 0xf, (14 - col) * 0xf);
-  scr_putrect(x,y, len * FONTMAXWID, FONTHEI, col, col, col);
+    scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI, (fontcol + 14 - col) * 0xf, (fontcol + 14 - col) * 0xf, (14 - col) * 0xf, 128);
+  scr_putrect(x,y, len * FONTMAXWID, FONTHEI, col, col, col, 128);
   input_box_cursor_state++;
 
   col = (col + 5) & 0xFF;

@@ -50,7 +50,7 @@ bonus_background_proc(void)
   long towerpos;
   int b;
 
-  scr_putbar(0, 0, SCREENWID, SCREENHEI);
+  scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 255);
 
   if (callback_time < 300)
     towerpos = -(2*callback_time);
@@ -232,7 +232,7 @@ bool bns_game(void) {
       }
     }
 
-    scr_putbar(0, 0, SCREENWID, SCREENHEI);
+    scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 255);
 
     if (time < 300)
       towerpos = -(2*time);

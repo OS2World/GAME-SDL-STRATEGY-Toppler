@@ -79,10 +79,10 @@ static bool edit_towercolor(int row, int col) {
       tmpcol = newc[tmp];
       z = ((SCREENHEI * 2) / 3) + tmp * (FONTHEI + 2);
        
-      scr_putbar((SCREENWID / 2) - (128 + 8), z, 8, FONTHEI, (tmp == activecol) ? bgcol : 66);
-      scr_putbar((SCREENWID / 2) + 128 - 1, z, 8, FONTHEI, (tmp == activecol) ? bgcol : 66);
-      scr_putbar((SCREENWID / 2) - 128 + tmpcol, z, 255 - tmpcol, FONTHEI, 0);
-      scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, brickcol + 3);
+      scr_putbar((SCREENWID / 2) - (128 + 8), z, 8, FONTHEI, (tmp == activecol) ? bgcol : 66, 0, 0, 255);
+      scr_putbar((SCREENWID / 2) + 128 - 1, z, 8, FONTHEI, 0, (tmp == activecol) ? bgcol : 66, 0, 255);
+      scr_putbar((SCREENWID / 2) - 128 + tmpcol, z, 255 - tmpcol, FONTHEI, 0,0,0, 255);
+      scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, 0, 0, brickcol + 3, 255);
       cbuf[0] = '\0';
       sprintf(cbuf, "%5s  %.3d", colorname[tmp], tmpcol);
       scr_writetext_center(z, cbuf);
@@ -419,8 +419,8 @@ void le_edit(void) {
     sprintf(status, "%c  X%d  Y%d",
             changed ? '*' : ' ', -col & 0xf, row);
 
-    scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(), 10);
-    scr_putbar(SCREENWID-8, SCREENHEI-row-1, 8, 1, blink_color, blink_color, blink_color);
+    scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(), 128, 0, 0, 255);
+    scr_putbar(SCREENWID-8, SCREENHEI-row-1, 8, 1, blink_color, blink_color, blink_color, 128);
 
     blink_color = (blink_color + 5) & 0xFF;
 

@@ -60,10 +60,10 @@ void scr_writetext_center(long y, const char *s);
 int scr_textlength(const char *s, int chars = 32000);
 
 /* draws a filles rectangle with color col */
-void scr_putbar(int x, int y, int br, int h, Uint8 colr = 0, Uint8 colg = 0, Uint8 col = 0);
+void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 col, Uint8 alpha);
 
 /* draws a rectangle */
-void scr_putrect(int x, int y, int br, int h, Uint8 colr = 0, Uint8 colg = 0, Uint8 col = 0);
+void scr_putrect(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 col, Uint8 alpha);
 
 /* put the drawing surface onto a visible surface */
 void scr_swap(void);

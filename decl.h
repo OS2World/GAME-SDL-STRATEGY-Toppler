@@ -37,8 +37,9 @@
 /* the tower dimensions */
 #define TOWER_SLICE_HEIGHT 16
 #define TOWER_RADIUS 96
-#define TOWER_COLUMNS 16
+#define TOWER_COLUMNS 16  // must be a 2 ** x
 #define TOWER_STEPS_PER_COLUMN 8
+#define TOWER_ANGLES (TOWER_COLUMNS*TOWER_STEPS_PER_COLUMN)
 
 /* title sprite "NEBULOUS" width and height, in pixels */
 #define SPR_TITLEWID 602
