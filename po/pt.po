@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Helder Correia <helder.correia@netcabo.pt>, 2005.
 #
-#, fuzzy
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: pt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-12-14 20:59+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2005-01-09 00:00+0100\n"
+"Last-Translator: Helder Correia <helder.correia@netcabo.pt>\n"
+"Language-Team: pt <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
