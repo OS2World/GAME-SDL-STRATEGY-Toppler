@@ -16,7 +16,8 @@ main.cc points.cc robots.cc screen.cc snowball.cc sound.cc sprites.cc stars.cc \
 toppler.cc leveledit.cc
 pkgdata_DATA = $(datafiles)
 man_MANS = toppler.6
-EXTRA_DIST = $(man_MANS) $(datafiles) $(headerfiles) VERSION toppler.spec config.sub config.guess toppler.xpm
+EXTRA_DIST = $(man_MANS) $(datafiles) $(headerfiles) VERSION toppler.spec.in toppler.desktop.in \
+ config.sub config.guess toppler.xpm
 
 global_highscore:
 	-(chgrp games $(DESTDIR)$(bindir)/$$p; chmod g+s $(DESTDIR)$(bindir)/$$p)
