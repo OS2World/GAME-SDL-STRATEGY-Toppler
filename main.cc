@@ -79,7 +79,6 @@ int main(int argc, char *argv[]) {
 //  bindtextdomain("toppler", "po");
   textdomain("toppler");
 
-
 #ifdef VERSION
   printf(_("Nebulous version %s\n"), VERSION);
 #else

@@ -1181,16 +1181,21 @@ void scr_writetext(long x, long y, const char *s, int maxchars) {
 
   int t = 0;
 
-  while (s[t] && (maxchars-- != 0)) {
+  if (maxchars == -1)
+    maxchars = strlen(s);
+
+  while (s[t] && (maxchars > 0)) {
 
     size_t nbytes = mbrtowc (&tmp, &s[t], maxchars, &state);
-    if (nbytes <= 0)
-      return;
 
+    if (nbytes >= (size_t) -2) {
+      return;
+    }
 
     if (tmp == ' ') {
       x += FONTMINWID;
-      t++;
+      t += nbytes;
+      maxchars -= nbytes;
       continue;
     }
 
@@ -1199,7 +1204,8 @@ void scr_writetext(long x, long y, const char *s, int maxchars) {
       x += fontchars[tmp & 0xff].width + 3;
     }
 
-    t++;
+    t += nbytes;
+    maxchars -= nbytes;
   }
 }
 
@@ -1212,93 +1218,109 @@ void scr_writeformattext(long x, long y, const char *s) {
   size_t len = strlen(s);
 
   int origx = x;
-  int t = 0;
+  size_t t = 0;
   Uint8 towerblock = 0;
-  while (s[t]) {
+  while (t < len) {
 
     size_t nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
-    if (nbytes <= 0)
+
+    if (nbytes >= (size_t) -2) {
       return;
+    }
+
+    t += nbytes;
 
     switch(tmp) {
     case ' ':
       x += FONTMINWID;
-      t++;
       break;
     case '~':
 
-      nbytes = mbrtowc (&tmp, &s[t+1], len-t, &state);
-      if (nbytes <= 0)
+      nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+      if (nbytes >= (size_t) -2) {
         return;
+      }
+      t += nbytes;
 
       switch(tmp) {
       case 't':
 
-        nbytes = mbrtowc (&tmp, &s[t+2], len-t, &state);
-        if (nbytes <= 0)
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) {
           return;
+        }
+        t += nbytes;
 
         x = (tmp - '0') * 100;
 
-        nbytes = mbrtowc (&tmp, &s[t+3], len-t, &state);
-        if (nbytes <= 0)
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) {
           return;
+        }
+        t += nbytes;
 
         x += (tmp - '0') * 10;
 
-        nbytes = mbrtowc (&tmp, &s[t+3], len-t, &state);
-        if (nbytes <= 0)
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) {
           return;
+        }
+        t += nbytes;
 
         x += (tmp - '0');
 
-        t += 5;
         break;
       case 'T':
-        nbytes = mbrtowc (&tmp, &s[t+2], len-t, &state);
-        if (nbytes <= 0)
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) {
           return;
+        }
+        t += nbytes;
 
         x = origx + (tmp - '0') * 100;
 
-        nbytes = mbrtowc (&tmp, &s[t+3], len-t, &state);
-        if (nbytes <= 0)
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) {
           return;
+        }
+        t += nbytes;
 
         x += (tmp - '0') * 10;
 
-        nbytes = mbrtowc (&tmp, &s[t+3], len-t, &state);
-        if (nbytes <= 0)
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) {
           return;
+        }
+        t += nbytes;
 
         x += (tmp - '0');
 
-        t += 5;
         break;
       case 'b':
 
-        nbytes = mbrtowc (&tmp, &s[t+2], len-t, &state);
-        if (nbytes <= 0)
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) {
           return;
+        }
+        t += nbytes;
 
         towerblock = conv_char2towercode(tmp);
         putcase(towerblock, x+16, y);
         x += 32;
-        t += 3;
         break;
       case 'e':
-        nbytes = mbrtowc (&tmp, &s[t+2], len-t, &state);
-        if (nbytes <= 0)
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) {
           return;
+        }
+        t += nbytes;
 
         towerblock = conv_char2towercode(tmp);
         putcase_editor(towerblock, x+16, y, boxstate);
         x += 32;
-        t += 3;
         break;
       default:
         assert(0, _("Wrong command in formatted text."));
-        t += 2;
       }
       break;
     default:
@@ -1306,52 +1328,94 @@ void scr_writeformattext(long x, long y, const char *s) {
         scr_blit(fontsprites.data(fontchars[tmp & 0xff].s), x, y-20);
         x += fontchars[tmp & 0xff].width + 3;
       }
-      t++;
     }
   }
 }
 
 long scr_formattextlength(long x, long y, const char *s) {
+  mbstate_t state;
+  memset (&state, '\0', sizeof (state));
+  wchar_t tmp;
+
+  size_t len = strlen(s);
+
   int origx = x;
-  int t = 0;
-  unsigned char c;
-  while (s[t]) {
-    switch(s[t]) {
+  size_t t = 0;
+  while (t < len) {
+
+    size_t nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+    if (nbytes >= (size_t) -2) return 0;
+    t += nbytes;
+
+    switch(tmp) {
     case ' ':
       x += FONTMINWID;
-      t++;
       break;
     case '~':
-      switch(s[t+1]) {
+
+      nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+      if (nbytes >= (size_t) -2) return 0;
+      t += nbytes;
+
+      switch(tmp) {
       case 't':
-        x = (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
-        t += 5;
+
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) return 0;
+        t += nbytes;
+        x = (tmp - '0') * 100;
+
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) return 0;
+        t += nbytes;
+        x += (tmp - '0') * 10;
+
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) return 0;
+        t += nbytes;
+        x += (tmp - '0');
+
         break;
       case 'T':
-	x = origx + (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
-	t += 5;
-	break;
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) return 0;
+        t += nbytes;
+        x = origx + (tmp - '0') * 100;
+
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) return 0;
+        t += nbytes;
+        x += (tmp - '0') * 10;
+
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) return 0;
+        t += nbytes;
+        x += (tmp - '0');
+
+        break;
       case 'b':
-	x += 32;
-	t += 3;
-	break;
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) return 0;
+        t += nbytes;
+        x += 32;
+        break;
       case 'e':
-	x += 32;
-	t += 3;
-	break;
+        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        if (nbytes >= (size_t) -2) return 0;
+        t += nbytes;
+        x += 32;
+        break;
       default:
-        assert(0, _("Wrong command in formatted text, scr_formattextlength."));
-        t += 2;
+        assert(0, _("Wrong command in formatted text."));
       }
       break;
     default:
-      c = s[t];
-      if (fontchars[c].width != 0) {
-        x += fontchars[c].width + 3;
+      if (fontchars[tmp & 0xff].width != 0) {
+        x += fontchars[tmp & 0xff].width + 3;
       }
-      t++;
     }
   }
+
   return (x-origx);
 }
 
