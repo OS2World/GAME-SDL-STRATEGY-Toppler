@@ -39,7 +39,7 @@ EXTRA_DIST = config.rpath  $(man_MANS) $(pkgdata_DATA) VERSION toppler.spec topp
 scoredir = $(localstatedir)/@PACKAGE@
 scorefile = $(scoredir)/@PACKAGE@.hsc
 
-SUBDIRS = m4  po
+SUBDIRS = po
 
 install_exec_local:
 	-(chgrp games $(DESTDIR)$(bindir)/toppler; chmod g+s $(DESTDIR)$(bindir)/toppler)
@@ -51,6 +51,3 @@ install_exec_local:
 uninstall_local:
 	rm $(scoredir)/@PACKAGE@.hsc
 	rmdir $(scoredir)
-
-
-ACLOCAL_AMFLAGS = -I m4
