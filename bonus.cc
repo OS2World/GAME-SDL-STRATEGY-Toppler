@@ -269,7 +269,7 @@ bool bns_game(void) {
       time++;
     }
 
-    if (!((time + 20) & 0x1f)) snd_sonar();
+    if (!((time + 50) & 0x3f)) snd_sonar();
 
     /* display screen and wait */
     show();

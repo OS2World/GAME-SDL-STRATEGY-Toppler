@@ -185,7 +185,7 @@ void snd_play(void) {
   if (play & 0x20000)
     Mix_Volume(Mix_PlayChannel(-1, sounds[13], 0), MIX_MAX_VOLUME);
   if (play & 0x40000)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[18], 0), MIX_MAX_VOLUME / 4);
+    Mix_Volume(Mix_PlayChannel(-1, sounds[18], 0), MIX_MAX_VOLUME / 6);
   if (play & 0x80000) {
     torpedochannel = Mix_PlayChannel(-1, sounds[19], 0);
     Mix_Volume(torpedochannel, MIX_MAX_VOLUME);
