@@ -82,7 +82,7 @@ void set_men_bgproc(callback_proc proc) {
   
 typedef char *FDECL((*menuopt_callback_proc), (void *));
 
-#define MENUTITLELEN  ((SCREENWID / FONTWID) + 1)
+#define MENUTITLELEN  ((SCREENWID / FONTMINWID) + 1)
 #define MENUOPTIONLEN MENUTITLELEN
 
 /* Menu option flags */
@@ -172,6 +172,10 @@ add_menu_option(struct _menusystem *ms,
 
   ms->moption = tmp;
   ms->numoptions++;
+  if (name)
+    olen = scr_textlength(name);
+  else
+    olen = 0;
   if (ms->maxoptlen < olen) ms->maxoptlen = olen;
 
   return ms;
@@ -222,9 +226,9 @@ draw_menu_system(struct _menusystem *ms)
   for (y = 0; (ms->ystart + ((y+1)+(has_title ? 3 : 1))*FONTHEI < SCREENHEI) && (y + offs < ms->numoptions); y++) {
     len = strlen(ms->moption[y+offs].oname);
     if (y + offs == ms->hilited)
-      scr_putbar((SCREENWID / 2) - (ms->maxoptlen+1) * (FONTWID / 2),
-                 ms->ystart + (y + (has_title ? 3 : 1)) * FONTHEI,
-                 (ms->maxoptlen+1)*FONTWID, FONTHEI, fontcol + get_blink_color());
+      scr_putbar((SCREENWID - ms->maxoptlen - 8) / 2,
+                 ms->ystart + (y + (has_title ? 3 : 1)) * FONTHEI - 3,
+                 ms->maxoptlen + 8, FONTHEI + 3, fontcol + get_blink_color());
     if (len)
       scr_writetext_center(ms->ystart + (y + (has_title ? 3 : 1)) * FONTHEI, ms->moption[y+offs].oname);
   }
@@ -261,6 +265,8 @@ run_menu_system(struct _menusystem *ms)
           memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
           memcpy(ms->moption[ms->hilited].oname, tmpbuf,
                  (olen < MENUOPTIONLEN) ? olen + 1 : (MENUOPTIONLEN-1));
+
+          olen = scr_textlength(tmpbuf);
           if (ms->maxoptlen < olen) ms->maxoptlen = olen;
           ms->key = '\0';
         }
@@ -301,6 +307,7 @@ run_menu_system(struct _menusystem *ms)
           memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
           memcpy(ms->moption[ms->hilited].oname, tmpbuf,
                  (olen < MENUOPTIONLEN) ? olen + 1 : (MENUOPTIONLEN-1));
+          olen = scr_textlength(tmpbuf);
           if (ms->maxoptlen < olen) ms->maxoptlen = olen;
         }
         break;
@@ -546,27 +553,49 @@ static int hiscores_pager = 0;
 static int hiscores_state = 0;
 static int hiscores_xpos = SCREENWID;
 static int hiscores_hilited = -1;
+static int hiscores_maxlen_pos = 0;
+static int hiscores_maxlen_points = 0;
+static int hiscores_maxlen_name = 0;
 static int hiscores_maxlen = 0;
 
-char *
-  get_hiscores_string(int p)
+void
+get_hiscores_string(int p, char **pos, char **points, char **name)
 {
-  if ((p < 0) || (p >= NUMHISCORES)) return "";
-  static char buf[(SCREENWID / FONTWID) + 32];
-  buf[0] = '\0';
-  sprintf(buf, "%.2i  %.5i  %s", p + 1, scores[p].points, scores[p].name);
-  return buf;
+  if ((p < 0) || (p >= NUMHISCORES))
+    *pos = * points = *name = "";
+  static char buf1[SCORENAMELEN + 5];
+  static char buf2[SCORENAMELEN + 5];
+  static char buf3[SCORENAMELEN + 5];
+  buf1[0] = buf2[0] = buf3[0] = '\0';
+  sprintf(buf1, "%i", p + 1);
+  sprintf(buf2, "%i", scores[p].points);
+  sprintf(buf3, "%s", scores[p].name);
+
+  *pos = buf1;
+  *points = buf2;
+  *name = buf3;
 }
 
-int
-calc_hiscores_maxlen(void)
+void
+calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
 {
   int mlen = 0;
   for (int x = 0; x < NUMHISCORES; x++) {
-    int clen = strlen(get_hiscores_string(x));
-    if (clen > mlen) mlen = clen;
+    char *a, *b, *c;
+    int clen;
+
+    get_hiscores_string(x, &a, &b, &c);
+
+    clen = scr_textlength(a);
+    if (clen > *max_pos) *max_pos = clen;
+
+    clen = scr_textlength(b);
+    if (clen > *max_points) *max_points = clen;
+
+    clen = scr_textlength(c);
+    if (clen > *max_name) *max_name = clen;
+
   }
-  return mlen;
 }
 
 static char *
@@ -579,8 +608,8 @@ men_hiscores_background_proc(void *ms)
 
     switch (hiscores_state) {
     case 0: /* bring the scores in */
-      if (hiscores_xpos > (SCREENWID / 2) - ((FONTWID / 2) * hiscores_maxlen)) {
-        hiscores_xpos -= 5;
+      if (hiscores_xpos > ((SCREENWID - hiscores_maxlen) / 2)) {
+        hiscores_xpos -= 10;
         break;
       } else hiscores_state = 1;
     case 1: /* hold the scores on screen */
@@ -589,9 +618,9 @@ men_hiscores_background_proc(void *ms)
         break;
       } else hiscores_state = 2;
     case 2: /* move the scores out */
-      if (hiscores_xpos > -(FONTWID*hiscores_maxlen)) {
+      if (hiscores_xpos > -hiscores_maxlen) {
         hiscores_timer = 0;
-        hiscores_xpos -= 5;
+        hiscores_xpos -= 10;
         break;
       } else {
         hiscores_state = 0;
@@ -602,12 +631,15 @@ men_hiscores_background_proc(void *ms)
     }
     for (int t = 0; t < HISCORES_PER_PAGE; t++) {
       int cs = t + (hiscores_pager * HISCORES_PER_PAGE);
-      char *buf = get_hiscores_string(cs);
+      char *pos, *points, *name;
+      get_hiscores_string(cs, &pos, &points, &name);
       if (cs == hiscores_hilited) {
-        int clen = strlen(buf);
-        scr_putbar(hiscores_xpos, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, FONTWID*clen, FONTHEI, fontcol + get_blink_color());
+        int clen = scr_textlength(pos) + scr_textlength(points) + scr_textlength(name) + 20;
+        scr_putbar(hiscores_xpos, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, clen, FONTHEI, fontcol + get_blink_color());
       }
-      scr_writetext(hiscores_xpos, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, buf);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, pos);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 10 + hiscores_maxlen_points - scr_textlength(points) , (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, points);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, name);
     }
     return NULL;
   }
@@ -625,10 +657,12 @@ static void show_scores(bool back = true, int mark = -1) {
   hiscores_timer = 0;
   if ((mark >= 0) && (mark < NUMHISCORES))
     hiscores_pager = (mark / HISCORES_PER_PAGE);
-  else hiscores_pager = 0;
+  else
+    hiscores_pager = 0;
   hiscores_state = 0;
-  hiscores_maxlen = calc_hiscores_maxlen();
-  hiscores_xpos = (SCREENWID / 2) - ((FONTWID / 2) * hiscores_maxlen);
+  calc_hiscores_maxlen(&hiscores_maxlen_pos, &hiscores_maxlen_points, &hiscores_maxlen_name);
+  hiscores_maxlen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20;
+  hiscores_xpos = SCREENWID;
   hiscores_hilited = mark;
 
   if (back)
@@ -644,7 +678,7 @@ static void show_scores(bool back = true, int mark = -1) {
 void
 main_game_loop()
 {
-  unsigned char tower = 6;
+  unsigned char tower = 0;
   Uint8 anglepos;
   Uint16 resttime;
   int gameresult;

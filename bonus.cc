@@ -32,12 +32,13 @@
 #define gametime        500
 #define scrollerspeed   2
 
-struct _fish {
+static struct {
    long x;
    long y;
    long state;
    long ydir;
-} static fish[fishcnt + 1];
+} fish[fishcnt + 1];
+
 static long torpedox, torpedoy, subposx, subposy;
 
 static long callback_time;

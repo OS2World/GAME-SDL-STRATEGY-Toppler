@@ -182,9 +182,9 @@ static void createMission(void) {
 
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
   scr_drawedit(0, 0);
-  scr_writetext_center(30, "MISSION CREATION");
-  scr_writetext_center(60, "ENTER MISSION NAME");
-  scr_writetext_center(70, "EMPTY TO ABORT");
+  scr_writetext_center(30, "Mission creation");
+  scr_writetext_center(60, "enter mission name");
+  scr_writetext_center(70, "empty to abort");
 
   char missionname[25];
   men_input(missionname, 25);
@@ -197,10 +197,10 @@ static void createMission(void) {
   if (!lev_mission_new(missionname)) {
 
     scr_drawedit(0, 0);
-    scr_writetext_center(30, "MISSION CREATION");
-
-    scr_writetext_center(70, "COULD NOT CREATE FILE");
-    scr_writetext_center(90, "ABORTING");
+    scr_writetext_center(30, "Mission creation");
+                              
+    scr_writetext_center(70, "could not create file");
+    scr_writetext_center(90, "aborting");
 
     scr_swap();
 
@@ -221,11 +221,11 @@ static void createMission(void) {
   while (true) {
 
     scr_drawedit(0, 0);
-    scr_writetext_center(30, "MISSION CREATION");
-    scr_writetext_center(60, "ENTER NAME OF");
+    scr_writetext_center(30, "Mission creationg");
+    scr_writetext_center(60, "enter name of");
 
     char s[30];
-    sprintf(s, "TOWER NO %i", currenttower);
+    sprintf(s, "tower no %i", currenttower);
     scr_writetext_center(70, s);
 
     towername[0] = 0;
@@ -481,12 +481,12 @@ void le_edit(void) {
         changed = true;
         break;
       case EDACT_PUTSPACE:
-	lev_putspace(row, -col & 0xf);
-	changed = true;
-	break;
+        lev_putspace(row, -col & 0xf);
+        changed = true;
+        break;
       case EDACT_PUTSTEP:
-	lev_putstep(row, -col & 0xf);
-	changed = true;
+        lev_putstep(row, -col & 0xf);
+        changed = true;
         break;
       case EDACT_PUTVANISHER:
         lev_putvanishingstep(row, -col & 0xf);
@@ -505,8 +505,8 @@ void le_edit(void) {
         changed = true;
         break;
       case EDACT_CHECKTOWER:
-	edit_checktower(row, col);
-	break;
+        edit_checktower(row, col);
+        break;
       case EDACT_PUTROBOT1:
         lev_putrobot1(row, -col & 0xf);
         changed = true;

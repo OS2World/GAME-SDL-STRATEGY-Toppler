@@ -30,7 +30,8 @@
 
 /* font width and height, in pixels. */
 #define FONTWID 12
-#define FONTHEI 16
+#define FONTMINWID 8
+#define FONTHEI 20
 
 /* title sprite "NEBULOUS" width and height, in pixels */
 #define SPR_TITLEWID 304

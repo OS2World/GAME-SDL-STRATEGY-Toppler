@@ -243,7 +243,6 @@ static void loadfont(void) {
 
   unsigned char pal[fontcnt*3];
   Uint32 res;
-  unsigned char p[(FONTWID * FONTHEI / 2)];
   SDL_Surface *s;
   char c;
 
