@@ -961,7 +961,7 @@ men_alpha_font(void *ms)
     use_alpha_font = !use_alpha_font;
     reload_graphics();
   }
-  if (use_alpha_font) return "Font alpha  \x04";
+  if (use_alpha_font) return "Font alpha \x04";
   else return "Font alpha \x03";
 }
 
@@ -972,7 +972,7 @@ men_alpha_sprites(void *ms)
     use_alpha_sprites = !use_alpha_sprites;
     reload_graphics();
   }
-  if (use_alpha_sprites) return "Sprites alpha  \x04";
+  if (use_alpha_sprites) return "Sprites alpha \x04";
   else return "Sprites alpha \x03";
 }
 
@@ -983,7 +983,7 @@ men_alpha_layer(void *ms)
     use_alpha_layers = !use_alpha_layers;
     reload_graphics();
   }
-  if (use_alpha_layers) return "Scroller alpha  \x04";
+  if (use_alpha_layers) return "Scroller alpha \x04";
   else return "Scroller alpha \x03";
 }
 
@@ -993,7 +993,7 @@ men_alpha_menu(void *ms)
   if (ms) {
     use_alpha_darkening = !use_alpha_darkening;
   }
-  if (use_alpha_darkening) return "Shadowing  \x04";
+  if (use_alpha_darkening) return "Shadowing \x04";
   else return "Shadowing \x03";
 }
 
@@ -1003,7 +1003,7 @@ men_waves_menu(void *ms)
   if (ms) {
     use_waves = !use_waves;
   }
-  if (use_waves) return "Expensive waves  \x04";
+  if (use_waves) return "Expensive waves \x04";
   else return "Expensive waves \x03";
 }
 
@@ -1016,10 +1016,10 @@ men_alpha_options(void *mainmenu) {
 
     if (!ms) return NULL;
 
-    ms = add_menu_option(ms, NULL, men_alpha_font);
-    ms = add_menu_option(ms, NULL, men_alpha_sprites);
-    ms = add_menu_option(ms, NULL, men_alpha_layer);
-    ms = add_menu_option(ms, NULL, men_alpha_menu);
+    ms = add_menu_option(ms, NULL, men_alpha_font, SDLK_UNKNOWN, MOF_RIGHT);
+    ms = add_menu_option(ms, NULL, men_alpha_sprites, SDLK_UNKNOWN, MOF_RIGHT);
+    ms = add_menu_option(ms, NULL, men_alpha_layer, SDLK_UNKNOWN, MOF_RIGHT);
+    ms = add_menu_option(ms, NULL, men_alpha_menu, SDLK_UNKNOWN, MOF_RIGHT);
 
     ms = add_menu_option(ms, NULL, NULL);
     ms = add_menu_option(ms, "Back", NULL);

@@ -93,6 +93,8 @@ static struct _scroll_layer *scroll_layers;
 Uint8 towerpal[2*256];
 Uint8 crosspal[2*256];
 
+Uint8 last_towercol_r, last_towercol_g, last_towercol_b;
+
 void color_ramp1(int *c, int *adj, int min, int max) {
   *c = *c + *adj;
   if (*c > max - abs(*adj)) {
@@ -270,8 +272,6 @@ static void loadgraphics(void) {
       }
   }
 
-  scr_settowercolor(255, 0, 0);
-
   for (t = 0; t < 256; t++) {
     unsigned char c1, c2;
 
@@ -373,6 +373,14 @@ void scr_settowercolor(Uint8 r, Uint8 g, Uint8 b) {
     for (int et = 0; et < 3; et++)
       if (doors[t+36].width != 0)
         scr_regensprites(doors[t+36].data[et], spr_spritedata(doors[t+36].s[et]), 1, doors[t+36].width, SPR_SLICEHEI, false, pal, false);
+
+  last_towercol_r = r;
+  last_towercol_g = g;
+  last_towercol_b = b;
+}
+
+void resettowercolor(void) {
+  scr_settowercolor(last_towercol_r, last_towercol_g, last_towercol_b);
 }
 
 void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
@@ -493,6 +501,7 @@ static void free_memory(void) {
 void scr_reload_sprites() {
   free_memory();
   load_sprites();
+  resettowercolor();
 }
 
 void scr_init(void) {

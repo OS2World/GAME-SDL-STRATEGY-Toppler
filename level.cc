@@ -127,8 +127,6 @@ static void add_mission(char *fname) {
   mname[mnamelength] = 0;
   fread(&prio, 1, 1, f);
 
-  printf("mission: %s prio: %i\n", mname, prio);
-
   mission_node * m = missions;
   mission_node * l = NULL;
 
@@ -424,32 +422,32 @@ void lev_selecttower(Uint8 number) {
 char *
 gen_passwd(int pwlen, char *allowed, int buflen, char *buf)
 {
-    static char passwd[PASSWORD_LEN + 1];
-    int len = buflen;
-    int alen;
-    int i;
-    
-    if (!allowed) return NULL;
-    
-    alen = strlen(allowed);
-    
-    if (pwlen > PASSWORD_LEN) pwlen = PASSWORD_LEN;
-    
-    if (buflen < (pwlen*5)) len = pwlen*5;
-    
-    (void)memset(passwd, 0, PASSWORD_LEN);
-    
-    for (i = 0; i < len; i++) {
-      passwd[i % pwlen] += buf[i % buflen];
-      if (passwd[i % pwlen] > alen) passwd[(i+1) % pwlen]++;
-    }
-    
-    for (i = 0; i < pwlen; i++)
-	passwd[i] = allowed[abs(passwd[i]) % alen];
+  static char passwd[PASSWORD_LEN + 1];
+  int len = buflen;
+  int alen;
+  int i;
 
-    passwd[pwlen] = '\0';
-    
-    return passwd;
+  if (!allowed) return NULL;
+
+  alen = strlen(allowed);
+
+  if (pwlen > PASSWORD_LEN) pwlen = PASSWORD_LEN;
+
+  if (buflen < (pwlen*5)) len = pwlen*5;
+
+  (void)memset(passwd, 0, PASSWORD_LEN);
+
+  for (i = 0; i < len; i++) {
+    passwd[i % pwlen] += buf[i % buflen];
+    if (passwd[i % pwlen] > alen) passwd[(i+1) % pwlen]++;
+  }
+
+  for (i = 0; i < pwlen; i++)
+    passwd[i] = allowed[abs(passwd[i]) % alen];
+
+  passwd[pwlen] = '\0';
+
+  return passwd;
 }
 
 char *lev_get_passwd(void) {

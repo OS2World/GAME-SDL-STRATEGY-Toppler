@@ -166,8 +166,8 @@
 #define FDECL(f,p) f p
 #define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))
 
-#define PASSWORD_LEN 4
-#define PASSWORD_CHARS "abcdefghijklmnopqrstuvwxyz"
+#define PASSWORD_LEN 5
+#define PASSWORD_CHARS "abcdefghijklmnopqrstuvwxyz0123456789"
 
 /* waits around 1/18 of a second */
 void dcl_wait(void);

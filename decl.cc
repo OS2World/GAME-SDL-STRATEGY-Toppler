@@ -86,6 +86,7 @@ static const struct _config_data config_data[] = {
     CNF_KEY(  "key_left",             left_key ),
     CNF_KEY(  "key_right",            right_key ),
     CNF_CHAR( "password",            &curr_password, PASSWORD_LEN ),
+    CNF_INT(  "start_lives",         &start_lives ),
     CNF_BOOL( "use_unicode_input",   &use_unicode_input),
 };
 
