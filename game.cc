@@ -302,7 +302,7 @@ static void timeout(int &tower_position, int &tower_anglepos) {
   men_info(_("Time over"), 150);
 }
 
-static void writebonus(int &tower_position, int tower_anglepos, int zeit, int tec, int extra, int time) {
+static void writebonus(int &tower_position, int tower_anglepos, int zeit, int tec, int extra, int time, int lif, bool lifes) {
   char s[30];
 
   scr_drawall(towerpos(top_verticalpos(), tower_position,
@@ -310,74 +310,97 @@ static void writebonus(int &tower_position, int tower_anglepos, int zeit, int te
 
   scr_darkenscreen();
 
-  snprintf(s, 30, _("Time:      ~t35010 X %3d"), zeit);
-  scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, s);
-  snprintf(s, 30, _("Technique: ~t35010 X %3d"), tec);
-  scr_writeformattext(90, (SCREENHEI / 2), s);
-  snprintf(s, 30, _("Extra:     ~t35010 X %3d"), extra);
-  scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, s);
+  if (lifes) {
+    snprintf(s, 30, _("Time:      ~t35010 X %3d"), zeit);
+    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, s);
+    snprintf(s, 30, _("Technique: ~t35010 X %3d"), tec);
+    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI, s);
+    snprintf(s, 30, _("Extra:     ~t35010 X %3d"), extra);
+    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI, s);
+    snprintf(s, 30, _("Lifes:     ~t3505000 X %3d"), lif);
+    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, s);
+  } else {
+    snprintf(s, 30, _("Time:      ~t35010 X %3d"), zeit);
+    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, s);
+    snprintf(s, 30, _("Technique: ~t35010 X %3d"), tec);
+    scr_writeformattext(90, (SCREENHEI / 2), s);
+    snprintf(s, 30, _("Extra:     ~t35010 X %3d"), extra);
+    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, s);
+  }
 
   scr_swap();
 }
 
-static void countdown(int &s) {
+static void countdown(int &s, int factor) {
   if (s >= 100) {
     s -= 100;
-    pts_add(1000);
+    pts_add(100*factor);
     return;
   }
   if (s >= 10) {
     s -= 10;
-    pts_add(100);
+    pts_add(10*factor);
     return;
   }
   if (s >= 1) {
     (s)--;
-    pts_add(10);
+    pts_add(factor);
     return;
   }
 }
 
-static void bonus(int &tower_position, int &tower_angle, int time) {
+static void bonus(int &tower_position, int &tower_angle, int time, bool lifes) {
+
   int zeit, tec, extra, delay = 0;
+  int lif = pts_lifes();
 
   zeit = time / 10;
   extra = 100;
   tec = top_technic();
 
   do {
-     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
+     writebonus(tower_position, tower_angle, zeit, tec, extra, time, lif, lifes);
      dcl_wait();
   } while ((delay++ < 80) && !key_keypressed(fire_key));
 
   while (zeit > 0) {
     dcl_wait();
-    countdown(zeit);
+    countdown(zeit, 10);
     ttsounds::instance()->startsound(SND_SCORE);
     ttsounds::instance()->play();
-    writebonus(tower_position, tower_angle, zeit, tec, extra, time);
+    writebonus(tower_position, tower_angle, zeit, tec, extra, time, lif, lifes);
   }
 
   while (tec > 0) {
     dcl_wait();
-    countdown(tec);
+    countdown(tec, 10);
     ttsounds::instance()->startsound(SND_SCORE);
     ttsounds::instance()->play();
-    writebonus(tower_position, tower_angle, zeit, tec, extra, time);
+    writebonus(tower_position, tower_angle, zeit, tec, extra, time, lif, lifes);
   }
 
   while (extra > 0) {
     dcl_wait();
-    countdown(extra);
+    countdown(extra, 10);
     ttsounds::instance()->startsound(SND_SCORE);
     ttsounds::instance()->play();
-    writebonus(tower_position, tower_angle, zeit, tec, extra, time);
+    writebonus(tower_position, tower_angle, zeit, tec, extra, time, lif, lifes);
+  }
+
+  if (lifes) {
+    while (lif > 0) {
+      dcl_wait();
+      countdown(lif, 5000);
+      snd_score();
+      snd_play();
+      writebonus(tower_position, tower_angle, zeit, tec, extra, time, lif, lifes);
+    }
   }
    
   delay = 0;
 
   do {
-     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
+     writebonus(tower_position, tower_angle, zeit, tec, extra, time, lif, lifes);
      dcl_wait();
   } while ((delay++ < 30) && (!key_keypressed(fire_key)));
 }
@@ -573,7 +596,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   } while (!top_ended() && (state == STATE_PLAYING));
 
   if (top_targetreached() && !demo) {
-    bonus(tower_position, tower_angle, time);
+    bonus(tower_position, tower_angle, time, lev_lasttower());
     rob_disappearall();
 
     for (int i = 0; i < 6; i++) {

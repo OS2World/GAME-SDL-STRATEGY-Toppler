@@ -144,7 +144,7 @@ file::file(const archive *arc, const char *name) : bufferpos(0) {
   assert(0, _("File not found in archive!"));
 }
 
-file::~file() { delete(buffer); }
+file::~file() { delete [] buffer; }
 
 Uint32 file::read(void *buf, Uint32 size) {
   memcpy(buf, &buffer[bufferpos], size);

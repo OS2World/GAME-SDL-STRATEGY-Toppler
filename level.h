@@ -138,6 +138,9 @@ void lev_get_towerdemo(int &demolen, Uint16 *&demobuf);
 /* the number of the actual tower */
 Uint8 lev_towernr(void);
 
+/* returns true, if current tower is the last one */
+bool lev_lasttower(void);
+
 /* the number of the robot used */
 Uint8 lev_robotnr(void);
 void lev_set_robotnr(Uint8 robot);

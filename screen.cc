@@ -82,7 +82,7 @@ static struct {
   Uint8 *data[3];      // the data for the 3 layers of the door (pixel info for recoloring)
 } doors[73];
 
-#define MAXCHARNUM 256
+#define MAXCHARNUM 256*256
 
 static struct {
   unsigned short s;
@@ -518,7 +518,7 @@ void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
 static void loadfont(void) {
 
   unsigned char pal[256*3];
-  Uint8 c;
+  Uint16 c;
   int fontheight;
 
   file fi(&dataarchive, fontdat);
@@ -528,7 +528,7 @@ static void loadfont(void) {
   fontheight = fi.getbyte();
 
   while (!fi.eof()) {
-    c = fi.getbyte();
+    c = fi.getword();
 
     if (!c || (c >= MAXCHARNUM)) break;
 
@@ -847,8 +847,8 @@ int scr_textlength(const char *s, int chars) {
     if (tmp == ' ') {
       len += FONTMINWID;
     } else {
-      if (fontchars[tmp & 0xff].width != 0)
-        len += fontchars[tmp & 0xff].width + 3;
+      if (fontchars[tmp & 0xffff].width != 0)
+        len += fontchars[tmp & 0xffff].width + 3;
     }
     pos++;
 
@@ -1199,9 +1199,9 @@ void scr_writetext(long x, long y, const char *s, int maxchars) {
       continue;
     }
 
-    if (fontchars[tmp & 0xff].width != 0) {
-      scr_blit(fontsprites.data(fontchars[tmp & 0xff].s), x, y-20);
-      x += fontchars[tmp & 0xff].width + 3;
+    if (fontchars[tmp & 0xffff].width != 0) {
+      scr_blit(fontsprites.data(fontchars[tmp & 0xffff].s), x, y-20);
+      x += fontchars[tmp & 0xffff].width + 3;
     }
 
     t += nbytes;
@@ -1324,9 +1324,9 @@ void scr_writeformattext(long x, long y, const char *s) {
       }
       break;
     default:
-      if (fontchars[tmp & 0xff].width != 0) {
-        scr_blit(fontsprites.data(fontchars[tmp & 0xff].s), x, y-20);
-        x += fontchars[tmp & 0xff].width + 3;
+      if (fontchars[tmp & 0xffff].width != 0) {
+        scr_blit(fontsprites.data(fontchars[tmp & 0xffff].s), x, y-20);
+        x += fontchars[tmp & 0xffff].width + 3;
       }
     }
   }
@@ -1410,8 +1410,8 @@ long scr_formattextlength(long x, long y, const char *s) {
       }
       break;
     default:
-      if (fontchars[tmp & 0xff].width != 0) {
-        x += fontchars[tmp & 0xff].width + 3;
+      if (fontchars[tmp & 0xffff].width != 0) {
+        x += fontchars[tmp & 0xffff].width + 3;
       }
     }
   }

@@ -703,7 +703,7 @@ static void men_highscore(unsigned long pt, int twr) {
 static void
 main_game_loop()
 {
-  unsigned char tower = 0;
+  unsigned char tower;
   Uint8 anglepos;
   Uint16 resttime;
   int demo = 0;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-18 14:53+0100\n"
+"POT-Creation-Date: 2004-02-08 10:31+0100\n"
 "PO-Revision-Date: 2004-01-04 09:35+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -40,7 +40,7 @@ msgstr "Archiv kaputt."
 msgid "File not found in archive!"
 msgstr "Datei nicht im Archiv gefunden!"
 
-#: bonus.cc:104 game.cc:457
+#: bonus.cc:104 game.cc:480
 msgid "Pause"
 msgstr "Pause"
 
@@ -90,22 +90,27 @@ msgstr "Passwort:   %s"
 msgid "Time over"
 msgstr "Zeit verbraucht"
 
-#: game.cc:313
+#: game.cc:314 game.cc:323
 #, c-format
 msgid "Time:      ~t35010 X %3d"
 msgstr "Zeit:       ~t35010 X %3d"
 
-#: game.cc:315
+#: game.cc:316 game.cc:325
 #, c-format
 msgid "Technique: ~t35010 X %3d"
 msgstr "Technik: ~t35010 X %3d"
 
-#: game.cc:317
+#: game.cc:318 game.cc:327
 #, c-format
 msgid "Extra:     ~t35010 X %3d"
 msgstr "Extra:     ~t35010 X %3d"
 
-#: game.cc:497
+#: game.cc:320
+#, fuzzy, c-format
+msgid "Lifes:     ~t3505000 X %3d"
+msgstr "Zeit:       ~t35010 X %3d"
+
+#: game.cc:520
 msgid "Trying to play or record a null demo."
 msgstr "Versuch ein nicht existierendes Demo zu spielen oder aufzunehmen."
 
@@ -123,15 +128,15 @@ msgstr "benutze lokale Siegerliste %s\n"
 msgid "Wheee!!\n"
 msgstr "Huuuaaaa!\n"
 
-#: level.cc:1264
+#: level.cc:1269
 msgid "called mission_finish twice"
 msgstr "mission_finish zweimal gerufen"
 
-#: level.cc:1305
+#: level.cc:1310
 msgid "called mission_addtower without mission_new"
 msgstr "mission_addtower ohne vorherigen mission_new Aufruf"
 
-#: level.cc:1435
+#: level.cc:1440
 msgid "called mission_finish without mission_new"
 msgstr "mission_finish ohne vorherigen mission_new Aufruf"
 
@@ -473,7 +478,7 @@ msgstr "Turmhöhe einstellen"
 msgid "Name the tower:"
 msgstr "Turmname:"
 
-#: main.cc:36
+#: main.cc:37
 #, c-format
 msgid ""
 "\n"
@@ -490,29 +495,29 @@ msgstr ""
 "  -s\tDeaktiviere Sound\n"
 "  -dX\tDebuglevel auf X setzen (default: %i)\n"
 
-#: main.cc:46
+#: main.cc:47
 #, c-format
 msgid "Debug level is now %c.\n"
 msgstr "Debuglevel ist jetzt %c.\n"
 
-#: main.cc:48
+#: main.cc:49
 msgid "Illegal debug level value, using default.\n"
 msgstr "Illegaler Debuglevel, benutze default.\n"
 
-#: main.cc:82
+#: main.cc:83
 #, c-format
 msgid "Nebulous version %s\n"
 msgstr "Nebulous Version %s\n"
 
-#: main.cc:84
+#: main.cc:85
 msgid "Nebulous\n"
 msgstr "Nebulous\n"
 
-#: main.cc:91
+#: main.cc:92
 msgid "Nebulous"
 msgstr "Nebulous"
 
-#: main.cc:98
+#: main.cc:99
 msgid "Thanks for playing!\n"
 msgstr "Danke für's spielen!\n"
 
@@ -730,31 +735,27 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nein"
 
-#: screen.cc:549
+#: screen.cc:550
 msgid "Must have at least 2 scroll layers!"
 msgstr "Es müssen mindestens 2 Schichten im Scroller sein!"
 
-#: screen.cc:552
+#: screen.cc:553
 msgid "Failed to alloc memory for bonus scroller!"
 msgstr "Speicher für Scroller konnte nicht reserviert werden!"
 
-#: screen.cc:634
+#: screen.cc:635
 msgid "could not open display"
 msgstr "Display konnte nicht geöffnet werden"
 
-#: screen.cc:1216
+#: screen.cc:1316 screen.cc:1402
 msgid "Wrong command in formatted text."
 msgstr "Falsches Kommando in formatierten Text"
 
-#: screen.cc:1260
-msgid "Wrong command in formatted text, scr_formattextlength."
-msgstr "Falsches Kommando in formatierten Text, scr_formattextlength"
-
-#: screen.cc:1431
+#: screen.cc:1571
 msgid "REC"
 msgstr "REC"
 
-#: screen.cc:1432
+#: screen.cc:1572
 msgid "DEMO"
 msgstr "DEMO"
 
@@ -993,6 +994,9 @@ msgstr "Ball 3"
 #: levelnames.txt:1
 msgid "ABC Towers"
 msgstr "Turm-ABC"
+
+#~ msgid "Wrong command in formatted text, scr_formattextlength."
+#~ msgstr "Falsches Kommando in formatierten Text, scr_formattextlength"
 
 #~ msgid "Status on top "
 #~ msgstr "Status oben "

@@ -589,6 +589,10 @@ Uint8 lev_towernr(void) {
   return towernumber;
 }
 
+bool lev_lasttower(void) {
+  return (towernumber+1) == lev_towercount();
+}
+
 Uint8 lev_robotnr(void) {
   return towerrobot;
 }
