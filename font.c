@@ -178,6 +178,12 @@ int main() {
   get(colors, mask, '"');
   get(colors, mask, '\x01'); /* fonttoppler */
   get(colors, mask, '\x02'); /* fontpoint */
+  get(colors, mask, '\x03'); /* empty tagbox */
+  get(colors, mask, '\x04'); /* taged tagbox */
+  get(colors, mask, '\x05'); /* pointer up */
+  get(colors, mask, '\x06'); /* pointer right */
+  get(colors, mask, '\x07'); /* pointer down */
+  get(colors, mask, '\x08'); /* pointer left */
 
   fclose(outp);
 }
