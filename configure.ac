@@ -1,11 +1,12 @@
+#                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
+AC_PREREQ(2.13)
 AC_INIT
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
-AC_CHECK_TOOL
 AM_INIT_AUTOMAKE([toppler],[`cat VERSION`])
 AC_CONFIG_SRCDIR([toppler.cc])
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 CPPFLAGS="-Wall"
 
@@ -17,16 +18,12 @@ AC_DEFINE_UNQUOTED(SYS_MACOSX,3,MacOSX)
 AC_DEFINE_UNQUOTED(SYSTEM,SYS_LINUX,System)
 
 # I18n.
-AM_GNU_GETTEXT
-AM_GNU_GETTEXT_VERSION(0.10.35)
-ALL_LINGUAS="de fi fr "
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.11.5)
 
 # Checks for programs.
-AC_PROG_AWK
 AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_INSTALL
-AC_PROG_LN_S
 
 # Checks for libraries.
 SDL_VERSION=1.2.0
@@ -44,18 +41,22 @@ AC_CHECK_LIB(z, uncompress, ,
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
-AC_CHECK_HEADERS([fcntl.h stdlib.h string.h unistd.h])
+AC_CHECK_HEADERS([fcntl.h langinfo.h libintl.h stdlib.h string.h unistd.h wchar.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_HEADER_STDBOOL
 AC_C_CONST
 AC_TYPE_UID_T
 AC_TYPE_SIZE_T
 
 # Checks for library functions.
+AC_FUNC_CLOSEDIR_VOID
 AC_FUNC_MALLOC
+AC_FUNC_MBRTOWC
+AC_FUNC_REALLOC
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([atexit memmove memset mkdir strcasecmp strchr strstr])
+AC_CHECK_FUNCS([atexit memmove memset mkdir setlocale strcasecmp strchr strstr])
 
 # Output.
-AC_CONFIG_FILES([Makefile toppler.spec toppler.desktop intl/Makefile po/Makefile.in m4/Makefile])
+AC_CONFIG_FILES([Makefile toppler.spec toppler.desktop po/Makefile.in m4/Makefile])
 AC_OUTPUT
