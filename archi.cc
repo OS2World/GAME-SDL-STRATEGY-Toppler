@@ -20,8 +20,8 @@
 #include "decl.h"
 
 #if (SYSTEM == SYS_WINDOWS)
-#define _WINDOWS
-#define ZLIB_DLL
+//#define _WINDOWS
+//#define ZLIB_DLL
 #endif
 
 #include <zlib.h>

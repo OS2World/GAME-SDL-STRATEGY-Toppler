@@ -23,13 +23,13 @@
 
 #include <SDL.h>
 
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
 #include <SDL_mixer.h>
 #endif
 
 #include <stdlib.h>
 
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
 static Mix_Chunk *sounds[20];
 static Mix_Music *title, *tgame;
 #endif
@@ -43,7 +43,7 @@ static long play;
 
 static bool nosoundinit;
 
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
 static Mix_Chunk *LoadWAV(char *name) {
   FILE *f = open_data_file(name);
 
@@ -57,7 +57,7 @@ static Mix_Chunk *LoadWAV(char *name) {
 void snd_init(void) {
   if (config.nosound()) return;
 
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
     printf("Couldn't init the sound system, muting.\n");
     nosoundinit = true;
@@ -103,7 +103,7 @@ void snd_init(void) {
 void snd_done(void) {
   if (config.nosound() || nosoundinit) return;
 
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   while (Mix_Playing(-1)) dcl_wait();
 
   for (int t = 0; t < 18; t++)
@@ -147,7 +147,7 @@ void snd_play(void) {
 
   if (config.nosound() || nosoundinit) return;
 
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   if (play & 0x01)
     Mix_Volume(Mix_PlayChannel(-1, sounds[1], 0), MIX_MAX_VOLUME);
   if (play & 0x02)
@@ -198,21 +198,21 @@ void snd_play(void) {
 
 void snd_wateron(void) {
   if (config.nosound() || nosoundinit) return;
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   if (config.use_water())
     waterchannel = Mix_PlayChannel(-1, sounds[0], -1);
 #endif
 }
 void snd_wateroff(void) {
   if (config.nosound() || nosoundinit) return;
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   if (config.use_water())
     Mix_HaltChannel(waterchannel);
 #endif
 }
 void snd_watervolume(int v) {
   if (config.nosound() || nosoundinit) return;
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   if (config.use_water())
     Mix_Volume(waterchannel, v);
 #endif
@@ -220,14 +220,14 @@ void snd_watervolume(int v) {
 
 void snd_playtitle(void) {
   if (config.nosound() || nosoundinit) return;
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   Mix_PlayMusic(title, -1);
 #endif
 }
 
 void snd_stoptitle(void) {
   if (config.nosound() || nosoundinit) return;
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   Mix_FadeOutMusic(1000);
 
   while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
@@ -236,14 +236,14 @@ void snd_stoptitle(void) {
 
 void snd_playtgame(void) {
   if (config.nosound() || nosoundinit) return;
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   Mix_PlayMusic(tgame, -1);
 #endif
 }
 
 void snd_stoptgame(void) {
   if (config.nosound() || nosoundinit) return;
-#ifdef SDL_MIXER
+#ifdef HAVE_LIBSDL_MIXER
   Mix_FadeOutMusic(1000);
 
   while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
