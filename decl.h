@@ -176,11 +176,11 @@ void dcl_wait(void);
 bool dcl_wait_overflow(void);
 
 /* true, if files exitst */
-bool dcl_fileexists(const char *n);
+bool dcl_fileexists(const char *n, bool group = false);
 
 /* opens files looking into the right directories */
 FILE *open_data_file(const char *name);
-FILE *open_global_config_file(const char *name);
+//FILE *open_global_config_file(const char *name);
 FILE *open_local_config_file(const char *name);
 FILE *create_local_config_file(const char *name);
 FILE *open_highscore_file(const char *name);
@@ -200,8 +200,7 @@ int dcl_update_speed(int spd);
 /* for errorchecking */
 #define assert(cond,text) if (!(cond)) { printf("Assertion failure: "text"\n"); exit(1); }
 
-#define CONFIGDIR "/etc"
-#define HISCOREDIR "/var/games/toppler"
+//#define CONFIGDIR "/etc"
 
 #if (SYSTEM == SYS_WINDOWS)
 
@@ -227,13 +226,5 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
  program is running with the users restrictions
  */
 void dcl_init(void);
-
-/* this function enable the additionat abilities given with
- the sticky bit
- */
-void dcl_stickyEnable(void);
-
-/* this function disables the sticky bit abilities again */
-void dcl_stickyDisable(void);
 
 #endif

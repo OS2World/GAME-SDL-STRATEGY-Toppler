@@ -34,10 +34,28 @@
 #endif
 
 static bool wait_overflow = false;
-
-
+gid_t UserGroupID, GameGroupID;
 /* Not read from config file */
 int  curr_scr_update_speed = MENU_DCLSPEED;
+
+void dcl_init(void) {
+  UserGroupID = getgid ();
+  GameGroupID = getegid ();
+
+  setegid(UserGroupID);
+}
+
+/* this function enable the additionat abilities given with
+ the sticky bit
+ */
+static void dcl_stickyEnable(void) {
+  setegid(GameGroupID);
+}
+
+/* this function disables the sticky bit abilities again */
+static void dcl_stickyDisable(void) {
+  setegid(UserGroupID);
+}
 
 int dcl_update_speed(int spd) {
     int tmp = curr_scr_update_speed;
@@ -71,8 +89,11 @@ void debugprintf(int lvl, char *fmt, ...) {
 }
 
 /* returns true, if file exists */
-bool dcl_fileexists(const char *n) {
+bool dcl_fileexists(const char *n, bool group) {
+
+  if (group) dcl_stickyEnable();
   FILE *f = fopen(n, "r");
+  if (group) dcl_stickyDisable();
 
   if (f) {
     fclose(f);
@@ -142,6 +163,7 @@ FILE *open_data_file(const char *name) {
 #endif
 }
 
+/*
 FILE *open_global_config_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
@@ -155,7 +177,8 @@ FILE *open_global_config_file(const char *name) {
 #endif
 
   return NULL;
-}
+  }
+  */
 
 FILE *open_local_config_file(const char *name) {
 
@@ -219,14 +242,28 @@ FILE *open_highscore_file(const char *name) {
 
 #ifdef HISCOREDIR
 
+  printf("highscro defined\n");
+
   snprintf(n, 200, HISCOREDIR"/%s", name);
-  if (dcl_fileexists(n)) {
+  if (dcl_fileexists(n, true)) {
+
+    printf("global file exists\n");
+
     dcl_stickyEnable();
-    return fopen(n, "rb");
-    dcl_stickyDisable();
+    FILE *f = fopen(n, "rb");
+    if (f) {
+      dcl_stickyDisable();
+      return f;
+    }
+    printf("unable to open globale scorefile\n");
   }
 
+  printf("global file doesn't exist\n");
+
 #endif
+
+  printf("highscro not defined\n");
+
 
   snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
   if (dcl_fileexists(n))
@@ -261,7 +298,7 @@ FILE *create_highscore_file(const char *name) {
 
   snprintf(n, 200, HISCOREDIR"/%s", name);
 
-  if (dcl_fileexists(n)) {
+  if (dcl_fileexists(n, true)) {
     dcl_stickyEnable();
     return fopen(n, "r+b");
     dcl_stickyDisable();
@@ -420,15 +457,5 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
   return(i);
 }
 
-void dcl_init(void) {
-}
-
-void dcl_stickyEnable(void) {
-}
-
-void dcl_stickyDisable(void) {
-}
-
 #endif
-
 
