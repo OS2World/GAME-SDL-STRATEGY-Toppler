@@ -69,6 +69,7 @@ int main(int argc, char **argv) {
         case TB_ELEV_MIDDLE:
         case TB_ELEV_TOP:      txt = "elev"; break;
         case TB_STICK:         txt = "pillar"; break;
+	case TB_BOX:           txt = "boxx"; break;
         default: break;
         }
         if (txt)

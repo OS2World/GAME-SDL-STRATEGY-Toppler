@@ -81,6 +81,24 @@ global_settings{
   box { <-50,-10, -0.001>, <50,10,8.002> rotate z*(360/16)*dx translate z*8*(current_layer-1) brick_tex() }
 #end /* door */
 
+#macro boxx(dx)
+  object {
+      cylinder { <58,0,0>, <58,0,7>, 4
+	    texture { 
+		pigment { 
+		    color red 1 green 0.5 blue 0.0
+		}
+		finish {
+		    phong 1
+		    ambient 0.4
+		}
+	    } 
+      }
+      rotate z*(360/16)*dx 
+      translate z*8*(current_layer-1)
+  }
+#end /* boxx */
+
 /* add a layer to the tower */
 #macro layer()
   union {

@@ -2,21 +2,15 @@
 TOPPLERDIR = ../../toppler
 
 LEVELDIR = ../../levels/mission1
-LEVELS = m1t1 m1t2 m1t3 m1t4 m1t5 m1t6 m1t7 m1t8
-
 #LEVELDIR = ../../levels/mission2
-#LEVELS = m2t1 m2t2 m2t3 m2t4 m2t5 m2t6 m2t7 m2t8
-
 #LEVELDIR = ../../levels/kallinen1
-#LEVELS = t1 t2 t3 t4 t5 t6 t7 t8
-
 #LEVELDIR = ../../levels/ball1
-#LEVELS = lev1 lev2 lev3 lev4 lev5 lev6 lev7 lev8
+#LEVELDIR = ../../levels/ball2
 
+LEVELS = `find $(LEVELDIR) -maxdepth 1 -type f`
 
-
-OBJS = $(TOPPLERDIR)/level.o $(TOPPLERDIR)/decl.o \
-	$(TOPPLERDIR)/keyb.o $(TOPPLERDIR)/points.o
+OBJS = $(TOPPLERDIR)/level.o $(TOPPLERDIR)/decl.o $(TOPPLERDIR)/points.o \
+	$(TOPPLERDIR)/keyb.o $(TOPPLERDIR)/configuration.o
 
 all: tower2inc
 	( ln -s `pwd`/$(LEVELDIR) $(HOME)/.toppler/t && \
