@@ -41,6 +41,10 @@ me:
 - small updates to documentation
 - h and F1 activate helpscreen in leveleditor
 - one more type of water
+- now it's possible to have different lenght robot animations
+- sections in tower files, this breaks compatibility hopefully for the
+  last time
+- each tower can have a selectable robot
 
 Version 0.98.2
 

@@ -715,6 +715,7 @@ void le_edit(void) {
 	    unsigned char *p;
 	    int demolen = -1;
 	    Uint16 *demobuf = NULL;
+            int speed = dcl_update_speed(game_speed);
 	    lev_set_towerdemo(0, NULL);
 	    lev_save(p);
 	    gam_newgame();
@@ -727,6 +728,7 @@ void le_edit(void) {
 	    lev_set_towerdemo(demolen, demobuf);
 	    key_readkey();
 	    set_men_bgproc(editor_background_proc);
+            dcl_update_speed(speed);
 	}
 	break;
       case EDACT_PLAY_DEMO:
@@ -738,6 +740,7 @@ void le_edit(void) {
 		Uint8 dummy1;
 		Uint16 dummy2;
 		unsigned char *p;
+	        int speed = dcl_update_speed(game_speed);
 		lev_save(p);
 		gam_newgame();
 		rob_initialize();
@@ -748,6 +751,7 @@ void le_edit(void) {
 		lev_restore(p);
 		key_readkey();
 		set_men_bgproc(editor_background_proc);
+	        dcl_update_speed(speed);
 	    } else {
 		bg_darken = true;
 		men_info("No recorded demo", 150, 2);

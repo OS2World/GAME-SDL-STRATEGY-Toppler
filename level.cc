@@ -75,7 +75,6 @@ struct _tblockdata {
 enum towersection {
     TSS_END,
     TSS_TOWERNAME,
-    TSS_TOWERHEIGHT,
     TSS_TOWERTIME,
     TSS_TOWERCOLOR,
     TSS_TOWERDATA,
@@ -84,7 +83,6 @@ enum towersection {
 };
 
 char tss_string_name[] = "name";
-char tss_string_height[] = "height";
 char tss_string_time[] = "time";
 char tss_string_color[] = "color";
 char tss_string_data[] = "data";
@@ -396,9 +394,6 @@ void lev_selecttower(Uint8 number) {
       memmove(towername, &mission[towerstart], section_len);
       towername[section_len] = 0;
       break;
-    case TSS_TOWERHEIGHT:
-      towerheight = mission[towerstart];
-      break;
     case TSS_TOWERTIME:
       towertime = mission[towerstart] + (int(mission[towerstart + 1]) << 8);
       break;
@@ -409,7 +404,9 @@ void lev_selecttower(Uint8 number) {
       break;
     case TSS_TOWERDATA:
       {
-        Uint32 bitstart = towerstart;
+        towerheight = mission[towerstart];
+
+        Uint32 bitstart = towerstart + 1;
         Uint32 bytestart = bitstart + 2 * towerheight;
         Uint16 wpos = 0;
         Uint16 bpos = 0;
@@ -864,10 +861,11 @@ bool lev_loadtower(char *fname) {
     } else if (strncmp(&line[1], tss_string_time, strlen(tss_string_time)) == 0) {
       fgets(line, 200, in);
       sscanf(line, "%hu\n", &towertime);
-    } else if (strncmp(&line[1], tss_string_height, strlen(tss_string_height)) == 0) {
+    } else if (strncmp(&line[1], tss_string_data, strlen(tss_string_data)) == 0) {
+
       fgets(line, 200, in);
       sscanf(line, "%hhu\n", &towerheight);
-    } else if (strncmp(&line[1], tss_string_data, strlen(tss_string_data)) == 0) {
+
       for (int row = towerheight - 1; row >= 0; row--) {
     
         fgets(line, 200, in);
@@ -916,13 +914,11 @@ bool lev_savetower(char *fname) {
   fprintf(out, "[%s]\n", tss_string_time);
   fprintf(out, "%hu\n", towertime);
 
-  fprintf(out, "[%s]\n", tss_string_height);
-  fprintf(out, "%hhu\n", towerheight);
-
   fprintf(out, "[%s]\n", tss_string_robot);
   fprintf(out, "%hhu\n", towerrobot);
 
   fprintf(out, "[%s]\n", tss_string_data);
+  fprintf(out, "%hhu\n", towerheight);
   for (int row = towerheight - 1; row >= 0; row--) {
     char line[TOWERWID+2];
 
@@ -1339,9 +1335,6 @@ void lev_mission_addtower(char * name) {
   write_fmission_section(TSS_TOWERNAME, namelen);
   fwrite(towername, 1, namelen, fmission);
 
-  write_fmission_section(TSS_TOWERHEIGHT, 1);
-  fwrite(&towerheight, 1, 1, fmission);
-
   write_fmission_section(TSS_ROBOT, 1);
   fwrite(&towerrobot, 1, 1, fmission);
 
@@ -1363,7 +1356,9 @@ void lev_mission_addtower(char * name) {
   for (row = 0; row < rows; row++)
     for (col = 0; col < TOWERWID; col++)
       if (tower[row][col]) section_len++;
-  write_fmission_section(TSS_TOWERDATA, section_len);
+  write_fmission_section(TSS_TOWERDATA, section_len + 1);
+
+  printf("heiht: %i\n", towerheight);
 
   /* output bitmap */
   for (row = 0; row < rows; row++) {
