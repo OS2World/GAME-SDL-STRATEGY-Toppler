@@ -10,8 +10,8 @@ Group: Amusements/Games
 
 BuildRoot: %{_tmppath}/%{name}-root
 
-Requires: SDL >= 1.2.4, SDL_mixer >= 1.2.4, zlib, libstdc++
-BuildRequires: SDL-devel >= 1.2.4
+Requires: SDL >= 1.2.2, SDL_mixer >= 1.2.2, zlib, libstdc++
+BuildRequires: SDL-devel >= 1.2.2
 AutoReqProv: no
 
 Source0: %{name}-%{version}.tar.gz
@@ -24,7 +24,7 @@ Summary: Tower Toppler
 Reimplementation of the old game (aka Nebulous). In the game you have
 to climb a tower with lots of strange inhabitants that try to push you
 down. Your only defence is a snowball you can throw and your skill to
-avoid these beeings.
+avoid these beings.
 
 %prep
 

@@ -185,6 +185,13 @@ FILE *create_highscore_file(char *name);
 FILE *open_local_data_file(char *name);
 FILE *create_local_data_file(char *name);
 
+/* the different types of waves used in waves_type */
+enum {
+  waves_nonreflecting,
+  waves_simple,
+  waves_expensive
+};
+
 /* GAME PARAMETERS */
 extern bool fullscreen;
 extern bool nosound;
@@ -194,7 +201,7 @@ extern bool use_alpha_sprites;
 extern bool use_alpha_layers;
 extern bool use_alpha_font;
 extern bool use_alpha_darkening;
-extern bool use_waves;
+extern char waves_type;
 extern bool status_top;
 extern int  editor_towerpagesize;
 extern int  editor_towerstarthei;

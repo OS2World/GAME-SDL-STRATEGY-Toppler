@@ -121,7 +121,7 @@ scr_savedisplaybmp(char *fname)
   SDL_SaveBMP(display, fname);
 }
 
-unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha) {
+unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha, bool screenformat) {
   Uint16 erg = 0;
   Uint8 b, a;
   SDL_Surface *z;
@@ -179,6 +179,12 @@ unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *
         }
       }
 
+    if (screenformat) {
+      SDL_Surface * z2 = SDL_DisplayFormatAlpha(z);
+      SDL_FreeSurface(z);
+      z = z2;
+    }
+
     if (t == 0)
       erg = spr_savesprite(z);
     else
@@ -189,7 +195,7 @@ unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *
 }
 
 
-static unsigned short scr_gensprites(int num, int w, int h, bool sprite, bool use_alpha) {
+static unsigned short scr_gensprites(int num, int w, int h, bool sprite, bool use_alpha, bool screenformat) {
   Uint16 erg = 0;
   SDL_Surface *z;
 
@@ -201,7 +207,12 @@ static unsigned short scr_gensprites(int num, int w, int h, bool sprite, bool us
       /* SDL_RLEACCEL is not allowed here, because we need to edit the data later
        on for the new colors */
       SDL_SetColorKey(z, SDL_SRCCOLORKEY, SDL_MapRGB(z->format, 1, 1, 1));
-    
+
+    if (screenformat) {
+      SDL_Surface * z2 = SDL_DisplayFormat(z);
+      SDL_FreeSurface(z);
+      z = z2;
+    }
 
     if (t == 0)
       erg = spr_savesprite(z);
@@ -212,9 +223,21 @@ static unsigned short scr_gensprites(int num, int w, int h, bool sprite, bool us
   return erg;
 }
 
-static void scr_regensprites(Uint8 *data, SDL_Surface *z, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha) {
+static void scr_regensprites(Uint8 *data, SDL_Surface *target, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha, bool screenformat) {
   Uint8 a, b;
   Uint32 datapos = 0;
+  SDL_Surface * z;
+
+  if (screenformat) {
+    z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite && use_alpha) ? SDL_SRCALPHA : 0,
+                             w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite && use_alpha) ? 0xFF000000 : 0);
+  
+    if (sprite & !use_alpha)
+      /* SDL_RLEACCEL is not allowed here, because we need to edit the data later
+       on for the new colors */
+      SDL_SetColorKey(z, SDL_SRCCOLORKEY, SDL_MapRGB(z->format, 1, 1, 1));
+  } else
+    z = target;
 
   for (int t = 0; t < num; t++)
     for (int y = 0; y < h; y++)
@@ -262,6 +285,14 @@ static void scr_regensprites(Uint8 *data, SDL_Surface *z, int num, int w, int h,
           }
         }
       }
+  if (screenformat) {
+    SDL_Rect r;
+    r.h = h;
+    r.w = w;
+    r.x = 0;
+    r.y = 0;
+    SDL_BlitSurface(z, &r, target, &r);
+  }
 }
 
 void scr_read_palette(Uint8 *pal) {
@@ -290,8 +321,8 @@ static void loadgraphics(void) {
   battlementdata = (Uint8*)malloc(SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
   arc_read(battlementdata, SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI, &res);
 
-  slicestart = scr_gensprites(SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false, false);
-  battlementstart = scr_gensprites(SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false, false);
+  slicestart = scr_gensprites(SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false, false, true);
+  battlementstart = scr_gensprites(SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false, false, true);
 
   for (t = -36; t < 37; t++) {
 
@@ -300,7 +331,7 @@ static void loadgraphics(void) {
 
     for (int et = 0; et < 3; et++)
       if (doors[t+36].width != 0) {
-        doors[t+36].s[et] = scr_gensprites(1, doors[t+36].width, 16, false, false);
+        doors[t+36].s[et] = scr_gensprites(1, doors[t+36].width, 16, false, false, true);
         doors[t+36].data[et] = (Uint8*)malloc(doors[t+36].width*16);
         arc_read(doors[t+36].data[et], doors[t+36].width*16, &res);
       } else {
@@ -320,9 +351,9 @@ static void loadgraphics(void) {
     pal[3*t+2] = c2;
   }
 
-  step = scr_loadsprites(SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal, false);
-  elevatorsprite = scr_loadsprites(SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal, false);
-  stick = scr_loadsprites(1, SPR_STICKWID, SPR_STICKHEI, false, pal, false);
+  step = scr_loadsprites(SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal, false, true);
+  elevatorsprite = scr_loadsprites(SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal, false, true);
+  stick = scr_loadsprites(1, SPR_STICKWID, SPR_STICKHEI, false, pal, false, true);
 
   arc_closefile();
 
@@ -330,34 +361,34 @@ static void loadgraphics(void) {
   
   scr_read_palette(pal);
 
-  topplerstart = scr_loadsprites(74, SPR_HEROWID, SPR_HEROHEI, true, pal, use_alpha_sprites);
+  topplerstart = scr_loadsprites(74, SPR_HEROWID, SPR_HEROHEI, true, pal, use_alpha_sprites, true);
 
   arc_assign(spritedat);
 
   scr_read_palette(pal);
-  robotsst = scr_loadsprites(128, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites);
+  robotsst = scr_loadsprites(128, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites, true);
 
   scr_read_palette(pal);
-  ballst = scr_loadsprites(2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites);
+  ballst = scr_loadsprites(2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites, true);
 
   scr_read_palette(pal);
-  boxst = scr_loadsprites(16, SPR_BOXWID, SPR_BOXHEI, true, pal, use_alpha_sprites);
+  boxst = scr_loadsprites(16, SPR_BOXWID, SPR_BOXHEI, true, pal, use_alpha_sprites, true);
 
   scr_read_palette(pal);
-  snowballst = scr_loadsprites(1, SPR_AMMOWID, SPR_AMMOHEI, true, pal, use_alpha_sprites);
+  snowballst = scr_loadsprites(1, SPR_AMMOWID, SPR_AMMOHEI, true, pal, use_alpha_sprites, true);
 
   scr_read_palette(pal);
-  starst = scr_loadsprites(16, SPR_STARWID, SPR_STARHEI, true, pal, use_alpha_sprites);
+  starst = scr_loadsprites(16, SPR_STARWID, SPR_STARHEI, true, pal, use_alpha_sprites, true);
   sts_init(starst + 9, NUM_STARS);
 
   scr_read_palette(pal);
-  fishst = scr_loadsprites(32*2, SPR_FISHWID, SPR_FISHHEI, true, pal, use_alpha_sprites);
+  fishst = scr_loadsprites(32*2, SPR_FISHWID, SPR_FISHHEI, true, pal, use_alpha_sprites, true);
 
   scr_read_palette(pal);
-  subst = scr_loadsprites(31, SPR_SUBMWID, SPR_SUBMHEI, true, pal, use_alpha_sprites);
+  subst = scr_loadsprites(31, SPR_SUBMWID, SPR_SUBMHEI, true, pal, use_alpha_sprites, true);
 
   scr_read_palette(pal);
-  torb = scr_loadsprites(1, SPR_TORPWID, SPR_TORPHEI, true, pal, use_alpha_sprites);
+  torb = scr_loadsprites(1, SPR_TORPWID, SPR_TORPHEI, true, pal, use_alpha_sprites, true);
 
   arc_closefile();
 
@@ -374,7 +405,7 @@ static void loadgraphics(void) {
   crossdata = (Uint8*)malloc(120*SPR_CROSSWID*SPR_CROSSHEI*2);
   arc_read(crossdata, 120*SPR_CROSSWID*SPR_CROSSHEI*2, &res);
 
-  crossst = scr_gensprites(120, SPR_CROSSWID, SPR_CROSSHEI, true, use_alpha_sprites);
+  crossst = scr_gensprites(120, SPR_CROSSWID, SPR_CROSSHEI, true, use_alpha_sprites, false);
 
   arc_closefile();
 }
@@ -401,15 +432,15 @@ void scr_settowercolor(Uint8 r, Uint8 g, Uint8 b) {
   }
 
   for (t = 0; t < SPR_SLICESPRITES; t++)
-    scr_regensprites(slicedata + t*SPR_SLICEWID*SPR_SLICEHEI, spr_spritedata(slicestart + t), 1, SPR_SLICEWID, SPR_SLICEHEI, false, pal, false);
+    scr_regensprites(slicedata + t*SPR_SLICEWID*SPR_SLICEHEI, spr_spritedata(slicestart + t), 1, SPR_SLICEWID, SPR_SLICEHEI, false, pal, false, true);
 
   for (t = 0; t < SPR_BATTLFRAMES; t++)
-    scr_regensprites(battlementdata + t*SPR_BATTLWID*SPR_BATTLHEI, spr_spritedata(battlementstart + t), 1, SPR_BATTLWID, SPR_BATTLHEI, false, pal, false);
+    scr_regensprites(battlementdata + t*SPR_BATTLWID*SPR_BATTLHEI, spr_spritedata(battlementstart + t), 1, SPR_BATTLWID, SPR_BATTLHEI, false, pal, false, true);
 
   for (t = -36; t < 37; t++)
     for (int et = 0; et < 3; et++)
       if (doors[t+36].width != 0)
-        scr_regensprites(doors[t+36].data[et], spr_spritedata(doors[t+36].s[et]), 1, doors[t+36].width, SPR_SLICEHEI, false, pal, false);
+        scr_regensprites(doors[t+36].data[et], spr_spritedata(doors[t+36].s[et]), 1, doors[t+36].width, SPR_SLICEHEI, false, pal, false, true);
 
   last_towercol_r = r;
   last_towercol_g = g;
@@ -448,7 +479,7 @@ void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
   for (t = 0; t < 120; t++) {
     scr_regensprites(crossdata + t*SPR_CROSSWID*SPR_CROSSHEI*2,
                      spr_spritedata(crossst+t),
-                     1, SPR_CROSSWID, SPR_CROSSHEI, true, pal, use_alpha_sprites);
+                     1, SPR_CROSSWID, SPR_CROSSHEI, true, pal, use_alpha_sprites, false);
   }
 }
 
@@ -470,7 +501,7 @@ static void loadfont(void) {
     if (!c || (c >= MAXCHARNUM)) break;
 
     fontchars[c].width = arc_getbyte();
-    fontchars[c].s = scr_loadsprites(1, fontchars[c].width, fontheight, true, pal, use_alpha_font);
+    fontchars[c].s = scr_loadsprites(1, fontchars[c].width, fontheight, true, pal, use_alpha_font, true);
   }
 
   arc_closefile();
@@ -508,7 +539,7 @@ static void loadscroller(void) {
 
     scr_read_palette(pal);
 
-    scroll_layers[l].image = scr_loadsprites(1, scroll_layers[l].width, 480, l != 0, pal, use_alpha_layers);
+    scroll_layers[l].image = scr_loadsprites(1, scroll_layers[l].width, 480, l != 0, pal, use_alpha_layers, true);
   }
 
   arc_closefile();
@@ -544,10 +575,9 @@ void scr_reload_sprites() {
 void scr_init(void) {
   spr_init(1000);
 
-  load_sprites();
+  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 32, (fullscreen) ? (SDL_FULLSCREEN) : (0));
 
-  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 32,
-                             SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
+  load_sprites();
 
   /* initialize sinus table */
   for (int i = 0; i < TOWER_ANGLES; i++)
@@ -563,8 +593,7 @@ void scr_init(void) {
 }
 
 void scr_reinit() {
-  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 32,
-                             SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
+  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 32, (fullscreen) ? (SDL_FULLSCREEN) : (0));
 }
 
 void scr_done(void) {
@@ -687,98 +716,107 @@ static void putwater(long height) {
     0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3,
     3, 3 };
 
-
   static int wavetime = 0;
 
   height *= 4;
 
   if (height < (SCREENHEI / 2)) {
 
-    if (use_waves) {
+    switch(waves_type) {
 
-      int targetidx = ((SCREENHEI / 2) + height) * display->pitch;
-      int source_line = (SCREENHEI / 2) + height - 1;
-  
-      for (int y = 0; y < (SCREENHEI / 2) - height; y++) {
-  
-        for (int x = 0; x < SCREENWID; x++) {
-          Sint16 dx = waves[(x+y+12*wavetime) & 0x7f] + waves[2*x-y+11*wavetime & 0x7f];
-          Sint16 dy = waves[(x-y+13*wavetime) & 0x7f] + waves[2*x-3*y-14*wavetime & 0x7f];
-  
-          dx = dx * y / (SCREENHEI/2);
-          dy = dy * y / (SCREENHEI/2);
-  
-          Uint8 r, g, b;
-  
-          if ((x+dx < 0) || (x+dx > SCREENWID) || (source_line+dy < 0)) {
-            r = g = 0;
-            b = ((y+dx)/2) + 30;
-          } else {
-            int source_idx = (source_line+dy) * display->pitch + (x+dx) * display->format->BytesPerPixel;
-  
-            b = ((((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9) + ((y+dy)/2) + 30;
-            g = (((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9;
-            r = (((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9;
-          }
-  
-          ((Uint8 *)(display->pixels))[targetidx++] = b;
-          ((Uint8 *)(display->pixels))[targetidx++] = g;
-          ((Uint8 *)(display->pixels))[targetidx++] = r;
-  
-          targetidx++;
-        }
-        source_line --;
-      }
-    } else {
+    case waves_expensive:
+      {
+        int targetidx = ((SCREENHEI / 2) + height) * display->pitch;
+        int source_line = (SCREENHEI / 2) + height - 1;
 
-      int horizontal_shift;
-  
-      for (int y = 0; y < (SCREENHEI / 2) - height; y++) {
-  
-        int target_line = (SCREENHEI / 2) + height + y;
-        int source_line = (SCREENHEI / 2) + height - y - 1 - simple_waves[(wavetime * 4 + y * 2) & 0x7f];
-        if (source_line < 0)
-          source_line = 0;
-  
-        int z = simple_waves[(wavetime*5 + y) & 0x7f];
-        if (abs(z - 4) > y) {
-          if (z < 4)
-            horizontal_shift = 4 - y;
-          else
-            horizontal_shift = 4 + y;
-        } else {
-          horizontal_shift = z;
-        }
-  
-        {  // fill left and right edge with dark pixels
-          int right_idx = target_line * display->pitch + (SCREENWID - 10) * display->format->BytesPerPixel;
-          int left_idx = target_line * display->pitch;
-          for (int x = 0; x < 10; x++) {
-            ((Uint8 *)(display->pixels))[right_idx + 0] = 30 + y/2;
-            ((Uint8 *)(display->pixels))[right_idx + 1] = 0;
-            ((Uint8 *)(display->pixels))[right_idx + 2] = 0;
-            ((Uint8 *)(display->pixels))[left_idx + 0] = 30 + y/2;
-            ((Uint8 *)(display->pixels))[left_idx + 1] = 0;
-            ((Uint8 *)(display->pixels))[left_idx + 2] = 0;
-            right_idx += display->format->BytesPerPixel;
-            left_idx += display->format->BytesPerPixel;
-          }
-        }
-  
-        {  // copy one pixel row
-          int target_idx = target_line * display->pitch + horizontal_shift * display->format->BytesPerPixel;
-          int source_idx = source_line * display->pitch;
+        for (int y = 0; y < (SCREENHEI / 2) - height; y++) {
+
           for (int x = 0; x < SCREENWID; x++) {
-            if ((x + horizontal_shift > 0) && (x + horizontal_shift < SCREENWID)) {
-              ((Uint8 *)(display->pixels))[target_idx + 0] = ((long)((Uint8 *)(display->pixels))[source_idx + 0]) * (340-y) / 512 + (y/2) + 30;
-              ((Uint8 *)(display->pixels))[target_idx + 1] = ((long)((Uint8 *)(display->pixels))[source_idx + 1]) * (340-y) / 512;
-              ((Uint8 *)(display->pixels))[target_idx + 2] = ((long)((Uint8 *)(display->pixels))[source_idx + 2]) * (340-y) / 512;
+            Sint16 dx = waves[(x+y+12*wavetime) & 0x7f] + waves[2*x-y+11*wavetime & 0x7f];
+            Sint16 dy = waves[(x-y+13*wavetime) & 0x7f] + waves[2*x-3*y-14*wavetime & 0x7f];
+
+            dx = dx * y / (SCREENHEI/2);
+            dy = dy * y / (SCREENHEI/2);
+
+            Uint8 r, g, b;
+
+            if ((x+dx < 0) || (x+dx > SCREENWID) || (source_line+dy < 0)) {
+              r = g = 0;
+              b = ((y+dx)/2) + 30;
+            } else {
+              int source_idx = (source_line+dy) * display->pitch + (x+dx) * display->format->BytesPerPixel;
+
+              b = ((((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9) + ((y+dy)/2) + 30;
+              g = (((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9;
+              r = (((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9;
             }
-            target_idx += display->format->BytesPerPixel;
-            source_idx += display->format->BytesPerPixel;
+
+            ((Uint8 *)(display->pixels))[targetidx++] = b;
+            ((Uint8 *)(display->pixels))[targetidx++] = g;
+            ((Uint8 *)(display->pixels))[targetidx++] = r;
+
+            targetidx++;
+          }
+          source_line --;
+        }
+      }
+      break;
+    case waves_simple:
+      {
+        int horizontal_shift;
+
+        for (int y = 0; y < (SCREENHEI / 2) - height; y++) {
+
+          int target_line = (SCREENHEI / 2) + height + y;
+          int source_line = (SCREENHEI / 2) + height - y - 1 - simple_waves[(wavetime * 4 + y * 2) & 0x7f];
+          if (source_line < 0)
+            source_line = 0;
+
+          int z = simple_waves[(wavetime*5 + y) & 0x7f];
+          if (abs(z - 4) > y) {
+            if (z < 4)
+              horizontal_shift = 4 - y;
+            else
+              horizontal_shift = 4 + y;
+          } else {
+            horizontal_shift = z;
+          }
+
+          {  // fill left and right edge with dark pixels
+            int right_idx = target_line * display->pitch + (SCREENWID - 10) * display->format->BytesPerPixel;
+            int left_idx = target_line * display->pitch;
+            for (int x = 0; x < 10; x++) {
+              ((Uint8 *)(display->pixels))[right_idx + 0] = 30 + y/2;
+              ((Uint8 *)(display->pixels))[right_idx + 1] = 0;
+              ((Uint8 *)(display->pixels))[right_idx + 2] = 0;
+              ((Uint8 *)(display->pixels))[left_idx + 0] = 30 + y/2;
+              ((Uint8 *)(display->pixels))[left_idx + 1] = 0;
+              ((Uint8 *)(display->pixels))[left_idx + 2] = 0;
+              right_idx += display->format->BytesPerPixel;
+              left_idx += display->format->BytesPerPixel;
+            }
+          }
+
+          {  // copy one pixel row
+            int target_idx = target_line * display->pitch + horizontal_shift * display->format->BytesPerPixel;
+            int source_idx = source_line * display->pitch;
+            for (int x = 0; x < SCREENWID; x++) {
+              if ((x + horizontal_shift > 0) && (x + horizontal_shift < SCREENWID)) {
+                ((Uint8 *)(display->pixels))[target_idx + 0] = ((long)((Uint8 *)(display->pixels))[source_idx + 0]) * (340-y) / 512 + (y/2) + 30;
+                ((Uint8 *)(display->pixels))[target_idx + 1] = ((long)((Uint8 *)(display->pixels))[source_idx + 1]) * (340-y) / 512;
+                ((Uint8 *)(display->pixels))[target_idx + 2] = ((long)((Uint8 *)(display->pixels))[source_idx + 2]) * (340-y) / 512;
+              }
+              target_idx += display->format->BytesPerPixel;
+              source_idx += display->format->BytesPerPixel;
+            }
           }
         }
       }
+      break;
+    case waves_nonreflecting:
+      for (int y = 0; y < (SCREENHEI / 2) - height; y++)
+        scr_putbar(0, SCREENHEI/2 + height + y, SCREENWID, 1, 0, 0, 30 + y/2, 255);
+      break;
     }
   }
 

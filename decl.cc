@@ -41,7 +41,7 @@ bool use_alpha_sprites = false;
 bool use_alpha_layers = false;
 bool use_alpha_font = false;
 bool use_alpha_darkening = false;
-bool use_waves = false;
+char waves_type = waves_nonreflecting;
 bool status_top = true;  /* is status line top or bottom of screen? */
 int  editor_towerpagesize = -1;
 int  editor_towerstarthei = -5;
@@ -78,10 +78,10 @@ static const struct _config_data config_data[] = {
     CNF_BOOL( "use_alpha_font",      &use_alpha_font ),
     CNF_BOOL( "use_alpha_layers",    &use_alpha_layers ),
     CNF_BOOL( "use_alpha_darkening", &use_alpha_darkening ),
-    CNF_BOOL( "use_waves",           &use_waves ),
     CNF_BOOL( "status_top",          &status_top ),
     CNF_INT(  "editor_pagesize",     &editor_towerpagesize ),
     CNF_INT(  "editor_towerstarthei",&editor_towerstarthei ),
+    CNF_INT(  "waves_type",          &waves_type ),
     CNF_KEY(  "key_fire",             fire_key ),
     CNF_KEY(  "key_up",               up_key ),
     CNF_KEY(  "key_down",             down_key ),

@@ -104,13 +104,13 @@ void men_reload_sprites(void) {
   arc_assign(menudat);
 
   scr_read_palette(pal);
-  menupicture = scr_loadsprites(1, 640, 480, false, pal, use_alpha_font);
+  menupicture = scr_loadsprites(1, 640, 480, false, pal, use_alpha_font, true);
   arc_closefile();
 
   arc_assign(titledat);
 
   scr_read_palette(pal);
-  titledata = scr_loadsprites(1, SPR_TITLEWID, SPR_TITLEHEI, true, pal, use_alpha_font);
+  titledata = scr_loadsprites(1, SPR_TITLEWID, SPR_TITLEHEI, true, pal, use_alpha_font, true);
   arc_closefile();
 }
 
@@ -1000,10 +1000,18 @@ static char *
 men_waves_menu(void *ms)
 {
   if (ms) {
-    use_waves = !use_waves;
+    switch(waves_type) {
+    case waves_nonreflecting: waves_type = waves_simple; break;
+    case waves_simple: waves_type = waves_expensive; break;
+    case waves_expensive: waves_type = waves_nonreflecting; break;
+    }
   }
-  if (use_waves) return "Expensive waves \x04";
-  else return "Expensive waves \x03";
+  switch(waves_type) {
+  case waves_nonreflecting: return "Nonreflecting waves";
+  case waves_simple: return "Simple waves";
+  case waves_expensive: return "Expensive waves";
+  default: return "Error";
+  }
 }
 
 static char *

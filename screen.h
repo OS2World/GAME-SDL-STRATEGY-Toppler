@@ -52,7 +52,8 @@ void scr_done(void);
 /* loads a number of sprites, enters them into the sprite collection
  and returns the index of the first sprite */
 void scr_read_palette(Uint8 *pal);
-unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal, bool usealpha);
+unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal,
+                               bool usealpha, bool usescreenformat);
 
 
 /* changes the colors of the slices, doors and battlement
