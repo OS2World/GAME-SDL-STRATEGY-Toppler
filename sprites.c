@@ -179,6 +179,7 @@ void generate_submarine(SDL_Surface **c, SDL_Surface **m) {
 int main() {
 
   Uint16 s, n, x, y;
+  Uint8 c;
 
   FILE *outf = fopen("sprites.dat", "wb");
 
@@ -189,7 +190,14 @@ int main() {
 
   printf("robots\n");
 
+  c = 8;
+  fwrite(&c, 1, 1, outf);
+
   for (s = 0; s < 8; s++) {
+
+    c = 16;
+    fwrite(&c, 1, 1, outf);
+
     for (n = 0; n < 16; n++) {
       for (y = 0; y < 32; y++) {
         for (x = 0; x < 32; x++) {

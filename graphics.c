@@ -144,8 +144,8 @@ void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth
           double stonepos = pixelpos;
 
           /* at the middle layer it's shifted by half a stone width */
-/*          if (layer == 1)
-            stonepos += brick->w/2;*/
+          if (layer == 1)
+            stonepos += (brick->w/2);
 
           while (stonepos >= brick->w)
             stonepos -= brick->w;
@@ -173,8 +173,8 @@ void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth
 
           double stonepos = pixelpos;
   
-/*          if (layer == 1)
-            stonepos += brick->w/2;*/
+          if (layer == 1)
+            stonepos += (brick->w/2);
   
           while (stonepos >= brick->w)
             stonepos -= brick->w;
@@ -454,15 +454,12 @@ int main() {
   for (t = 0; t < 8; t++)
     createzinne(t*16*3+ 8*16, wadd / 8 * t);
 
-  /*
-  SavePNGImage("ttttest.png", display);
-  return 0;
-  */
-
   /* generate doors and save them */
   for (t = -36; t < 37; t++)
     createdoor(t * wadd / 8, 8*16 + 8*3*16 + (t+36)*16*3, radius, 30, radius, 3*hoehe, 0);
 
+  SavePNGImage("ttttest.png", display);
+  return 0;
 
   SDL_Surface *disp2 = colorreduction(display, 256);
   SDL_FreeSurface(display);
