@@ -75,6 +75,8 @@ typedef enum {
   EDACT_SHOWKEYHELP,
   EDACT_NAMETOWER,
   EDACT_SETTIME,
+  EDACT_REC_DEMO,
+  EDACT_PLAY_DEMO,
   
   NUMEDITORACTIONS    
 } key_actions;
@@ -97,7 +99,8 @@ const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Lift Top stop", "Put Stick",      "Put Box",         "Load Tower",   
    "Save Tower",    "Test Tower",     "Set Tower Color", "Increase Time", 
    "Decrease Time", "Create Mission", "Move Page Up",    "Move Page Down",  
-   "Go To Start",   "Show This Help", "Name The Tower",  "Set Tower time"
+   "Go To Start",   "Show This Help", "Name The Tower",  "Set Tower time",
+   "Record Demo",   "Play Demo"
 };
 
 const struct _ed_key _ed_keys[] = {
@@ -139,7 +142,9 @@ const struct _ed_key _ed_keys[] = {
    {EDACT_SETTIME,       SDLK_b},
    {EDACT_DECTIME,       SDLK_n},
    {EDACT_CREATEMISSION, SDLK_m},
-   {EDACT_NAMETOWER,     SDLK_t}
+   {EDACT_NAMETOWER,     SDLK_t},
+   {EDACT_REC_DEMO,      SDLK_F10},
+   {EDACT_PLAY_DEMO,     SDLK_F11}
 };
 
 static int bg_row;
@@ -447,6 +452,7 @@ void le_edit(void) {
                     lev_towercol_blue());
 
   lev_set_towername("");
+  lev_set_towerdemo(0, NULL);
 
   while (!ende) {
 
@@ -608,17 +614,65 @@ void le_edit(void) {
         lev_savetower(editor_towername);
         changed = false;
         break;
+
+      case EDACT_REC_DEMO:
+	{
+	    Uint8 dummy1;
+	    Uint16 dummy2;
+	    unsigned char *p;
+	    int demolen = -1;
+	    Uint16 *demobuf = NULL;
+	    lev_set_towerdemo(0, NULL);
+	    lev_save(p);
+	    gam_newgame();
+	    rob_initialize();
+	    snb_init();
+	    snd_wateron();
+	    gam_towergame(dummy1, dummy2, demolen, &demobuf);
+	    snd_wateroff();
+	    lev_restore(p);
+	    lev_set_towerdemo(demolen, demobuf);
+	    key_readkey();
+	    set_men_bgproc(editor_background_proc);
+	}
+	break;
+      case EDACT_PLAY_DEMO:
+	{
+	    int demolen = 0;
+	    Uint16 *demobuf = NULL;
+	    lev_get_towerdemo(demolen, demobuf);
+	    if (demolen > 0) {
+		Uint8 dummy1;
+		Uint16 dummy2;
+		unsigned char *p;
+		lev_save(p);
+		gam_newgame();
+		rob_initialize();
+		snb_init();
+		snd_wateron();
+		gam_towergame(dummy1, dummy2, demolen, &demobuf);
+		snd_wateroff();
+		lev_restore(p);
+		key_readkey();
+		set_men_bgproc(editor_background_proc);
+	    } else {
+		men_info("No recorded demo", 150, 2);
+	    }
+	}
+	break;
       case EDACT_TESTTOWER:
         {
           Uint8 dummy1;
           Uint16 dummy2;
+	  int dummy3 = 0;
+	  Uint16 *dummybuf = NULL;
           unsigned char *p;
           lev_save(p);
           gam_newgame();
           rob_initialize();
           snb_init();
           snd_wateron();
-          gam_towergame(dummy1, dummy2);
+          gam_towergame(dummy1, dummy2, dummy3, &dummybuf);
           snd_wateroff();
           lev_restore(p);
           key_readkey();

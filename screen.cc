@@ -517,8 +517,8 @@ void scr_darkenscreen(void) {
 
   for (y = 0; y < 20; y++)
     for (x = 0; x < 20; x++)
-      if (y & 1)
-        ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0;
+      if ((y+x) & 1)
+        ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0x00;
       else
         ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0xff;
 
@@ -706,7 +706,7 @@ void scr_writeformattext(long x, long y, const char *s) {
         t += 5;
         break;
       default:
-        assert(0, "wrong command in formeted text");
+        assert(0, "Wrong command in formatted text.");
         t += 2;
       }
       break;
@@ -1024,7 +1024,7 @@ static void putthings(long vert, long a, long angle) {
   /* and now check for robots to be drawn */
   for (int rob = 0; rob < 4; rob++) {
 
-    /* if the the current robot as active and not the cross */
+    /* if the the current robot is active and not the cross */
     if (rob_kind(rob) != OBJ_KIND_NOTHING && rob_kind(rob) != OBJ_KIND_CROSS) {
 
       /* ok calc the angle the robots needs to be drawn at */
@@ -1146,7 +1146,8 @@ void scr_drawall(long vert,
                  long time,
                  bool svisible,
                  int subshape,
-                 int substart
+                 int substart,
+		 int flags
                 ) {
 
   cleardesk();
@@ -1190,6 +1191,12 @@ void scr_drawall(long vert,
   draw_data(time);
 
   boxstate = (boxstate + 1) & 0xf;
+
+  if (flags) {
+      int y = SCREENHEI - FONTHEI;
+      if ((flags == 1) && !(boxstate & 8)) scr_writetext_center(y, "REC");
+      else if (flags == 2) scr_writetext_center(y, "DEMO");
+  }
 }
 
 void scr_drawedit(long vpos, long apos, bool showtime) {

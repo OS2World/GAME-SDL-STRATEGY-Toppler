@@ -55,12 +55,12 @@ static Uint32 bufferpos;
 void arc_init(char *name) {
   f = open_data_file(name);
 
-  assert(f != 0, "archive file could not be opened\n");
+  assert(f != 0, "Archive file could not be opened.");
 
   fread(&filecount, 1, 1, f);
     
   files = (fileindex *)malloc(filecount * sizeof(fileindex));
-  assert(files, "Failed to alloc memory for archive index\n");
+  assert(files, "Failed to alloc memory for archive index.");
 
   for (Uint8 file = 0; file < filecount; file++) {
 
@@ -118,7 +118,7 @@ void arc_done(void) {
 
 void arc_assign(char *name) {
 
-  assert(f, "archive not initialized\n");
+  assert(f, "Archive not initialized.");
 
   arc_closefile();
 
@@ -135,7 +135,7 @@ void arc_assign(char *name) {
       erg = files[i].size;
       uncompress(buffer, &erg, b, files[i].compress);
 
-      assert(erg == files[i].size, "data file corrupt\n");
+      assert(erg == files[i].size, "Data file corrupt.");
 
       delete [] b;
       pos = i;
@@ -143,7 +143,7 @@ void arc_assign(char *name) {
       return;
     }
 
-  assert(0, "file not found in archive\n");
+  assert(0, "File not found in archive!");
 }
 
 void arc_read(void *buf, Uint32 size, Uint32 *result) {

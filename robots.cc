@@ -95,14 +95,14 @@ static bool testroboter(int nr) {
   return (!lev_testfigure((long)object[nr].anglepos, object[nr].verticalpos, -2L, 1L, 1L, 1L, 7L));
 }
 
-/* makes the robot disappear when it falle into water */
+/* makes the robot disappear when it falls into water */
 static void drown_robot(int nr) {
   object[nr].verticalpos = 0;
   object[nr].time = 0;
   object[nr].kind = OBJ_KIND_DISAPPEAR;
 }
 
-/* tests the undergroud of the given object (only used for freeze ball) returns
+/* tests the underground of the given object (only used for freeze ball) returns
  0 if nothing needs to be done
  1 for falling
  2 for reverse direction

@@ -83,6 +83,10 @@ Uint8 lev_towerrows(void);
 char *lev_towername(void);
 void lev_set_towername(char *str);
 
+/* tower demo */
+void lev_set_towerdemo(int demolen, Uint16 *demobuf);
+void lev_get_towerdemo(int &demolen, Uint16 *&demobuf);
+
 /* the number of the actual tower */
 Uint8 lev_towernr(void);
 

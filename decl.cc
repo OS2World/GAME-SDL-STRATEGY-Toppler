@@ -42,6 +42,31 @@ bool use_alpha_darkening = false;
 
 char editor_towername[TOWERNAMELEN+1] = "";
 
+typedef enum {
+    CT_BOOL,
+    CT_STRING
+} cnf_type;
+
+struct _config_data {
+    char     *cnf_name;
+    cnf_type  cnf_typ;
+    void     *cnf_var;
+    int       maxlen;
+};
+
+#define CNF_BOOL(a,b) {a, CT_BOOL, b, 0}
+#define CNF_CHAR(a,b,c) {a, CT_STRING, b, c}
+
+static const struct _config_data config_data[] = {
+    CNF_BOOL( "fullscreen",          &fullscreen ),
+    CNF_BOOL( "nosound",             &nosound ),
+    CNF_CHAR( "editor_towername",    &editor_towername, TOWERNAMELEN ),
+    CNF_BOOL( "use_alpha_sprites",   &use_alpha_sprites ),
+    CNF_BOOL( "use_alpha_font",      &use_alpha_font ),
+    CNF_BOOL( "use_alpha_layers",    &use_alpha_layers ),
+    CNF_BOOL( "use_alpha_darkening", &use_alpha_darkening )
+};
+
 void dcl_wait(void) {
   static Uint32 last;
   while ((SDL_GetTicks() - last) < 55*1 ) SDL_Delay(2);
@@ -280,25 +305,20 @@ static void parse_config(FILE * in) {
 
   while (!feof(in)) {
     fscanf(in, "%s %s\n", line, param);
-
-    if (strstr(line, "fullscreen")) {
-      fullscreen = (atoi(param) == 1);
-    } else if (strstr(line, "nosound")) {
-      nosound = (atoi(param) == 1);
-    } else if (strstr(line, "editor_towername")) {
-      int len = strlen(param);
-      if (len <= TOWERNAMELEN) {
-        memcpy(editor_towername, param, strlen(param));
-        editor_towername[len] = '\0';
-      } else editor_towername[0] = '\0';
-    } else if (strstr(line, "use_alpha_sprites")) {
-      use_alpha_sprites = (atoi(param) == 1);
-    } else if (strstr(line, "use_alpha_font")) {
-      use_alpha_font = (atoi(param) == 1);
-    } else if (strstr(line, "use_alpha_layers")) {
-      use_alpha_layers = (atoi(param) == 1);
-    } else if (strstr(line, "use_alpha_darkening")) {
-      use_alpha_darkening = (atoi(param) == 1);
+      
+    for (int idx = 0; idx < SIZE(config_data); idx++) {
+	if (strstr(line, config_data[idx].cnf_name)) {
+	    switch (config_data[idx].cnf_typ) {
+		case CT_BOOL:
+		  *(bool *)config_data[idx].cnf_var = (atoi(param) == 1);
+		  break;
+		case CT_STRING:
+		  strncpy((char *)config_data[idx].cnf_var, param, config_data[idx].maxlen);
+		  break;
+		default: assert(0, "Unknown config data type.");
+	    }
+	    break;
+	}
     }
   }
 }
@@ -326,14 +346,19 @@ void save_config(void) {
   FILE * out = create_local_config_file(".toppler.rc");
 
   if (out) {
-    fprintf(out, "fullscreen: %i\n", (fullscreen)?(1):(0));
-    fprintf(out, "nosound: %i\n", (nosound)?(1):(0));
-    fprintf(out, "editor_towername: %s\n", editor_towername);
-    fprintf(out, "use_alpha_sprites: %i\n", (use_alpha_sprites)?(1):(0));
-    fprintf(out, "use_alpha_font: %i\n", (use_alpha_font)?(1):(0));
-    fprintf(out, "use_alpha_layers: %i\n", (use_alpha_layers)?(1):(0));
-    fprintf(out, "use_alpha_darkening: %i\n", (use_alpha_darkening)?(1):(0));
-
+    for (int idx = 0; idx < SIZE(config_data); idx++) {
+	fprintf(out, "%s: ", config_data[idx].cnf_name);
+	switch (config_data[idx].cnf_typ) {
+	    case CT_BOOL: 
+	      fprintf(out, "%i", (*(bool *)config_data[idx].cnf_var)?(1):(0));
+	      break;
+	    case CT_STRING:
+	      fprintf(out, "%s", (char *)(config_data[idx].cnf_var));
+	      break;
+	    default: assert(0, "Unknown config data type.");
+	}
+	fprintf(out, "\n");
+    }
     fclose(out);
   }
 }

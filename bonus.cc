@@ -68,6 +68,8 @@ bonus_background_proc(void)
 
   }
   scr_draw_bonus2(callback_x, towerpos);
+    
+  scr_darkenscreen();
 }
 
 void bonus_wait_proc(void) {
@@ -83,7 +85,7 @@ escape(Sint32 time, Uint32 x)
 
   set_men_bgproc(bonus_background_proc);
 
-  if (men_yn("Really quit", false))
+  if (men_game())
     return true;
 
   return false;

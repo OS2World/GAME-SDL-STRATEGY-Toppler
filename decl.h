@@ -189,8 +189,8 @@ extern bool use_alpha_darkening;
 void load_config(void);
 void save_config(void);
 
-/* for errorcheking */
-#define assert(cond,text) if (!(cond)) { printf("asserion failure: "text"\n"); exit(1); }
+/* for errorchecking */
+#define assert(cond,text) if (!(cond)) { printf("Assertion failure: "text"\n"); exit(1); }
 
 #define CONFIGDIR "/etc"
 #define HISCOREDIR "/var/games/toppler"

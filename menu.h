@@ -84,4 +84,7 @@ void free_menu_system(struct _menusystem *ms);
    needs to be drawn in men_yn(), and men_info() */
 void set_men_bgproc(menubg_callback_proc proc);
 
+/* menu shown to user when he presses esc during play */
+bool men_game(void);
+
 #endif

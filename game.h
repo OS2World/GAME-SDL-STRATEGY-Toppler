@@ -43,8 +43,12 @@ void gam_loadtower(Uint8 tow);
 /* leave toppler at the base of the tower */
 void gam_arrival(void);
 
-/* plays the towergame */
-gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime);
+/* plays the towergame. 
+   if demo is > 0, then demo == demo length, shows demo, 
+                   getting keys from demobuf. 
+   if demo < 0, then records a demo, and returns the demo length
+                   in demo, and the allocated buffer in demobuf. */
+gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *demobuf);
 
 /* pick up the toppler at the base of the tower */
 void gam_pick_up(Uint8 anglepos, Uint16 time);

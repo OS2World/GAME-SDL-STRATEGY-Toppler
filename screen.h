@@ -90,7 +90,7 @@ void scr_swap(void);
 void scr_blit(SDL_Surface *s, int x, int y);
 
 /* draws anything neccessary for the towergame */
-void scr_drawall(long vert, long angle, long time, bool svisible, int subshape, int substart);
+void scr_drawall(long vert, long angle, long time, bool svisible, int subshape, int substart, int flags);
 
 /* draws everything for the edit mode */
 void scr_drawedit(long vert, long angle, bool showtime);

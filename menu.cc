@@ -30,6 +30,7 @@
 #include "sound.h"
 #include "leveledit.h"
 #include "stars.h"
+#include "robots.h"
 
 #include <SDL_endian.h>
 
@@ -66,7 +67,10 @@ struct _menusystem {
    char title[MENUTITLELEN];     /* title of the menu */
    int numoptions;               /* # of options in this menu */
    struct _menuoption *moption;  /* the options */
-   menuopt_callback_proc mproc;  
+   menuopt_callback_proc mproc;
+   menuopt_callback_proc timeproc;
+   long curr_mtime;              /* current time this menu has been running */
+   long mtime;                   /* time when to call timeproc */
    int hilited;                  /* # of the option that is hilited */
    int mstate;                   /* menu state, free to use by callback procs */
    int maxoptlen;                /* longest option name length, in pixels.
@@ -122,6 +126,10 @@ static char *
 men_yn_background_proc(void *ms)
 {
   if (menu_background_proc) (*menu_background_proc) ();
+  else {
+      scr_blit(spr_spritedata(menupicture), 0, 0);
+      scr_blit(spr_spritedata(titledata), (SCREENWID - spr_spritedata(titledata)->w) / 2, 20);
+  }
   return "";
 }
 
@@ -144,10 +152,11 @@ new_menu_system(char *title, menuopt_callback_proc pr, int molen, int ystart)
     ms->exitmenu = false;
     ms->wraparound = false;
     ms->activatedoption = false;
-    ms->hilited = 0;
+    ms->curr_mtime = ms->hilited = 0;
     ms->ystart = ystart;
     ms->key = SDLK_UNKNOWN;
-    ms->yhilitpos = ms->opt_steal_control = -1;
+    ms->mtime = ms->yhilitpos = ms->opt_steal_control = -1;
+    ms->timeproc = NULL;
   }
 
   return ms;
@@ -198,6 +207,16 @@ add_menu_option(struct _menusystem *ms,
   return ms;
 }
 
+struct _menusystem *
+set_menu_system_timeproc(struct _menusystem *ms, long t, menuopt_callback_proc pr)
+{
+    if (!ms) return ms;
+    
+    ms->timeproc = pr;
+    ms->mtime = t;
+    
+    return ms;
+}
 
 void 
 free_menu_system(struct _menusystem *ms)
@@ -234,7 +253,10 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
       ms->hilited = ms->numoptions - 1;
   }
 
-  if (ms->mproc) (*ms->mproc) (ms);
+  if (ms->mproc) {
+      (*ms->mproc) (ms);
+      menu_background_proc = NULL;
+  } else men_yn_background_proc(ms);
 
   if (has_title) scr_writetext_center(ms->ystart, ms->title);
   titlehei = has_title ? 2 : 0;
@@ -254,14 +276,21 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
     maxx = (SCREENWID + scrlen) / 2;
     maxy = realy + FONTHEI;
     if (len) {
-      if (dx >= minx && dx <= maxx && dy >= miny && dy <= maxy)
-        newhilite = y + offs;
+      if (dx >= minx && dx <= maxx && dy >= miny && dy <= maxy) {
+	  newhilite = y + offs;
+	  ms->curr_mtime = 0;
+      }
       if (y + offs == ms->hilited) {
         if (ms->yhilitpos == -1) {
           ms->yhilitpos = miny;
         } else {
-          if (ms->yhilitpos < miny) ms->yhilitpos += (miny - ms->yhilitpos + 3) / 4;
-          else if (ms->yhilitpos > miny) ms->yhilitpos -= (ms->yhilitpos - miny + 3) / 4;
+          if (ms->yhilitpos < miny) {
+	      ms->yhilitpos += ((miny - ms->yhilitpos + 3) / 4)+1;
+	      if (ms->yhilitpos > miny) ms->yhilitpos = miny;
+	  } else if (ms->yhilitpos > miny) {
+	      ms->yhilitpos -= ((ms->yhilitpos - miny + 3) / 4)+1;
+	      if (ms->yhilitpos < miny) ms->yhilitpos = miny;
+	  }
         }
         scr_putbar((SCREENWID - ms->maxoptlen - 8) / 2, ms->yhilitpos - 3,
                    ms->maxoptlen + 8, FONTHEI + 3,
@@ -326,7 +355,12 @@ run_menu_system(struct _menusystem *ms)
       ms->exitmenu = true;
       break;
     }
-
+      
+    if ((ms->curr_mtime++ >= ms->mtime) && ms->timeproc) {
+	(void) (*ms->timeproc) (ms);
+	ms->curr_mtime = 0;
+    }
+      
     if ((ms->opt_steal_control >= 0) &&
         (ms->opt_steal_control < ms->numoptions) &&
         ms->moption[ms->opt_steal_control].oproc) {
@@ -334,22 +368,24 @@ run_menu_system(struct _menusystem *ms)
       ms->hilited = ms->opt_steal_control;
       stolen = true;
     } else {
-      if (!fullscreen && !key_mouse(&x, &y, &bttn) && bttn)
-        ms->key = key_conv2sdlkey(bttn, false);
-      else ms->key = key_sdlkey();
+	if (!fullscreen && !key_mouse(&x, &y, &bttn) && bttn)
+	  ms->key = key_conv2sdlkey(bttn, false);
+	else ms->key = key_sdlkey();
     }
 
     draw_menu_system(ms, x, y);
 
     if ((ms->key != SDLK_UNKNOWN) || stolen) {
 
-      if (!stolen)
+      if (!stolen) {
+	ms->curr_mtime = 0;
         for (int tmpz = 0; tmpz < ms->numoptions; tmpz++)
           if (ms->moption[tmpz].quickkey == ms->key) {
             ms->hilited = tmpz;
             ms->key = SDLK_UNKNOWN;
             break;
           }
+      }
 
       if ((((ms->moption[ms->hilited].oflags & MOFLAG_PASSKEYS)) || stolen) &&
           (ms->moption[ms->hilited].oproc) && ((ms->key != SDLK_UNKNOWN) || stolen)) {
@@ -418,7 +454,7 @@ static char *debug_menu_extrascore(void *ms) {
 }
 
 void run_debug_menu(void) {
-  struct _menusystem *ms = new_menu_system("DEBUG MENU", men_yn_background_proc, 0, SCREENHEI / 5);
+  struct _menusystem *ms = new_menu_system("DEBUG MENU", NULL, 0, SCREENHEI / 5);
 
   ms = add_menu_option(ms, NULL, debug_menu_extralife);
   ms = add_menu_option(ms, NULL, debug_menu_extrascore);
@@ -454,7 +490,7 @@ men_yn_option_no(void *tmp)
 }
 
 unsigned char men_yn(char *s, bool defchoice) {
-  struct _menusystem *ms = new_menu_system(s, men_yn_background_proc, 0, SCREENHEI / 5);
+  struct _menusystem *ms = new_menu_system(s, NULL, 0, SCREENHEI / 5);
 
   bool doquit = false;
 
@@ -492,7 +528,7 @@ void men_info(char *s, long timeout, int fire) {
 }
 
 static char *
-men_options_background_proc(void *ms)
+men_main_background_proc(void *ms)
 {
   if (ms) {
     scr_blit(spr_spritedata(menupicture), 0, 0);
@@ -510,7 +546,7 @@ static char *redefine_menu_up(void *tms) {
   const char *code[REDEFINEREC] = {"Up", "Down", "Left", "Right", "Fire"};
   char *keystr;
   static int blink, times_called;
-  const Uint16 key[REDEFINEREC] = {1, 2, 4, 8, 16};
+  const Uint16 key[REDEFINEREC] = {up_key, down_key, left_key, right_key, fire_key};
   buf[0] = '\0';
   if (ms) {
     switch (ms->mstate) {
@@ -548,7 +584,7 @@ static char *redefine_menu_up(void *tms) {
 
 static char *run_redefine_menu(void *prevmenu) {
   if (prevmenu) {
-    struct _menusystem *ms = new_menu_system("Redefine Keys", men_options_background_proc, 0, spr_spritedata(titledata)->h+30);
+    struct _menusystem *ms = new_menu_system("Redefine Keys", NULL, 0, spr_spritedata(titledata)->h+30);
 
     times_called = 0;
 
@@ -651,10 +687,10 @@ men_alpha_menu(void *ms)
 
 static char *
 men_options_graphic(void *mainmenu) {
-  static char s[20] = "Graphic";
+  static char s[20] = "Graphics";
   if (mainmenu) {
 
-    struct _menusystem *ms = new_menu_system(s, men_options_background_proc, 0, spr_spritedata(titledata)->h+30);
+    struct _menusystem *ms = new_menu_system(s, NULL, 0, spr_spritedata(titledata)->h+30);
 
     if (!ms) return NULL;
 
@@ -679,7 +715,7 @@ men_options(void *mainmenu) {
   static char s[20] = "Options";
   if (mainmenu) {
 
-    struct _menusystem *ms = new_menu_system(s, men_options_background_proc, 0, spr_spritedata(titledata)->h+30);
+    struct _menusystem *ms = new_menu_system(s, NULL, 0, spr_spritedata(titledata)->h+30);
 
     if (!ms) return NULL;
 
@@ -921,7 +957,9 @@ main_game_loop()
   unsigned char tower = 0;
   Uint8 anglepos;
   Uint16 resttime;
+  int demo = 0;
   int gameresult;
+  Uint16 *tmpbuf = NULL;
 
   lev_loadmission(currentmission);
 
@@ -934,7 +972,7 @@ main_game_loop()
       snd_watervolume(128);
       snd_playtgame();
       gam_arrival();
-      gameresult = gam_towergame(anglepos, resttime);
+      gameresult = gam_towergame(anglepos, resttime, demo, &tmpbuf);
       snd_stoptgame();
     } while ((gameresult == GAME_DIED) && pts_lifesleft());
 
@@ -1019,16 +1057,68 @@ men_main_leveleditor_proc(void *ms)
   return "Level Editor";
 }
 
+static char *
+men_main_timer_proc(void *ms)
+{
+    if (ms) {
+	Uint8 idx;
+	Uint8 num_demos = 0;
+	Uint8 demos[256];
+	Uint16 miss = rand() % lev_missionnumber();
+	Uint16 tmiss;
+	Uint8 num_towers;
+
+	int demolen;
+	Uint16 *demobuf;
+	Uint8 anglepos;
+	Uint16 resttime;
+
+	for (int tmpm = 0; (tmpm < lev_missionnumber()) && (num_demos == 0); tmpm++) {
+	    tmiss = (miss + tmpm) % lev_missionnumber();
+	    lev_loadmission(tmiss);
+
+	    num_towers = lev_towercount();
+
+	    for (idx = 0; (idx < num_towers) && (num_demos < 256); idx++) {
+		lev_selecttower(idx);
+		lev_get_towerdemo(demolen, demobuf);
+		if (demolen) demos[num_demos++] = idx;
+	    }
+	}
+
+	if (num_demos < 1) return NULL;
+
+	lev_selecttower(demos[rand() % num_demos]);
+	lev_get_towerdemo(demolen, demobuf);
+
+	snd_stoptitle();
+	gam_newgame();
+	snd_wateron();
+	scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
+	snd_watervolume(128);
+	snd_playtgame();
+	rob_initialize();
+	(void)gam_towergame(anglepos, resttime, demolen, &demobuf);
+	snd_stoptgame();
+	snd_wateroff();
+
+	snd_playtitle();
+    }
+    return NULL;
+}
+
 void men_main() {
   struct _menusystem *ms;
 
-  ms = new_menu_system(NULL, men_options_background_proc, 0, spr_spritedata(titledata)->h + 30);
+  ms = new_menu_system(NULL, men_main_background_proc, 0, spr_spritedata(titledata)->h + 30);
 
   if (!ms) return;
 
   snd_playtitle();
 
-  ms = add_menu_option(ms, NULL, men_main_startgame_proc, SDLK_UNKNOWN, MOFLAG_PASSKEYS);
+  ms = set_menu_system_timeproc(ms, 700, men_main_timer_proc);
+    
+  ms = add_menu_option(ms, NULL, men_main_startgame_proc, SDLK_s, MOFLAG_PASSKEYS);
   ms = add_menu_option(ms, NULL, NULL);
   ms = add_menu_option(ms, NULL, men_main_highscore_proc, SDLK_h);
   ms = add_menu_option(ms, NULL, men_options, SDLK_o);
@@ -1046,6 +1136,52 @@ void men_main() {
   free_menu_system(ms);
 
   snd_stoptitle();
+}
+
+static char *
+men_game_return2game(void *ms)
+{
+  if (ms) {
+      struct _menusystem *tms = (struct _menusystem *)ms;
+      tms->exitmenu = true;
+      tms->mstate = 0;
+  }
+  return "Return to Game";
+}
+
+static char *
+men_game_leavegame(void *ms)
+{
+  if (ms) {
+      struct _menusystem *tms = (struct _menusystem *)ms;
+      tms->exitmenu = true;
+      tms->mstate = 1;
+  }
+  return "Quit Game";
+}
+
+bool men_game() {
+  struct _menusystem *ms;
+  bool do_quit;
+    
+  ms = new_menu_system(NULL, NULL, 0, spr_spritedata(titledata)->h + 30);
+
+  if (!ms) return 0;
+
+  ms = add_menu_option(ms, NULL, men_game_return2game);
+  ms = add_menu_option(ms, NULL, men_options, SDLK_o);
+  ms = add_menu_option(ms, NULL, NULL);
+  ms = add_menu_option(ms, NULL, men_game_leavegame);
+    
+  ms->wraparound = true;
+
+  ms = run_menu_system(ms);
+
+  do_quit = (bool)ms->mstate;
+
+  free_menu_system(ms);
+
+  return do_quit;
 }
 
 static int input_box_cursor_state = 0;

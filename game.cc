@@ -32,6 +32,7 @@
 #include "sound.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 typedef enum {
   STATE_PLAYING,
@@ -78,7 +79,8 @@ void gam_arrival(void) {
   key_readkey();
 
   do {
-    scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart);
+    scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart, 0);
+    scr_darkenscreen();
        scr_writetext_center((SCREENHEI / 5), "You are entering the");
     if (strlen(lev_towername()))
        scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, lev_towername());
@@ -166,7 +168,7 @@ void gam_pick_up(Uint8 anglepos, Uint16 time) {
   key_readkey();
 
   do {
-    scr_drawall(8, (4 - anglepos) & 0x7f, time, svisible, subshape, substart);
+    scr_drawall(8, (4 - anglepos) & 0x7f, time, svisible, subshape, substart, 0);
     scr_swap();
 
     switch (b) {
@@ -273,7 +275,7 @@ static int bg_time = 0;
 /* men_yn() background drawing callback proc */
 static void game_background_proc(void) {
   scr_drawall(towerpos(top_verticalpos(), bg_tower_pos,
-                       top_anglepos(), bg_tower_angle), (4 - top_anglepos()) & 0x7f, bg_time, false, 0, 0);
+                       top_anglepos(), bg_tower_angle), (4 - top_anglepos()) & 0x7f, bg_time, false, 0, 0, 0);
 
   scr_darkenscreen();
 }
@@ -291,7 +293,7 @@ static void writebonus(int &tower_position, int tower_anglepos, int zeit, int te
   char s[30];
 
   scr_drawall(towerpos(top_verticalpos(), tower_position,
-                       top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
+                       top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, 0);
 
   scr_darkenscreen();
 
@@ -382,32 +384,32 @@ static void akt_time(int &time, int &timecount, gam_states &state) {
   }
 }
 
-static void get_keys(Sint8 &left_right, Sint8 &up_down, bool &space) {
+static void get_keys(Sint8 &left_right, Sint8 &up_down, bool &space, Uint16 kstat) {
 #ifdef GAME_DEBUG_KEYS
-  if ((key_keystat() & left_key) && (key_keystat() & right_key) && 
-      (key_keystat() & up_key) && (key_keystat() & down_key)) {
+  if ((kstat & left_key) && (kstat & right_key) &&
+      (kstat & up_key) &&   (kstat & down_key)) {
       run_debug_menu();
   }
 #endif /* GAME_DEBUG_KEYS */
-  if (key_keystat() & left_key)
+  if (kstat & left_key)
     left_right = -1;
   else {
-    if (key_keystat() & right_key)
+    if (kstat & right_key)
       left_right = 1;
     else
       left_right = 0;
   }
 
-  if (key_keystat() & up_key)
+  if (kstat & up_key)
     up_down = 1;
   else {
-    if (key_keystat() & down_key)
+    if (kstat & down_key)
       up_down = -1;
     else
       up_down = 0;
   }
 
-  if (key_keypressed(fire_key))
+  if (kstat & fire_key)
     space = true;
   else
     space = false;
@@ -417,7 +419,7 @@ static void escape(gam_states &state, int &tower_position, int &tower_anglepos, 
 
   snd_wateroff();
 
-  if (men_yn("Really quit", false))
+  if (men_game())
     state = STATE_ABORTED;
 
   snd_wateron();
@@ -440,7 +442,7 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
            top_anglepos(), tower_anglepos);
 }
 
-gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
+gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *demobuf) {
 
   static Uint8 door3[6] = {
     0x17, 0x18, 0x18, 0x19, 0x19, 0xb
@@ -450,7 +452,13 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
   bool space;
 
   gam_states state = STATE_PLAYING;
-
+    
+  int demolen = 0, demo_alloc = 0;
+  Uint16 demokeys = 0;
+  Uint16 *dbuf = *(Uint16 **)demobuf;
+    
+  int drawflags = 0;
+    
   /* the maximal reached height for this tower */
   int reached_height;
 
@@ -464,6 +472,11 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
   /* time left for the player to reach the tower */
   int time = lev_towertime();
 
+  if (demo < 0) drawflags = 1;
+  else if (demo > 0) drawflags = 2;
+
+  assert(!(demo && !demobuf), "Trying to play or record a null demo.");
+    
   set_men_bgproc(game_background_proc);
 
   top_init();
@@ -476,24 +489,51 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
 
   do {
 
-    get_keys(left_right, up_down, space);
-
     bg_tower_pos = tower_position;
     bg_tower_angle = tower_angle;
     bg_time = time;
-
-    if (key_keypressed(quit_action)) {
+      
+    if ((demo > 0) && (demolen < demo) && dbuf) {
+	demokeys = dbuf[demolen++];
+	get_keys(left_right, up_down, space, demokeys);
+	if ((demolen >= demo) || key_keystat()) state = STATE_ABORTED;
+    } else {
+	demokeys = key_keystat();
+	get_keys(left_right, up_down, space, demokeys);
+    }
+      
+    if (demo < 0) {
+	if ((demolen >= demo_alloc) || (dbuf == NULL)) {
+	    demo_alloc += 200;
+	    Uint16 *tmp = (Uint16 *)malloc((demo_alloc)*sizeof(Uint16));
+	    if (demolen && (dbuf)) {
+		(void)memcpy(tmp, dbuf, demolen*sizeof(Uint16));
+		free(dbuf);
+	    }
+	    dbuf = tmp;
+	    *(Uint16 **)demobuf = tmp;
+	}
+	dbuf[demolen++] = demokeys;
+    }
+      
+    if (key_keypressed(quit_action) || ((demo >= 0) && (demolen > demo))) {
       state = STATE_ABORTED;
       break;
     }
 
-    if (key_keypressed(break_key))
+    if (key_keypressed(break_key)) {
+      if (demo) state = STATE_ABORTED;
+      else
       escape(state, tower_position, tower_angle, time);
+    }
 
-    if (key_keypressed(pause_key))
+    if (key_keypressed(pause_key)) {
+      if (demo) state = STATE_ABORTED;
+      else
       pause(tower_position, tower_angle, time);
+    }
 
-    key_readkey();
+    if (!demo) key_readkey();
 
     ele_update();
     snb_movesnowball();
@@ -508,13 +548,13 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
     akt_time(time, timecount, state);
     new_height(top_verticalpos(), reached_height);
     scr_drawall(towerpos(top_verticalpos(), tower_position,
-                         top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
+                         top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
     scr_swap();
     snd_play();
     dcl_wait();
   } while (!top_ended() && (state == STATE_PLAYING));
 
-  if (top_targetreached()) {
+  if (top_targetreached() && !demo) {
     bonus(tower_position, tower_angle, time);
     rob_disappearall();
 
@@ -523,7 +563,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
 
       rob_aktualize();
       scr_drawall(towerpos(top_verticalpos(), tower_position,
-                           top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
+                           top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
       scr_swap();
       dcl_wait();
     }
@@ -538,7 +578,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
 
       rob_aktualize();
       scr_drawall(towerpos(top_verticalpos(), tower_position,
-                           top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
+                           top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
       scr_swap();
       snd_play();
       dcl_wait();
@@ -550,6 +590,11 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
   anglepos = top_anglepos();
   resttime = time;
   key_readkey();
+
+  if (demo < 0) {
+      demo = demolen;
+  }
+  if (demo) state = STATE_ABORTED;
 
   switch (state) {
 
