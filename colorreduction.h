@@ -1,5 +1,6 @@
 typedef struct {
   Uint16 rmin, rmax, gmin, gmax, bmin, bmax;
+  Uint32 count;
 } boundary;
 
 Uint32 color_cube[256][256][256];
@@ -7,7 +8,7 @@ boundary boundaries[256];
 
 Uint8 colors[3*256];
 
-void count(SDL_Surface *s) {
+Uint32 count(SDL_Surface *s) {
 
   Uint32 x, y;
 
@@ -24,6 +25,8 @@ void count(SDL_Surface *s) {
       color_cube[r][g][b]++;
     }
   }
+
+  return s->h * s->w;
 }
 
 void minimize(Uint16 num) {
@@ -31,8 +34,6 @@ void minimize(Uint16 num) {
   Uint16 r, g, b;
 
   int found;
-
-
 
   if (boundaries[num].rmin< boundaries[num].rmax) {
 
@@ -161,6 +162,7 @@ Uint16 max (Uint16 a, Uint16 b, Uint16 c) {
 }
 
 Uint16 findbiggest(Uint16 c) {
+  /*
   int n;
   int largest_block = 0;
   int largest_dim = max(boundaries[0].rmax-boundaries[0].rmin,
@@ -175,9 +177,24 @@ Uint16 findbiggest(Uint16 c) {
       largest_block = n;
       largest_dim = ld;
     }
+    }
+    */
+
+  int n;
+  int largest_block = -1;
+
+  for (n = 0; n < c; n++) {
+    if ((boundaries[n].rmax != boundaries[n].rmin) ||
+        (boundaries[n].gmax != boundaries[n].gmin) ||
+        (boundaries[n].bmax != boundaries[n].bmin))
+      if ((largest_block == -1) || (boundaries[n].count > boundaries[largest_block].count))
+         largest_block = n;
   }
 
-  return largest_block;
+  if (largest_block != -1)
+    return largest_block;
+  else
+    return 0;
 }
 
 void split(Uint16 block, Uint16 block2) {
@@ -244,6 +261,9 @@ void split(Uint16 block, Uint16 block2) {
     boundaries[block2].rmin = x2;
     boundaries[block].rmax = x1;
 
+    boundaries[block].count = c1;
+    boundaries[block2].count = c2;
+
     break;
   case 1:
     /* cut along g */
@@ -287,6 +307,10 @@ void split(Uint16 block, Uint16 block2) {
     boundaries[block2].gmax = boundaries[block].gmax;
     boundaries[block2].gmin = x2;
     boundaries[block].gmax = x1;
+
+    boundaries[block].count = c1;
+    boundaries[block2].count = c2;
+
 
     break;
   case 2:
@@ -332,6 +356,9 @@ void split(Uint16 block, Uint16 block2) {
     boundaries[block2].bmin = x2;
     boundaries[block].bmax = x1;
 
+    boundaries[block].count = c1;
+    boundaries[block2].count = c2;
+
     break;
   }
 
@@ -340,13 +367,14 @@ void split(Uint16 block, Uint16 block2) {
 }
 
 
-void calc_colors(Uint16 num_colors) {
+void calc_colors(Uint16 num_colors, Uint32 cnt) {
 
   Uint16 n, c;
 
   n = 1;
   boundaries[0].rmin = boundaries[0].gmin = boundaries[0].bmin = 0;
   boundaries[0].rmax = boundaries[0].gmax = boundaries[0].bmax = 255;
+  boundaries[0].count = cnt;
 
   minimize(0);
 
@@ -394,9 +422,9 @@ void reduce(SDL_Surface *in, SDL_Surface *out, Uint16 num_colors) {
 }
 
 SDL_Surface * colorreduction(SDL_Surface *in_image, Uint16 colors_num) {
-  count(in_image);
+  Uint32 c = count(in_image);
 
-  calc_colors(colors_num);
+  calc_colors(colors_num, c);
   printf("\n");
 
   SDL_Surface *out_image = SDL_CreateRGBSurface(0, in_image->w, in_image->h, 8, 0, 0, 0, 0);

@@ -167,8 +167,8 @@ void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth
           double stonepos = pixelpos;
 
           /* at the middle layer it's shifted by half a stone width */
-          if (layer == 1)
-            stonepos += brick->w/2;
+/*          if (layer == 1)
+            stonepos += brick->w/2;*/
 
           while (stonepos >= brick->w)
             stonepos -= brick->w;
@@ -196,8 +196,8 @@ void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth
 
           double stonepos = pixelpos;
   
-          if (layer == 1)
-            stonepos += brick->w/2;
+/*          if (layer == 1)
+            stonepos += brick->w/2;*/
   
           while (stonepos >= brick->w)
             stonepos -= brick->w;
@@ -381,7 +381,7 @@ void writebrickpixel(Uint16 x, Uint16 y, FILE *out) {
 void createzinne(unsigned short ys, double w)
 {
   double e, n;
-  long t, z, x1, x2, xl;
+  long t, x1, x2, xl;
   long xmin = zinnenrad, xmax = zinnenrad;
 
 
