@@ -42,8 +42,8 @@ static void printhelp(void) {
 static bool parse_arguments(int argc, char *argv[]) {
   for (int t = 1; t < argc; t++) {
     if (!strncmp(argv[t], "-f", 2)) config.fullscreen(true);
-    else if (!strcmp(argv[t], "-s", 2)) config.nosound(true);
-    else if (strstr(argv[t], "-d", 2) == argv[t]) {
+    else if (!strncmp(argv[t], "-s", 2)) config.nosound(true);
+    else if (strstr(argv[t], "-d") == argv[t]) {
       char parm = argv[t][2];
       if (parm >= '0' && parm <= '9') {
         printf("Debug level is now %c.\n", parm);
