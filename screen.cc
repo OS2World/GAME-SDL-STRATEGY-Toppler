@@ -331,9 +331,13 @@ static void loadgraphics(void) {
   starst = scr_loadsprites_new(16, SPR_STARWID, SPR_STARHEI, true, pal);
   sts_init(starst + 9, NUM_STARS);
 
+  read_palette(pal);
+  fishst = scr_loadsprites_new(32*2, SPR_FISHWID, SPR_FISHHEI, true, pal);
+
+  read_palette(pal);
+  subst = scr_loadsprites_new(31, SPR_SUBMWID, SPR_SUBMHEI, true, pal);
+
   arc_read(pal, 3*subcnt - 3, &res);
-  fishst = scr_loadsprites(16, SPR_FISHWID, SPR_FISHHEI, 6, true, pal);
-  subst = scr_loadsprites(8, SPR_SUBMWID, SPR_SUBMHEI, 6, true, pal);
   torb = scr_loadsprites(1, SPR_TORPWID, SPR_TORPHEI, 6, true, pal);
 
   arc_closefile();
@@ -1102,8 +1106,8 @@ static void draw_data(int time)
 
   *s = '\0';
   if (pts_lifes() < 4)
-      for (t = 1; t <= pts_lifes(); t++)
-	sprintf(s + strlen(s), "%c", fonttoppler);
+    for (t = 1; t <= pts_lifes(); t++)
+      sprintf(s + strlen(s), "%c", fonttoppler);
   else sprintf(s, "%ix%c", pts_lifes(), fonttoppler);
   scr_writetext(SCREENWID - scr_textlength(s) - 5, 5, s);
 }
@@ -1143,7 +1147,7 @@ void scr_drawall(long vert,
   if (svisible) {
     /* TODO: use SPR_SUBMxxx */
     scr_blit(spr_spritedata(subst + subshape),
-             (SCREENWID / 2) - 45 + 16,
+             (SCREENWID / 2) - 70,
              (SCREENHEI / 2) + 12 - substart + 16);
 
   }
@@ -1224,15 +1228,15 @@ static void put_scrollerlayer(long horiz, int layer) {
   horiz %= scroll_layers[layer].width;
   scr_blit(spr_spritedata(scroll_layers[layer].image), -horiz, 0);
   if (horiz + SCREENWID > scroll_layers[layer].width)
-    scr_blit(spr_spritedata(scroll_layers[layer].image), 
-	     scroll_layers[layer].width - horiz, 0);
+    scr_blit(spr_spritedata(scroll_layers[layer].image),
+             scroll_layers[layer].width - horiz, 0);
 }
 
 void scr_draw_bonus1(long horiz, long towerpos) {
-    int l;
-    
-    for (l = 0; (l < num_scrolllayers) && (l < sl_tower_depth); l++)
-	put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
+  int l;
+
+  for (l = 0; (l < num_scrolllayers) && (l < sl_tower_depth); l++)
+    put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
 
   puttower(0, SCREENHEI/2, SCREENHEI, sl_tower_num*towerpos/sl_tower_den);
 }

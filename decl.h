@@ -99,12 +99,12 @@
 #define SPR_CROSSHEI 32
 
 /* size of the bonus game fish */
-#define SPR_FISHWID  20
-#define SPR_FISHHEI  20
+#define SPR_FISHWID  40
+#define SPR_FISHHEI  40
 
 /* submarine sprite size */
-#define SPR_SUBMWID 50 // 60
-#define SPR_SUBMHEI 39 // 17
+#define SPR_SUBMWID 120 // 60
+#define SPR_SUBMHEI 80 // 17
 
 /* submarine ammunition, torpedo */
 #define SPR_TORPWID 16

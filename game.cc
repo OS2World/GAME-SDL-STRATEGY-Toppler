@@ -102,8 +102,8 @@ void gam_arrival(void) {
       break;
 
     case 0:
-      substart++;
-      if (substart == 48) {
+      substart += 2;
+      if (substart == 70) {
         b = 1;
         top_show(0, toppler, 4);
         delay = 0;
@@ -112,8 +112,8 @@ void gam_arrival(void) {
 
     case 1:
       delay++;
-      subshape = 4 + delay / 2;
-      if (delay == 6)
+      subshape = 9 + delay;
+      if (delay == 21)
         b = 2;
       break;
 
@@ -126,14 +126,14 @@ void gam_arrival(void) {
 
     case 3:
       subshape--;
-      if (subshape == 0) {
+      if (subshape == 9) {
         b = 4;
         snd_sub_down();
       }
       break;
 
     case 4:
-      substart--;
+      substart -= 2;
       if (substart == 0) {
         b = 5;
         svisible = false;
@@ -179,8 +179,8 @@ void gam_pick_up(Uint8 anglepos, Uint16 time) {
       break;
 
     case 1:
-      substart++;
-      if (substart == 48) {
+      substart += 2;
+      if (substart == 70) {
         delay = 0;
         b = 2;
       }
@@ -188,8 +188,8 @@ void gam_pick_up(Uint8 anglepos, Uint16 time) {
 
     case 2:
       delay++;
-      subshape = 4 + delay / 2;
-      if (delay == 6)
+      subshape = 9 + delay;
+      if (delay == 21)
         b = 3;
       break;
 
@@ -202,14 +202,14 @@ void gam_pick_up(Uint8 anglepos, Uint16 time) {
 
     case 4:
       subshape--;
-      if (subshape == 0) {
+      if (subshape == 9) {
         b = 5;
         top_hide();
       }
       break;
 
     case 5:
-      substart--;
+      substart -= 2;
       if (substart == 0) {
         b = 6;
         svisible = false;

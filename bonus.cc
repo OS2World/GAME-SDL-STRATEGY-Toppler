@@ -60,7 +60,7 @@ bonus_background_proc(void)
 
   if (torpedox != -1)
     scr_draw_torpedo(torpedoy, torpedox);
-  scr_draw_submarine(subposy - 20, subposx, callback_time & 3);
+  scr_draw_submarine(subposy - 20, subposx, callback_time % 9);
 
   for (Uint8 b = 0; b <= fishcnt; b++) {
     if (fish[b].x >= -SPR_FISHWID)
@@ -128,11 +128,11 @@ bool bns_game(void) {
       if (torpedox > (SCREENWID+SPR_TORPWID))
         torpedox = -1;
       for (b = 0; b <= fishcnt; b++) {
-        if (fish[b].x > 0 && fish[b].state >= 8) {
+        if (fish[b].x > 0 && fish[b].state >= 32) {
           if ((torpedox + SPR_TORPWID > fish[b].x) && (torpedox < fish[b].x + SPR_FISHWID) &&
               (torpedoy + SPR_TORPHEI > fish[b].y) && (torpedoy < fish[b].y + SPR_FISHHEI)) {
             torpedox = -1;
-            fish[b].state -= 8;
+            fish[b].state -= 32;
           }
         }
       }
@@ -192,12 +192,12 @@ bool bns_game(void) {
         if (fish[b].y > 300 || fish[b].y < 80)
           fish[b].ydir = -fish[b].ydir;
 
-        if (fish[b].state >= 8)
-          fish[b].state = ((fish[b].state + 1) & 7) + 8;
+        if (fish[b].state >= 32)
+          fish[b].state = ((fish[b].state + 1) & 31) + 32;
         else
-          fish[b].state = (fish[b].state + 1) & 7;
+          fish[b].state = (fish[b].state + 1) & 31;
 
-        if ((fish[b].state < 8) &&
+        if ((fish[b].state < 32) &&
             (fish[b].x > subposx - 40) &&
             (fish[b].x < subposx + 120) &&
             (fish[b].y > subposy - 40) &&
@@ -215,7 +215,7 @@ bool bns_game(void) {
         if (fish[b].x < -SPR_FISHWID) {
           fish[b].x = SCREENWID;
           fish[b].y = rand() / (RAND_MAX / 140) + 120;
-          fish[b].state = 8;
+          fish[b].state = 32;
           do {
             fish[b].ydir = rand() / (RAND_MAX / 10) - 5;
           } while (fish[b].ydir == 0);
@@ -236,7 +236,7 @@ bool bns_game(void) {
 
     if (torpedox != -1)
       scr_draw_torpedo(torpedoy, torpedox);
-    scr_draw_submarine(subposy - 20, subposx, time & 3);
+    scr_draw_submarine(subposy - 20, subposx, time % 9);
 
     for (b = 0; b <= fishcnt; b++) {
       if (fish[b].x >= -SPR_FISHWID)
