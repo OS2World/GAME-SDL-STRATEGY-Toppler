@@ -56,6 +56,10 @@ typedef enum {
     TB_ELEV_TOP,
     TB_ELEV_MIDDLE,
     TB_ELEV_BOTTOM,
+    TB_STICK_DOOR,
+    TB_STICK_DOOR_TARGET,
+    TB_ELEV_DOOR,
+    TB_ELEV_DOOR_TARGET,
     NUM_TBLOCKS
 } towerblock;
 

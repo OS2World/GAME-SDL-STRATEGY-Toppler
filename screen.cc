@@ -1041,6 +1041,8 @@ static void putcase(unsigned char w, long x, long h) {
   case TB_STICK:
   case TB_STICK_BOTTOM:
   case TB_STICK_MIDDLE:
+  case TB_STICK_DOOR:
+  case TB_STICK_DOOR_TARGET:
     scr_blit(restsprites.data(stick), x - (SPR_STICKWID / 2), h);
 
     break;
