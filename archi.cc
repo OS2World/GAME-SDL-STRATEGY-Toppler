@@ -61,7 +61,7 @@ archive::archive(FILE *stream) : f(stream) {
     }
 
     /* alloc memory for string and read it */
-    files[file].name = new char[strpos];
+    files[file].name = new char[strlen];
     for (int pos = 0; pos < strlen; pos++)
       fread(&files[file].name[pos], 1, 1, f);
 
