@@ -24,7 +24,8 @@
 /* handles one mission with 8 towers and the necessary manipulations
  on the towerlayout when the game is going on */
 
-/* lev_is_consistent() returns one of these */
+/* lev_is_consistent() returns one of these.
+   If you add to these, also add to problemstr[] in leveledit.cc */
 #define TPROB_NONE            0 /* no problems found */
 #define TPROB_NOSTARTSTEP     1 /* no starting step */
 #define TPROB_STARTBLOCKED    2 /* starting position is blocked */
@@ -35,7 +36,10 @@
 #define TPROB_BROKENDOOR      7 /* door is not whole */
 #define TPROB_NOEXIT          8 /* no exit doorway */
 #define TPROB_UNREACHABLEEXIT 9 /* exit is unreachable */
-#define NUM_TPROBLEMS        10
+#define TPROB_SHORTTIME      10 /* there's not enough time */
+#define TPROB_SHORTTOWER     11 /* the tower is too short */
+#define TPROB_NONAME         12 /* the tower has no name */
+#define NUM_TPROBLEMS        13
 
 /* tries to find all missions installed on this system
  * returns the number of missions found
@@ -49,6 +53,9 @@ void lev_loadmission(Uint16 num);
 
 /* free all the memory allocated by the mission and the mission list */
 void lev_done();
+
+/* clear the tower array */
+void lev_clear_tower(void);
 
 /* returns the number of towers that are in the current mission */
 Uint8 lev_towercount(void);
@@ -71,6 +78,7 @@ Uint8 lev_towerrows(void);
 
 /* the name of the tower */
 char *lev_towername(void);
+void lev_set_towername(char *str);
 
 /* the number of the actual tower */
 Uint8 lev_towernr(void);
@@ -158,8 +166,8 @@ void lev_rotaterow(bool clockwise);
 void lev_insertrow(int position);
 void lev_deleterow(int position);
 
-/* creates a simple tower consisting of one empty row */
-void lev_new(void);
+/* creates a simple tower consisting 'hei' rows */
+void lev_new(Uint8 hei);
 
 /* functions to change on field on the tower */
 void lev_putspace(int row, int col);

@@ -24,7 +24,7 @@
 /* return values of towergame */
 #define GAME_FINISHED 0
 #define GAME_DIED     1
-#define GAME_ABBORTED 2
+#define GAME_ABORTED 2
 
 
 /* load data */

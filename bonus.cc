@@ -70,10 +70,13 @@ bonus_background_proc(void)
   scr_draw_bonus2(callback_x, towerpos);
 }
 
+void bonus_wait_proc(void) {
+    (void)bonus_background_proc();
+}
+
 static bool 
 escape(Sint32 time, Uint32 x)
 {
-  key_wait_for_any();
 
   callback_time = time;
   callback_x = x;
@@ -122,7 +125,9 @@ bool bns_game(void) {
   key_readkey();
 
   do {
-    
+      
+    if (key_keypressed(quit_action)) break; /* kill */
+
     if (torpedox >= 0) {
       torpedox += 8;
       if (torpedox > (SCREENWID+SPR_TORPWID))

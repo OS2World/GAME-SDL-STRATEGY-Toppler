@@ -21,7 +21,21 @@
 
 #include "decl.h"
 
-/* the menu and the higscores */
+#include <SDL_types.h>
+#include <SDL_keyboard.h>
+
+/* the menu and the highscores */
+
+/* menu option callback function. gets called with the
+   menusystem as it's parameter, and should return a
+   string describing this option. If the parameter
+   is null, then this is called just to get the
+   string back. */
+typedef char *FDECL((*menuopt_callback_proc), (void *));
+
+/* menu background callback procedure. this should draw the
+   background screen for the menu. */
+typedef void FDECL((*menubg_callback_proc), (void));
 
 /* load graphics */
 void men_init(void);
@@ -37,7 +51,9 @@ void men_highscore(unsigned long pt);
 void men_done(void);
 
 /* input line */
-void men_input(char *s, int max_len, int xpos = -1, int ypos = (SCREENHEI  * 2) / 3);
+void men_input(char *s, int max_len, int xpos = -1,
+	       int ypos = (SCREENHEI  * 2) / 3,
+	       const char *allowed = NULL);
 
 /* asks a yes/no question; return 0 if "no",
    1 if "yes" */
@@ -51,10 +67,21 @@ void men_info(char *s, long timeout = -1, int fire = 0);
 void run_debug_menu(void);
 #endif
 
-typedef void FDECL((*callback_proc), (void));
+/* create a new menu */
+struct _menusystem *new_menu_system(char *title, menuopt_callback_proc pr, int molen = 0, int ystart = 25);
+
+/* add an option to the menu */
+struct _menusystem *add_menu_option(struct _menusystem *ms, char *name, menuopt_callback_proc pr,
+                SDLKey quickkey = SDLK_UNKNOWN, int flags = 0, int state = 0);
+
+/* run the menu */
+struct _menusystem *run_menu_system(struct _menusystem *ms);
+
+/* free the menu */
+void free_menu_system(struct _menusystem *ms);
 
 /* sets the function that gets called whenever the background
    needs to be drawn in men_yn(), and men_info() */
-void set_men_bgproc(callback_proc proc);
+void set_men_bgproc(menubg_callback_proc proc);
 
 #endif

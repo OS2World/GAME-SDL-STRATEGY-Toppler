@@ -204,8 +204,8 @@
 #define pal_bonusgame 2
 
 /* the two special characters in the font */
-#define fonttoppler     '#'
-#define fontpoint       '\\'
+#define fonttoppler     '\x01'
+#define fontpoint       '\x02'
 
 #define FDECL(f,p) f p
 #define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))

@@ -34,11 +34,9 @@
 
 static SDL_Surface *display;
 
-void
-scr_savedisplaybmp(char *fname)
-{
-   SDL_SaveBMP(display, fname);
-}
+static int color_ramp_radj = 3;
+static int color_ramp_gadj = 5;
+static int color_ramp_badj = 7;
 
 static Uint8 *slicedata, *battlementdata, *crossdata;
 
@@ -69,10 +67,12 @@ static struct {
   Uint8 *data[3];
 } doors[73];
 
+#define MAXCHARNUM 128
+
 static struct {
   unsigned short s;
   unsigned char width;
-} fontchars[91];  //32..122
+} fontchars[MAXCHARNUM];
 
 struct _scroll_layer {
     long width;
@@ -89,6 +89,29 @@ static struct _scroll_layer *scroll_layers;
 Uint8 towerpal[2*256];
 Uint8 crosspal[2*256];
 
+void color_ramp1(int *c, int *adj, int min, int max) {
+  *c = *c + *adj;
+  if (*c > max - abs(*adj)) {
+    *c = max;
+    *adj = -(*adj);
+  } else if (*c < min + abs(*adj)) {
+    *c = min;
+    *adj = -(*adj);
+  }
+}
+
+void scr_color_ramp(int *r, int *g, int *b) {
+  color_ramp1(r, &color_ramp_radj, 1, 255);
+  color_ramp1(g, &color_ramp_gadj, 1, 255);
+  color_ramp1(b, &color_ramp_badj, 1, 255);
+}
+
+void
+scr_savedisplaybmp(char *fname)
+{
+  SDL_SaveBMP(display, fname);
+}
+
 unsigned short scr_loadsprites(int num, int w, int h, int bits, bool sprite, const Uint8 *pal) {
   Uint16 erg = 0;
   Uint8 b;
@@ -97,7 +120,7 @@ unsigned short scr_loadsprites(int num, int w, int h, int bits, bool sprite, con
   for (int t = 0; t < num; t++) {
     z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite) ? SDL_SRCALPHA : 0,
                              2* w, 2* h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite) ? 0xFF000000 : 0);
-  
+
     for (int y = 0; y < h; y++)
       for (int x = 0; x < w; x++) {
         b = arc_getbits(bits);
@@ -427,9 +450,8 @@ static void loadfont(void) {
   unsigned char pal[256*3];
   Uint32 res;
   Uint8 c;
-  bool first;
-  int max_font_width = 0;
-  int min_font_width = 0;
+  int max_font_width = -1;
+  int min_font_width = 256;
   int fontheight;
 
   arc_assign(fontdat);
@@ -437,25 +459,18 @@ static void loadfont(void) {
   c = arc_getbits(8);
   arc_read(pal, c*3 + 3, &res);
 
-  first = true;
-
   fontheight = arc_getbits(8);
 
   while (!arc_eof()) {
     arc_read(&c, 1, &res);
 
-    if (!c) break;
+    if (!c || (c >= MAXCHARNUM)) break;
 
-    arc_read(&fontchars[c-32].width, 1, &res);
-    fontchars[c-32].s = scr_loadsprites_new(1, fontchars[c-32].width, fontheight, true, pal);
+    arc_read(&fontchars[c].width, 1, &res);
+    fontchars[c].s = scr_loadsprites_new(1, fontchars[c].width, fontheight, true, pal);
 
-    if (first) {
-      max_font_width = min_font_width = fontchars[c-32].width;
-      first = false;
-    } else {
-      if (fontchars[c-32].width < min_font_width) min_font_width = fontchars[c-32].width;
-      if (fontchars[c-32].width > max_font_width) max_font_width = fontchars[c-32].width;
-    }
+    if (fontchars[c].width < min_font_width) min_font_width = fontchars[c].width;
+    if (fontchars[c].width > max_font_width) max_font_width = fontchars[c].width;
   }
 
 //  assert(min_font_width == FONTMINWID, "fontmin wrong");
@@ -678,8 +693,8 @@ int scr_textlength(const char *s, int chars) {
     if (s[pos] == ' ') {
       len += FONTMINWID;
     } else {
-      c = s[pos] - 32;
-      if ((c < 91) && (fontchars[c].s != 0))
+      c = s[pos];
+      if (fontchars[c].s != 0)
         len += fontchars[c].width + 3;
     }
     pos++;
@@ -704,8 +719,8 @@ void scr_writetext(long x, long y, const char *s) {
       continue;
     }
 
-    c = s[t] - 32;
-    if ((c < 91) && (fontchars[c].s != 0)) {
+    c = s[t];
+    if (fontchars[c].s != 0) {
       scr_blit(spr_spritedata(fontchars[c].s), x, y);
       x += fontchars[c].width + 3;
     }
@@ -1212,7 +1227,8 @@ void scr_drawedit(long vpos, long apos, bool showtime) {
   putwater(vert);
 
   if (boxstate & 1) {
-    scr_putrect((SCREENWID / 2) - (32 / 2), (SCREENHEI / 2) - 16, 32, 16, boxstate * 0xf, boxstate * 0xf, boxstate * 0xf, 128);
+    scr_putrect((SCREENWID / 2) - (32 / 2), (SCREENHEI / 2) - 16, 32, 16, 
+		boxstate * 0xf, boxstate *0xf, boxstate *0xf, 128);
   }
 
   if (showtime) {

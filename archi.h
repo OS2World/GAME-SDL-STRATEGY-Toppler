@@ -21,13 +21,13 @@
 
 #include <SDL.h>
 
-/* this module contains all file acces functions necessary
+/* this module contains all file access functions necessary
  except the ones for the highscore file
 
  all the data is organized inside a small archive that contains a
  header defining the start and size of the different files */
 
-/* opens the archve, the given name is the filename of
+/* opens the archive, the given name is the filename of
  the archive, no checks are done */
 void arc_init(char *name);
 
@@ -50,7 +50,7 @@ bool arc_eof(void);
  the real number read */
 void arc_read(void *buf, Uint32 size, Uint32 *result);
 
-/* returns the specified number of bits on the lower bits of the retuned
+/* returns the specified number of bits on the lower bits of the returned
  value, dont use arc_read and arc_getbits on the same file */
 Uint16 arc_getbits(Uint8 anz);
 

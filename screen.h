@@ -23,6 +23,8 @@
 
 /* this modules handles nearly all the output onto the screen */
 
+void scr_color_ramp(int *r, int *g, int *b);
+
 void scr_savedisplaybmp(char *fname);
 
 /* initializes the module, loads the graphics, sets up the display */

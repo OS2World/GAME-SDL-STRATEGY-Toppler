@@ -1,5 +1,34 @@
 pasi
 
+- max. # of characters in the charset changed to 128.
+- changed fonttoppler and fontpoint to be in the
+  unprintable range. (frees '#' and '\')
+- lev_is_consistent() returns 3 new errors: not enough time,
+  tower is too short, and tower has no name.
+  (these have the lowest priority)
+- the new tower in level editor begins 4 rows taller
+  (minimum legal height), and the time starts somewhere
+  around 100 - 600.
+- fixed a bug where the game would hang, if the hero
+  reached the target door, and the door was on the 2nd
+  row from bottom of the tower.
+- toppler now dies gracefully, both with "kill" or
+  from window manager "close window" -button click.
+- you can now navigate the menus with mouse.
+  (and depending whether you have the 4th and 5th button
+  set as the wheel on wheelmouse, you'll be able to use that too)
+- in fullscreen mode, mouse is disabled and becomes hidden.
+- fixed a bug in level editor: not enough of the tower-array
+  was cleared when starting the editor.
+- very colorful highlight-bar, that moves in increments, instead
+  of warping from one option to another.
+- level editor: added a way to enter the tower time directly.
+- level editor: input lines now show a text of what they ask.
+- level editor: tweaked the colors in the tower color changer.
+- commented out scaling-option from options -menu.
+- you can now redefine keys, "redefine keys" option in
+  the options-menu.
+- fixed typos, mainly in comments.
 - toppler.dat can now contain any number of files,
 - changed archi.cc to have the same length file name
   in the fileindex as in the other diff. (8.3 filenames)
@@ -24,6 +53,12 @@ pasi
 - stars.cc: made the max. # of stars dynamic.
 
 my work
+
+- switched to double resolution graphics and replaced all the
+  graphics with new ones
+- alpha blended sprites
+
+Version 0.97.1
 
 - improved autoconf and automake (hopefully)
 - switch from palettized to true color mode -> remove palette module

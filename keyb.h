@@ -19,6 +19,8 @@
 #ifndef KEYB_H
 #define KEYB_H
 
+#include "decl.h"
+
 #include <SDL_types.h>
 #include <SDL_keyboard.h>
 
@@ -30,7 +32,15 @@
 #define fire_key        16
 #define break_key       32
 #define pause_key       64
-#define any_key         255
+#define quit_action     128  /* Not a key, but received on kill */
+#define mousebttn1      256
+#define mousebttn2      512
+#define mousebttn3      1024
+#define mousebttn4      2048
+#define mousebttn5      4096
+#define any_key         8191
+
+typedef void FDECL((*keyb_wait_proc), (void));
 
 
 void key_init(void);
@@ -40,24 +50,34 @@ void key_done(void);
 Uint8 key_keystat(void);
 
 /* true, if key is pressed */
-bool key_keypressed(Uint8 key);
+bool key_keypressed(Uint16 key);
 
 /* returns if a key has been pushed and released (typed) but only for the keys in
  the list */
-Uint8 key_readkey(void);
+Uint16 key_readkey(void);
 
 /* Returns the last pressed key, in SDLKey format */
 SDLKey key_sdlkey(void);
 
 /* Converts sdlkey to internal key representation, or returns no_key
    if SDLKey cannot be converted. */
-Uint8 key_sdlkey2conv(SDLKey k);
+Uint16 key_sdlkey2conv(SDLKey k, bool game);
+
+/* Converts internal key to sdlkey, or returns SDLK_UNKNOWN. */
+SDLKey key_conv2sdlkey(Uint16 k, bool game);
 
 /* returns a types character */
 char key_chartyped(void);
 
-/* waits for any keypress */
-void key_wait_for_any(void);
+/* waits until no key is pressed, calling bg while waiting */
+void key_wait_for_none(keyb_wait_proc bg);
+
+/* returns the current mouse coordinate and button pressed. */
+bool key_mouse(Uint16 *x, Uint16 *y, Uint16 *bttn);
+
+/* redefine a key, so that it returns code  */
+void key_redefine(Uint16 code, SDLKey key);
+
 
 #endif
 

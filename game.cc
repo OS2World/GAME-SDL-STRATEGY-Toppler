@@ -34,7 +34,7 @@
 #include <string.h>
 
 #define STATE_PLAYING 0
-#define STATE_ABBORTED 1
+#define STATE_ABORTED 1
 #define STATE_DIED 2
 #define STATE_TIMEOUT 3
 #define STATE_FINISHED 4
@@ -223,7 +223,7 @@ void gam_pick_up(Uint8 anglepos, Uint16 time) {
   svisible = false;
 }
 
-/* checks the new height reached and add points */
+/* checks the new height reached and adds points */
 static void new_height(int verticalpos, int &reached_height) {
 
   if (verticalpos <= reached_height)
@@ -238,7 +238,7 @@ static void new_height(int verticalpos, int &reached_height) {
 /* updates the position of the tower on screen
  with respect to the position of the animal
 
- there is a sligt lowpass in the vertical movement
+ there is a slight lowpass in the vertical movement
  of the tower */
 static unsigned short towerpos(int verticalpos, int &tower_position, int anglepos, int &tower_angle) {
   int i, j;
@@ -411,10 +411,8 @@ static void escape(Uint8 &state, int &tower_position, int &tower_anglepos, int t
 
   snd_wateroff();
 
-  key_wait_for_any();
-
   if (men_yn("Really quit", false))
-    state = STATE_ABBORTED;
+    state = STATE_ABORTED;
 
   snd_wateron();
   towerpos(top_verticalpos(), tower_position,
@@ -477,7 +475,12 @@ int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
     bg_tower_pos = tower_position;
     bg_tower_angle = tower_angle;
     bg_time = time;
-     
+    
+    if (key_keypressed(quit_action)) {
+	state = STATE_ABORTED;
+	break;
+    }
+
     if (key_keypressed(break_key))
       escape(state, tower_position, tower_angle, time);
 
@@ -519,7 +522,7 @@ int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
       dcl_wait();
     }
 
-    while (tower_position != 8) {
+    while (tower_position > 8) {
 
       if (top_verticalpos() > 8) {
         lev_removelayer(top_verticalpos() / 4 - 2);
@@ -549,12 +552,12 @@ int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
       pts_died();
       return GAME_DIED;
 
-    case STATE_ABBORTED:
-      return GAME_ABBORTED;
-  
+    case STATE_ABORTED:
+      return GAME_ABORTED;
+
     case STATE_FINISHED:
       return GAME_FINISHED;
-  
+
     case STATE_DIED:
       pts_died();
       return GAME_DIED;

@@ -399,7 +399,7 @@ void lev_selecttower(Uint8 number) {
   Uint16 bpos = 0;
 
   // clean tower
-  memset(&tower, 0, 2048L);
+  lev_clear_tower();
 
   // extract level data
   for (Uint8 row = 0; row < towerheight; row++) {
@@ -413,6 +413,10 @@ void lev_selecttower(Uint8 number) {
     }
   }
 
+}
+
+void lev_clear_tower(void) {
+    memset(&tower, 0, 2048L);
 }
 
 void lev_set_towercol(Uint8 r, Uint8 g, Uint8 b) {
@@ -443,6 +447,11 @@ Uint8 lev_towerrows(void) {
 
 char * lev_towername(void) {
   return towername;
+}
+
+void lev_set_towername(char *str) {
+    (void) strncpy(towername, str, TOWERNAMELEN);
+    towername[TOWERNAMELEN] = '\0';
 }
 
 Uint8 lev_towernr(void) {
@@ -612,8 +621,8 @@ bool lev_testfigure(long angle, long vert, long back,
 
 /* tests the underground of the animal at the given position returning
  0 if everything is all right
- 1 if there is no undergound below us (fall vertial)
- 2 if there is no undergound behind us fall backwards
+ 1 if there is no undergound below us (fall vertical)
+ 2 if there is no undergound behind us (fall backwards)
  3 if there is no underfound in front of us (fall forwards) */
 int lev_testuntergr(int verticalpos, int anglepos, bool look_left) {
   static unsigned char unter[32] = {
@@ -673,7 +682,7 @@ bool lev_loadtower(char *fname) {
     int inp = 0;
     int outp = 0;
     while(towername[inp]) {
-      if ((towername[inp] >= 32) && (towername[inp] < 128))
+      if ((towername[inp] >= 32) && (towername[inp] < 127))
         towername[outp++] = towername[inp];
       inp++;
     }
@@ -775,11 +784,9 @@ void lev_deleterow(int position) {
   }
 }
 
-void lev_new(void) {
-  towerheight = 1;
-
-  for (int i = 0; i < TOWERWID; i++)
-    tower[0][i] = 0;
+void lev_new(Uint8 hei) {
+  towerheight = hei;
+  lev_clear_tower();
 }
 
 void lev_putspace(int row, int col) {
@@ -879,6 +886,8 @@ int lev_is_consistent(int &row, int &col) {
       col = 0;
       return TPROB_STARTBLOCKED;
     }
+
+  if (towerheight < 4) return TPROB_SHORTTOWER;
 
   for (int r = 0; r < towerheight; r++)
     for (int c = 0; c < TOWERWID; c++) {
@@ -1020,6 +1029,13 @@ int lev_is_consistent(int &row, int &col) {
       /* check for exit, and that it's reachable */
       if (tower[r][c] == 0xc3) {
         int d = r - 1;
+	
+	if (d < 0) {
+	    row = 0;
+	    col = c;
+	    return TPROB_UNREACHABLEEXIT;
+	}
+	
         while ((d >= 0) && (tower[d][c] == 0xc3))  d--;
         if (d >= 0) {
           if ((tower[d][c] != 0x80) && (tower[d][c] != 0x81) &&
@@ -1055,6 +1071,11 @@ int lev_is_consistent(int &row, int &col) {
     }
 
   if (!has_exit) return TPROB_NOEXIT;
+
+  /* other, non-tower related problems */
+  if (lev_towertime() < 5) return TPROB_SHORTTIME;
+  if (!strlen(lev_towername())) return TPROB_NONAME;
+
   return TPROB_NONE;
 }
 

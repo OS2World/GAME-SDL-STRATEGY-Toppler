@@ -29,7 +29,7 @@
 
 static void printhelp(void) {
   printf("\n\tOptions:\n\n");
-  printf("  -f\tEnable fullscreen\n");
+  printf("  -f\tEnable fullscreen mode\n");
   printf("  -s\tSilence, disable all sound\n");
 }
 
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
   if (parse_arguments(argc, argv)) {
     SDL_InitSubSystem(SDL_INIT_VIDEO);
     SDL_WM_SetCaption("Nebulous", NULL);
-    int mouse = SDL_ShowCursor(0);
+    int mouse = SDL_ShowCursor(fullscreen ? 0 : 1);
     atexit(SDL_Quit);
     srand(time(0));
     startgame();
