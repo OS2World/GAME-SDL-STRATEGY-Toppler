@@ -211,43 +211,43 @@ sprites_pov/robot0_rgb_colors.png: sprites_pov/robot0/obj00.png assembler
 	./assembler hm sprites_pov/robot0_rgb sprites_pov/robot0/*.png
 
 sprites_pov/robot0/obj00.png: sprites_pov/robot0/obj.pov sprites_pov/robot0/obj.ini sprites_pov/environment.pov
-	( sh -c "cd sprites_pov/robot0 && $(POVRAY) obj.ini )
+	( cd sprites_pov/robot0 && $(POVRAY) obj.ini )
 
 sprites_pov/robot1_rgb_colors.png: sprites_pov/robot1/obj00.png assembler
 	./assembler hm sprites_pov/robot1_rgb sprites_pov/robot1/*.png
 
 sprites_pov/robot1/obj00.png: sprites_pov/robot1/obj.pov sprites_pov/robot1/obj.ini sprites_pov/environment.pov
-	( sh -c "cd sprites_pov/robot1 && $(POVRAY) obj.ini )
+	( cd sprites_pov/robot1 && $(POVRAY) obj.ini )
 
 sprites_pov/robot2_rgb_colors.png: sprites_pov/robot2/obj00.png assembler
 	./assembler hm sprites_pov/robot2_rgb sprites_pov/robot2/*.png
 
 sprites_pov/robot2/obj00.png: sprites_pov/robot2/obj.pov sprites_pov/robot2/obj.ini sprites_pov/environment.pov
-	( sh -c "cd sprites_pov/robot2 && $(POVRAY) obj.ini )
+	( cd sprites_pov/robot2 && $(POVRAY) obj.ini )
 
 sprites_pov/robot3_rgb_colors.png: sprites_pov/robot3/obj00.png assembler
 	./assembler hm sprites_pov/robot3_rgb sprites_pov/robot3/*.png
 
 sprites_pov/robot3/obj00.png: sprites_pov/robot3/obj.pov sprites_pov/robot3/obj.ini sprites_pov/environment.pov
-	( sh -c "cd sprites_pov/robot3 && $(POVRAY) obj.ini )
+	( cd sprites_pov/robot3 && $(POVRAY) obj.ini )
 
 sprites_pov/robot4_rgb_colors.png: sprites_pov/robot4/obj00.png assembler
 	./assembler hm sprites_pov/robot4_rgb sprites_pov/robot4/*.png
 
 sprites_pov/robot4/obj00.png: sprites_pov/robot4/obj.pov sprites_pov/robot4/obj.ini sprites_pov/environment.pov
-	( sh -c "cd sprites_pov/robot4 && $(POVRAY) obj.ini )
+	( cd sprites_pov/robot4 && $(POVRAY) obj.ini )
 
 sprites_pov/robot5_rgb_colors.png: sprites_pov/robot5/obj00.png assembler
 	./assembler hm sprites_pov/robot5_rgb sprites_pov/robot5/*.png
 
 sprites_pov/robot5/obj00.png: sprites_pov/robot5/obj.pov sprites_pov/robot5/obj.ini sprites_pov/environment.pov
-	( sh -c "cd sprites_pov/robot5 && $(POVRAY) obj.ini )
+	( cd sprites_pov/robot5 && $(POVRAY) obj.ini )
 
 sprites_pov/robot6_rgb_colors.png: sprites_pov/robot6/obj00.png assembler
 	./assembler hm sprites_pov/robot6_rgb sprites_pov/robot6/*.png
 
 sprites_pov/robot6/obj00.png: sprites_pov/robot6/obj.pov sprites_pov/robot6/obj.ini sprites_pov/environment.pov
-	( sh -c "cd sprites_pov/robot6 && $(POVRAY) obj.ini )
+	( cd sprites_pov/robot6 && $(POVRAY) obj.ini )
 
 sprites_pov/robot7_rgb_colors.png: sprites_pov/robot7/obj00.png assembler
 	./assembler hm sprites_pov/robot7_rgb sprites_pov/robot7/*.png
