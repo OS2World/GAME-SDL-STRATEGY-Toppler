@@ -316,7 +316,7 @@ static void loadfont(void) {
     SDL_SetColorKey(s, SDL_SRCCOLORKEY, 0);
     pal_setstdpalette(s);
     arc_read(&c, 1, &res);
-    assert(c,"font file defect");
+    if (!c) break;
     arc_read(p, 16*6, &res);
     decomp(p, s, fontcol, 16*12, true, true);
     fontchars[c-32] = s;

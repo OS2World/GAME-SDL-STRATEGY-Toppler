@@ -5,6 +5,9 @@
 #include "decl.h"
 
 #include <string.h>
+#include <dirent.h>
+#include <stdlib.h>
+
 
 /*
   bitmasks for the levelfield
@@ -56,7 +59,7 @@
 
 */
 
-static unsigned char mission[4096];
+static unsigned char * mission = NULL;
 static int towerheight;
 static unsigned char tower[256][16];
 static char towername[20];
@@ -72,75 +75,106 @@ typedef struct mission_node {
 
 mission_node * missions;
 
-
-/* the different colors for the eight towers */
-static struct {
-  unsigned char r, g, b;
-} tcolors[8] = {
-  { 255, 0, 0 },
-  { 150, 150, 255 },
-  { 170, 170, 170 },
-  { 163, 120, 88 },
-  { 0, 155, 155 },
-  { 255, 100, 100 },
-  { 150, 255, 150 },
-  { 255, 155, 0 }
-};
-
-static int missionfiles (struct dirent *file)
+static int missionfiles (const struct dirent *file)
 {
   int len = strlen(file->d_name);
 
   return ((file->d_name[len - 1] == 'm') &&
           (file->d_name[len - 2] == 't') &&
           (file->d_name[len - 3] == 't') &&
-          (file->d_name[len - 3] == '.'));
+          (file->d_name[len - 4] == '.'));
+}
+
+static void add_mission(char *fname) {
+
+  char mname[30];
+
+  FILE * f = fopen(fname, "rb");
+
+  unsigned char mnamelength;
+  fread(&mnamelength, 1, 1, f);
+
+  if (mnamelength > 29) mnamelength = 29;
+
+  fread(mname, mnamelength, 1, f);
+  mname[mnamelength] = 0;
+
+  mission_node * m = missions;
+  mission_node * l = NULL;
+
+  while (m) {
+
+    int erg = strcmp(m->name, mname);
+    /* no two missions with the same name */
+    if (erg == 0)
+      return;
+
+    /* we have passed your target, the current mission must
+     * be inserted bevore this mission
+     */
+    if (erg > 0) {
+      mission_node * n = new mission_node;
+      strcpy(n->name, mname);
+      strcpy(n->fname, fname);
+      n->next = m;
+
+      if (l)
+        l->next = n;
+      else
+        missions = n;
+
+      return;
+    }
+
+    l = m;
+    m = m->next;
+  }
+
+  /* insert at the end */
+  m = new mission_node;
+  strcpy(m->name, mname);
+  strcpy(m->fname, fname);
+  m->next = NULL;
+
+  if (l)
+    l->next = m;
+  else
+    missions = m;
 }
 
 
 int lev_findmissions() {
 
   char pathname[100];
+  char mname[30];
 
   struct dirent **eps;
 
-  FILE *f;
+  missions = NULL;
 
-  missions = null;
+  /* check if already called, if so free the old list */
+  while (missions) {
+    mission_node *n = missions;
+    missions = missions->next;
+    delete n;
+  }
+
+  sprintf(pathname, "%s", "./");
+  int n = scandir("./", &eps, missionfiles, alphasort);
+
+  if (n >= 0) {
+
+    for (int i = 0; i < n; i++) {
+
+      char fname[200];
+      sprintf(fname, "%s%s", pathname, eps[i]->d_name);
+
+      add_mission(fname);
+    }
+  }
 
   sprintf(pathname, "%s/.toppler/", getenv("HOME"));
-
-  int n = scandir(pathname, &eps, missionfiles, alphasort);
-
-  if (n >= 0) {
-
-    for (int i = 0; i < n; i++) {
-
-      char fname[200];
-      sprintf(fname, "%s%s", pathname, eps[i]->d_name);
-
-      f = fopen(fname, "rb");
-
-      int mnamelength;
-      fread(&mnamelength, 1, 1, f);
-
-      if (mnamelength > 29) mnamelength = 29;
-
-      mission_node * mis = new mission_node;
-
-      fread(mis->name, mnamelength, 1, f);
-      mis->name[mnamelength] = 0;
-
-      strcpy(mis->fname, fname);
-
-      mis->next = missions;
-      missions = mis;
-    }
-  }
-
-  sprintf(pathname, DATADIR"/%s/", name);
-
-  int n = scandir(pathname, &eps, missionfiles, alphasort);
+  n = scandir(pathname, &eps, missionfiles, alphasort);
 
   if (n >= 0) {
 
@@ -149,36 +183,75 @@ int lev_findmissions() {
       char fname[200];
       sprintf(fname, "%s%s", pathname, eps[i]->d_name);
 
-      f = fopen(fname, "rb");
+      add_mission(fname);
+    }
+  }
 
-      int mnamelength;
-      fread(&mnamelength, 1, 1, f);
+  sprintf(pathname, "%s/", DATADIR);
+  n = scandir(pathname, &eps, missionfiles, alphasort);
 
-      if (mnamelength > 29) mnamelength = 29;
+  if (n >= 0) {
 
-      mission_node * mis = new mission_node;
+    for (int i = 0; i < n; i++) {
 
-      fread(mis->name, mnamelength, 1, f);
-      mis->name[mnamelength] = 0;
+      char fname[200];
+      sprintf(fname, "%s%s", pathname, eps[i]->d_name);
 
-      strcpy(mis->fname, fname);
-
-      mis->next = missions;
-      missions = mis;
+      add_mission(fname);
     }
   }
 }
 
-void lev_loadmission(char *filename) {
-  int res;
+int lev_missionnumber() {
+  int num = 0;
+  mission_node * m = missions;
 
-  arc_assign(filename);
-  arc_read(mission, arc_filesize(), &res);
-  arc_closefile();
+  while (m) {
+    num++;
+    m = m->next;
+  }
+
+  return num;
 }
 
-int lev_towernumber(void) {
-  return 8;
+const char * lev_missionname(int num) {
+  mission_node * m = missions;
+
+  while (num) {
+    m = m->next;
+    num--;
+  }
+
+  return m->name;
+}
+
+void lev_loadmission(int num) {
+
+  mission_node *m = missions;
+  while (num) {
+    num--;
+    m = m->next;
+  }
+
+  FILE * in = fopen(m->fname, "rb");
+
+  if (mission) delete mission;
+
+  fseek(in, 0, SEEK_END);
+
+  int fsize = ftell(in);
+
+  mission = new unsigned char[fsize];
+
+  fseek(in, 0, SEEK_SET);
+
+  fread(mission, fsize, 1, in);
+
+  fclose(in);
+}
+
+int lev_towercount(void) {
+  return mission[mission[0] + 1];
 }
 
 void lev_selecttower(int number) {
@@ -188,24 +261,41 @@ void lev_selecttower(int number) {
   towernumber = number;
 
   // find start of towerdata in mission
-  number *= 2;
-  towerstart = mission[number + 1];
-  towerstart = towerstart * 256 + mission[number];
+  {
+    long idxpos = 0;
+
+    idxpos += mission[mission[0] + 2];
+    idxpos += long(mission[mission[0] + 3]) << 8;
+    idxpos += long(mission[mission[0] + 4]) << 16;
+    idxpos += long(mission[mission[0] + 5]) << 24;
+
+
+    towerstart = mission[idxpos + 4 * number];
+    towerstart += long(mission[idxpos + 4 * number + 1]) << 8;
+    towerstart += long(mission[idxpos + 4 * number + 2]) << 16;
+    towerstart += long(mission[idxpos + 4 * number + 3]) << 24;
+  }
 
   // extract towername
-  int pos = 0;
-  while (mission[towerstart + pos]) {
-    towername[pos] = mission[towerstart + pos];
-    pos++;
-  }
+  int pos = mission[towerstart];
+  memmove(towername, &mission[towerstart + 1], pos);
   towername[pos] = 0;
 
+  pos ++;
+
   // save number of rows in tower
-  towerheight = mission[towerstart + 16];
+  towerheight = mission[towerstart + pos++];
+  towertime = mission[towerstart + pos] + (int(mission[towerstart + pos + 1]) << 8);
+  pos += 2;
+
+  towercolor_red = mission[towerstart + pos];
+  towercolor_green = mission[towerstart + pos + 1];
+  towercolor_blue = mission[towerstart + pos + 2];
+  pos += 3;
 
   // save start of bitmap and bytemap
-  int bitstart = towerstart + 18;
-  int bytestart = bitstart + mission[towerstart + 17];
+  int bitstart = towerstart + pos;
+  int bytestart = bitstart + 2 * towerheight;
 
   // initialize positions inside the fields
   int wpos = 0;
@@ -223,12 +313,6 @@ void lev_selecttower(int number) {
         tower[row][col] = 0;
       bpos++;
     }
-
-  lev_set_towercol(tcolors[towernumber].r,
-                   tcolors[towernumber].g,
-                   tcolors[towernumber].b);
-
-  towertime = 500 + towernumber * 100;
 }
 
 void lev_set_towercol(unsigned char r, unsigned char g, unsigned char b) {
@@ -479,11 +563,7 @@ void lev_restore(int row, int col, unsigned char bg) {
 bool lev_loadtower(char *fname) {
   FILE *in = open_local_data_file(fname);
 
-  printf("tttt\n");
-
   if (in == NULL) return false;
-
-  printf("tttt\n");
 
   fgets(towername, 20, in);
   fscanf(in, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);
@@ -883,3 +963,186 @@ bool lev_is_consistent(int &row, int &col) {
 
   return true;
 }
+
+/* the functions for mission creation */
+
+static FILE * fmission = NULL;
+static unsigned char nmission = 0;
+static long missionidx[256];
+
+bool lev_mission_new(char * name) {
+  assert(!fmission, "called mission_finish twice");
+
+  char fname[200];
+  sprintf(fname, "%s.ttm", name);
+
+  fmission = create_local_data_file(fname);
+
+  if (!fmission) return false;
+
+  unsigned char tmp = strlen(name);
+
+  /* write out name */
+  fwrite(&tmp, 1 ,1, fmission);
+  fwrite(name, 1, tmp, fmission);
+
+  /* placeholders for towernumber and indexstart */
+  fwrite(&tmp, 1, 1, fmission);
+  fwrite(&tmp, 1, 4, fmission);
+
+  nmission = 0;
+
+  return true;
+}
+
+void lev_mission_addtower(char * name) {
+  assert(fmission, "called mission_addtower without mission_new");
+
+  int rows;
+
+  FILE * in = open_local_data_file(name);
+  if (!tower) return;
+
+  missionidx[nmission] = ftell(fmission);
+  nmission++;
+
+  {
+    char towername[20];
+    fgets(towername, 20, in);
+
+    unsigned char tmp = strlen(towername);
+    fwrite(&tmp, 1, 1, fmission);
+    fwrite(towername, 1, tmp, fmission);
+  }
+
+  {
+    unsigned char towercolor_red, towercolor_green, towercolor_blue;
+    int towertime;
+    int towerheight;
+    unsigned char tmp;
+
+    fscanf(in, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);
+    fscanf(in, "%i\n", &towertime);
+    fscanf(in, "%i\n", &towerheight);
+
+    fwrite(&towerheight, 1, 1, fmission);
+    tmp = towertime & 0xff;
+    fwrite(&tmp, 1, 1, fmission);
+    tmp = (towertime >> 8) & 0xff;
+    fwrite(&tmp, 1, 1, fmission);
+
+    fwrite(&towercolor_red, 1, 1, fmission);
+    fwrite(&towercolor_green, 1, 1, fmission);
+    fwrite(&towercolor_blue, 1, 1, fmission);
+
+    rows = towerheight;
+  }
+
+  /* load the tower */
+  unsigned char tower[256][16];
+  for (int row = rows - 1; row >= 0; row--) {
+    char line[200];
+
+    fgets(line, 200, in);
+
+    for (int col = 0; col < 16; col++) {
+      switch(line[col]) {
+      case '1': tower[row][col] = 0x10; break;
+      case '2': tower[row][col] = 0x20; break;
+      case '3': tower[row][col] = 0x30; break;
+      case '4': tower[row][col] = 0x40; break;
+      case '5': tower[row][col] = 0x50; break;
+      case '6': tower[row][col] = 0x60; break;
+      case '7': tower[row][col] = 0x70; break;
+
+      case '!': tower[row][col] = 0x80; break;
+      case '-': tower[row][col] = 0x81; break;
+      case 'b': tower[row][col] = 0x82; break;
+
+      case '#': tower[row][col] = 0x83; break;
+      case 'T': tower[row][col] = 0xc3; break;
+
+      case '^': tower[row][col] = 0x85; break;
+      case 'v': tower[row][col] = 0x08; break;
+      case '+': tower[row][col] = 0x0c; break;
+
+      case '.': tower[row][col] = 0x91; break;
+      case '>': tower[row][col] = 0xb1; break;
+      default:
+         tower[row][col] = 0; break;
+      }
+    }
+  }
+
+  /* output bitmap */
+  for (int row = 0; row < rows; row++) {
+
+    unsigned char c = 0;
+
+    for (int col = 0; col < 8; col ++)
+      if (tower[row][col])
+        c |= (0x80 >> col);
+
+    fwrite(&c, 1, 1, fmission);
+
+    c = 0;
+    for (int col = 0; col < 8; col ++)
+      if (tower[row][col + 8])
+        c |= (0x80 >> col);
+
+    fwrite(&c, 1, 1, fmission);
+  }
+
+  /* output bytemep */
+  for (int row = 0; row < rows; row++)
+    for (int c = 0; c < 16; c ++)
+      if (tower[row][c])
+        fwrite(&tower[row][c], 1, 1, fmission);
+
+  fclose(in);
+}
+
+void lev_mission_finish() {
+  assert(fmission, "called mission_finish without mission_new");
+
+  unsigned char tmp;
+  unsigned char c;
+
+  /* save indexstart and write out index */
+  int idxpos = ftell(fmission);
+  for (int i = 0; i < nmission; i++) {
+
+    c = missionidx[i] & 0xff;
+    fwrite(&c, 1, 1, fmission);
+    c = (missionidx[i] >> 8) & 0xff;
+    fwrite(&c, 1, 1, fmission);
+    c = (missionidx[i] >> 16) & 0xff;
+    fwrite(&c, 1, 1, fmission);
+    c = (missionidx[i] >> 24) & 0xff;
+    fwrite(&c, 1, 1, fmission);
+  }
+
+  /* write out the number of towers in this mission */
+  fseek(fmission, 0, SEEK_SET);
+  fread(&tmp, 1, 1, fmission);
+  printf("%i\n", tmp);
+
+  fseek(fmission, tmp + 1, SEEK_SET);
+  c = nmission;
+  fwrite(&c, 1, 1, fmission);
+
+  /* write out index position */
+  c = idxpos & 0xff;
+  fwrite(&c, 1, 1, fmission);
+  c = (idxpos >> 8) & 0xff;
+  fwrite(&c, 1, 1, fmission);
+  c = (idxpos >> 16) & 0xff;
+  fwrite(&c, 1, 1, fmission);
+  c = (idxpos >> 24) & 0xff;
+  fwrite(&c, 1, 1, fmission);
+
+  fclose(fmission);
+
+  fmission = NULL;
+}
+

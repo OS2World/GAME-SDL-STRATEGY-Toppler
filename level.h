@@ -8,12 +8,14 @@
  * returns the number of missions found
  */
 int lev_findmissions();
+int lev_missionnumber();
+const char * lev_missionname(int num);
 
 /* loads a mission from the file with the given name */
-void lev_loadmission(char *filename);
+void lev_loadmission(int num);
 
 /* returns the number of towers that are in the current mission */
-int lev_towernumber(void);
+int lev_towercount(void);
 
 /* selects one of the towers in this mission */
 void lev_selecttower(int number);
@@ -157,6 +159,13 @@ void lev_restore(unsigned char *&data);
  */
 bool lev_is_consistent(int &row, int &col);
 
+/* mission creation: first call mission_new, then for each tower mission_addtower
+ * finally to complete mission_finish, never use another calling order or you may
+ * create corrupted mission files
+ */
+bool lev_mission_new(char * name);
+void lev_mission_addtower(char * name);
+void lev_mission_finish();
 
 #endif
 

@@ -1,4 +1,4 @@
-datafiles = toppler.dat boing.wav bubbles.wav hit.wav honk.wav splash.wav swoosh.wav tap.wav tick.wav water.wav layer1.tga layer2.tga layer3.tga fanfare.wav rumble.wav score.wav alarm.wav
+datafiles = toppler.dat boing.wav bubbles.wav hit.wav honk.wav splash.wav swoosh.wav tap.wav tick.wav water.wav layer1.tga layer2.tga layer3.tga fanfare.wav rumble.wav score.wav alarm.wav m1.ttm m2.ttm
 headerfiles = archi.h bonus.h config.h decl.h elevators.h game.h keyb.h level.h menu.h palette.h points.h robots.h screen.h snowball.h sound.h sprites.h stars.h toppler.h leveledit.h
 
 scoredir = $(localstatedir)/@PACKAGE@

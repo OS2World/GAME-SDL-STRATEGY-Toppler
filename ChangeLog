@@ -5,6 +5,11 @@ Version 0.73
 - added filename for loading and saving in leveleditor
 - added security check on load if tower has been changed
 - color and time changes are real changes and lead to the savety questions on exit adn load
+- color circling in input line (to see it on darker backgrounds
+- mission creator finished
+- new highscore file format for missions, once again the old one is unusable :-(
+- include code to search for missions and list them (need some improvement like sorting and
+  remove double entries)
 
 20.01.2002 Version 0.72
 

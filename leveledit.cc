@@ -11,8 +11,6 @@
 #include "snowball.h"
 #include "menu.h"
 
-
-
 static bool really_quit(int row, int col) {
   key_readkey();
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
@@ -80,6 +78,71 @@ static void no_problems(int row, int col) {
   } while (!inp);
 
   pal_colors(pal_towergame);
+}
+
+static void createMission(void) {
+
+  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
+  scr_drawedit(0, 0);
+  scr_writetext_center(30, "MISSION CREATION");
+  scr_writetext_center(60, "ENTER MISSION NAME");
+  scr_writetext_center(70, "EMPTY TO ABBORT");
+
+  char missionname[25];
+  men_input(missionname, 25, 160);
+
+  if (!missionname[0]) {
+    pal_colors(pal_towergame);
+    return;
+  }
+
+  if (!lev_mission_new(missionname)) {
+
+    scr_drawedit(0, 0);
+    scr_writetext_center(30, "MISSION CREATION");
+
+    scr_writetext_center(70, "COULD NOT CREATE FILE");
+    scr_writetext_center(90, "ABBORTING");
+
+    scr_swap();
+
+    int inp;
+
+    do {
+      inp = key_chartyped();
+    } while (!inp);
+  
+    pal_colors(pal_towergame);
+
+    return;
+  }
+
+  int currenttower = 1;
+  char towername[30];
+
+  while (true) {
+
+    scr_drawedit(0, 0);
+    scr_writetext_center(30, "MISSION CREATION");
+    scr_writetext_center(60, "ENTER NAME OF");
+
+    char s[30];
+    sprintf(s, "TOWER NO %i", currenttower);
+    scr_writetext_center(70, s);
+
+    towername[0] = 0;
+    men_input(towername, 25, 160);
+
+    if (!towername[0]) break;
+
+    lev_mission_addtower(towername);
+
+    currenttower++;
+  }
+
+  lev_mission_finish();
+
+  lev_findmissions();
 }
 
 
@@ -380,6 +443,9 @@ void le_edit(void) {
           no_problems(row, col);
         }
       }
+      break;
+    case 'M':
+      createMission();
       break;
     }
     if (palchanged) {

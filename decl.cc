@@ -163,6 +163,7 @@ FILE *create_highscore_file(char *name) {
   char n[200];
 
   sprintf(n, "%s/.toppler/%s", getenv("HOME"), name);
+  fclose(fopen(n, "a+"));
   return fopen(n, "r+");
 
 #else
@@ -182,7 +183,6 @@ FILE *open_local_data_file(char *name) {
   char n[200];
 
   sprintf(n, "%s/.toppler/%s", getenv("HOME"), name);
-  printf("%s", n);
 
   return fopen(n, "r");
 
@@ -203,7 +203,7 @@ FILE *create_local_data_file(char *name) {
   char n[200];
 
   sprintf(n, "%s/.toppler/%s", getenv("HOME"), name);
-  return fopen(n, "w");
+  return fopen(n, "w+");
 
 #else
 

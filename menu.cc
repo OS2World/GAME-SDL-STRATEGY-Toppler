@@ -20,7 +20,6 @@
 static unsigned short menupicture, titledata;
 static unsigned char currentmission = 0;
 
-#define missioncount 2
 
 static struct {
   unsigned int points;
@@ -141,10 +140,31 @@ static void savescores(void) {
 #endif
 
   if (f) {
-    fseek(f, currentmission * sizeof(scores), SEEK_SET);
-  
+
+    unsigned char len;
+    char mname[30];
+
+    while (!feof(f)) {
+
+      if ((fread(&len, 1, 1, f) == 1) &&
+          (fread(mname, 1, len, f) == len)) {
+        mname[len] = 0;
+        if (strcmp(mname, lev_missionname(currentmission)) == 0) {
+          fwrite(scores, sizeof(scores), 1, f);
+          fclose(f);
+          return;
+        }
+      } else
+        break;
+
+      fseek(f, ftell(f) + sizeof(scores), SEEK_SET);
+    }
+
+    unsigned char tmp = strlen(lev_missionname(currentmission));
+
+    fwrite(&tmp, 1, 1, f);
+    fwrite(lev_missionname(currentmission), 1, tmp, f);
     fwrite(scores, sizeof(scores), 1, f);
-  
     fclose(f);
   }
 }
@@ -159,11 +179,24 @@ static void getscores(void) {
 
   if (f) {
 
-    fseek(f, currentmission * sizeof(scores), SEEK_SET);
+    unsigned char len;
+    char mname[30];
 
-    if (feof(f) || (fread(scores, 1, sizeof(scores), f) != sizeof(scores)))
-      emptyscoretable();
-  
+    while (true) {
+
+      if ((fread(&len, 1, 1, f) == 1) &&
+          (fread(mname, 1, len, f) == len) &&
+          (fread(scores, 1, sizeof(scores), f) == sizeof(scores))) {
+        mname[len] = 0;
+        if (strcmp(mname, lev_missionname(currentmission)) == 0)
+          break;
+      } else {
+        emptyscoretable();
+        break;
+      }
+
+    }
+
     fclose(f);
 
   } else {
@@ -225,6 +258,7 @@ unsigned char men_main(bool fade) {
   char s[20];
   int t = 0;
   int main;
+  int missioncount = lev_missionnumber();
 
   do {
 
@@ -233,7 +267,7 @@ unsigned char men_main(bool fade) {
       scr_blit(spr_spritedata(menupicture), 0, 0);
       scr_blit(spr_spritedata(titledata), 8, 20);
 
-      sprintf(s, "start: mission %i", m + 1);
+      sprintf(s, "start %s", lev_missionname(m));
       scr_writetext_center(100, s);
       scr_writetext_center(130, "highscore");
       scr_writetext_center(150, "quit");
@@ -272,8 +306,7 @@ unsigned char men_main(bool fade) {
       switch(p) {
         case 0:
           currentmission = m;
-          sprintf(s, "mission%i.dat", m + 1);
-          lev_loadmission(s);
+          lev_loadmission(m);
           ende = true;
           break;
         case 1:
@@ -312,6 +345,7 @@ void men_input(char *s, int max_len, int ypos) {
   char inp;
   char pos = 0;
   int defName = 1;
+  int color = 0;
 
   scr_putbar(160 - max_len * 6, ypos, max_len * 12, 16);
   scr_writetext_center(ypos, s);
@@ -320,28 +354,33 @@ void men_input(char *s, int max_len, int ypos) {
   key_readkey();
 
   do {
+    dcl_wait();
 
-    while ((inp = key_chartyped()) == 0) dcl_wait();
+    inp = key_chartyped();
 
-    if (inp == '\r') break;
-
-    if (defName) {
-      defName = 0;
-      s[pos] = 0;
-    }
-
-    if (inp == '\b') {
-      if (pos > 0) {
-        pos--;
+    if (inp) {
+  
+      if (inp == '\r') break;
+  
+      if (defName) {
+        defName = 0;
         s[pos] = 0;
       }
-    } else if (pos < max_len) {
-      s[pos] = inp;
-      pos++;
-      s[pos] = 0;
+  
+      if (inp == '\b') {
+        if (pos > 0) {
+          pos--;
+          s[pos] = 0;
+        }
+      } else if (pos < max_len) {
+        s[pos] = inp;
+        pos++;
+        s[pos] = 0;
+      }
     }
 
-    scr_putbar(160 - max_len * 6, ypos, max_len * 12, 16);
+    scr_putbar(160 - max_len * 6, ypos, max_len * 12, 16, 16 + color);
+    color = (color + 1) & 0x0f;
     scr_writetext_center(ypos, s);
     scr_swap();
 
@@ -374,7 +413,6 @@ void men_highscore(unsigned long pt) {
   int t = 10;
 
   while ((t > 0) && (pt > scores[t-1].points)) {
-    printf("points %i\n",scores[t-1].points);
     if (t < 10)
       scores[t] = scores[t-1];
     t--;

@@ -37,6 +37,7 @@ static void startgame(void) {
   int resttime;
 
   arc_init("toppler.dat");
+  lev_findmissions();
   gam_init();
   men_init();
   snd_init();
@@ -61,7 +62,7 @@ static void startgame(void) {
 
         snd_wateroff();
 
-        if (tower < 7) {
+        if (tower < lev_towercount()) {
 
           /* load next tower, because its colors will be needed for bonus game */
           tower++;
