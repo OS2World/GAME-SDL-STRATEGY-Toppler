@@ -52,9 +52,32 @@ void snd_init(void) {
       //TTSound->addsound("timeout.wav",  SND_TIMEOUT,   MIX_MAX_VOLUME, 0);
       //TTSound->addsound("fall.wav",     SND_FALL,      MIX_MAX_VOLUME, 0);
 
-      samplesloaded = true;
-    }
+#ifdef HAVE_LIBSDL_MIXER
+  if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
+    printf("Couldn't init the sound system, muting.\n");
+    nosoundinit = true;
+    return;
   }
+
+  nosoundinit = false;
+
+  if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
+    printf("Could not open audio, muting.\n");
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+    nosoundinit = true;
+    return;
+  }
+
+  title = Mix_LoadMUS("title.xm");
+  tgame = Mix_LoadMUS("tower.xm");
+#endif
+}*/
+
+/*void snd_playtitle(void) {
+  if (config.nosound() || nosoundinit) return;
+#ifdef HAVE_LIBSDL_MIXER
+  Mix_PlayMusic(title, -1);
+#endif
 }
 
 void snd_done(void) {

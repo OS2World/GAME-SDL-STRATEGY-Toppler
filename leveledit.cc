@@ -100,19 +100,19 @@ struct _ed_key {
 #define TOWERSTARTHEI 4 /* tower starting height */
 
 const char *_ed_key_actions[NUMEDITORACTIONS] = {
-   "Quit",          "Move up",        "Move down",       "Move left",
-   "Move right",    "Insert row",     "Delete row",      "Rotate 180",
-   "Put space",     "Put step",       "Put vanisher",    "Put slider left",
-   "Put slider right",
-   "Put door",      "Put goal",       "Check tower",     "Put rolling ball",
-   "Put jumping ball moving",   "Put jumping ball",    "Put robot up down",     "Put robot up down fast",
-   "Put robot left right",   "Put robot left right fast",    "Put lift",        "Lift middle stop",
-   "Lift top stop", "Put pillar",     "Put box",         "Load tower",
-   "Save tower",    "Test tower",     "Set tower color", "Increase time",
-   "Decrease time", "Create mission", "Move page up",    "Move page down",
-   "Go to start",   "Show this help", "Name the tower",  "Set tower time",
-   "Record demo",   "Play demo",      "Adjust tower height", "Go to end",
-   "Cut row",       "Paste row",      "Change robot type"
+   N_("Quit"),          N_("Move up"),        N_("Move down"),       N_("Move left"),
+   N_("Move right"),    N_("Insert row"),     N_("Delete row"),      N_("Rotate 180"),
+   N_("Put space"),     N_("Put step"),       N_("Put vanisher"),    N_("Put slider left"),
+   N_("Put slider right"),
+   N_("Put door"),      N_("Put goal"),       N_("Check tower"),     N_("Put rolling ball"),
+   N_("Put jumping ball moving"),   N_("Put jumping ball"),    N_("Put robot up down"),     N_("Put robot up down fast"),
+   N_("Put robot left right"),   N_("Put robot left right fast"),    N_("Put lift"),        N_("Lift middle stop"),
+   N_("Lift top stop"), N_("Put pillar"),     N_("Put box"),         N_("Load tower"),
+   N_("Save tower"),    N_("Test tower"),     N_("Set tower color"), N_("Increase time"),
+   N_("Decrease time"), N_("Create mission"), N_("Move page up"),    N_("Move page down"),
+   N_("Go to start"),   N_("Show this help"), N_("Name the tower"),  N_("Set tower time"),
+   N_("Record demo"),   N_("Play demo"),      N_("Adjust tower height"), N_("Go to end"),
+   N_("Cut row"),       N_("Paste row"),      N_("Change robot type")
 };
 
 const struct _ed_key _ed_keys[] = {
@@ -179,14 +179,14 @@ static void editor_background_proc(void) {
    if (bg_text) scr_writetext_center(5, bg_text);
 }
 
-static char *editor_background_menu_proc(_menusystem *ms) {
+static const char *editor_background_menu_proc(_menusystem *ms) {
     editor_background_proc();
     return 0;
 }
 
 static bool really_quit(int row, int col) {
   bg_darken = true;
-  if (men_yn("Tower changed, really quit", false)) {
+  if (men_yn(_("Tower changed, really quit"), false)) {
     return true;
   } else {
     return false;
@@ -196,7 +196,7 @@ static bool really_quit(int row, int col) {
 
 static bool really_load(int row, int col) {
   bg_darken = true;   
-  if (men_yn("Tower changed, really load", false)) {   
+  if (men_yn(_("Tower changed, really load"), false)) {
     return true;
   } else {
     return false;
@@ -213,7 +213,7 @@ static bool edit_towercolor(int row, int col) {
   int oldc[3], newc[3], curc[3];
   SDLKey c;
 
-  const char *colorname[] = {"Red", "Green", "Blue"};
+  const char *colorname[] = {_("Red"), _("Green"), _("Blue")};
 
   curc[0] = newc[0] = oldc[0] = lev_towercol_red();
   curc[1] = newc[1] = oldc[1] = lev_towercol_green();
@@ -222,7 +222,7 @@ static bool edit_towercolor(int row, int col) {
   do {
 
     scr_drawedit(row * 4, col * 8, false);
-    scr_writetext_center(22, "Tower Color");
+    scr_writetext_center(22, _("Tower Color"));
 
     for (tmp = 0 ; tmp < 3; tmp++) {
       scr_color_ramp(&abg_r, &abg_g, &abg_b);
@@ -302,19 +302,19 @@ static void edit_checktower(int &row, int &col) {
   c = -col;
 
   static char *problemstr[NUM_TPROBLEMS] = {
-    "No problems found",
-    "No starting step",
-    "Start is blocked",
-    "Unknown block",
-    "No elevator stop",
-    "Elevator is blocked",
-    "No opposing doorway",
-    "Broken doorway",
-    "No exit",
-    "Exit is unreachable",
-    "Not enough time",
-    "Tower is too short",
-    "Tower has no name"
+    _("No problems found"),
+    _("No starting step"),
+    _("Start is blocked"),
+    _("Unknown block"),
+    _("No elevator stop"),
+    _("Elevator is blocked"),
+    _("No opposing doorway"),
+    _("Broken doorway"),
+    _("No exit"),
+    _("Exit is unreachable"),
+    _("Not enough time"),
+    _("Tower is too short"),
+    _("Tower has no name")
   };
 
   pr = lev_is_consistent(r, c);
@@ -322,7 +322,7 @@ static void edit_checktower(int &row, int &col) {
   bg_row = r;
   bg_col = -c;
 
-  bg_text = "Tower check:";
+  bg_text = _("Tower check:");
   bg_darken = true;
   men_info(problemstr[pr % NUM_TPROBLEMS], 50, 2);
   bg_darken = false;
@@ -348,9 +348,9 @@ char *keymod2str(Uint16 kmod) {
 static void createMission(void) {
 
   scr_drawedit(0, 0, false);
-  scr_writetext_center(30, "Mission creation");
-  scr_writetext_center(80, "enter mission name");
-  scr_writetext_center(110, "empty to abort");
+  scr_writetext_center(30, _("Mission creation"));
+  scr_writetext_center(80, _("enter mission name"));
+  scr_writetext_center(110, _("empty to abort"));
 
   set_men_bgproc(NULL);
 
@@ -364,10 +364,10 @@ static void createMission(void) {
   if (!lev_mission_new(missionname)) {
 
     scr_drawedit(0, 0, false);
-    scr_writetext_center(30, "Mission creation");
+    scr_writetext_center(30, _("Mission creation"));
                               
-    scr_writetext_center(80, "could not create file");
-    scr_writetext_center(110, "aborting");
+    scr_writetext_center(80, _("could not create file"));
+    scr_writetext_center(110, _("aborting"));
 
     scr_swap();
 
@@ -386,11 +386,11 @@ static void createMission(void) {
   while (true) {
 
     scr_drawedit(0, 0, false);
-    scr_writetext_center(30, "Mission creation");
-    scr_writetext_center(80, "enter name of");
+    scr_writetext_center(30, _("Mission creation"));
+    scr_writetext_center(80, _("enter name of"));
 
     char s[30];
-    snprintf(s, 30, "tower no %i", currenttower);
+    snprintf(s, 30, _("tower no %i"), currenttower);
     scr_writetext_center(110, s);
 
     towername[0] = 0;
@@ -411,7 +411,7 @@ static void createMission(void) {
 static void le_showkeyhelp(int row, int col) {
   int k;
   int maxkeylen = 0;
-  textsystem *ts = new textsystem("Editor Key Help", editor_background_menu_proc);
+  textsystem *ts = new textsystem(_("Editor Key Help"), editor_background_menu_proc);
   char tabbuf1[6], tabbuf2[6];
     
   if (!ts) return;
@@ -442,7 +442,7 @@ static void le_showkeyhelp(int row, int col) {
       if (tabbuf2[2] < '0') tabbuf2[2] = '0';
 
       snprintf(tmpb, 256, "~T%s%%s~T%s%%s", tabbuf2, tabbuf1);
-      snprintf(buf, 256, tmpb, knam, _ed_key_actions[_ed_keys[k].action]);
+      snprintf(buf, 256, tmpb, knam, gettext(_ed_key_actions[_ed_keys[k].action]));
 
       ts->addline(buf);
   }
@@ -528,8 +528,8 @@ void le_edit(void) {
     scr_drawedit(row * 4, col * 8, true);
 
     status[0] = '\0';
-    snprintf(status, 80, "%c~t050X%d~t150Y%d~t250cut#:%d",
-            changed ? '*' : ' ', -col & 0xf, row, clipboard_rows);
+    snprintf(status, 80, "%c~t050X%d~t150Y%d~t250%s:%d",
+             changed ? '*' : ' ', -col & 0xf, row, _("cut#"), clipboard_rows);
 
     scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(),
                lev_towercol_red(), lev_towercol_green(), lev_towercol_blue(), 255);
@@ -568,7 +568,7 @@ void le_edit(void) {
         }
 
     if ((action != -1) || (inp_char != 0) || (inp != SDLK_UNKNOWN))
-      debugprintf(3, "key: %s, char: %c, action: %i\n", SDL_GetKeyName(inp), inp_char, action);
+      debugprintf(3, _("key: %s, char: %c, action: %i\n"), SDL_GetKeyName(inp), inp_char, action);
 
     if (action != -1) {
 
@@ -700,7 +700,7 @@ void le_edit(void) {
         if (changed)
           if (!really_load(row, col))
             break;
-        bg_text = "Load tower:";
+        bg_text = _("Load tower:");
 	bg_darken = true;
         key_wait_for_none(editor_background_proc);
         {
@@ -721,7 +721,7 @@ void le_edit(void) {
 	if (row >= lev_towerrows()) row = lev_towerrows()-1;
         break;
       case EDACT_SAVETOWER:
-        bg_text = "Save tower:";
+        bg_text = _("Save tower:");
 	bg_darken = true;
         key_wait_for_none(editor_background_proc);
         {
@@ -782,7 +782,7 @@ void le_edit(void) {
 	        dcl_update_speed(speed);
 	    } else {
 		bg_darken = true;
-		men_info("No recorded demo", 150, 2);
+		men_info(_("No recorded demo"), 150, 2);
 	    }
 	}
 	break;
@@ -828,7 +828,7 @@ void le_edit(void) {
 
 	  snprintf(buf, 64, "%d", lev_towertime());
 
-          bg_text = "Enter tower time:";
+          bg_text = _("Enter tower time:");
 	  bg_darken = true;
 	  key_wait_for_none(editor_background_proc);
           while (!men_input((char *)buf, 15, -1, -1, "0123456789")) ;
@@ -844,7 +844,7 @@ void le_edit(void) {
 	    
 	    snprintf(buf, 64, "0");
 	    
-	    bg_text = "Adjust tower height:";
+	    bg_text = _("Adjust tower height:");
 	    bg_darken = true;
 	    key_wait_for_none(editor_background_proc);
 	    while (!men_input((char *)buf, 15, -1, -1, "-+0123456789")) ;
@@ -924,7 +924,7 @@ void le_edit(void) {
 	}
 	break;
       case EDACT_NAMETOWER:
-        bg_text = "Name the tower:";
+        bg_text = _("Name the tower:");
 	bg_darken = true;
 	key_wait_for_none(editor_background_proc);
         while (!men_input(lev_towername(), TOWERNAMELEN)) ;

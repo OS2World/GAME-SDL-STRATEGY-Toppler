@@ -461,10 +461,8 @@ void rob_update(void) {
         }
 
         h = jumping_ball[object[t].time];
-        printf("h=%i\n", h);
 
         while (h != 0) {
-          printf("h=%i\n", h);
 
           object[t].verticalpos += h;
           if (!testroboter(t) || (figurecollision(t) != -1)) break;

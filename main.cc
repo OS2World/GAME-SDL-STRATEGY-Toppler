@@ -33,10 +33,7 @@
 #include <stdexcept>
 
 static void printhelp(void) {
-  printf("\n\tOptions:\n\n");
-  printf("  -f\tEnable fullscreen mode\n");
-  printf("  -s\tSilence, disable all sound\n");
-  printf("  -dX\tSet debug level to X  (default: %i)\n", config.debug_level());
+  printf(_("\n\tOptions:\n\n  -f\tEnable fullscreen mode\n  -s\tSilence, disable all sound\n  -dX\tSet debug level to X  (default: %i)\n"), config.debug_level());
 }
 
 static bool parse_arguments(int argc, char *argv[]) {
@@ -46,9 +43,9 @@ static bool parse_arguments(int argc, char *argv[]) {
     else if (strstr(argv[t], "-d") == argv[t]) {
       char parm = argv[t][2];
       if (parm >= '0' && parm <= '9') {
-        printf("Debug level is now %c.\n", parm);
+        printf(_("Debug level is now %c.\n"), parm);
         config.debug_level(parm - '0');
-      } else printf("Illegal debug level value, using default.\n");
+      } else printf(_("Illegal debug level value, using default.\n"));
     } else {
       printhelp();
       return false;
@@ -75,24 +72,29 @@ static void QuitFunction(void) {
 
 int main(int argc, char *argv[]) {
 
+  setlocale(LC_MESSAGES, "");
+  bindtextdomain("toppler", LOCALEDIR"/locale");
+  textdomain("toppler");
+  bind_textdomain_codeset("toppler", "iso-latin1");
+
 #ifdef VERSION
-  printf("Nebulous version " VERSION "\n");
+  printf(_("Nebulous version %s\n"), "VERSION");
 #else
-  printf("Nebulous\n");
+  printf(_("Nebulous\n"));
 #endif
 
   hsc_init();
 
   if (parse_arguments(argc, argv)) {
     SDL_InitSubSystem(SDL_INIT_VIDEO);
-    SDL_WM_SetCaption("Nebulous", NULL);
+    SDL_WM_SetCaption(_("Nebulous"), NULL);
 
     int mouse = SDL_ShowCursor(config.fullscreen() ? 0 : 1);
     tt_has_focus = true;
     atexit(QuitFunction);
     srand(time(0));
     startgame();
-    printf("Thanks for playing!\n");
+    printf(_("Thanks for playing!\n"));
     SDL_ShowCursor(mouse);
     SDL_Quit();
   }

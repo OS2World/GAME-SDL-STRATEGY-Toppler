@@ -42,7 +42,7 @@ Uint16 spritecontainer::save(SDL_Surface *s) {
   if (usage == size) {
     SDL_Surface **array2 = new SDL_Surface*[size + 200];
 
-    assert(array2, "could not alloc memory for sprite array");
+    assert(array2, _("could not alloc memory for sprite array"));
 
     if (usage)
       memcpy(array2, array, usage * sizeof(SDL_Surface*));

@@ -1261,7 +1261,7 @@ static Uint8 nmission = 0;
 static Uint32 missionidx[256];
 
 bool lev_mission_new(char * name, Uint8 prio) {
-  assert(!fmission, "called mission_finish twice");
+  assert(!fmission, _("called mission_finish twice"));
 
   char fname[200];
   snprintf(fname, 200, "%s.ttm", name);
@@ -1302,7 +1302,7 @@ void write_fmission_section(Uint8 section, Uint32 section_len) {
 }
 
 void lev_mission_addtower(char * name) {
-  assert(fmission, "called mission_addtower without mission_new");
+  assert(fmission, _("called mission_addtower without mission_new"));
 
   Uint8 rows, col;
   Sint16 row;
@@ -1432,7 +1432,7 @@ void lev_mission_addtower(char * name) {
 }
 
 void lev_mission_finish() {
-  assert(fmission, "called mission_finish without mission_new");
+  assert(fmission, _("called mission_finish without mission_new"));
 
   Uint8 c;
 

@@ -101,7 +101,7 @@ static bool escape(void) {
 static void pause(void) {
 
   set_men_bgproc(bonus_background_proc);
-  men_info("Pause", -1, 1);
+  men_info(_("Pause"), -1, 1);
 }
 
 void bns_restart(void) { xpos = 0; }

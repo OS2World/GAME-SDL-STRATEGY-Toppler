@@ -82,16 +82,16 @@ void gam_arrival(void) {
   do {
     scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart, SF_NONE);
     scr_darkenscreen();
-    scr_writetext_center((SCREENHEI / 6), "You are entering the");
+    scr_writetext_center((SCREENHEI / 6), _("You are entering the"));
 
     if (strlen(lev_towername()))
-      scr_writetext_center((SCREENHEI*2 / 6), lev_towername());
+      scr_writetext_center((SCREENHEI*2 / 6), gettext(lev_towername()));
     else
-      scr_writetext_center((SCREENHEI*2 / 6), "Nameless Tower");
+      scr_writetext_center((SCREENHEI*2 / 6), _("Nameless Tower"));
 
     if (passwd && lev_show_passwd(lev_towernr())) {
       char buf[50];
-      snprintf(buf, 50, "Password:   %s", passwd);
+      snprintf(buf, 50, _("Password:   %s"), passwd);
       scr_writetext_center(SCREENHEI * 5 / 6, buf);
     }
     scr_swap();
@@ -299,7 +299,7 @@ static void timeout(int &tower_position, int &tower_anglepos) {
 
   set_men_bgproc(game_background_proc);
    
-  men_info("Time over", 150);
+  men_info(_("Time over"), 150);
 }
 
 static void writebonus(int &tower_position, int tower_anglepos, int zeit, int tec, int extra, int time) {
@@ -310,11 +310,11 @@ static void writebonus(int &tower_position, int tower_anglepos, int zeit, int te
 
   scr_darkenscreen();
 
-  snprintf(s, 30, "Time:      ~t35010 X %3d", zeit);
+  snprintf(s, 30, _("Time:      ~t35010 X %3d"), zeit);
   scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, s);
-  snprintf(s, 30, "Technique: ~t35010 X %3d", tec);
+  snprintf(s, 30, _("Technique: ~t35010 X %3d"), tec);
   scr_writeformattext(90, (SCREENHEI / 2), s);
-  snprintf(s, 30, "Extra:     ~t35010 X %3d", extra);
+  snprintf(s, 30, _("Extra:     ~t35010 X %3d"), extra);
   scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, s);
 
   scr_swap();
@@ -454,7 +454,7 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
   bg_time = time;
    
   set_men_bgproc(game_background_proc);
-  men_info("Pause", -1, 1);
+  men_info(_("Pause"), -1, 1);
 
   ttsounds::instance()->startsound(SND_WATER);
   towerpos(top_verticalpos(), tower_position,
@@ -494,7 +494,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   if (demo < 0) drawflags = SF_REC;
   else if (demo > 0) drawflags = SF_DEMO;
 
-  assert(!(demo && !demobuf), "Trying to play or record a null demo.");
+  assert(!(demo && !demobuf), _("Trying to play or record a null demo."));
 
 
   top_init();

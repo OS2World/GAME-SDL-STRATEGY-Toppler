@@ -81,7 +81,7 @@ static struct {
   Uint8 *data[3];      // the data for the 3 layers of the door (pixel info for recoloring)
 } doors[73];
 
-#define MAXCHARNUM 128
+#define MAXCHARNUM 256
 
 static struct {
   unsigned short s;
@@ -548,10 +548,10 @@ static void loadscroller(void) {
 
   num_scrolllayers = layers;
 
-  assert(num_scrolllayers > 1, "Must have at least 2 scroll layers!");
+  assert(num_scrolllayers > 1, _("Must have at least 2 scroll layers!"));
 
   scroll_layers = new _scroll_layer[layers];
-  assert(scroll_layers, "Failed to alloc memory for bonus scroller!");
+  assert(scroll_layers, _("Failed to alloc memory for bonus scroller!"));
     
   towerpos = fi.getbyte();
     
@@ -1178,7 +1178,7 @@ void scr_writetext(long x, long y, const char *s, int maxchars) {
 
     c = s[t];
     if (fontchars[c].width != 0) {
-      scr_blit(fontsprites.data(fontchars[c].s), x, y);
+      scr_blit(fontsprites.data(fontchars[c].s), x, y-20);
       x += fontchars[c].width + 3;
     }
     t++;
@@ -1220,14 +1220,14 @@ void scr_writeformattext(long x, long y, const char *s) {
 	t += 3;
 	break;
       default:
-        assert(0, "Wrong command in formatted text.");
+        assert(0, _("Wrong command in formatted text."));
         t += 2;
       }
       break;
     default:
       c = s[t];
       if (fontchars[c].width != 0) {
-        scr_blit(fontsprites.data(fontchars[c].s), x, y);
+        scr_blit(fontsprites.data(fontchars[c].s), x, y-20);
         x += fontchars[c].width + 3;
       }
       t++;
@@ -1264,7 +1264,7 @@ long scr_formattextlength(long x, long y, const char *s) {
 	t += 3;
 	break;
       default:
-        assert(0, "Wrong command in formatted text, scr_formattextlength.");
+        assert(0, _("Wrong command in formatted text, scr_formattextlength."));
         t += 2;
       }
       break;
@@ -1435,8 +1435,8 @@ static void draw_data(int time, screenflag flags)
 
   y = config.status_top() ? SCREENHEI - FONTHEI : 5;
   switch (flags) {
-    case SF_REC:  if (!(boxstate & 8)) scr_writetext_center(y, "REC"); break;
-    case SF_DEMO: scr_writetext_center(y, "DEMO"); break;
+    case SF_REC:  if (!(boxstate & 8)) scr_writetext_center(y, _("REC")); break;
+    case SF_DEMO: scr_writetext_center(y, _("DEMO")); break;
     case SF_NONE:
     default:      break;
   }

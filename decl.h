@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <libintl.h>
 
 /* screen width and height, in pixels. */
 #define SCREENWID 640
@@ -192,7 +193,7 @@ extern bool tt_has_focus;
 int dcl_update_speed(int spd);
 
 /* for errorchecking */
-#define assert(cond,text) if (!(cond)) { printf("Assertion failure: "text"\n"); exit(1); }
+#define assert(cond,text) if (!(cond)) { printf(_("Assertion failure: %s\n"), text); exit(1); }
 
 //#define CONFIGDIR "/etc"
 
@@ -217,5 +218,12 @@ typedef struct dirent {
  */
 int alpha_scandir(const char *dir, struct dirent ***namelist,
                   int (*select)(const struct dirent *));
+
+
+/* for internationalisation */
+
+#define _(x) gettext(x)
+#define N_(x) x
+
 
 #endif

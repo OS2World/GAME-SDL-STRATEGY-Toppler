@@ -239,9 +239,9 @@ void hsc_init(void) {
   /* no dir to the global highscore table -> not global highscore table */
 
   if (globalHighscore)
-    debugprintf(2, "using global highscore at %s\n", highscoreName);
+    printf("using global highscore at %s\n", highscoreName);
   else
-    debugprintf(2, "using local highscore at %s\n", highscoreName);
+    printf("using local highscore at %s\n", highscoreName);
 
 #else // (SYSTEM == SYS_LINUX)
 

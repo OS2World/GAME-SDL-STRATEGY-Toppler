@@ -44,7 +44,7 @@ struct _menusystem;
    string describing this option. If the parameter
    is null, then this is called just to get the
    string back. */
-typedef char *FDECL((*menuopt_callback_proc), (struct _menusystem *));
+typedef const char *FDECL((*menuopt_callback_proc), (struct _menusystem *));
 
 /* menu background callback procedure. this should draw the
    background screen for the menu. */
@@ -114,11 +114,11 @@ void set_men_bgproc(menubg_callback_proc proc);
 
 
 /* create a new menu */
-_menusystem *new_menu_system(char *title, menuopt_callback_proc pr,
+_menusystem *new_menu_system(const char *title, menuopt_callback_proc pr,
                                     int molen = 0, int ystart = 25);
 
 /* add an option to the menu */
-_menusystem *add_menu_option(_menusystem *ms, char *name, menuopt_callback_proc pr,
+_menusystem *add_menu_option(_menusystem *ms, const char *name, menuopt_callback_proc pr,
                                     SDLKey quickkey = SDLK_UNKNOWN, menuoptflags flags = MOF_NONE, int state = 0);
 
 /* displays the given menu on screen and lets the user interact with it*/

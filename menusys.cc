@@ -32,7 +32,7 @@ void set_men_bgproc(menubg_callback_proc proc) {
   menu_background_proc = proc;
 }
 
-_menusystem *new_menu_system(char *title, menuopt_callback_proc pr, int molen, int ystart)
+_menusystem *new_menu_system(const char *title, menuopt_callback_proc pr, int molen, int ystart)
 {
   _menusystem *ms = new _menusystem;
 
@@ -61,7 +61,7 @@ _menusystem *new_menu_system(char *title, menuopt_callback_proc pr, int molen, i
 
 _menusystem *
 add_menu_option(_menusystem *ms,
-                char *name,
+                const char *name,
                 menuopt_callback_proc pr,
                 SDLKey quickkey,
                 menuoptflags flags,
@@ -249,7 +249,7 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
 void
 menu_system_caller(_menusystem *ms)
 {
-  char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
+  const char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
   if (tmpbuf) {
     int olen = strlen(tmpbuf);
     memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
@@ -360,7 +360,7 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
         case fire_key:
           if ((ms->hilited >= 0) && (ms->hilited < ms->numoptions) &&
               ms->moption[ms->hilited].oproc) {
-            char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
+            const char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
             if (tmpbuf) {
               int olen = strlen(tmpbuf);
               memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
@@ -387,7 +387,7 @@ void men_info(char *s, long timeout, int fire) {
     if (menu_background_proc) (*menu_background_proc) ();
     scr_writetext_center((SCREENHEI / 5), s);
     if (fire)
-      scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, (fire == 1) ? "Press fire" : "Press space");
+      scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, (fire == 1) ? _("Press fire") : _("Press space"));
     scr_swap();
     dcl_wait();
     if (timeout > 0) timeout--;
@@ -544,24 +544,24 @@ set_menu_system_timeproc(_menusystem *ms, long t, menuopt_callback_proc pr)
   return ms;
 }
 
-static char *
+static const char *
 men_yn_option_yes(_menusystem *ms)
 {
   if (ms) {
     ms->mstate = 1;
     ms->exitmenu = true;
     return NULL;
-  } else return "Yes";
+  } else return _("Yes");
 }
 
-static char *
+static const char *
 men_yn_option_no(_menusystem *ms)
 {
   if (ms) {
     ms->mstate = 0;
     ms->exitmenu = true;
     return NULL;
-  } else return "No";
+  } else return _("No");
 }
 
 unsigned char men_yn(char *s, bool defchoice, menuopt_callback_proc pr) {

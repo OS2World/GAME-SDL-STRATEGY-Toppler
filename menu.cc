@@ -75,16 +75,16 @@ static void men_reload_sprites(Uint8 what) {
 #ifdef GAME_DEBUG_KEYS
 static char *debug_menu_extralife(_menusystem *ms) {
   if (ms) lives_add();
-  return "Extra Life";
+  return _("Extra Life");
 }
 
 static char *debug_menu_extrascore(_menusystem *ms) {
   if (ms) pts_add(200);
-  return "+200 Points";
+  return _("+200 Points");
 }
 #endif /* GAME_DEBUG_KEYS */
 
-static char *
+static const char *
 men_main_background_proc(_menusystem *ms)
 {
   if (ms) {
@@ -97,9 +97,9 @@ men_main_background_proc(_menusystem *ms)
 
 #define REDEFINEREC 5
 static int times_called = 0;
-static char *redefine_menu_up(_menusystem *ms) {
+static const char *redefine_menu_up(_menusystem *ms) {
   static char buf[50];
-  const char *code[REDEFINEREC] = {"Up", "Down", "Left", "Right", "Fire"};
+  const char *code[REDEFINEREC] = {_("Up"), _("Down"), _("Left"), _("Right"), _("Fire")};
   char *keystr;
   static int blink, times_called;
   const ttkey key[REDEFINEREC] = {up_key, down_key, left_key, right_key, fire_key};
@@ -139,7 +139,7 @@ static char *redefine_menu_up(_menusystem *ms) {
   return buf;
 }
 
-static char *game_options_menu_password(_menusystem *prevmenu) {
+static const char *game_options_menu_password(_menusystem *prevmenu) {
   static char buf[50];
   char pwd[PASSWORD_LEN+1];
 
@@ -151,19 +151,19 @@ static char *game_options_menu_password(_menusystem *prevmenu) {
     /* FIXME: change -1, -1 to correct position; Need to fix menu system
      first... */
   }
-  snprintf(buf, 50, "Password: %s", config.curr_password());
+  snprintf(buf, 50, _("Password: %s"), config.curr_password());
   return buf;
 }
 
-static char *game_options_menu_statustop(_menusystem *prevmenu) {
+static const char *game_options_menu_statustop(_menusystem *prevmenu) {
   if (prevmenu) {
     config.status_top(!config.status_top());
   }
-  if (config.status_top()) return "Status on top \x04";
-  else return "Status on top \x03";
+  if (config.status_top()) return _("Status on top \x04");
+  else return _("Status on top \x03");
 }
 
-static char *game_options_menu_lives(_menusystem *prevmenu) {
+static const char *game_options_menu_lives(_menusystem *prevmenu) {
   static char buf[50];
   int i;
   if (prevmenu) {
@@ -179,13 +179,13 @@ static char *game_options_menu_lives(_menusystem *prevmenu) {
     default: return NULL;
     }
   }
-  sprintf(buf, "Lives: ");
+  sprintf(buf, _("Lives: "));
   for (i = 0; i < config.start_lives(); i++)
     sprintf(buf + strlen(buf), "%c", fonttoppler);
   return buf;
 }
 
-static char *
+static const char *
 game_options_menu_speed(_menusystem *prevmenu)
 {
   // Changing game_speed during a game has no effect until a
@@ -207,12 +207,23 @@ game_options_menu_speed(_menusystem *prevmenu)
     default: return NULL;
     }
   }
-  snprintf(buf, 50, "Game Speed: %i", config.game_speed());
+  snprintf(buf, 50, _("Game Speed: %i"), config.game_speed());
   return buf;
 }
 
-static char *men_game_options_menu(_menusystem *prevmenu) {
-  static char s[20] = "Game Options";
+static const char *
+game_options_bonus(_menusystem *ms)
+{
+  if (ms) {
+    config.nobonus(!config.nobonus());
+  }
+  if (config.nobonus()) return _("Bonus \x03");
+  else return _("Bonus \x04");
+}
+
+
+static const char *men_game_options_menu(_menusystem *prevmenu) {
+  static const char * s = _("Game Options");
   if (prevmenu) {
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
@@ -222,8 +233,10 @@ static char *men_game_options_menu(_menusystem *prevmenu) {
     ms = add_menu_option(ms, NULL, game_options_menu_statustop);
     ms = add_menu_option(ms, NULL, game_options_menu_speed, SDLK_UNKNOWN,
                          (menuoptflags)((int)MOF_PASSKEYS|(int)MOF_LEFT));
+    ms = add_menu_option(ms, NULL, game_options_bonus);
+
     ms = add_menu_option(ms, NULL, NULL);
-    ms = add_menu_option(ms, "Back", NULL);
+    ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, prevmenu);
 
@@ -232,9 +245,9 @@ static char *men_game_options_menu(_menusystem *prevmenu) {
   return s;
 }
 
-static char *run_redefine_menu(_menusystem *prevmenu) {
+static const char *run_redefine_menu(_menusystem *prevmenu) {
   if (prevmenu) {
-    _menusystem *ms = new_menu_system("Redefine Keys", NULL, 0, fontsprites.data(titledata)->h+30);
+    _menusystem *ms = new_menu_system(_("Redefine Keys"), NULL, 0, fontsprites.data(titledata)->h+30);
 
     times_called = 0;
 
@@ -243,16 +256,16 @@ static char *run_redefine_menu(_menusystem *prevmenu) {
     ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
     ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
     ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
-    ms = add_menu_option(ms, "Back", NULL);
+    ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, prevmenu);
 
     free_menu_system(ms);
   }
-  return "Redefine Keys";
+  return _("Redefine Keys");
 }
 
-static char *
+static const char *
 men_options_windowed(_menusystem *ms)
 {
   if (ms) {
@@ -260,11 +273,11 @@ men_options_windowed(_menusystem *ms)
     scr_reinit();
     SDL_ShowCursor(config.fullscreen() ? 0 : 1);
   }
-  if (config.fullscreen()) return "Fullscreen \x04";
-  else return "Fullscreen \x03";
+  if (config.fullscreen()) return _("Fullscreen \x04");
+  else return _("Fullscreen \x03");
 }
 
-static char *
+static const char *
 men_options_sounds(_menusystem *ms)
 {
   if (ms) {
@@ -276,8 +289,8 @@ men_options_sounds(_menusystem *ms)
       config.nosound(true);
     }
   }
-  if (config.nosound()) return "Sounds \x03";
-  else return "Sounds \x04";
+  if (config.nosound()) return _("Sounds \x03");
+  else return _("Sounds \x04");
 }
 
 static void
@@ -300,50 +313,50 @@ reload_layer_graphics(void) {
   scr_reload_sprites(RL_SCROLLER);
 }
 
-static char *
+static const char *
 men_alpha_font(_menusystem *ms)
 {
   if (ms) {
     config.use_alpha_font(!config.use_alpha_font());
     reload_font_graphics();
   }
-  if (config.use_alpha_font()) return "Font alpha \x04";
-  else return "Font alpha \x03";
+  if (config.use_alpha_font()) return _("Font alpha \x04");
+  else return _("Font alpha \x03");
 }
 
-static char *
+static const char *
 men_alpha_sprites(_menusystem *ms)
 {
   if (ms) {
     config.use_alpha_sprites(!config.use_alpha_sprites());
     reload_robot_graphics();
   }
-  if (config.use_alpha_sprites()) return "Sprites alpha \x04";
-  else return "Sprites alpha \x03";
+  if (config.use_alpha_sprites()) return _("Sprites alpha \x04");
+  else return _("Sprites alpha \x03");
 }
 
-static char *
+static const char *
 men_alpha_layer(_menusystem *ms)
 {
   if (ms) {
     config.use_alpha_layers(!config.use_alpha_layers());
     reload_layer_graphics();
   }
-  if (config.use_alpha_layers()) return "Scroller alpha \x04";
-  else return "Scroller alpha \x03";
+  if (config.use_alpha_layers()) return _("Scroller alpha \x04");
+  else return _("Scroller alpha \x03");
 }
 
-static char *
+static const char *
 men_alpha_menu(_menusystem *ms)
 {
   if (ms) {
     config.use_alpha_darkening(!config.use_alpha_darkening());
   }
-  if (config.use_alpha_darkening()) return "Shadowing \x04";
-  else return "Shadowing \x03";
+  if (config.use_alpha_darkening()) return _("Shadowing \x04");
+  else return _("Shadowing \x03");
 }
 
-static char *
+static const char *
 men_waves_menu(_menusystem *ms)
 {
   if (ms) {
@@ -363,27 +376,27 @@ men_waves_menu(_menusystem *ms)
     }
   }
   switch(config.waves_type()) {
-  case configuration::waves_nonreflecting: return "Nonreflecting waves";
-  case configuration::waves_simple: return "Simple waves";
-  case configuration::waves_expensive: return "Expensive waves";
-  default: return "Error";
+  case configuration::waves_nonreflecting: return _("Nonreflecting waves");
+  case configuration::waves_simple: return _("Simple waves");
+  case configuration::waves_expensive: return _("Expensive waves");
+  default: return _("Error");
   }
 }
 
-static char *
+static const char *
 men_full_scroller(_menusystem *ms)
 {
   if (ms) {
     config.use_full_scroller(!config.use_full_scroller());
   }
-  if (config.use_full_scroller()) return "Complete Scroller";
-  else return "2 layers Scoller";
+  if (config.use_full_scroller()) return _("Complete Scroller");
+  else return _("2 layers Scoller");
 }
 
 
-static char *
+static const char *
 men_alpha_options(_menusystem *mainmenu) {
-  static char s[20] = "Alpha Options";
+  static const char * s = _("Alpha Options");
   if (mainmenu) {
 
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
@@ -396,7 +409,7 @@ men_alpha_options(_menusystem *mainmenu) {
     ms = add_menu_option(ms, NULL, men_alpha_menu, SDLK_UNKNOWN, MOF_RIGHT);
 
     ms = add_menu_option(ms, NULL, NULL);
-    ms = add_menu_option(ms, "Back", NULL);
+    ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, mainmenu);
 
@@ -405,9 +418,9 @@ men_alpha_options(_menusystem *mainmenu) {
   return s;
 }
 
-static char *
+static const char *
 men_options_graphic(_menusystem *mainmenu) {
-  static char s[20] = "Graphics";
+  static const char *s = _("Graphics");
   if (mainmenu) {
 
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
@@ -420,7 +433,7 @@ men_options_graphic(_menusystem *mainmenu) {
     ms = add_menu_option(ms, NULL, men_full_scroller, SDLK_UNKNOWN);
 
     ms = add_menu_option(ms, NULL, NULL);
-    ms = add_menu_option(ms, "Back", NULL);
+    ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, mainmenu);
 
@@ -429,9 +442,9 @@ men_options_graphic(_menusystem *mainmenu) {
   return s;
 }
 
-static char *
+static const char *
 men_options(_menusystem *mainmenu) {
-  static char s[20] = "Options";
+  static const char * s = _("Options");
   if (mainmenu) {
 
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
@@ -444,7 +457,7 @@ men_options(_menusystem *mainmenu) {
     ms = add_menu_option(ms, NULL, men_options_sounds);
 
     ms = add_menu_option(ms, NULL, NULL);
-    ms = add_menu_option(ms, "Back", NULL);
+    ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, mainmenu);
 
@@ -506,7 +519,7 @@ calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
   }
 }
 
-static char *
+static const char *
 men_hiscores_background_proc(_menusystem *ms)
 {
   static int blink_r = 120, blink_g = 200, blink_b = 40;
@@ -574,12 +587,12 @@ men_hiscores_background_proc(_menusystem *ms)
     }
     scr_color_ramp(&blink_r, &blink_g, &blink_b);
   }
-  return "HighScores";
+  return _("HighScores");
 }
 
 static void show_scores(bool back = true, int mark = -1) {
   static char buf[50];
-  snprintf(buf, 50, "Scores for %s", lev_missionname(currentmission));
+  snprintf(buf, 50, _("Scores for %s"), lev_missionname(currentmission));
   _menusystem *ms = new_menu_system(buf, men_hiscores_background_proc, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return;
@@ -601,9 +614,9 @@ static void show_scores(bool back = true, int mark = -1) {
   for (int tmpz = 0; tmpz < HISCORES_PER_PAGE; tmpz++) ms = add_menu_option(ms, NULL, NULL);
 
   if (back)
-    ms = add_menu_option(ms, "Back", NULL);
+    ms = add_menu_option(ms, _("Back"), NULL);
   else
-    ms = add_menu_option(ms, "OK", NULL);
+    ms = add_menu_option(ms, _("OK"), NULL);
 
   ms = run_menu_system(ms, 0);
 
@@ -616,11 +629,11 @@ congrats_background_proc(void)
   scr_blit(restsprites.data(menupicture), 0, 0);
   scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
 
-  scr_writetext_center(130, "Congratulations! You are");
-  scr_writetext_center(170, "probably good enough to");
-  scr_writetext_center(210, "enter the highscore table!");
+  scr_writetext_center(130, _("Congratulations! You are"));
+  scr_writetext_center(170, _("probably good enough to"));
+  scr_writetext_center(210, _("enter the highscore table!"));
 
-  scr_writetext_center(270, "Please enter your name");
+  scr_writetext_center(270, _("Please enter your name"));
 }
 
 /* highscores, after the game
@@ -674,11 +687,11 @@ main_game_loop()
   Uint16 *tmpbuf = NULL;
 
   if (!lev_loadmission(currentmission)) {
-    if (!men_yn("This mission contains\n"
+    if (!men_yn(_("This mission contains\n"
                 "unknown building blocks.\n"
                 "You probably need a new\n"
                 "version of Tower Toppler.\n"
-                "Do you want to continue?", false, men_main_background_proc))
+                "Do you want to continue?"), false, men_main_background_proc))
       return;
   }
 
@@ -723,7 +736,7 @@ main_game_loop()
 }
 
 #ifdef HUNT_THE_FISH
-static char *
+static const char *
 men_main_bonusgame_proc(_menusystem *ms)
 {
   if (ms) {
@@ -734,11 +747,11 @@ men_main_bonusgame_proc(_menusystem *ms)
     bns_game();
     //snd_playtitle();
   }
-  return "Hunt the Fish";
+  return _("Hunt the Fish");
 }
 #endif /* HUNT_THE_FISH */
 
-static char *
+static const char *
 men_main_startgame_proc(_menusystem *ms)
 {
   if (ms) {
@@ -757,20 +770,20 @@ men_main_startgame_proc(_menusystem *ms)
     }
   }
   static char s[30];
-  snprintf(s, 30, "%c Start: %s %c", fontptrleft, lev_missionname(currentmission), fontptrright);
+  snprintf(s, 30, _("%c Start: %s %c"), fontptrleft, gettext(lev_missionname(currentmission)), fontptrright);
   return s;
 }
 
-static char *
+static const char *
 men_main_highscore_proc(_menusystem *ms)
 {
   if (ms) {
     show_scores();
   }
-  return "Highscores";
+  return _("Highscores");
 }
 
-static char *
+static const char *
 men_main_leveleditor_proc(_menusystem *ms)
 {
   if (ms) {
@@ -779,10 +792,10 @@ men_main_leveleditor_proc(_menusystem *ms)
     (void)key_sdlkey();
     //snd_playtitle();
   }
-  return "Level Editor";
+  return _("Level Editor");
 }
 
-static char *
+static const char *
 men_main_timer_proc(_menusystem *ms)
 {
   if (ms) {
@@ -833,36 +846,36 @@ men_main_timer_proc(_menusystem *ms)
   return NULL;
 }
 
-static char *
+static const char *
 men_game_return2game(_menusystem *tms)
 {
   if (tms) {
     tms->exitmenu = true;
     tms->mstate = 0;
   }
-  return "Return to Game";
+  return _("Return to Game");
 }
 
-static char *
+static const char *
 men_game_leavegame(_menusystem *tms)
 {
   if (tms) {
     tms->exitmenu = true;
     tms->mstate = 1;
   }
-  return "Quit Game";
+  return _("Quit Game");
 }
 
 
 
 #ifdef GAME_DEBUG_KEYS
 void run_debug_menu(void) {
-  _menusystem *ms = new_menu_system("DEBUG MENU", NULL, 0, SCREENHEI / 5);
+  _menusystem *ms = new_menu_system(_("DEBUG MENU"), NULL, 0, SCREENHEI / 5);
 
   ms = add_menu_option(ms, NULL, debug_menu_extralife);
   ms = add_menu_option(ms, NULL, debug_menu_extrascore);
   ms = add_menu_option(ms, NULL, NULL);
-  ms = add_menu_option(ms, "Back to Game", NULL);
+  ms = add_menu_option(ms, _("Back to Game"), NULL);
 
   ms = run_menu_system(ms, 0);
 
@@ -894,7 +907,7 @@ void men_main() {
   ms = add_menu_option(ms, NULL, men_main_bonusgame_proc);
 #endif
   ms = add_menu_option(ms, NULL, NULL);
-  ms = add_menu_option(ms, "Quit", NULL, SDLK_q);
+  ms = add_menu_option(ms, _("Quit"), NULL, SDLK_q);
 
   ms->wraparound = true;
 
