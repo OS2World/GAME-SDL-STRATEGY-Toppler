@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------------------#
 toppler.dat: crearc cross.dat font.dat graphics.dat menu.dat scroller.dat sprites.dat titles.dat dude.dat
 	./crearc dude cross font graphics sprites titles menu scroller
-	cp toppler.dat ../../toppler
+	cp toppler.dat ../toppler_highres
 
 crearc: crearc.c
 	gcc crearc.c -o crearc -lz
@@ -264,8 +264,14 @@ dude.dat: dude dude_colors.png dude_mask.png
 dude: dude.c
 	gcc dude.c -o dude -lSDL -lSDL_image -I/usr/include/SDL
 
+dude_colors.png: dude_colors_rgb.png colorreduction
+	./colorreduction dude_colors_rgb.png 256 dude_colors.png
+
+dude_mask.png: dude_mask_rgb.png colorreduction
+	./colorreduction dude_mask_rgb.png 256 dude_mask.png
+
 dude.clean:
-	rm -f dude.dat dude
+	rm -f dude.dat dude dude_mask.png dude_colors.png
 
 #-------------------------------------------------------#
 # rules to create the tool programs                     #
