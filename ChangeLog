@@ -1,4 +1,15 @@
-- make tower beeing drstroyed completely, even if target toor is not at top
+Version 0.99.2
+
+- make tower beeing destroyed completely, even if target toor is not at top
+- menu system cleanup, improvement in background image drawing
+- fix in tower and level loader robot number are now taken modulo actual robot counter
+- check mission prior to starting if there are unknown building block in there
+  this should allow to add new features and the old games might still work
+
+Version 0.99.1 18.Feb.2003
+
+- double file close on highscore saving lead to segmentation fault
+- on windoes systems highscore table asn't opened in binary mode
 
 Version 0.99.0 17.Feb.2003
 
