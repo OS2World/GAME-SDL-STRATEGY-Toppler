@@ -87,7 +87,7 @@ bool dcl_fileexists(const char *n) {
 char * homedir()
 {
 
-#if (SYSTEM == SYS_LINUX)
+#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
 
   return getenv("HOME");
 
@@ -102,7 +102,7 @@ char * homedir()
 /* checks if home/.toppler exists and creates it, if not */
 static void checkdir(void) {
 
-#if (SYSTEM == SYS_LINUX)
+#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
 
   char n[200];
 
@@ -120,8 +120,8 @@ static void checkdir(void) {
 
 FILE *open_data_file(const char *name) {
 
-#if (SYSTEM == SYS_LINUX)
 
+#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
   // look into actual directory
   if (dcl_fileexists(name))
     return fopen(name, "rb");
@@ -147,7 +147,7 @@ FILE *open_data_file(const char *name) {
 
 FILE *open_local_config_file(const char *name) {
 
-#if (SYSTEM == SYS_LINUX)
+#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
 
   checkdir();
 
@@ -171,7 +171,7 @@ FILE *open_local_config_file(const char *name) {
 
 FILE *create_local_config_file(const char *name) {
 
-#if (SYSTEM == SYS_LINUX)
+#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
 
   checkdir();
 
@@ -193,7 +193,7 @@ FILE *create_local_config_file(const char *name) {
 
 FILE *open_local_data_file(const char *name) {
 
-#if (SYSTEM == SYS_LINUX)
+#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
 
   checkdir();
 
@@ -213,7 +213,7 @@ FILE *open_local_data_file(const char *name) {
 
 FILE *create_local_data_file(const char *name) {
 
-#if (SYSTEM == SYS_LINUX)
+#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
 
   checkdir();
 

@@ -56,7 +56,7 @@ void ttsounds::addsound(char *fname, int id, int vol, int loops)
   }
 
 #ifdef HAVE_LIBSDL_MIXER
-  file f(&dataarchive, fname);
+  file f(dataarchive, fname);
 
   sounds[add_pos].sound = Mix_LoadWAV_RW(f.rwOps(), 1);
 #endif

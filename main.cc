@@ -72,6 +72,14 @@ static void QuitFunction(void) {
 }
 
 int main(int argc, char *argv[]) {
+  
+  // The following line was moved from a global variable to a pointer. 
+  // This was to allow the Mac OS X version of SDL to reposition the current
+  // working directory so that the hardcoded paths in the binary to point
+  // to the right spot without a lot of jiggery pokery.
+  // - jasonk@toast442.org
+
+  dataarchive = new archive(open_data_file("toppler.dat"));
 
   setlocale(LC_MESSAGES, "");
   setlocale(LC_CTYPE, "");

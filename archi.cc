@@ -167,5 +167,4 @@ SDL_RWops *file::rwOps(void) {
 }
 
 
-archive dataarchive(open_data_file("toppler.dat"));
-
+archive * dataarchive;

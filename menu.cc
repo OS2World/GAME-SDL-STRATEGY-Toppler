@@ -58,14 +58,14 @@ static void men_reload_sprites(Uint8 what) {
   Uint8 pal[3*256];
 
   if (what & 1) {
-    file fi(&dataarchive, menudat);
+    file fi(dataarchive, menudat);
 
     scr_read_palette(&fi, pal);
     menupicture = scr_loadsprites(&restsprites, &fi, 1, 640, 480, false, pal, 0);
   }
 
   if (what & 2) {
-    file fi(&dataarchive, titledat);
+    file fi(dataarchive, titledat);
 
     scr_read_palette(&fi, pal);
     titledata = scr_loadsprites(&fontsprites, &fi, 1, SPR_TITLEWID, SPR_TITLEHEI, true, pal, config.use_alpha_font());

@@ -331,7 +331,7 @@ static void loadgraphics(Uint8 what) {
 
   if (what == 0xff) {
 
-    file fi(&dataarchive, grafdat);
+    file fi(dataarchive, grafdat);
   
     fi.read(towerpal, 2*256);
   
@@ -377,7 +377,7 @@ static void loadgraphics(Uint8 what) {
   }
 
   {
-    file fi(&dataarchive, topplerdat);
+    file fi(dataarchive, topplerdat);
     
     scr_read_palette(&fi, pal);
   
@@ -385,7 +385,7 @@ static void loadgraphics(Uint8 what) {
   }
 
   {
-    file fi(&dataarchive, spritedat);
+    file fi(dataarchive, spritedat);
 
     scr_read_palette(&fi, pal);
   
@@ -422,7 +422,7 @@ static void loadgraphics(Uint8 what) {
   }
 
   {
-    file fi(&dataarchive, crossdat);
+    file fi(dataarchive, crossdat);
 
     Uint8 numcol = fi.getbyte();
   
@@ -521,7 +521,7 @@ static void loadfont(void) {
   Uint16 c;
   int fontheight;
 
-  file fi(&dataarchive, fontdat);
+  file fi(dataarchive, fontdat);
 
   scr_read_palette(&fi, pal);
 
@@ -539,7 +539,7 @@ static void loadfont(void) {
 
 static void loadscroller(void) {
 
-  file fi(&dataarchive, scrollerdat);
+  file fi(dataarchive, scrollerdat);
 
   Uint8 layers;
   Uint8 towerpos;
