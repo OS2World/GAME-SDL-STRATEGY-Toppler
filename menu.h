@@ -43,10 +43,14 @@ void men_input(char *s, int max_len, int xpos = -1, int ypos = (SCREENHEI  * 2) 
    1 if "yes" */
 unsigned char men_yn(char *s, bool defchoice);
 
+/* shows string s, waits either a certain time, (-1 = indefinitely),
+   and if fire = 1 -> "press fire", if fire = 2 -> "press space" */
+void men_info(char *s, long timeout = -1, int fire = 0);
+
 typedef void FDECL((*callback_proc), (void));
 
 /* sets the function that gets called whenever the background
- picture needs to be drawn */
+   needs to be drawn in men_yn(), and men_info() */
 void set_men_bgproc(callback_proc proc);
 
 #endif

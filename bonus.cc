@@ -32,7 +32,12 @@
 #define gametime        500
 #define scrollerspeed   2
 
-static long fish[fishcnt + 1][4];
+struct _fish {
+   long x;
+   long y;
+   long state;
+   long ydir;
+} static fish[fishcnt + 1];
 static long torpedox, torpedoy, subposx, subposy;
 
 static long callback_time;
@@ -59,8 +64,8 @@ bonus_background_proc(void)
   scr_draw_submarine(subposy - 20, subposx, callback_time & 3);
 
   for (b = 0; b <= fishcnt; b++) {
-    if (fish[b][0] >= 0)
-      scr_draw_fish(fish[b][1], fish[b][0], fish[b][2]);
+    if (fish[b].x >= -SPR_FISHWID)
+      scr_draw_fish(fish[b].y, fish[b].x, fish[b].state);
 
   }
   scr_draw_bonus2(callback_x, towerpos);
@@ -86,39 +91,15 @@ escape(long time, long x)
 }
 
 static void pause(long time, long x) {
-  long towerpos;
-  int b;
-
-  key_readkey();
+   
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
+   
+  callback_time = time;
+  callback_x = x;
+  set_men_bgproc(bonus_background_proc);
 
-  scr_putbar(0, 0, SCREENWID, SCREENHEI);
+  men_info("Pause", -1, 1);
 
-  if (time < 300)
-    towerpos = -(2*time);
-  else
-    towerpos = gametime * scrollerspeed - 2*time;
-
-  scr_draw_bonus1(x, towerpos);
-
-  if (torpedox != -1)
-    scr_draw_torpedo(torpedoy, torpedox);
-  scr_draw_submarine(subposy - 20, subposx, time & 3);
-
-  for (b = 0; b <= fishcnt; b++) {
-    if (fish[b][0] >= 0)
-      scr_draw_fish(fish[b][1], fish[b][0], fish[b][2]);
-
-  }
-  scr_draw_bonus2(x, towerpos);
-
-  scr_writetext_center(61, "PAUSE");
-  scr_writetext_center(95, "PRESS SPACE");
-
-  scr_swap();
-  do {
-    dcl_wait();
-  } while (!key_keypressed(fire_key));
   pal_colors(pal_bonusgame);
 }
 
@@ -138,7 +119,7 @@ bool bns_game(void) {
   subposy = 60;
 
   for (b = 0; b <= fishcnt; b++)
-    fish[b][0] = -1;
+    fish[b].x = -(SPR_FISHWID+1);
 
   torpedox = -1;
 
@@ -160,11 +141,11 @@ bool bns_game(void) {
       if (torpedox > (SCREENWID+10))
         torpedox = -1;
       for (b = 0; b <= fishcnt; b++) {
-        if (fish[b][0] > 0 && fish[b][2] >= 8) {
-          if ((torpedox > fish[b][0] - 12) && (torpedox < fish[b][0] + 16) &&
-              (torpedoy > fish[b][1] - 4) && (torpedoy < fish[b][1] + 16)) {
+        if (fish[b].x > 0 && fish[b].state >= 8) {
+          if ((torpedox > fish[b].x - 12) && (torpedox < fish[b].x + 16) &&
+              (torpedoy > fish[b].y - 4) && (torpedoy < fish[b].y + 16)) {
             torpedox = -1;
-            fish[b][2] -= 8;
+            fish[b].state -= 8;
           }
         }
       }
@@ -203,7 +184,7 @@ bool bns_game(void) {
     } else {
       if (subposx > (SCREENWID / 2) - 30)
         subposx -= 4;
-      else if (subposx < (SCREENWID / 2) -30)
+      else if (subposx < (SCREENWID / 2) - 30)
         subposx += 2;
 
       if (subposy > 60)
@@ -221,24 +202,24 @@ bool bns_game(void) {
     key_readkey();
 
     for (b = 0; b <= fishcnt; b++) {
-      if (fish[b][0] >= 0) {
-        fish[b][0] -= 2;
-        fish[b][1] += fish[b][3];
-        if (fish[b][1] > 150 || fish[b][1] < 40)
-          fish[b][3] = -fish[b][3];
-    
-        if (fish[b][2] >= 8)
-          fish[b][2] = ((fish[b][2] + 1) & 7) + 8;
-        else
-          fish[b][2] = (fish[b][2] + 1) & 7;
+      if (fish[b].x >= -SPR_FISHWID) {
+        fish[b].x -= 2;
+        fish[b].y += fish[b].ydir;
+        if (fish[b].y > 150 || fish[b].y < 40)
+          fish[b].ydir = -fish[b].ydir;
 
-        if ((fish[b][2] < 8) &&
-            (fish[b][0] > subposx - 20) &&
-            (fish[b][0] < subposx + 60) &&
-            (fish[b][1] > subposy - 20) &&
-            (fish[b][1] < subposy + 20)) {
+        if (fish[b].state >= 8)
+          fish[b].state = ((fish[b].state + 1) & 7) + 8;
+        else
+          fish[b].state = (fish[b].state + 1) & 7;
+
+        if ((fish[b].state < 8) &&
+            (fish[b].x > subposx - 20) &&
+            (fish[b].x < subposx + 60) &&
+            (fish[b].y > subposy - 20) &&
+            (fish[b].y < subposy + 20)) {
           pts_add(50);
-          fish[b][0] = -1;
+          fish[b].x = - (SPR_FISHWID + 1);
         }
       }
     }
@@ -247,13 +228,13 @@ bool bns_game(void) {
       nextfish--;
     else {
       for (b = 0; b <= fishcnt; b++) {
-        if (fish[b][0] < 0) {
-          fish[b][0] = SCREENWID;
-          fish[b][1] = rand() / (RAND_MAX / 70) + 60;
-          fish[b][2] = 8;
+        if (fish[b].x < -SPR_FISHWID) {
+          fish[b].x = SCREENWID;
+          fish[b].y = rand() / (RAND_MAX / 70) + 60;
+          fish[b].state = 8;
           do {
-            fish[b][3] = rand() / (RAND_MAX / 5) - 2;
-          } while (fish[b][3] == 0);
+            fish[b].ydir = rand() / (RAND_MAX / 5) - 2;
+          } while (fish[b].ydir == 0);
           nextfish = rand() / (RAND_MAX / 20) + 5;
           break;
         }
@@ -274,8 +255,8 @@ bool bns_game(void) {
     scr_draw_submarine(subposy - 20, subposx, time & 3);
 
     for (b = 0; b <= fishcnt; b++) {
-      if (fish[b][0] >= 0)
-        scr_draw_fish(fish[b][1], fish[b][0], fish[b][2]);
+      if (fish[b].x >= -SPR_FISHWID)
+        scr_draw_fish(fish[b].y, fish[b].x, fish[b].state);
 
     }
     scr_draw_bonus2(x, towerpos);

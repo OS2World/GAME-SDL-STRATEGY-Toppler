@@ -31,7 +31,6 @@
 
 #include <stdlib.h>
 
-
 static int bg_row;
 static int bg_col;
 
@@ -84,10 +83,11 @@ static bool edit_towercolor(int row, int col) {
     for (tmp = 0 ; tmp < 3; tmp++) {
       tmpcol = newc[tmp];
       z = ((SCREENHEI * 2) / 3) + tmp * (FONTHEI + 2);
-
-      scr_putbar((SCREENWID / 2) - (128 + 8), z, 256 + (8 * 2), FONTHEI, (tmp == activecol) ? bgcol : 66);
-      scr_putbar((SCREENWID / 2) - 128, z, 256, FONTHEI, 0);
-      scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, 62);
+       
+      scr_putbar((SCREENWID / 2) - (128 + 8), z, 8, FONTHEI, (tmp == activecol) ? bgcol : 66);
+      scr_putbar((SCREENWID / 2) + 128 - 1, z, 8, FONTHEI, (tmp == activecol) ? bgcol : 66);
+      scr_putbar((SCREENWID / 2) - 128 + tmpcol, z, 255 - tmpcol, FONTHEI, 0);
+      scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, brickcol + 3);
       cbuf[0] = '\0';
       sprintf(cbuf, "%5s  %.3d", colorname[tmp], tmpcol);
       scr_writetext_center(z, cbuf);
@@ -146,18 +146,36 @@ static bool edit_towercolor(int row, int col) {
   return (!oldpal && ((curc[0] != oldc[0]) || (curc[1] != oldc[1]) || (curc[2] != oldc[2])));
 }
 
-static void no_problems(int row, int col) {
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
-  scr_drawedit(row * 4, col * 8);
-  scr_writetext_center(61, "NO PROBLEMS");
-  scr_writetext_center(81, "FOUND");
-  scr_writetext_center(115,  "PRESS KEY");
-
-  scr_swap();
-
-  key_wait_for_any();
+static void edit_checktower(int &row, int &col) {
+   int r, c, pr;
+   r = row;
+   c = -col;
    
-  pal_colors(pal_towergame);
+   static char *problemstr[NUM_TPROBLEMS] = {
+      "No problems found",
+      "No starting step",
+      "Start is blocked",
+      "Unknown block",
+      "No elevator stop",
+      "Elevator is blocked",
+      "No opposing doorway",
+      "Broken doorway",
+      "No exit",
+      "Exit is unreachable"
+   };
+
+   pr = lev_is_consistent(r, c);
+   if ((r >= lev_towerrows()) && (lev_towerrows() > 0)) r = lev_towerrows() - 1;
+   bg_row = r;
+   bg_col = -c;
+
+   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
+
+   men_info(problemstr[pr % NUM_TPROBLEMS], 50, 2);
+   row = bg_row;
+   col = bg_col;
+
+   pal_colors(pal_towergame);
 }
 
 static void createMission(void) {
@@ -269,7 +287,7 @@ static void createMission(void) {
 
 const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Quit",          "Move up",        "Move down",       "Move left",
-   "Move right",    "Ins Row",        "Del Row",         "Rotate 180",    
+   "Move right",    "Insert Row",     "Delete Row",      "Rotate 180",
    "Put Space",     "Put Step",       "Put Vanisher",    "Put Slider",
    "Put Door",      "Put Goal",       "Check Tower",     "Put Robot 1",  
    "Put Robot 2",   "Put Robot 3",    "Put Robot 4",     "Put Robot 5",
@@ -357,25 +375,19 @@ void le_showkeyhelp(int row, int col) {
 
     switch (c) {
     case 1:
-      if (offs > 0)
-        offs--;
+      if (offs > 0) offs--;
       break;
     case 2:
-      if (offs + lines < SIZE(_ed_keys))
-        offs++;
+      if (offs + lines < SIZE(_ed_keys)) offs++;
       break;
     case 7:
-      if (offs > lines)
-        offs -= lines;
-      else
-        offs = 0;
+      if (offs > lines) offs -= lines;
+      else offs = 0;
       break;
     case ' ':
     case 8:
-      if (offs + (lines * 2) < SIZE(_ed_keys))
-        offs += lines;
-      else
-        offs = SIZE(_ed_keys) - lines;
+      if (offs + (lines * 2) < SIZE(_ed_keys)) offs += lines;
+      else offs = SIZE(_ed_keys) - lines;
       break;
     case '\r':
     case 27:
@@ -395,7 +407,6 @@ void le_edit(void) {
   char inp;
   int row = 0, col = 0;
   int tstep = 0;
-  //  char tname[TOWERNAMELEN+1] = "tower";
 
   lev_new();
 
@@ -443,11 +454,8 @@ void le_edit(void) {
 
       switch (action) {
       case EDACT_QUIT:
-        if (changed) {
-          ende = really_quit(row, col);
-        } else {
-          ende = true;
-        }
+        if (changed) ende = really_quit(row, col);
+        else ende = true;
         break;
       case EDACT_MOVEUP:
         if (row + 1 < lev_towerrows()) row++;
@@ -456,10 +464,10 @@ void le_edit(void) {
         if (row > 0) row--;
         break;
       case EDACT_MOVELEFT:
-        col ++;
+        col++;
         break;
       case EDACT_MOVERIGHT:
-        col --;
+        col--;
         break;
       case EDACT_ROT180:
         col += 8;
@@ -473,12 +481,12 @@ void le_edit(void) {
         changed = true;
         break;
       case EDACT_PUTSPACE:
-        lev_putspace(row, -col & 0xf);
-        changed = true;
-        break;
+	lev_putspace(row, -col & 0xf);
+	changed = true;
+	break;
       case EDACT_PUTSTEP:
-        lev_putstep(row, -col & 0xf);
-        changed = true;
+	lev_putstep(row, -col & 0xf);
+	changed = true;
         break;
       case EDACT_PUTVANISHER:
         lev_putvanishingstep(row, -col & 0xf);
@@ -497,16 +505,8 @@ void le_edit(void) {
         changed = true;
         break;
       case EDACT_CHECKTOWER:
-        {
-          int r, c;
-          if (!lev_is_consistent(r, c)) {
-            row = r;
-            col = -c;
-          } else {
-            no_problems(row, col);
-          }
-        }
-        break;
+	edit_checktower(row, col);
+	break;
       case EDACT_PUTROBOT1:
         lev_putrobot1(row, -col & 0xf);
         changed = true;

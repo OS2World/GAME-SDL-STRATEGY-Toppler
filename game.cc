@@ -80,8 +80,11 @@ void gam_arrival(void) {
 
   do {
     scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart);
-    scr_writetext_center((SCREENHEI / 5), "You are entering the");
-    scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, lev_towername());
+       scr_writetext_center((SCREENHEI / 5), "You are entering the");
+    if (strlen(lev_towername()))
+       scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, lev_towername());
+    else
+       scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, "Nameless Tower");
     scr_swap();
     snd_play();
 
@@ -277,17 +280,15 @@ static void game_background_proc(void) {
 }
 
 static void timeout(int &tower_position, int &tower_anglepos) {
-  int t = 0;
 
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
+   
+  bg_tower_pos = tower_position;
+  bg_tower_angle = tower_anglepos;
+  bg_time = 0;
+   
+  men_info("Time over", 150);
 
-  do {
-    scr_drawall(towerpos(top_verticalpos(), tower_position,
-                         top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, 0, false, 0, 0);
-    scr_writetext_center((SCREENHEI / 4), "Time over");
-    scr_swap();
-    dcl_wait();
-  } while (!(key_keypressed(fire_key) || (t++ > 90)));
   pal_colors(pal_towergame);
 }
 
@@ -362,6 +363,8 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
     snd_play();
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
+   
+  delay = 0;
 
   do {
      writebonus(tower_position, tower_angle, zeit, tec, extra, time);
@@ -429,20 +432,16 @@ static void escape(Uint8 &state, int &tower_position, int &tower_anglepos, int t
 }
 
 static void pause(int &tower_position, int tower_anglepos, int time) {
-  key_readkey();
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
 
   snd_wateroff();
 
-  do {
-    scr_drawall(towerpos(top_verticalpos(), tower_position,
-                         top_anglepos(), tower_anglepos),
-                (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
-    scr_writetext_center((SCREENHEI / 5), "Pause");
-    scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, "Press space");
-    dcl_wait();
-    scr_swap();
-  } while (!key_keypressed(fire_key));
+  bg_tower_pos = tower_position;
+  bg_tower_angle = tower_anglepos;
+  bg_time = time;
+   
+  men_info("Pause", -1, 1);
+
   pal_colors(pal_towergame);
 
   snd_wateron();

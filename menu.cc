@@ -364,6 +364,22 @@ unsigned char men_yn(char *s, bool defchoice) {
   return ((doquit == 0) ? 0 : 1);
 }
 
+void men_info(char *s, long timeout = -1, int fire = 0) {
+   bool ende = false;
+  do {
+     if (menu_background_proc) (*menu_background_proc) ();
+     scr_writetext_center((SCREENHEI / 5), s);
+     if (fire)
+       scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, (fire == 1) ? "Press fire" : "Press space");
+     scr_swap();
+     dcl_wait();
+     if (timeout > 0) timeout--;
+     if (!timeout) ende = true;
+     else if ((fire == 2) && (key_chartyped() == ' ')) ende = true;
+     else if ((fire != 2) && key_keypressed(fire_key)) ende = true;
+  } while (!ende);
+}
+
 static char *
 men_options_background_proc(void *ms)
 {

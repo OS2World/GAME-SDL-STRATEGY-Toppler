@@ -21,8 +21,6 @@
 
 #include <SDL_types.h>
 
-/* keyboard handling */
-
 #define no_key          0
 #define up_key          1
 #define down_key        2

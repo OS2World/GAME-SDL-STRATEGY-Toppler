@@ -54,7 +54,7 @@
   $89 10001001 platform (at the top station)
   $8c 10001100 stick (at middle station)
   $8d 10001101 platform (at middle station)
-  $91 10010001 vanishing steop
+  $91 10010001 vanishing step
   $B1 10110001 sliding step
   $C3 11000011 target door
       ||||||||
@@ -76,9 +76,11 @@
 
 */
 
+#define TOWERWID 16
+
 static Uint8 * mission = NULL;
 static Uint8 towerheight;
-static Uint8 tower[256][16];
+static Uint8 tower[256][TOWERWID];
 static char towername[TOWERNAMELEN+1];
 static Uint8 towernumber;
 static Uint8 towercolor_red, towercolor_green, towercolor_blue;
@@ -392,7 +394,7 @@ void lev_selecttower(Uint8 number) {
 
   // extract level data
   for (Uint8 row = 0; row < towerheight; row++)
-    for (Uint8 col = 0; col < 16; col++) {
+    for (Uint8 col = 0; col < TOWERWID; col++) {
       if ((mission[bitstart + (bpos >> 3)] << (bpos & 7)) & 0x80)
         tower[row][col] = mission[bytestart + wpos++];
       else
@@ -445,7 +447,7 @@ void lev_set_towertime(Uint16 time) {
 
 void lev_removelayer(Uint8 layer) {
   while (layer < towerheight) {
-    for (Uint8 c = 0; c < 16; c++)
+    for (Uint8 c = 0; c < TOWERWID; c++)
       tower[layer][c] = tower[layer + 1][c];
     layer++;
   }
@@ -467,8 +469,8 @@ void lev_removevanishstep(int row, int col) {
 
 /********** everything for doors ********/
 
-/* returns true, if the given position is the upper end of e door
- (a door is always e layers */
+/* returns true, if the given position is the upper end of a door
+ (a door is always 3 layers) */
 bool lev_is_door_upperend(int row, int col) {
   return lev_is_door(row, col) &&
     lev_is_door(row + 1, col) &&
@@ -662,7 +664,7 @@ bool lev_loadtower(char *fname) {
 
     fgets(line, 200, in);
 
-    for (int col = 0; col < 16; col++) 
+    for (int col = 0; col < TOWERWID; col++)
       tower[row][col] = conv_char2towercode(line[col]);
   }
 
@@ -681,13 +683,13 @@ bool lev_savetower(char *fname) {
   fprintf(out, "%hhu\n", towerheight);
 
   for (int row = towerheight - 1; row >= 0; row--) {
-    char line[16+2];
+    char line[TOWERWID+2];
 
-    for (int col = 0; col < 16; col++)
+    for (int col = 0; col < TOWERWID; col++)
       line[col] = conv_towercode2char(tower[row][col]);
 
-    line[16] = '|';
-    line[17] = 0;
+    line[TOWERWID] = '|';
+    line[TOWERWID+1] = 0;
     fprintf(out, "%s\n", line);
   }
 
@@ -700,12 +702,12 @@ bool lev_savetower(char *fname) {
 void lev_rotaterow(int row, bool clockwise) {
   if (clockwise) {
     int k = tower[row][0];
-    for (int i = 1; i < 16; i++)
+    for (int i = 1; i < TOWERWID; i++)
       tower[row][i - 1] = tower[row][i];
-    tower[row][15] = k;
+    tower[row][TOWERWID-1] = k;
   } else {
-    int k = tower[row][15];
-    for (int i = 15; i >= 0; i++)
+    int k = tower[row][TOWERWID-1];
+    for (int i = TOWERWID-1; i >= 0; i++)
       tower[row][i] = tower[row][i - 1];
     tower[row][0] = k;
   }
@@ -716,17 +718,17 @@ void lev_insertrow(int position) {
   if ((towerheight < 255) && (position < towerheight)) {
     int k = towerheight - 1;
     while (k >= position) {
-      for (int i = 0; i < 16; i++)
+      for (int i = 0; i < TOWERWID; i++)
         tower[k + 1][i] = tower[k][i];
       k--;
     }
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < TOWERWID; i++)
       tower[position][i] = 0;
     towerheight++;
     return;
   }
   if (towerheight == 0) {
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < TOWERWID; i++)
       tower[0][i] = 0;
     towerheight = 1;
   }
@@ -736,7 +738,7 @@ void lev_deleterow(int position) {
   if ((position < towerheight) && (position >= 0)) {
     int k = position + 1;
     while (k < towerheight) {
-      for (int i = 0; i < 16; i++)
+      for (int i = 0; i < TOWERWID; i++)
         tower[k - 1][i] = tower[k][i];
       k++;
     }
@@ -747,7 +749,7 @@ void lev_deleterow(int position) {
 void lev_new(void) {
   towerheight = 1;
 
-  for (int i = 0; i < 16; i++)
+  for (int i = 0; i < TOWERWID; i++)
     tower[0][i] = 0;
 }
 
@@ -813,36 +815,44 @@ void lev_puttopstation(int row, int col) { tower[row][col] = 0x08; }
 
 
 void lev_save(unsigned char *&data) {
-  data = new unsigned char[256*16+1];
+  data = new unsigned char[256*TOWERWID+1];
 
   data[0] = towerheight;
-  memmove(&data[1], tower, 256 * 16);
+  memmove(&data[1], tower, 256 * TOWERWID);
 }
 
 void lev_restore(unsigned char *&data) {
-  memmove(tower, &data[1], 256 * 16);
+  memmove(tower, &data[1], 256 * TOWERWID);
   towerheight = data[0];
 
   delete [] data;
 }
 
-bool lev_is_consistent(int &row, int &col) {
+int lev_is_consistent(int &row, int &col) {
 
+   int y;
+   bool has_exit = false;
   // check first, if the starting point is correctly organized
   // so that there is no obstacle and we can survive there
-  if ((tower[2][0] >= 0x10) ||
-      (tower[3][0] >= 0x10) ||
-      (tower[4][0] >= 0x10) ||
-      ((tower[1][0] != 0x80) && (tower[1][0] != 0x81) &&
+  if (((tower[1][0] != 0x80) && (tower[1][0] != 0x81) &&
        (tower[1][0] != 0x82) && (tower[1][0] != 0x85) &&
-       (tower[1][0] != 0xb1))) {
-    row = 1;
-    col = 0;
-    return false;
+       (tower[1][0] != 0xb1) && (tower[0][0] != 0x80) && 
+       (tower[0][0] != 0x81) && (tower[0][0] != 0x82) && 
+       (tower[0][0] != 0x85) && (tower[0][0] != 0xb1))) {
+	row = 1;
+	col = 0;
+	return TPROB_NOSTARTSTEP;
   }
+  for (y = 2; y < 5; y++)
+     if ((tower[y][0] >= 0x10) && (tower[y][0] != 0xc3) &&
+	 (tower[y][0] != 0x83)) {
+	row = y;
+	col = 0;
+	return TPROB_STARTBLOCKED;
+     }
 
   for (int r = 0; r < towerheight; r++)
-    for (int c = 0; c < 16; c++) {
+    for (int c = 0; c < TOWERWID; c++) {
 
       // check for undefined symbols
       if ((tower[r][c] != 0x00) &&
@@ -868,10 +878,10 @@ bool lev_is_consistent(int &row, int &col) {
           (tower[r][c] != 0x00)) {
         row = r;
         col = c;
-        return false;
+        return TPROB_UNDEFBLOCK;
       }
 
-      // check if elevators alway have an opposing end without unremovable
+      // check if elevators always have an opposing end without unremovable
       // obstacles
       if (tower[r][c] == 0x85) {
         int d = r + 1;
@@ -889,14 +899,14 @@ bool lev_is_consistent(int &row, int &col) {
               (tower[d][c] != 0x91)) {
             row = r;
             col = c;
-            return false;
+            return TPROB_ELEVATORBLOCKED;
           }
           d++;
         }
         if (d >= towerheight) {
           row = r;
           col = c;
-          return false;
+          return TPROB_NOELEVATORSTOP;
         }
       }
 
@@ -916,14 +926,14 @@ bool lev_is_consistent(int &row, int &col) {
               (tower[d][c] != 0x91)) {
             row = r;
             col = c;
-            return false;
+            return TPROB_ELEVATORBLOCKED;
           }
           d++;
         }
         if (d >= towerheight) {
           row = r;
           col = c;
-          return false;
+          return TPROB_NOELEVATORSTOP;
         }
         d = r - 1;
         while ((tower[d][c] != 0x85) && (d >= 0)) {
@@ -940,14 +950,14 @@ bool lev_is_consistent(int &row, int &col) {
               (tower[d][c] != 0x91)) {
             row = r;
             col = c;
-            return false;
+            return TPROB_ELEVATORBLOCKED;
           }
           d--;
         }
         if (d < 0) {
           row = r;
           col = c;
-          return false;
+          return TPROB_NOELEVATORSTOP;
         }
       }
 
@@ -967,23 +977,39 @@ bool lev_is_consistent(int &row, int &col) {
               (tower[d][c] != 0x91)) {
             row = r;
             col = c;
-            return false;
+            return TPROB_ELEVATORBLOCKED;
           }
           d--;
         }
         if (d < 0) {
           row = r;
           col = c;
-          return false;
+          return TPROB_NOELEVATORSTOP;
         }
       }
 
+      /* check for exit, and that it's reachable */
+      if (tower[r][c] == 0xc3) {
+	 int d = r - 1;
+	 while ((d >= 0) && (tower[d][c] == 0xc3))  d--;
+	 if (d >= 0) {
+	    if ((tower[d][c] != 0x80) && (tower[d][c] != 0x81) &&
+		(tower[d][c] != 0x82) && (tower[d][c] != 0x85) &&
+		(tower[d][c] != 0x80)) {
+	       row = r;
+	       col = c;
+	       return TPROB_UNREACHABLEEXIT;
+	    }
+	 }
+	 has_exit = true;
+      }
+      
       // check doors
       if ((tower[r][c] == 0x83) &&
-          ((tower[r][(c + 8) & 0xf] & 0x83) != 0x83)) {
+          ((tower[r][(c + (TOWERWID/2)) % TOWERWID] & 0x83) != 0x83)) {
         row = r;
         col = c;
-        return false;
+        return TPROB_NOOTHERDOOR;
       }
       if ((tower[r][c] & 0x83) == 0x83) {
         bool A = (r > 0) && (tower[r-1][c] == tower[r][c]);
@@ -994,12 +1020,13 @@ bool lev_is_consistent(int &row, int &col) {
         if (!(A&&B||A&&D||D&&E)) {
           row = r;
           col = c;
-          return false;
+          return TPROB_BROKENDOOR;
         }
       }
     }
 
-  return true;
+  if (!has_exit) return TPROB_NOEXIT;
+  return TPROB_NONE;
 }
 
 /* the functions for mission creation */
@@ -1076,13 +1103,13 @@ void lev_mission_addtower(char * name) {
   }
 
   /* load the tower */
-  Uint8 tower[256][16];
+  Uint8 tower[256][TOWERWID];
   for (row = rows - 1; row >= 0; row--) {
     char line[200];
 
     fgets(line, 200, in);
 
-    for (Uint8 col = 0; col < 16; col++)
+    for (Uint8 col = 0; col < TOWERWID; col++)
        tower[row][col] = conv_char2towercode(line[col]);
   }
 
@@ -1104,9 +1131,9 @@ void lev_mission_addtower(char * name) {
     fwrite(&c, 1, 1, fmission);
   }
 
-  /* output bytemep */
+  /* output bytemap */
   for (row = 0; row < rows; row++)
-    for (col = 0; col < 16; col ++)
+    for (col = 0; col < TOWERWID; col++)
       if (tower[row][col])
         fwrite(&tower[row][col], 1, 1, fmission);
 

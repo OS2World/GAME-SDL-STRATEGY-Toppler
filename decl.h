@@ -90,10 +90,6 @@
 #define SPR_FISHWID  20
 #define SPR_FISHHEI  20
 
-/* size of submarine top sprite */
-#define SPR_HAUBEWID 20
-#define SPR_HAUBEHEI 20
-
 /* submarine sprite size */
 #define SPR_SUBMWID 50 // 60
 #define SPR_SUBMHEI 39 // 17

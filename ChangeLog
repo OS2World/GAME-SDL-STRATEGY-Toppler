@@ -2,6 +2,7 @@ Version 0.97
 
 work from pasi
 
+- better consistency check
 - fixed typo "abbort".
 - fixed bug that made stars appear in the sky when moving to right.
 - fix compiler complaints.

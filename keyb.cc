@@ -17,11 +17,26 @@
  */
 
 #include "keyb.h"
+#include "decl.h"
 
 #include <SDL.h>
 
 static Uint8 keydown, keytyped;
 static char chartyped;
+
+struct _ttkeyconv {
+   Uint8 outval;
+   SDLKey key;
+} static ttkeyconv[] = {
+   {up_key, SDLK_UP},
+   {down_key, SDLK_DOWN},
+   {left_key, SDLK_LEFT},
+   {right_key, SDLK_RIGHT},
+   {fire_key, SDLK_SPACE},
+   {fire_key, SDLK_RETURN},
+   {break_key, SDLK_ESCAPE},
+   {pause_key, SDLK_p}
+};
 
 void key_init(void) {
   SDL_EnableKeyRepeat(0, 0);
@@ -36,7 +51,8 @@ void key_init(void) {
 
 static void handleEvents(void) {
   SDL_Event e;
-  Uint8 key;
+  Uint8 key = 0;
+  int tmpk;
 
   while (SDL_PollEvent(&e)) {
     if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP)) {
@@ -84,32 +100,12 @@ static void handleEvents(void) {
           chartyped = 9;
       }
 
-      switch (e.key.keysym.sym) {
-        case SDLK_SPACE:
-        case SDLK_RETURN:
-          key = fire_key;
-          break;
-        case SDLK_UP:
-          key = up_key;
-          break;
-        case SDLK_DOWN:
-          key = down_key;
-          break;
-        case SDLK_LEFT:
-          key = left_key;
-          break;
-        case SDLK_RIGHT:
-          key = right_key;
-          break;
-        case SDLK_ESCAPE:
-          key = break_key;
-          break;
-        case SDLK_p:
-          key = pause_key;
-          break;
-        default:
-          key = 0;
-      }
+      for (tmpk = 0; tmpk < SIZE(ttkeyconv); tmpk++)
+	 if (ttkeyconv[tmpk].key == e.key.keysym.sym) {
+	    key = ttkeyconv[tmpk].outval;
+	    break;
+	 }
+
       if (e.key.state == SDL_PRESSED) {
         keydown |= key;
         keytyped |= key;
