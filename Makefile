@@ -97,13 +97,11 @@ menu: menu.c
 menu.png: menu_rgb.png colorreduction
 	./colorreduction menu_rgb.png 256 menu.png
 
-menu_rgb.png: menu_pov/menu.pov menu_pov/turm1.inc menu_pov/turm2.inc \
-              menu_pov/turm3.inc menu_pov/turm4.inc \
-              menu_pov/turm5.inc menu_pov/turm6.inc \
-              menu_pov/turm7.inc menu_pov/turm8.inc
-	( cd menu_pov && $(POVRAY) menu.ini && mv menu_rgb.png .. )
+menu_rgb.png:
+	( cd menu_pov && make all && mv menu_rgb.png .. )
 
 menu.clean:
+	( cd menu_pov && make clean )
 	rm -f menu.dat menu
 
 #----------------------------------------------------------#
@@ -195,14 +193,19 @@ sprites_pov/balls/obj0.png: sprites_pov/balls/obj.pov sprites_pov/balls/obj.ini
 sprites_pov/snowball/obj0.png: sprites_pov/snowball/obj.pov sprites_pov/snowball/obj.ini
 	( cd sprites_pov/snowball && $(POVRAY) obj.ini )
 
-sprites_robots_colors_rgb.png: assembler sprites_pov/robot0_rgb_colors.png \
+sprites_robots_colors_rgb.png: assembler \
+                               sprites_pov/robot0_rgb_colors.png \
                                sprites_pov/robot1_rgb_colors.png \
                                sprites_pov/robot2_rgb_colors.png \
                                sprites_pov/robot3_rgb_colors.png \
                                sprites_pov/robot4_rgb_colors.png \
                                sprites_pov/robot5_rgb_colors.png \
                                sprites_pov/robot6_rgb_colors.png \
-                               sprites_pov/robot7_rgb_colors.png
+                               sprites_pov/robot7_rgb_colors.png \
+                               sprites_pov/robot8_rgb_colors.png
+	rm sprites_pov/robot0_rgb_colors.png sprites_pov/robot0_rgb_mask.png
+	mv sprites_pov/robot8_rgb_colors.png sprites_pov/robot0_rgb_colors.png
+	mv sprites_pov/robot8_rgb_mask.png sprites_pov/robot0_rgb_mask.png
 	./assembler v sprites_robots_rgb sprites_pov/robot*_rgb_colors.png sprites_pov/robot*_rgb_mask.png
 	mv sprites_robots_rgb_colors.png sprites_robots_colors_rgb.png
 	mv sprites_robots_rgb_mask.png sprites_robots_mask_rgb.png
@@ -252,8 +255,14 @@ sprites_pov/robot6/obj00.png: sprites_pov/robot6/obj.pov sprites_pov/robot6/obj.
 sprites_pov/robot7_rgb_colors.png: sprites_pov/robot7/obj00.png assembler
 	./assembler hm sprites_pov/robot7_rgb sprites_pov/robot7/*.png
 
-sprites_pov/robot7/obj00.png: sprites_pov/robot0/obj.pov sprites_pov/robot7/obj.ini sprites_pov/environment.pov
+sprites_pov/robot7/obj00.png: sprites_pov/robot7/obj.pov sprites_pov/robot7/obj.ini sprites_pov/environment.pov
 	( cd sprites_pov/robot7 && $(POVRAY) obj.ini )
+
+sprites_pov/robot8_rgb_colors.png: sprites_pov/robot8/obj00.png assembler
+	./assembler hm sprites_pov/robot8_rgb sprites_pov/robot8/*.png
+
+sprites_pov/robot8/obj00.png: sprites_pov/robot8/obj.pov sprites_pov/robot8/obj.ini sprites_pov/environment.pov
+	( cd sprites_pov/robot8 && $(POVRAY) obj.ini )
 
 sprites.clean:
 	rm -f sprites sprites.dat
@@ -267,6 +276,7 @@ sprites.clean:
 	rm -f sprites_pov/robot5/obj*.png
 	rm -f sprites_pov/robot6/obj*.png
 	rm -f sprites_pov/robot7/obj*.png
+	rm -f sprites_pov/robot8/obj*.png
 	rm -f sprites_balls_colors.png sprites_balls_rgb_colors.png sprites_balls_mask.png sprites_balls_rgb_mask.png
 	rm -f sprites_pov/balls/obj*.png
 	rm -f sprites_box_colors.png sprites_box_rgb_colors.png sprites_box_mask.png sprites_box_rgb_mask.png

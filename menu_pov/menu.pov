@@ -13,26 +13,17 @@ global_settings{
   }
 }
 */
-
 
 #declare scheibe = union {
-  object { klink rotate 00*(360/16)*z }
-  object { klink rotate 01*(360/16)*z }
-  object { klink rotate 02*(360/16)*z }
-  object { klink rotate 03*(360/16)*z }
-  object { klink rotate 04*(360/16)*z }
-  object { klink rotate 05*(360/16)*z }
-  object { klink rotate 06*(360/16)*z }
-  object { klink rotate 07*(360/16)*z }
-  object { klink rotate 08*(360/16)*z }
-  object { klink rotate 09*(360/16)*z }
-  object { klink rotate 10*(360/16)*z }
-  object { klink rotate 11*(360/16)*z }
-  object { klink rotate 12*(360/16)*z }
-  object { klink rotate 13*(360/16)*z }
-  object { klink rotate 14*(360/16)*z }
-  object { klink rotate 15*(360/16)*z }
+  #local klinkcount = 0;
+  #while (klinkcount < 16)
+     object { klink rotate klinkcount*(360/16)*z }
+     #declare klinkcount = klinkcount + 1;
+  #end
 }
+
+
+
 
 #declare zinne = difference {
   box { <61, -14, 0 >, <72, 14, 24> }
@@ -41,30 +32,12 @@ global_settings{
 }
 
 #declare zinnen = union {
-  object { zinne rotate 00*z*(360/16) }
-  object { zinne rotate 01*z*(360/16) }
-  object { zinne rotate 02*z*(360/16) }
-  object { zinne rotate 03*z*(360/16) }
-  object { zinne rotate 04*z*(360/16) }
-  object { zinne rotate 05*z*(360/16) }
-  object { zinne rotate 06*z*(360/16) }
-  object { zinne rotate 07*z*(360/16) }
-  object { zinne rotate 08*z*(360/16) }
-  object { zinne rotate 09*z*(360/16) }
-  object { zinne rotate 10*z*(360/16) }
-  object { zinne rotate 11*z*(360/16) }
-  object { zinne rotate 12*z*(360/16) }
-  object { zinne rotate 13*z*(360/16) }
-  object { zinne rotate 14*z*(360/16) }
-  object { zinne rotate 15*z*(360/16) }
+  #local zinnecount = 0;
+  #while (zinnecount < 16)
+    object { zinne rotate zinnecount*z*(360/16) }
+    #declare zinnecount = zinnecount + 1;
+  #end
   cylinder { <0,0,0> <0,0,12> 65 }
-}
-camera {
-  location <700,-300,300>
-  up z
-  right 4/3*x
-  sky z
-  look_at <0,500,300>
 }
 
 #declare stufe=cylinder { <58,0,0>, <58,0,7>, 10 texture { pigment { color rgb 0.7 } } }
@@ -73,43 +46,73 @@ camera {
 
 #declare moertel = texture { pigment { color rgb <0.7,0.7,0.7> } }
 
+#declare current_layer = 0;
+
+#macro battlement()
+  object { zinnen translate z*8*current_layer pigment { farb } }
+#end /* battlement */
+
+/* 
+ * macros the towers must use
+ */
+#macro step(dx)
+  object { stufe rotate z*(360/16)*dx translate z*8*(current_layer-1) }
+#end /* step */
+
+#macro elev(dx)
+  object { eleva rotate z*(360/16)*dx translate z*8*(current_layer-1) }
+#end /* eleva */
+
+#macro pillar(dx)
+  object { stutz rotate z*(360/16)*dx translate z*8*(current_layer-1) }
+#end /* pillar */
+
+#macro door(dx)
+  box { <-50,-10, -0.001>, <50,10,8.002> rotate z*(360/16)*dx translate z*8*(current_layer-1) pigment { farb } }
+#end /* door */
+
+/* add a layer to the tower */
+#macro layer()
+  union {
+    object { scheibe rotate z*11.25*mod((current_layer+1), 2) translate z*8*current_layer pigment {farb} }
+    cylinder { <0, 0, 0>, <0,0,8.001>, 45 open translate z*8*current_layer texture { moertel } }
+  }
+  #declare current_layer = current_layer + 1;
+#end /* layer */
+
+/*
+ * Include a tower from file. 
+ *
+ * In the file you must #declare 2 variables: "farb" and "turm". 
+ * farb is of type color, and turm should be a union, where you 
+ * use only the above declared macroes.
+ * eg.
+ * #declare farb = color rgb <0.5, 0, 1>;
+ * #declare turm = union { layer() step(0) step(1) layer() layer() };
+ * 
+ */
+#macro load_tower(towerfname)
+  object {
+    #include towerfname
+    union { 
+      object { turm }
+      object { battlement() }
+    }
+//    bounded_by { cylinder { <0, 0, 0>, <0, 0, 8*(current_layer+3)+32>, 80 } }
+    #declare current_layer = 0;
+  }
+#end /* load_tower */
+
+
+camera {
+  location <700,-300,300>
+  up z
+  right 4/3*x
+  sky z
+  look_at <0,500,300>
+}
+
 light_source { <1300,1700,300> color rgb <1,1,1> }
-
-#declare farb1=pigment { color rgb <1,0,0> }
-#declare farb2=pigment { color rgb <0.59,0.59,1> }
-#declare farb3=pigment { color rgb 0.6666 }
-#declare farb4=pigment { color rgb <0.64, 0.47, 0.345> }
-#declare farb5=pigment { color rgb <0,0.6,0.6> }
-#declare farb6=pigment { color rgb <1,0.39,0.39> }
-#declare farb7=pigment { color rgb <0.588,1,0.588> }
-#declare farb8=pigment { color rgb <1,0.6,0> }
-
-#declare scheibe1 = object { scheibe pigment { farb1 } }
-#declare scheibe2 = object { scheibe pigment { farb2 } }
-#declare scheibe3 = object { scheibe pigment { farb3 } }
-#declare scheibe4 = object { scheibe pigment { farb4 } }
-#declare scheibe5 = object { scheibe pigment { farb5 } }
-#declare scheibe6 = object { scheibe pigment { farb6 } }
-#declare scheibe7 = object { scheibe pigment { farb7 } }
-#declare scheibe8 = object { scheibe pigment { farb8 } }
-
-#declare zinnen1 = object { zinnen pigment { farb1 } }
-#declare zinnen2 = object { zinnen pigment { farb2 } }
-#declare zinnen3 = object { zinnen pigment { farb3 } }
-#declare zinnen4 = object { zinnen pigment { farb4 } }
-#declare zinnen5 = object { zinnen pigment { farb5 } }
-#declare zinnen6 = object { zinnen pigment { farb6 } }
-#declare zinnen7 = object { zinnen pigment { farb7 } }
-#declare zinnen8 = object { zinnen pigment { farb8 } }
-
-#include "turm1.inc"
-#include "turm2.inc"
-#include "turm3.inc"
-#include "turm4.inc"
-#include "turm5.inc"
-#include "turm6.inc"
-#include "turm7.inc"
-#include "turm8.inc"
 
 plane {
   z, 0
@@ -124,34 +127,41 @@ plane {
     }
   }
 }
+
 union {
   sphere { <0,0,0>,50000 
-     pigment { color rgb 1 } 
-     finish { ambient 0.9 }
+     pigment { color rgb 1 }
+     normal { bumps 200 scale 4500 }
+     finish { ambient 0.8 }
   }
   intersection {
     sphere { <0,0,0>,50001 }
     box { <-50001,-50001,-50001>, <0,50001,50001>}
     pigment { color rgb <0,0,0.15> }
-    finish { ambient 1 }
+    normal { bumps 200 scale 4500 }
+    finish { ambient 0.4 }
   }
   rotate z*50
   rotate -x*35
   translate <0,500000,60000>
   rotate z*14
+  pigment { color rgb 1 }
   finish {
     diffuse 0
     phong 0
   }
 }
 
-object { turm1 translate <0,000,0> }
-object { turm2 translate <0,200,0> }
-object { turm3 translate <0,400,0> }
-object { turm4 translate <0,600,0> }
-object { turm5 translate <0,800,0> }
-object { turm6 translate <0,1000,0> }
-object { turm7 translate <0,1200,0> }
-object { turm8 translate <0,1400,0> }
+#declare num_towers = 8;
 
-sky_sphere { pigment { color rgb <0,0,0.2> } }
+#declare current_tower = 0;
+#while (current_tower < num_towers)
+  #declare towerfname = concat("turm", str(current_tower+1, 0, 0), ".inc");
+  object {
+    load_tower(towerfname)
+    translate <0, 200*current_tower, 0>
+  }
+  #declare current_tower = current_tower + 1;
+#end
+
+sky_sphere { pigment { color rgb <0, 0, 0.05> } }

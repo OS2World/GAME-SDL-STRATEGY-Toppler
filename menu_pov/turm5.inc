@@ -1,308 +1,343 @@
-#declare turmot5 = union {
-  cylinder { <0,0,0>, <0,0,768>, 46 texture { moertel } }
-  object { scheibe5 rotate z* 0.00 translate z*8*0 }
-  object { scheibe5 rotate z*11.25 translate z*8*1 }
-  object { stufe rotate z*(360/16)*0 translate z*8*1 }
-  object { stufe rotate z*(360/16)*1 translate z*8*1 }
-  object { stufe rotate z*(360/16)*6 translate z*8*1 }
-  object { stufe rotate z*(360/16)*7 translate z*8*1 }
-  object { stufe rotate z*(360/16)*8 translate z*8*1 }
-  object { stufe rotate z*(360/16)*9 translate z*8*1 }
-  object { scheibe5 rotate z* 0.00 translate z*8*2 }
-  object { eleva rotate z*(360/16)*1 translate z*8*2 }
-  object { eleva rotate z*(360/16)*6 translate z*8*2 }
-  object { scheibe5 rotate z*11.25 translate z*8*3 }
-  object { scheibe5 rotate z* 0.00 translate z*8*4 }
-  object { scheibe5 rotate z*11.25 translate z*8*5 }
-  object { scheibe5 rotate z* 0.00 translate z*8*6 }
-  object { stufe rotate z*(360/16)*2 translate z*8*6 }
-  object { stufe rotate z*(360/16)*3 translate z*8*6 }
-  object { stufe rotate z*(360/16)*4 translate z*8*6 }
-  object { stufe rotate z*(360/16)*5 translate z*8*6 }
-  object { stufe rotate z*(360/16)*7 translate z*8*6 }
-  object { stufe rotate z*(360/16)*8 translate z*8*6 }
-  object { stufe rotate z*(360/16)*9 translate z*8*6 }
-  object { stufe rotate z*(360/16)*10 translate z*8*6 }
-  object { stufe rotate z*(360/16)*11 translate z*8*6 }
-  object { stufe rotate z*(360/16)*12 translate z*8*6 }
-  object { stufe rotate z*(360/16)*13 translate z*8*6 }
-  object { stufe rotate z*(360/16)*14 translate z*8*6 }
-  object { scheibe5 rotate z*11.25 translate z*8*7 }
-  object { stutz rotate z*(360/16)*14 translate z*8*7 }
-  object { scheibe5 rotate z* 0.00 translate z*8*8 }
-  object { stutz rotate z*(360/16)*14 translate z*8*8 }
-  object { scheibe5 rotate z*11.25 translate z*8*9 }
-  object { stufe rotate z*(360/16)*7 translate z*8*9 }
-  object { stutz rotate z*(360/16)*14 translate z*8*9 }
-  object { scheibe5 rotate z* 0.00 translate z*8*10 }
-  object { stufe rotate z*(360/16)*0 translate z*8*10 }
-  object { stufe rotate z*(360/16)*8 translate z*8*10 }
-  object { stufe rotate z*(360/16)*14 translate z*8*10 }
-  object { stufe rotate z*(360/16)*15 translate z*8*10 }
-  object { scheibe5 rotate z*11.25 translate z*8*11 }
-  object { stufe rotate z*(360/16)*9 translate z*8*11 }
-  object { scheibe5 rotate z* 0.00 translate z*8*12 }
-  object { stufe rotate z*(360/16)*10 translate z*8*12 }
-  object { scheibe5 rotate z*11.25 translate z*8*13 }
-  object { stufe rotate z*(360/16)*3 translate z*8*13 }
-  object { stufe rotate z*(360/16)*11 translate z*8*13 }
+
+/* Broken path */
+
+#declare farb = color rgb <0/255,155/255,155/255>;
+
+#declare turm = union {
+  layer()
+  layer()
+  step(0)
+  step(1)
+  step(6)
+  step(7)
+  step(8)
+  step(9)
+  layer()
+  elev(1)
+  elev(6)
+  layer()
+  layer()
+  layer()
+  layer()
+  step(2)
+  step(3)
+  step(4)
+  step(5)
+  step(7)
+  step(8)
+  step(9)
+  step(10)
+  step(11)
+  step(12)
+  step(13)
+  step(14)
+  layer()
+  pillar(14)
+  layer()
+  pillar(14)
+  layer()
+  step(7)
+  pillar(14)
+  layer()
+  step(0)
+  step(8)
+  step(14)
+  step(15)
+  layer()
+  step(9)
+  layer()
+  step(10)
+  layer()
+  step(3)
+  step(11)
   difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*14 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*3 translate z*8*14 texture { moertel } }
+    layer()
+    door(3)
+    door(11)
   }
-  object { stufe rotate z*(360/16)*4 translate z*8*14 }
+  step(4)
   difference {
-    object { scheibe5 rotate z*11.25 translate z*8*15 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*3 translate z*8*15 texture { moertel } }
+    layer()
+    door(3)
+    door(11)
   }
-  object { stufe rotate z*(360/16)*5 translate z*8*15 }
+  step(5)
   difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*16 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*3 translate z*8*16 texture { moertel } }
+    layer()
+    door(3)
+    door(11)
   }
-  object { stufe rotate z*(360/16)*6 translate z*8*16 }
-  object { scheibe5 rotate z*11.25 translate z*8*17 }
-  object { stufe rotate z*(360/16)*7 translate z*8*17 }
-  object { scheibe5 rotate z* 0.00 translate z*8*18 }
-  object { stufe rotate z*(360/16)*8 translate z*8*18 }
-  object { stufe rotate z*(360/16)*9 translate z*8*18 }
-  object { scheibe5 rotate z*11.25 translate z*8*19 }
-  object { eleva rotate z*(360/16)*9 translate z*8*19 }
-  object { scheibe5 rotate z* 0.00 translate z*8*20 }
-  object { scheibe5 rotate z*11.25 translate z*8*21 }
-  object { scheibe5 rotate z* 0.00 translate z*8*22 }
-  object { stufe rotate z*(360/16)*1 translate z*8*22 }
-  object { stufe rotate z*(360/16)*2 translate z*8*22 }
-  object { stufe rotate z*(360/16)*3 translate z*8*22 }
-  object { scheibe5 rotate z*11.25 translate z*8*23 }
-  object { eleva rotate z*(360/16)*1 translate z*8*23 }
-  object { eleva rotate z*(360/16)*3 translate z*8*23 }
-  object { scheibe5 rotate z* 0.00 translate z*8*24 }
-  object { scheibe5 rotate z*11.25 translate z*8*25 }
-  object { scheibe5 rotate z* 0.00 translate z*8*26 }
-  object { scheibe5 rotate z*11.25 translate z*8*27 }
-  object { stufe rotate z*(360/16)*1 translate z*8*27 }
-  object { stufe rotate z*(360/16)*3 translate z*8*27 }
-  object { scheibe5 rotate z* 0.00 translate z*8*28 }
-  object { stufe rotate z*(360/16)*2 translate z*8*28 }
-  object { stufe rotate z*(360/16)*10 translate z*8*28 }
-  object { stufe rotate z*(360/16)*11 translate z*8*28 }
-  object { scheibe5 rotate z*11.25 translate z*8*29 }
-  object { eleva rotate z*(360/16)*11 translate z*8*29 }
-  object { scheibe5 rotate z* 0.00 translate z*8*30 }
-  object { stufe rotate z*(360/16)*0 translate z*8*30 }
-  object { stufe rotate z*(360/16)*2 translate z*8*30 }
-  object { stufe rotate z*(360/16)*4 translate z*8*30 }
-  object { stufe rotate z*(360/16)*6 translate z*8*30 }
-  object { stufe rotate z*(360/16)*8 translate z*8*30 }
-  object { scheibe5 rotate z*11.25 translate z*8*31 }
-  object { scheibe5 rotate z* 0.00 translate z*8*32 }
-  object { scheibe5 rotate z*11.25 translate z*8*33 }
-  object { stufe rotate z*(360/16)*10 translate z*8*33 }
-  object { scheibe5 rotate z* 0.00 translate z*8*34 }
-  object { scheibe5 rotate z*11.25 translate z*8*35 }
-  object { scheibe5 rotate z* 0.00 translate z*8*36 }
-  object { scheibe5 rotate z*11.25 translate z*8*37 }
-  object { stufe rotate z*(360/16)*9 translate z*8*37 }
-  object { scheibe5 rotate z* 0.00 translate z*8*38 }
-  object { stufe rotate z*(360/16)*5 translate z*8*38 }
-  object { stufe rotate z*(360/16)*6 translate z*8*38 }
-  object { stufe rotate z*(360/16)*7 translate z*8*38 }
-  object { scheibe5 rotate z*11.25 translate z*8*39 }
-  object { eleva rotate z*(360/16)*5 translate z*8*39 }
-  object { scheibe5 rotate z* 0.00 translate z*8*40 }
-  object { stufe rotate z*(360/16)*0 translate z*8*40 }
-  object { stufe rotate z*(360/16)*8 translate z*8*40 }
-  object { stufe rotate z*(360/16)*10 translate z*8*40 }
-  object { stufe rotate z*(360/16)*12 translate z*8*40 }
-  object { stufe rotate z*(360/16)*14 translate z*8*40 }
-  object { stufe rotate z*(360/16)*15 translate z*8*40 }
-  object { scheibe5 rotate z*11.25 translate z*8*41 }
-  object { scheibe5 rotate z* 0.00 translate z*8*42 }
-  object { scheibe5 rotate z*11.25 translate z*8*43 }
-  object { scheibe5 rotate z* 0.00 translate z*8*44 }
-  object { stufe rotate z*(360/16)*7 translate z*8*44 }
-  object { scheibe5 rotate z*11.25 translate z*8*45 }
-  object { stufe rotate z*(360/16)*12 translate z*8*45 }
-  object { stufe rotate z*(360/16)*13 translate z*8*45 }
-  object { stufe rotate z*(360/16)*14 translate z*8*45 }
+  step(6)
+  layer()
+  step(7)
+  layer()
+  step(8)
+  step(9)
+  layer()
+  elev(9)
+  layer()
+  layer()
+  layer()
+  step(1)
+  step(2)
+  step(3)
+  layer()
+  elev(1)
+  elev(3)
+  layer()
+  layer()
+  layer()
+  layer()
+  step(1)
+  step(3)
+  layer()
+  step(2)
+  step(10)
+  step(11)
+  layer()
+  elev(11)
+  layer()
+  step(0)
+  step(2)
+  step(4)
+  step(6)
+  step(8)
+  layer()
+  layer()
+  layer()
+  step(10)
+  layer()
+  layer()
+  layer()
+  layer()
+  step(9)
+  layer()
+  step(5)
+  step(6)
+  step(7)
+  layer()
+  elev(5)
+  layer()
+  step(0)
+  step(8)
+  step(10)
+  step(12)
+  step(14)
+  step(15)
+  layer()
+  layer()
+  layer()
+  layer()
+  step(7)
+  layer()
+  step(12)
+  step(13)
+  step(14)
   difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*46 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*6 translate z*8*46 texture { moertel } }
+    layer()
+    door(6)
+    door(14)
   }
-  object { stufe rotate z*(360/16)*8 translate z*8*46 }
-  object { stufe rotate z*(360/16)*9 translate z*8*46 }
+  step(8)
+  step(9)
   difference {
-    object { scheibe5 rotate z*11.25 translate z*8*47 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*6 translate z*8*47 texture { moertel } }
-  }
-  difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*48 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*6 translate z*8*48 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*3 translate z*8*48 }
-  object { scheibe5 rotate z*11.25 translate z*8*49 }
-  object { scheibe5 rotate z* 0.00 translate z*8*50 }
-  object { scheibe5 rotate z*11.25 translate z*8*51 }
-  object { stufe rotate z*(360/16)*11 translate z*8*51 }
-  object { scheibe5 rotate z* 0.00 translate z*8*52 }
-  object { eleva rotate z*(360/16)*11 translate z*8*52 }
-  object { stufe rotate z*(360/16)*12 translate z*8*52 }
-  object { scheibe5 rotate z*11.25 translate z*8*53 }
-  object { stufe rotate z*(360/16)*13 translate z*8*53 }
-  object { scheibe5 rotate z* 0.00 translate z*8*54 }
-  object { stufe rotate z*(360/16)*0 translate z*8*54 }
-  object { stufe rotate z*(360/16)*14 translate z*8*54 }
-  object { stufe rotate z*(360/16)*15 translate z*8*54 }
-  object { scheibe5 rotate z*11.25 translate z*8*55 }
-  object { stufe rotate z*(360/16)*4 translate z*8*55 }
-  object { stufe rotate z*(360/16)*6 translate z*8*55 }
-  object { scheibe5 rotate z* 0.00 translate z*8*56 }
-  object { stufe rotate z*(360/16)*3 translate z*8*56 }
-  object { stufe rotate z*(360/16)*7 translate z*8*56 }
-  object { stufe rotate z*(360/16)*8 translate z*8*56 }
-  object { scheibe5 rotate z*11.25 translate z*8*57 }
-  object { stufe rotate z*(360/16)*2 translate z*8*57 }
-  object { scheibe5 rotate z* 0.00 translate z*8*58 }
-  object { stufe rotate z*(360/16)*1 translate z*8*58 }
-  object { scheibe5 rotate z*11.25 translate z*8*59 }
-  object { scheibe5 rotate z* 0.00 translate z*8*60 }
-  object { stufe rotate z*(360/16)*4 translate z*8*60 }
-  object { stufe rotate z*(360/16)*6 translate z*8*60 }
-  object { scheibe5 rotate z*11.25 translate z*8*61 }
-  object { scheibe5 rotate z* 0.00 translate z*8*62 }
-  object { scheibe5 rotate z*11.25 translate z*8*63 }
-  object { stufe rotate z*(360/16)*3 translate z*8*63 }
-  difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*64 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*3 translate z*8*64 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*4 translate z*8*64 }
-  difference {
-    object { scheibe5 rotate z*11.25 translate z*8*65 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*3 translate z*8*65 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*5 translate z*8*65 }
-  difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*66 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*3 translate z*8*66 texture { moertel } }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*5 translate z*8*66 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*6 translate z*8*66 }
-  difference {
-    object { scheibe5 rotate z*11.25 translate z*8*67 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*5 translate z*8*67 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*7 translate z*8*67 }
-  difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*68 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*5 translate z*8*68 texture { moertel } }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*7 translate z*8*68 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*8 translate z*8*68 }
-  difference {
-    object { scheibe5 rotate z*11.25 translate z*8*69 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*7 translate z*8*69 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*1 translate z*8*69 }
-  object { stufe rotate z*(360/16)*9 translate z*8*69 }
-  difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*70 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*1 translate z*8*70 texture { moertel } }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*7 translate z*8*70 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*2 translate z*8*70 }
-  difference {
-    object { scheibe5 rotate z*11.25 translate z*8*71 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*1 translate z*8*71 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*3 translate z*8*71 }
-  difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*72 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*1 translate z*8*72 texture { moertel } }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*3 translate z*8*72 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*4 translate z*8*72 }
-  difference {
-    object { scheibe5 rotate z*11.25 translate z*8*73 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*3 translate z*8*73 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*5 translate z*8*73 }
-  object { stufe rotate z*(360/16)*13 translate z*8*73 }
-  difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*74 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*3 translate z*8*74 texture { moertel } }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*5 translate z*8*74 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*6 translate z*8*74 }
-  object { stufe rotate z*(360/16)*12 translate z*8*74 }
-  difference {
-    object { scheibe5 rotate z*11.25 translate z*8*75 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*5 translate z*8*75 texture { moertel } }
-  }
-  object { stufe rotate z*(360/16)*7 translate z*8*75 }
-  object { stufe rotate z*(360/16)*9 translate z*8*75 }
-  object { stufe rotate z*(360/16)*10 translate z*8*75 }
-  object { stufe rotate z*(360/16)*11 translate z*8*75 }
-  difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*76 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*5 translate z*8*76 texture { moertel } }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*7 translate z*8*76 texture { moertel } }
-  }
-  object { eleva rotate z*(360/16)*9 translate z*8*76 }
-  difference {
-    object { scheibe5 rotate z*11.25 translate z*8*77 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*7 translate z*8*77 texture { moertel } }
+    layer()
+    door(6)
+    door(14)
   }
   difference {
-    object { scheibe5 rotate z* 0.00 translate z*8*78 }
-    box { <-50,-10,0>, <50,10,8.001> rotate z*(360/16)*7 translate z*8*78 texture { moertel } }
+    layer()
+    door(6)
+    door(14)
   }
-  object { scheibe5 rotate z*11.25 translate z*8*79 }
-  object { scheibe5 rotate z* 0.00 translate z*8*80 }
-  object { scheibe5 rotate z*11.25 translate z*8*81 }
-  object { scheibe5 rotate z* 0.00 translate z*8*82 }
-  object { scheibe5 rotate z*11.25 translate z*8*83 }
-  object { scheibe5 rotate z* 0.00 translate z*8*84 }
-  object { scheibe5 rotate z*11.25 translate z*8*85 }
-  object { stufe rotate z*(360/16)*0 translate z*8*85 }
-  object { stufe rotate z*(360/16)*1 translate z*8*85 }
-  object { stufe rotate z*(360/16)*2 translate z*8*85 }
-  object { stufe rotate z*(360/16)*3 translate z*8*85 }
-  object { stufe rotate z*(360/16)*4 translate z*8*85 }
-  object { stufe rotate z*(360/16)*5 translate z*8*85 }
-  object { stufe rotate z*(360/16)*6 translate z*8*85 }
-  object { stufe rotate z*(360/16)*7 translate z*8*85 }
-  object { stufe rotate z*(360/16)*8 translate z*8*85 }
-  object { stufe rotate z*(360/16)*10 translate z*8*85 }
-  object { stufe rotate z*(360/16)*11 translate z*8*85 }
-  object { stufe rotate z*(360/16)*12 translate z*8*85 }
-  object { stufe rotate z*(360/16)*13 translate z*8*85 }
-  object { stufe rotate z*(360/16)*14 translate z*8*85 }
-  object { stufe rotate z*(360/16)*15 translate z*8*85 }
-  object { scheibe5 rotate z* 0.00 translate z*8*86 }
-  object { stutz rotate z*(360/16)*10 translate z*8*86 }
-  object { eleva rotate z*(360/16)*11 translate z*8*86 }
-  object { scheibe5 rotate z*11.25 translate z*8*87 }
-  object { stutz rotate z*(360/16)*10 translate z*8*87 }
-  object { scheibe5 rotate z* 0.00 translate z*8*88 }
-  object { stutz rotate z*(360/16)*10 translate z*8*88 }
-  object { scheibe5 rotate z*11.25 translate z*8*89 }
-  object { stutz rotate z*(360/16)*10 translate z*8*89 }
-  object { scheibe5 rotate z* 0.00 translate z*8*90 }
-  object { stutz rotate z*(360/16)*10 translate z*8*90 }
-  object { scheibe5 rotate z*11.25 translate z*8*91 }
-  object { stufe rotate z*(360/16)*10 translate z*8*91 }
-  object { scheibe5 rotate z* 0.00 translate z*8*92 }
-  object { scheibe5 rotate z*11.25 translate z*8*93 }
-  object { stufe rotate z*(360/16)*5 translate z*8*93 }
-  object { scheibe5 rotate z* 0.00 translate z*8*94 }
-  object { stufe rotate z*(360/16)*4 translate z*8*94 }
-  object { scheibe5 rotate z*11.25 translate z*8*95 }
-  object { zinnen5 translate z*768 }
-}
-#declare turm5 = object {
-  object { turmot5 }
-    
-  bounded_by { cylinder { <0, 0, 0> <0, 0, 800> 80 } }
+  step(3)
+  layer()
+  layer()
+  layer()
+  step(11)
+  layer()
+  elev(11)
+  step(12)
+  layer()
+  step(13)
+  layer()
+  step(0)
+  step(14)
+  step(15)
+  layer()
+  step(4)
+  step(6)
+  layer()
+  step(3)
+  step(7)
+  step(8)
+  layer()
+  step(2)
+  layer()
+  step(1)
+  layer()
+  layer()
+  step(4)
+  step(6)
+  layer()
+  layer()
+  layer()
+  step(3)
+  difference {
+    layer()
+    door(3)
+    door(11)
+  }
+  step(4)
+  difference {
+    layer()
+    door(3)
+    door(11)
+  }
+  step(5)
+  difference {
+    layer()
+    door(3)
+    door(5)
+    door(11)
+    door(13)
+  }
+  step(6)
+  difference {
+    layer()
+    door(5)
+    door(13)
+  }
+  step(7)
+  difference {
+    layer()
+    door(5)
+    door(7)
+    door(13)
+    door(15)
+  }
+  step(8)
+  difference {
+    layer()
+    door(7)
+    door(15)
+  }
+  step(1)
+  step(9)
+  difference {
+    layer()
+    door(1)
+    door(7)
+    door(9)
+    door(15)
+  }
+  step(2)
+  difference {
+    layer()
+    door(1)
+    door(9)
+  }
+  step(3)
+  difference {
+    layer()
+    door(1)
+    door(3)
+    door(9)
+    door(11)
+  }
+  step(4)
+  difference {
+    layer()
+    door(3)
+    door(11)
+  }
+  step(5)
+  step(13)
+  difference {
+    layer()
+    door(3)
+    door(5)
+    door(11)
+    door(13)
+  }
+  step(6)
+  step(12)
+  difference {
+    layer()
+    door(5)
+    door(13)
+  }
+  step(7)
+  step(9)
+  step(10)
+  step(11)
+  difference {
+    layer()
+    door(5)
+    door(7)
+    door(13)
+    door(15)
+  }
+  elev(9)
+  difference {
+    layer()
+    door(7)
+    door(15)
+  }
+  difference {
+    layer()
+    door(7)
+    door(15)
+  }
+  layer()
+  layer()
+  layer()
+  layer()
+  layer()
+  layer()
+  layer()
+  step(0)
+  step(1)
+  step(2)
+  step(3)
+  step(4)
+  step(5)
+  step(6)
+  step(7)
+  step(8)
+  step(10)
+  step(11)
+  step(12)
+  step(13)
+  step(14)
+  step(15)
+  layer()
+  pillar(10)
+  elev(11)
+  layer()
+  pillar(10)
+  layer()
+  pillar(10)
+  layer()
+  pillar(10)
+  layer()
+  pillar(10)
+  layer()
+  step(10)
+  difference {
+    layer()
+    door(10)
+  }
+  difference {
+    layer()
+    door(10)
+  }
+  step(5)
+  difference {
+    layer()
+    door(10)
+  }
+  step(4)
+  layer()
+  layer()
 }
