@@ -24,10 +24,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#if (SYSTEM != SYS_WINDOWS)
-#include <dirent.h>
-#endif
-
 /* screen width and height, in pixels. */
 #define SCREENWID 640
 #define SCREENHEI 480
@@ -41,7 +37,7 @@
 /* the tower dimensions */
 #define TOWER_SLICE_HEIGHT 16
 #define TOWER_RADIUS 96
-#define TOWER_COLUMNS 16  // must be a 2 ** x
+#define TOWER_COLUMNS 16  // must be a power of 2
 #define TOWER_STEPS_PER_COLUMN 8
 #define TOWER_ANGLES (TOWER_COLUMNS*TOWER_STEPS_PER_COLUMN)
 
@@ -133,7 +129,7 @@
    (press up+down+left+right at the same time.)
    debuggers don't get their name on hiscore table.  */
 #ifdef TESTER
-/*#define GAME_DEBUG_KEYS*/
+#define GAME_DEBUG_KEYS
 #endif
 
 /*   define this if you want the bonus game to be accessible 
@@ -212,9 +208,14 @@ typedef struct dirent {
 
 #define strcasecmp stricmp
 #define M_PI 3.1415926535897932384626433832795
-
+#else
+#include <dirent.h>
 #endif
 
+/* a function that returns a alphabetically sorted list of
+ files in the given dir filtered dith the function given at
+ 3rd parameter
+ */
 int alpha_scandir(const char *dir, struct dirent ***namelist,
                   int (*select)(const struct dirent *));
 

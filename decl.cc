@@ -88,7 +88,14 @@ void debugprintf(int lvl, char *fmt, ...) {
     }
 }
 
-/* returns true, if file exists */
+/* returns true, if file exists, this is not the
+ optimal way to do this. it would be better to open
+ the dir the file is supposed to be in and look there
+ but this is not really portable so this, but because
+ fopen may be restricted we have the second parameter that
+ is true makes fileextst to first enable group rights open
+ the file and then remove the rights again
+ */
 bool dcl_fileexists(const char *n, bool group) {
 
   if (group) dcl_stickyEnable();
@@ -163,23 +170,6 @@ FILE *open_data_file(const char *name) {
 #endif
 }
 
-/*
-FILE *open_global_config_file(const char *name) {
-
-#if (SYSTEM == SYS_LINUX)
-
-  char n[200];
-
-  snprintf(n, 200, CONFIGDIR"/%s", name);
-  if (dcl_fileexists(n))
-    return fopen(n, "r");
-
-#endif
-
-  return NULL;
-  }
-  */
-
 FILE *open_local_config_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
@@ -190,7 +180,7 @@ FILE *open_local_config_file(const char *name) {
 
   snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
   if (dcl_fileexists(n))
-    return fopen(n, "r");
+    return fopen(n, "r+");
 
   return NULL;
 
@@ -242,12 +232,8 @@ FILE *open_highscore_file(const char *name) {
 
 #ifdef HISCOREDIR
 
-  printf("highscro defined\n");
-
   snprintf(n, 200, HISCOREDIR"/%s", name);
   if (dcl_fileexists(n, true)) {
-
-    printf("global file exists\n");
 
     dcl_stickyEnable();
     FILE *f = fopen(n, "rb");
@@ -255,15 +241,9 @@ FILE *open_highscore_file(const char *name) {
       dcl_stickyDisable();
       return f;
     }
-    printf("unable to open globale scorefile\n");
   }
 
-  printf("global file doesn't exist\n");
-
 #endif
-
-  printf("highscro not defined\n");
-
 
   snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
   if (dcl_fileexists(n))
@@ -281,7 +261,6 @@ FILE *open_highscore_file(const char *name) {
 #endif
 
 }
-
 
 /* this is not really a creation but opens a file for write acces,
  if the file doesn't exist it is created, but this creation

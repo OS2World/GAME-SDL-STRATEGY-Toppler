@@ -132,7 +132,7 @@ configuration::~configuration(void) {
 
     if (!f) f = create_local_config_file(".toppler.rc");
 
-    rewind(f);
+    fseek(f, 0, SEEK_SET);
 
     config_data *t = first_data;
 
