@@ -1,0 +1,37 @@
+Dear brave soul,
+
+so you have decided to try to build the tower toppler datafile on your
+own. To make this possible here are a few hints.
+
+1. Software requirements
+
+- gimp with script-fu support
+- blender
+- povray
+- make
+- c compiler
+- libz and libpng
+
+2. manual tasks
+
+- you have to create the blender images on your own. The repository
+only contains the blender filed. Put the images into a subdirectory
+called "render" in the submarine and fish subdirectory. There must be
+72 images with submarines and 2 times 32 images inside the fish
+directory. All of them tga files.
+
+- adapt the makefile so that the programs have the right name
+
+- cross your fingers that it works
+
+- type "make"
+
+3. automatic tasks
+
+The makefile should now generate all that is necessary to build the
+datafile. The images should be renderes and color reduced and
+compressed into the datafile. You should just hope that it works.
+
+Good luck
+
+Andreas
