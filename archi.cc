@@ -84,6 +84,6 @@ long arc_filesize(void) {
 }
 
 bool arc_eof(void) {
-  return ftell(f) > files[pos].start + files[pos].size;
+  return ftell(f) >= files[pos].start + files[pos].size;
 }
 

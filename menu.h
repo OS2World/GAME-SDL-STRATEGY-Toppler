@@ -16,4 +16,8 @@ void men_highscore(unsigned long pt);
 /* free graphics */
 void men_done(void);
 
+/* input line */
+void men_input(char *s, int max_len, int ypos);
+
+
 #endif

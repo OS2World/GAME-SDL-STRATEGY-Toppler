@@ -115,7 +115,7 @@ static void men_options(void) {
         case 0:
           scr_toggle_fullscreen();
           palt = p + 1;
-	  break;
+          break;
         case 1:
           ende = true;
           break;
@@ -134,18 +134,28 @@ static void emptyscoretable(void) {
 
 static void savescores(void) {
 
+#ifdef USE_LOCKING
   FILE *f = create_highscore_file(SCOREFILE);
+#else
+  FILE *f = create_highscore_file("toppler.hsc");
+#endif
 
-  fseek(f, currentmission * sizeof(scores), SEEK_SET);
-
-  fwrite(scores, sizeof(scores), 1, f);
-
-  fclose(f);
+  if (f) {
+    fseek(f, currentmission * sizeof(scores), SEEK_SET);
+  
+    fwrite(scores, sizeof(scores), 1, f);
+  
+    fclose(f);
+  }
 }
 
 static void getscores(void) {
 
+#ifdef USE_LOCKING
   FILE *f = open_highscore_file(SCOREFILE);
+#else
+  FILE *f = open_highscore_file("toppler.hsc");
+#endif
 
   if (f) {
 
@@ -298,11 +308,53 @@ unsigned char men_main(bool fade) {
   return main;
 }
 
+void men_input(char *s, int max_len, int ypos) {
+  char inp;
+  char pos = 0;
+  int defName = 1;
+
+  scr_putbar(160 - max_len * 6, ypos, max_len * 12, 16);
+  scr_writetext_center(ypos, s);
+  scr_swap();
+
+  key_readkey();
+
+  do {
+
+    while ((inp = key_chartyped()) == 0) dcl_wait();
+
+    if (inp == '\r') break;
+
+    if (defName) {
+      defName = 0;
+      s[pos] = 0;
+    }
+
+    if (inp == '\b') {
+      if (pos > 0) {
+        pos--;
+        s[pos] = 0;
+      }
+    } else if (pos < max_len) {
+      s[pos] = inp;
+      pos++;
+      s[pos] = 0;
+    }
+
+    scr_putbar(160 - max_len * 6, ypos, max_len * 12, 16);
+    scr_writetext_center(ypos, s);
+    scr_swap();
+
+  } while (inp != '\r');
+}
+
 void men_highscore(unsigned long pt) {
 
+  pal_colors(pal_menu);
+
+#ifdef USE_LOCKING
   int lockfd;
 
-  pal_colors(pal_menu);
   scr_writetext_center(90,"SCOREFILE LOCKED");
   scr_writetext_center(110,"PLEASE WAIT");
   scr_swap();
@@ -312,6 +364,7 @@ void men_highscore(unsigned long pt) {
     scr_swap();
   }
   close(lockfd);
+#endif
 
   scr_blit(spr_spritedata(menupicture), 0, 0);
   scr_blit(spr_spritedata(titledata), 8, 0);
@@ -321,6 +374,7 @@ void men_highscore(unsigned long pt) {
   int t = 10;
 
   while ((t > 0) && (pt > scores[t-1].points)) {
+    printf("points %i\n",scores[t-1].points);
     if (t < 10)
       scores[t] = scores[t-1];
     t--;
@@ -337,50 +391,18 @@ void men_highscore(unsigned long pt) {
     }
     scr_writetext_center(140, "PLEASE ENTER YOUR NAME");
 
-    char inp;
-    char pos = 0;
-    int defName = 1;
+    strncpy(scores[t].name, getenv("LOGNAME"), 9);
+    scores[t].name[9] = 0; //to be sure
 
-    strncpy(scores[t].name, getenv("LOGNAME"), 8);
-    scores[t].name[8] = 0; //to be sure
-
-    scr_putbar(100, 160, 120, 16);
-    scr_writetext(160 - 6 * strlen(scores[t].name), 160, scores[t].name);
-    scr_swap();
-
-    key_readkey();
-
-    do {
-
-      while ((inp = key_chartyped()) == 0) dcl_wait();
-
-      if (defName) {
-        defName=0;
-        if (inp!='\r') scores[t].name[pos] = 0;
-      }
-
-      if (inp == '\b') {
-        if (pos > 0) {
-          pos--;
-          scores[t].name[pos] = 0;
-        }
-      } else if ((inp != '\r') && (pos < 9)) {
-        scores[t].name[pos] = inp;
-        pos++;
-        scores[t].name[pos] = 0;
-      }
-
-      scr_putbar(100, 160, 120, 16);
-      scr_writetext_center(160, scores[t].name);
-      scr_swap();
-
-    } while (inp != '\r');
-
+    men_input(scores[t].name, 9, 160);
     scores[t].points = pt;
+
     savescores();
   }
 
+#ifdef USE_LOCKING
   unlink(SCOREFILE ".lck");
+#endif
 
   show_scores(t);
 }

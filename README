@@ -18,6 +18,12 @@ The only weapon of defence you have is to throw a little snowball. But
 most of the other creatures just don't care about this. So you must
 avoid them.
 
+A little submarine brings you from one tower to the next. On this way
+you have the chance to get some bonus points by catching fish. All you have
+to do is to catch a fish in a bubble with your torpedo and then collect the
+fish.
+
+
 Commandline Parameters
 ----------------------
 
@@ -42,6 +48,153 @@ smaller than the normal platforms.)  If you are in front of a door
 press up to enter it.  Pressing the space key will either throw a
 snowball if you are standing still or make the animal jump if you are
 walking.
+
+For the Leveldesigner
+---------------------
+
+The game finally has a leveleditor. Because I've been too lazy to make
+new graphics for special objects all tower objects are drawn using
+the existing graphics.
+Because The only thing you can rely on on a keyboard are the numbers and
+the letter keys I have used only these. The layout is choosen so that
+keys with a similar task are next to each other and not that the
+letters mean something.
+Otherwise the editor is relatively simple:
+
+cursor movement:
+
+curcor keys
+pg up and down: 5 rows up and down
+y               half turn of the tower (for doors)
+
+actions:
+
+p    play, to test the level you are just editing
+ESC  leave the editor
+l    load tower
+o    save tower
+z    check consistency of tower
+
+the consitency chech checks, if all doors are exactly 3 layers high, if
+there isn't a undefined symbol in there and if there is always the
+opposite platform for the elevators (without unremovable ostacles inbetween).
+If there is something wrong with the tower, the cursor moves to
+the position of the problem.
+
+editing:
+
+ins  inserts a row below the current position
+del  deletes the current row
+
+with this actions you must be careful because they can destroy
+doors.
+
+objects:
+
+space   clear field
+
+q       normal stick
+a       flashing box
+
+w       normal step
+s       vanishing step        shown as flashing step
+x       sliding step          shown as sideways moving step
+
+e       elevator top station  
+d       elevator middle station
+c       elevator top station
+
+the elevator stations are shown by a moving platform. The
+platform is moving into the direction the elevator can move. So
+for the bottom stations the platform is repeatinglymocing up and 
+jumping down. 
+
+1-7     the different kinds of robots
+
+for the eye robot the movement is shown by the movement of the robot
+in the editor. the slow miving version moves half as far as the fast
+moving one.
+
+The two jumping balls can be identified by ball movement: one is
+standing still. This is the one that jumps on its place until
+the toppler gets near. The ball that has a shideway movement
+from it's beginning on is moving in the editor too.
+
+i       normal door
+k       target door           shown as flashing door
+
+This action always places a whole door (in 3 layers) and tries
+to place a door on the opposite side, if it's empty. Doors should
+never be higher then 3 layers. The clear command (' ') will always
+remove the whole door but not the one on the opposite side
+of the tower.
+The target door command doesn't place a door on the opposite
+side
+
+parameter of the tower:
+
+the parameter are always in a range of values. To allow fast
+alertations of the values the difference between the old and the
+changed value increases every time you go into the same direction.
+So if you increase the time for the tower by pressing 'h' the first
+time the value increses by one the second time by two the third time by
+three and so on. This size is reset to one as soon as you change
+the direction of your changes. This sounds complicated the best thig
+is to try it
+
+h       increase time
+n       decrease time
+
+r       less red
+t       more red
+f       less green
+g       more green
+v       less blue
+b       more blue
+
+Finally some details about the inner workings of the game that might
+help design levels.
+
+- There are never more than 4 robots on screen (including the horizontal
+  spinning object)
+- robots that go below the screen vanish
+- robots that fall into water vanish
+- the spinning object has a timeout, if this time passed it will come
+  as soon as there are less then 4 robots on screen
+- other the robots appear as soon as they are inside the screen and
+  there are less then 4 robots on screen
+- the behaviour of the robots is completely deterministic
+- the cross throws you 4 layers down, the other robots much more
+- the starting place on the base is always the same, it's on top of
+  the 2nd row on angle 0 (where the cursor is at the start)
+
+FILETYPES
+---------
+
+datafiles (graphics, sounds), readonly
+
+  first in local directory,
+  then global (per compiler switch /usr/local/share/toppler)
+
+
+global configuration, readonly
+
+  only in global directory
+
+
+local configuration file, read/write/create
+
+  in home directory
+
+
+leveleditor, new missions, towers read/write/create
+
+  in home dir (/home/user/toppler/...)
+
+
+highscore file, read/write/create
+
+  in global dir, home, 
 
 Contact
 -------

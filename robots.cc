@@ -7,6 +7,8 @@
 
 #include <stdlib.h>
 
+#define MAX_OBJECTS 4
+
 /* this field contains the robots */
 static struct {
 
@@ -22,7 +24,7 @@ static struct {
 
   /* a timer for the animations of the robots */
   long time;
-} object[4];
+} object[MAX_OBJECTS];
 
 
 /* the position up to where the the robots are worked out */
@@ -49,7 +51,7 @@ static int figurkollision(int nr) {
   int t;
   long i, j;
 
-  for (t = 0; t <= 3; t++) {
+  for (t = 0; t < MAX_OBJECTS; t++) {
     if (t != nr &&
         object[t].kind != OBJ_KIND_CROSS &&
         object[t].kind != OBJ_KIND_NOTHING &&
@@ -189,7 +191,7 @@ int rob_vertical(int nr) { return object[nr].verticalpos; }
 
 void rob_initialize(void) {
 
-  for (int b = 0; b <= 4; b++) {
+  for (int b = 0; b < MAX_OBJECTS; b++) {
     object[b].kind = OBJ_KIND_NOTHING;
     object[b].time = -1;
   }
@@ -206,7 +208,7 @@ void rob_initialize(void) {
 int rob_topplerkollision(int angle, int vertical) {
   long i, j;
 
-  for (int t = 0; t <= 3; t++) {
+  for (int t = 0; t < MAX_OBJECTS; t++) {
     if (object[t].kind != OBJ_KIND_CROSS &&
         object[t].kind != OBJ_KIND_NOTHING &&
         object[t].kind != OBJ_KIND_DISAPPEAR &&
@@ -233,7 +235,7 @@ int rob_snowballkollision(int angle, int vertical) {
   };
 
   long i, j;
-  for (int t = 0; t <= 3; t++) {
+  for (int t = 0; t < MAX_OBJECTS; t++) {
     if (object[t].kind != OBJ_KIND_CROSS &&
         object[t].kind != OBJ_KIND_NOTHING &&
         object[t].kind != OBJ_KIND_DISAPPEAR &&
@@ -270,7 +272,7 @@ void rob_new(int verticalpos) {
 
   int h = verticalpos / 4 + 9;
 
-  for (int t = 0; t <= 3; t++) {
+  for (int t = 0; t < MAX_OBJECTS; t++) {
     if (object[t].kind == OBJ_KIND_NOTHING) {
 
 
@@ -378,7 +380,7 @@ void rob_aktualize(void) {
 
   int h;
 
-  for (int t = 0; t <= 3; t++) {
+  for (int t = 0; t < MAX_OBJECTS; t++) {
     switch (object[t].kind) {
       case OBJ_KIND_NOTHING:
         break;
@@ -582,7 +584,7 @@ int rob_gothit(int nr) {
 
 void rob_disappearall(void) {
 
-  for (int t = 0; t <= 3; t++) {
+  for (int t = 0; t < MAX_OBJECTS; t++) {
     if (object[t].kind != OBJ_KIND_NOTHING) {
       object[t].kind = OBJ_KIND_DISAPPEAR;
       object[t].time = 0;

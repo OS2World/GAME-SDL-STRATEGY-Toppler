@@ -369,7 +369,14 @@ static void get_keys(int &left_right, int &up_down, bool &space) {
 }
 
 static void escape(int &state, int &tower_position, int &tower_anglepos, int time) {
+
   key_readkey();
+  int inp = key_chartyped();
+  do {
+    inp = key_chartyped();
+  } while (!inp);
+  key_readkey();
+
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
   scr_drawall(towerpos(top_verticalpos(), tower_position,
                        top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
@@ -381,8 +388,7 @@ static void escape(int &state, int &tower_position, int &tower_anglepos, int tim
 
   scr_swap();
 
-  int inp = key_chartyped();
-
+  inp = key_chartyped();
 
   do {
     inp = key_chartyped();

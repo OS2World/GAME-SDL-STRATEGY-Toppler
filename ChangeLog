@@ -1,3 +1,13 @@
+Version 0.73
+
+- fixed bug with wrong loops in robots that overwrote some global variables on windows
+- fixed bug in archive that made the font loader load one char too much
+- added filename for loading and saving in leveleditor
+- added security check on load if tower has been changed
+- color and time changes are real changes and lead to the savety questions on exit adn load
+
+20.01.2002 Version 0.72
+
 dthurston:
 - Added a manual page, stolen from Debian package
 - Use autoconf to control installaton directory

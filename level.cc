@@ -64,6 +64,15 @@ static int towernumber;
 static unsigned char towercolor_red, towercolor_green, towercolor_blue;
 static int towertime;
 
+typedef struct mission_node {
+  char name[30];
+  char fname[100];
+  mission_node *next;
+} mission_node;
+
+mission_node * missions;
+
+
 /* the different colors for the eight towers */
 static struct {
   unsigned char r, g, b;
@@ -78,6 +87,87 @@ static struct {
   { 255, 155, 0 }
 };
 
+static int missionfiles (struct dirent *file)
+{
+  int len = strlen(file->d_name);
+
+  return ((file->d_name[len - 1] == 'm') &&
+          (file->d_name[len - 2] == 't') &&
+          (file->d_name[len - 3] == 't') &&
+          (file->d_name[len - 3] == '.'));
+}
+
+
+int lev_findmissions() {
+
+  char pathname[100];
+
+  struct dirent **eps;
+
+  FILE *f;
+
+  missions = null;
+
+  sprintf(pathname, "%s/.toppler/", getenv("HOME"));
+
+  int n = scandir(pathname, &eps, missionfiles, alphasort);
+
+  if (n >= 0) {
+
+    for (int i = 0; i < n; i++) {
+
+      char fname[200];
+      sprintf(fname, "%s%s", pathname, eps[i]->d_name);
+
+      f = fopen(fname, "rb");
+
+      int mnamelength;
+      fread(&mnamelength, 1, 1, f);
+
+      if (mnamelength > 29) mnamelength = 29;
+
+      mission_node * mis = new mission_node;
+
+      fread(mis->name, mnamelength, 1, f);
+      mis->name[mnamelength] = 0;
+
+      strcpy(mis->fname, fname);
+
+      mis->next = missions;
+      missions = mis;
+    }
+  }
+
+  sprintf(pathname, DATADIR"/%s/", name);
+
+  int n = scandir(pathname, &eps, missionfiles, alphasort);
+
+  if (n >= 0) {
+
+    for (int i = 0; i < n; i++) {
+
+      char fname[200];
+      sprintf(fname, "%s%s", pathname, eps[i]->d_name);
+
+      f = fopen(fname, "rb");
+
+      int mnamelength;
+      fread(&mnamelength, 1, 1, f);
+
+      if (mnamelength > 29) mnamelength = 29;
+
+      mission_node * mis = new mission_node;
+
+      fread(mis->name, mnamelength, 1, f);
+      mis->name[mnamelength] = 0;
+
+      strcpy(mis->fname, fname);
+
+      mis->next = missions;
+      missions = mis;
+    }
+  }
+}
 
 void lev_loadmission(char *filename) {
   int res;
@@ -134,9 +224,9 @@ void lev_selecttower(int number) {
       bpos++;
     }
 
-  towercolor_red = tcolors[number].r;
-  towercolor_green = tcolors[number].g;
-  towercolor_blue = tcolors[number].b;
+  lev_set_towercol(tcolors[towernumber].r,
+                   tcolors[towernumber].g,
+                   tcolors[towernumber].b);
 
   towertime = 500 + towernumber * 100;
 }
@@ -389,7 +479,11 @@ void lev_restore(int row, int col, unsigned char bg) {
 bool lev_loadtower(char *fname) {
   FILE *in = open_local_data_file(fname);
 
+  printf("tttt\n");
+
   if (in == NULL) return false;
+
+  printf("tttt\n");
 
   fgets(towername, 20, in);
   fscanf(in, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);

@@ -9,6 +9,7 @@
 #include "sound.h"
 #include "robots.h"
 #include "snowball.h"
+#include "menu.h"
 
 
 
@@ -30,6 +31,31 @@ static bool really_quit(int row, int col) {
   } while (!inp);
 
   if (inp == 27) {
+    return true;
+  } else {
+    pal_colors(pal_towergame);
+    return false;
+  }
+}
+
+static bool really_load(int row, int col) {
+  key_readkey();
+  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
+  scr_drawedit(row * 4, col * 8);
+  scr_writetext_center(41, "TOWER CHANGED");
+  scr_writetext_center(61, "REALLY LOAD");
+  scr_writetext_center(95,  "ENTER  YES LOAD");
+  scr_writetext_center(112, "OTHER  NO      ");
+
+  scr_swap();
+
+  int inp;
+
+  do {
+    inp = key_chartyped();
+  } while (!inp);
+
+  if (inp == 13) {
     return true;
   } else {
     pal_colors(pal_towergame);
@@ -65,6 +91,7 @@ void le_edit(void) {
   char inp;
   int row = 0, col = 0;
   int rstep = 0, gstep = 0, bstep = 0, tstep = 0;
+  char tname[20] = "tower";
 
 //  lev_new();
   pal_settowercolor(255, 0, 0);
@@ -206,14 +233,17 @@ void le_edit(void) {
       changed = true;
       break;
     case 'L':
-      if (changed) {
-        // do you really wanna load?
-      }
-      lev_loadtower("tower.tst");
+      if (changed)
+        if (!really_load(row, col))
+          break;
+      men_input(tname, 19, 160);
+      lev_loadtower(tname);
       palchanged = true;
+      changed = false;
       break;
     case 'O':
-      lev_savetower("tower.tst");
+      men_input(tname, 19, 160);
+      lev_savetower(tname);
       changed = false;
       break;
     case 'P':
@@ -229,7 +259,6 @@ void le_edit(void) {
         pal_colors(pal_towergame);
         snd_wateroff();
         lev_restore(p);
-        while (key_chartyped() != 27) dcl_wait();
         key_readkey();
       }
       break;
@@ -247,6 +276,7 @@ void le_edit(void) {
         if (rstep < 10) rstep++;
       }
       palchanged = true;
+      changed = true;
       break;
     case 'R':
       if (rstep >= 0) rstep = -1;
@@ -262,6 +292,7 @@ void le_edit(void) {
         if (rstep > -10) rstep--;
       }
       palchanged = true;
+      changed = true;
       break;
     case 'G':
       if (gstep <= 0) gstep = 1;
@@ -277,6 +308,7 @@ void le_edit(void) {
         if (gstep < 10) gstep++;
       }
       palchanged = true;
+      changed = true;
       break;
     case 'F':
       if (gstep >= 0) gstep = -1;
@@ -292,6 +324,7 @@ void le_edit(void) {
         if (gstep > -10) gstep--;
       }
       palchanged = true;
+      changed = true;
       break;
     case 'B':
       if (bstep <= 0) bstep = 1;
@@ -307,6 +340,7 @@ void le_edit(void) {
         if (bstep < 10) bstep++;
       }
       palchanged = true;
+      changed = true;
       break;
     case 'V':
       if (bstep >= 0) bstep = -1;
@@ -322,16 +356,19 @@ void le_edit(void) {
         if (bstep > -10) bstep--;
       }
       palchanged = true;
+      changed = true;
       break;
     case 'H':
       if (tstep <= 0) tstep = 1;
       lev_set_towertime(lev_towertime() + tstep);
       if (tstep < 10) tstep++;
+      changed = true;
       break;
     case 'N':
       if (tstep >= 0) tstep = -1;
       lev_set_towertime(lev_towertime() + tstep);
       if (tstep > -10) tstep--;
+      changed = true;
       break;
     case 'Z':
       {

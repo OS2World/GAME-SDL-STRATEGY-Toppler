@@ -96,7 +96,7 @@ void load_config(void);
 void save_config(void);
 
 /* for errorcheking */
-#define assert(cond,text) if (!(cond)) { printf(text); exit(1); }
+#define assert(cond,text) if (!(cond)) { printf("asserion failure: "text"\n"); exit(1); }
 
 
 #define CONFIGDIR "/etc"

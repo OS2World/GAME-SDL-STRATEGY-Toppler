@@ -4,6 +4,11 @@
 /* handles one mission with 8 towers and the necessary manipulations
  on the towerlayout when the game is going on */
 
+/* tries to find all missions installed on this system
+ * returns the number of missions found
+ */
+int lev_findmissions();
+
 /* loads a mission from the file with the given name */
 void lev_loadmission(char *filename);
 
