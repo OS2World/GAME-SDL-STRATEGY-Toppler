@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-05 19:54+0100\n"
+"POT-Creation-Date: 2004-12-11 18:41+0100\n"
 "PO-Revision-Date: 2004-02-08 11:01+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -48,7 +48,7 @@ msgstr "Pause"
 msgid "Unknown config data type."
 msgstr "Unbekannter Configurationsdatentyp"
 
-#: decl.h:199
+#: decl.h:200
 #, c-format
 msgid "Assertion failure: %s\n"
 msgstr "Annahme gescheitert: %s\n"
@@ -118,15 +118,15 @@ msgstr "Versuch ein nicht existierendes Demo zu spielen oder aufzunehmen."
 msgid "Wheee!!\n"
 msgstr "Huuuaaaa!\n"
 
-#: level.cc:1269
+#: level.cc:1288
 msgid "called mission_finish twice"
 msgstr "mission_finish zweimal gerufen"
 
-#: level.cc:1310
+#: level.cc:1329
 msgid "called mission_addtower without mission_new"
 msgstr "mission_addtower ohne vorherigen mission_new Aufruf"
 
-#: level.cc:1440
+#: level.cc:1459
 msgid "called mission_finish without mission_new"
 msgstr "mission_finish ohne vorherigen mission_new Aufruf"
 
@@ -468,7 +468,7 @@ msgstr "Turmhöhe einstellen"
 msgid "Name the tower:"
 msgstr "Turmname:"
 
-#: main.cc:37
+#: main.cc:45
 #, c-format
 msgid ""
 "\n"
@@ -485,29 +485,29 @@ msgstr ""
 "  -s\tDeaktiviere Sound\n"
 "  -dX\tDebuglevel auf X setzen (default: %i)\n"
 
-#: main.cc:47
+#: main.cc:55
 #, c-format
 msgid "Debug level is now %c.\n"
 msgstr "Debuglevel ist jetzt %c.\n"
 
-#: main.cc:49
+#: main.cc:57
 msgid "Illegal debug level value, using default.\n"
 msgstr "Illegaler Debuglevel, benutze default.\n"
 
-#: main.cc:86
+#: main.cc:102
 #, c-format
 msgid "Nebulous version %s\n"
 msgstr "Nebulous Version %s\n"
 
-#: main.cc:88
+#: main.cc:104
 msgid "Nebulous\n"
 msgstr "Nebulous\n"
 
-#: main.cc:95
+#: main.cc:111
 msgid "Nebulous"
 msgstr "Nebulous"
 
-#: main.cc:102
+#: main.cc:118
 msgid "Thanks for playing!\n"
 msgstr "Danke für's spielen!\n"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-05 19:54+0100\n"
+"POT-Creation-Date: 2004-12-11 18:41+0100\n"
 "PO-Revision-Date: 2004-02-08 10:56+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -48,7 +48,7 @@ msgstr "Pause"
 msgid "Unknown config data type."
 msgstr "Type de donnée de configuration inconnue"
 
-#: decl.h:199
+#: decl.h:200
 #, c-format
 msgid "Assertion failure: %s\n"
 msgstr "Échec de l'insertion : %s\n"
@@ -118,15 +118,15 @@ msgstr ""
 msgid "Wheee!!\n"
 msgstr "Woooaaaa !\n"
 
-#: level.cc:1269
+#: level.cc:1288
 msgid "called mission_finish twice"
 msgstr "mission_finish appelé deux fois"
 
-#: level.cc:1310
+#: level.cc:1329
 msgid "called mission_addtower without mission_new"
 msgstr "mission_addtower appelé sans mission_new"
 
-#: level.cc:1440
+#: level.cc:1459
 msgid "called mission_finish without mission_new"
 msgstr "mission_finish appelé sans mission_new"
 
@@ -468,7 +468,7 @@ msgstr "Ajuster la hauteur de la tour"
 msgid "Name the tower:"
 msgstr "Nommer la tour"
 
-#: main.cc:37
+#: main.cc:45
 #, c-format
 msgid ""
 "\n"
@@ -485,29 +485,29 @@ msgstr ""
 "  -s\tDésactiver le son\n"
 "  -dX\tNiveau de débuggage à X  (défaut : %i)\n"
 
-#: main.cc:47
+#: main.cc:55
 #, c-format
 msgid "Debug level is now %c.\n"
 msgstr "Le niveau de débuggage est maintenant %c.\n"
 
-#: main.cc:49
+#: main.cc:57
 msgid "Illegal debug level value, using default.\n"
 msgstr "Niveau de débuggage illégal, utilise la valeur par défaut.\n"
 
-#: main.cc:86
+#: main.cc:102
 #, c-format
 msgid "Nebulous version %s\n"
 msgstr "Version de Nebulous %s\n"
 
-#: main.cc:88
+#: main.cc:104
 msgid "Nebulous\n"
 msgstr "Nebulous\n"
 
-#: main.cc:95
+#: main.cc:111
 msgid "Nebulous"
 msgstr "Nebulous"
 
-#: main.cc:102
+#: main.cc:118
 msgid "Thanks for playing!\n"
 msgstr "Merci d'avoir joué !\n"
 
