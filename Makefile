@@ -12,8 +12,10 @@ TOPPLERDAT = toppler.dat
 
 DATFILES = cross.dat font.dat graphics.dat menu.dat scroller.dat \
 	   sprites.dat titles.dat dude.dat \
-       alarm.wav boing.wav bubbles.wav fanfare.wav hit.wav honk.wav rumble.wav score.wav \
-       sonar.wav splash.wav swoosh.wav tap.wav tick.wav torpedo.wav water.wav
+       sounds/alarm.wav sounds/boing.wav sounds/bubbles.wav sounds/fanfare.wav \
+       sounds/hit.wav sounds/honk.wav sounds/rumble.wav sounds/score.wav \
+       sounds/sonar.wav sounds/splash.wav sounds/swoosh.wav sounds/tap.wav \
+       sounds/tick.wav sounds/torpedo.wav sounds/water.wav
 
 CLEANRULES = cross.clean font.clean graphics.clean menu.clean \
 	     scroller.clean sprites.clean titles.clean dude.clean

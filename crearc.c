@@ -4,7 +4,7 @@
 
 #include <zlib.h>
 
-#define MAXFNAMELEN 15 /* 8.3 filename if you need more ...*/
+#define MAXFNAMELEN 150 /* pathnames need a bot more space */
 #define NUMFILES 256
 #define BUFPADDING 0
 
@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
     }
   }
 
+
   buffer = (unsigned char *)malloc(largestsize);
   buffer2 = (unsigned char *)malloc(largestsize);
   buffer3 = (unsigned char *)malloc(largestsize);
@@ -80,7 +81,7 @@ int main(int argc, char *argv[])
   fwrite(files, calcsize(files, filecount), 1, outf);
 
   for (t = 0; t < filecount; t++) {
-    char name[50];
+    char name[MAXFNAMELEN];
 
     strncpy(name, files[t].name, MAXFNAMELEN);
     name[MAXFNAMELEN] = '\0';
@@ -115,8 +116,10 @@ int main(int argc, char *argv[])
   fwrite(&filecount, 1, 1, outf);
 
   for (t = 0; t < filecount; t++) {
-    unsigned char tmp;
+    unsigned char tmp = strlen(files[t].name);
 
+    while (tmp && (files[t].name[tmp-1] != '/'))
+      tmp--;
 
     while (files[t].name[tmp]) {
       fwrite(&(files[t].name[tmp]), 1, 1, outf);
