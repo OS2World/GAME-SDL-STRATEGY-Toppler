@@ -112,9 +112,9 @@ menu.clean:
 scroller.dat: scroller scroller1_colors.png scroller1_mask.png \
                        scroller2_colors.png scroller2_mask.png \
                        scroller3_colors.png scroller3_mask.png
-	./scroller 3 2 1/1 scroller1_colors.png scroller1_mask.png 1/2 \
+	./scroller 3 2 1/1 scroller3_colors.png scroller3_mask.png 1/2 \
                        scroller2_colors.png scroller2_mask.png 1/1 \
-                       scroller3_colors.png scroller3_mask.png 2/1
+                       scroller1_colors.png scroller1_mask.png 2/1
 
 scroller: scroller.c
 	$(GCC) $(CFLAGS) scroller.c -o scroller
@@ -253,7 +253,7 @@ sprites_pov/robot7_rgb_colors.png: sprites_pov/robot7/obj00.png assembler
 	./assembler hm sprites_pov/robot7_rgb sprites_pov/robot7/*.png
 
 sprites_pov/robot7/obj00.png: sprites_pov/robot0/obj.pov sprites_pov/robot7/obj.ini sprites_pov/environment.pov
-	( sh -c "cd sprites_pov/robot7 && $(POVRAY) obj.ini )
+	( cd sprites_pov/robot7 && $(POVRAY) obj.ini )
 
 sprites.clean:
 	rm -f sprites sprites.dat
