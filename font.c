@@ -51,12 +51,8 @@ void get(SDL_Surface *colors, SDL_Surface * mask, char c)
   int i, x, y;
   Uint8 b;
 
-  printf("get %c from x: %i, y: %i\n", c, xpos, ypos);
-
   while (get_color(colors, xpos + width + 1, ypos + 1) != markercolor)
     width++;
-
-  printf("  found width: %i\n", width);
 
   i = 0;
 

@@ -23,11 +23,11 @@ main(int argc, char *argv[])
   int t, filecount, i;
   FILE *f;
   FILE *outf;
-  unsigned char buffer[3000000];
-  unsigned char buffer2[3000000];
-  unsigned char buffer3[3000000];
+  unsigned char buffer[10000000];
+  unsigned char buffer2[10000000];
+  unsigned char buffer3[10000000];
 
-  unsigned char compress_data[80000];
+  unsigned char compress_data[10000000];
 
   long erg;
   long err;
@@ -53,9 +53,9 @@ main(int argc, char *argv[])
     fread(buffer, files[t].size, 1, f);
 
 
-    files[t].compressed = 3000000;
+    files[t].compressed = 10000000;
     compress(buffer2, &files[t].compressed, buffer, files[t].size);
-    erg = 3000000;
+    erg = 10000000;
     uncompress(buffer3, &erg, buffer2, files[t].compressed);
 
     if (erg != files[t].size)

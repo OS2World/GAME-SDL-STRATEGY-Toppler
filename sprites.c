@@ -24,6 +24,56 @@ void write_palette(FILE *out, SDL_Surface *s) {
   }
 }
 
+
+/*
+ * rensers a curve with the following property:
+ *
+ * x(t) = (cos(t))^n
+ * y(t) = (sin(t))^n
+ *
+ * t(x) = acos(x ^ (1/n))
+ * y(x) = (sin(acos(x^(1/n))))^n  (-1 <= x <= 1)
+ *
+ */
+
+
+void render_star(SDL_Surface *s, Uint8 size, double power) {
+  Uint8 x, y, t, z;
+  double alias;
+
+  Uint8 rad = (size - 1) / 2;
+
+
+  for (x = 0; x < rad+1; x++)
+    for (y = 0; y < rad+1; y++) {
+      alias = 0;
+      for (t = 0; t < 8; t++)
+        for (z = 0; z < 8; z++) {
+          double dx = x * 8 + t - 4;
+          double dy = y * 8 + z - 4;
+
+          dx /= (rad * 8);
+          dy /= (rad * 8);
+
+
+          double o = pow(sin(acos(pow(dx, 1/power))), power);
+
+          printf("%f  ", o);
+
+
+          if (dy < o)
+            alias++;
+        }
+      alias /= 16;
+
+      alias *= 255;
+      alias += 0.5;
+
+
+      ((Uint8*)s->pixels)[y*s->pitch+x] = (Uint8)alias;
+    }
+}
+
 void xchg(SDL_Surface *s)
 {
   int i;
@@ -72,6 +122,27 @@ unsigned char b_;
 
 
 main(int argc, char *argv[]) {
+/*
+  Uint16 t;
+
+  SDL_Init(SDL_INIT_VIDEO);
+
+  SDL_Surface *src = SDL_SetVideoMode(640, 480, 8, 0);
+
+  for (t = 0; t < 256; t++) {
+    src->format->palette->colors[t].r = t;
+    src->format->palette->colors[t].g = t;
+    src->format->palette->colors[t].b = t;
+  }
+
+  render_star(src, 32, 1);
+
+  SDL_UpdateRect(src, 0, 0, 0, 0);
+
+  SDL_Delay(10000);
+
+  return;
+*/
   unsigned char s, n, p, x, y;
 
   SDL_Surface * screen;

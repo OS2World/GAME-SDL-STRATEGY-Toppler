@@ -165,12 +165,12 @@ Uint16 findbiggest(Uint16 c) {
   int largest_block = 0;
   int largest_dim = max(boundaries[0].rmax-boundaries[0].rmin,
                         boundaries[0].gmax-boundaries[0].gmin,
-                        boundaries[0].gmax-boundaries[0].gmin);
+                        boundaries[0].bmax-boundaries[0].bmin);
 
   for (n = 1; n < c; n++) {
     int ld = max(boundaries[n].rmax-boundaries[n].rmin,
                  boundaries[n].gmax-boundaries[n].gmin,
-                 boundaries[n].gmax-boundaries[n].gmin);
+                 boundaries[n].bmax-boundaries[n].bmin);
     if (ld > largest_dim) {
       largest_block = n;
       largest_dim = ld;
@@ -215,12 +215,10 @@ void split(Uint16 block, Uint16 block2) {
     c1 = c2 = 0;
 
     for (i1 = boundaries[block].gmin; i1 <= boundaries[block].gmax; i1++)
-      for (i2 = boundaries[block].bmin; i2 <= boundaries[block].bmax; i2++)
+      for (i2 = boundaries[block].bmin; i2 <= boundaries[block].bmax; i2++) {
         c1 += color_cube[x1][i1][i2];
-
-    for (i1 = boundaries[block].gmin; i1 <= boundaries[block].gmax; i1++)
-      for (i2 = boundaries[block].bmin; i2 <= boundaries[block].bmax; i2++)
         c2 += color_cube[x2][i1][i2];
+      }
 
     while (x1+1 < x2) {
       if (c1 < c2) {
@@ -261,12 +259,10 @@ void split(Uint16 block, Uint16 block2) {
     }
 
     for (i1 = boundaries[block].rmin; i1 <= boundaries[block].rmax; i1++)
-      for (i2 = boundaries[block].bmin; i2 <= boundaries[block].bmax; i2++)
+      for (i2 = boundaries[block].bmin; i2 <= boundaries[block].bmax; i2++) {
         c1 += color_cube[i1][x1][i2];
-
-    for (i1 = boundaries[block].rmin; i1 <= boundaries[block].rmax; i1++)
-      for (i2 = boundaries[block].bmin; i2 <= boundaries[block].bmax; i2++)
         c2 += color_cube[i1][x2][i2];
+      }
 
     while (x1+1 < x2) {
       if (c1 < c2) {
@@ -307,12 +303,10 @@ void split(Uint16 block, Uint16 block2) {
     }
 
     for (i1 = boundaries[block].gmin; i1 <= boundaries[block].gmax; i1++)
-      for (i2 = boundaries[block].rmin; i2 <= boundaries[block].rmax; i2++)
+      for (i2 = boundaries[block].rmin; i2 <= boundaries[block].rmax; i2++) {
         c1 += color_cube[i2][i1][x1];
-
-    for (i1 = boundaries[block].gmin; i1 <= boundaries[block].gmax; i1++)
-      for (i2 = boundaries[block].rmin; i2 <= boundaries[block].rmax; i2++)
         c2 += color_cube[i2][i1][x2];
+      }
 
     while (x1+1 < x2) {
       if (c1 < c2) {
@@ -357,7 +351,7 @@ void calc_colors(Uint16 num_colors) {
   minimize(0);
 
   while (n < num_colors) {
-    printf("%i ", n);
+    printf("%i / %i \r", n, num_colors);
     fflush(stdout);
     c = findbiggest(n);
     split(c, n);
@@ -402,16 +396,12 @@ void reduce(SDL_Surface *in, SDL_Surface *out, Uint16 num_colors) {
 SDL_Surface * colorreduction(SDL_Surface *in_image, Uint16 colors_num) {
   count(in_image);
 
-  printf("calculating colors..\n");
   calc_colors(colors_num);
   printf("\n");
 
   SDL_Surface *out_image = SDL_CreateRGBSurface(0, in_image->w, in_image->h, 8, 0, 0, 0, 0);
 
-  printf("creating reduced image\n");
   reduce(in_image, out_image, colors_num);
-
-  printf("finished reducing colors\n");
 
   return out_image;
 }

@@ -97,14 +97,39 @@ menu.clean:
 #----------------------------------------------------------#
 # rules to create the data files necesary for the scroller #
 #----------------------------------------------------------#
-scroller.dat: scroller scroller1.png scroller2.png scroller3.png
-	./scroller 3 2 1/1 scroller1.png 1/2 scroller2.png 1/1 scroller3.png 2/1
+scroller.dat: scroller scroller1_colors.png scroller1_mask.png \
+                       scroller2_colors.png scroller2_mask.png \
+                       scroller3_colors.png scroller3_mask.png
+	./scroller 3 2 1/1 scroller1_colors.png scroller1_mask.png 1/2 \
+                       scroller2_colors.png scroller2_mask.png 1/1 \
+                       scroller3_colors.png scroller3_mask.png 2/1
 
 scroller: scroller.c
 	gcc scroller.c -o scroller -lSDL -lSDL_image -I/usr/include/SDL
 
 scroller.clean:
 	rm -f scroller scroller.dat
+	rm scroller1_colors.png scroller1_mask.png
+	rm scroller2_colors.png scroller2_mask.png
+	rm scroller3_colors.png scroller3_mask.png
+
+scroller1_colors.png: colorreduction scroller1_colors_rgb.png
+	./colorreduction scroller1_colors_rgb.png 256 scroller1_colors.png
+
+scroller2_colors.png: colorreduction scroller2_colors_rgb.png
+	./colorreduction scroller2_colors_rgb.png 256 scroller2_colors.png
+
+scroller3_colors.png: colorreduction scroller3_colors_rgb.png
+	./colorreduction scroller3_colors_rgb.png 256 scroller3_colors.png
+
+scroller1_mask.png: colorreduction scroller1_mask_rgb.png
+	./colorreduction scroller1_mask_rgb.png 256 scroller1_mask.png
+
+scroller2_mask.png: colorreduction scroller2_mask_rgb.png
+	./colorreduction scroller2_mask_rgb.png 256 scroller2_mask.png
+
+scroller3_mask.png: colorreduction scroller3_mask_rgb.png
+	./colorreduction scroller3_mask_rgb.png 256 scroller3_mask.png
 
 #---------------------------------------------------------#
 # rules to create the data files necesary for the sprites #
