@@ -349,8 +349,8 @@ static void createMission(void) {
 
   scr_drawedit(0, 0, false);
   scr_writetext_center(30, "Mission creation");
-  scr_writetext_center(70, "enter mission name");
-  scr_writetext_center(85, "empty to abort");
+  scr_writetext_center(80, "enter mission name");
+  scr_writetext_center(110, "empty to abort");
 
   set_men_bgproc(NULL);
 
@@ -366,8 +366,8 @@ static void createMission(void) {
     scr_drawedit(0, 0, false);
     scr_writetext_center(30, "Mission creation");
                               
-    scr_writetext_center(70, "could not create file");
-    scr_writetext_center(85, "aborting");
+    scr_writetext_center(80, "could not create file");
+    scr_writetext_center(110, "aborting");
 
     scr_swap();
 
@@ -387,11 +387,11 @@ static void createMission(void) {
 
     scr_drawedit(0, 0, false);
     scr_writetext_center(30, "Mission creation");
-    scr_writetext_center(70, "enter name of");
+    scr_writetext_center(80, "enter name of");
 
     char s[30];
     snprintf(s, 30, "tower no %i", currenttower);
-    scr_writetext_center(85, s);
+    scr_writetext_center(110, s);
 
     towername[0] = 0;
     while (!men_input(towername, 25)) ;
