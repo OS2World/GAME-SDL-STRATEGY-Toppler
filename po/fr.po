@@ -1,6 +1,6 @@
-# translation of fr.po to Deutsch
-# This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR Andreas R?er.
+# translation of fr.po to French
+# This file is distributed under the same license as the toppler package.
+# Copyright (C) 2004 Andreas Röver.
 # Andreas Röver <roever@users.sf.net>, 2004.
 #
 msgid ""
@@ -9,8 +9,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-12-14 20:59+0100\n"
 "PO-Revision-Date: 2004-02-08 10:56+0100\n"
-"Last-Translator: Andreas Röver <roever@users.sf.net>\n"
-"Language-Team: Deutsch <de@li.org>\n"
+"Last-Translator: Bill Allombert <ballombe@debian.org>\n"
+"Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -518,7 +518,6 @@ msgid "Font alpha"
 msgstr "Polices transparentes"
 
 #: menu.cc:351 menu.cc:352
-#, fuzzy
 msgid "Sprites alpha"
 msgstr "Sprites transparents"
 
@@ -680,11 +679,11 @@ msgstr "Le royaume des robots"
 
 #: levelnames.txt:4
 msgid "Trap of tricks"
-msgstr "Pièges à astuces"
+msgstr "Le Piège des combines"
 
 #: levelnames.txt:5
 msgid "Slippery slide"
-msgstr "La tranche dormante"
+msgstr "Le passage glissant"
 
 #: levelnames.txt:6
 msgid "Broken path"
@@ -692,15 +691,15 @@ msgstr "Le chemin interrompu"
 
 #: levelnames.txt:7
 msgid "Swimmers delight"
-msgstr "Délice des nageurs"
+msgstr "Le délice des nageurs"
 
 #: levelnames.txt:8
 msgid "Nasty one"
-msgstr "Méchant"
+msgstr "Le vicieux"
 
 #: levelnames.txt:9
 msgid "Edge of doom"
-msgstr "Le fil du rasoir"
+msgstr "L'arète du destin"
 
 #: levelnames.txt:11
 msgid "Mission 2"
@@ -708,7 +707,7 @@ msgstr "Mission 2"
 
 #: levelnames.txt:12
 msgid "Blink of the eye"
-msgstr "Aveugle"
+msgstr "Le clignement de l'½il"
 
 #: levelnames.txt:13
 msgid "Robot's heaven"
@@ -716,11 +715,11 @@ msgstr "Le paradis des robots"
 
 #: levelnames.txt:14
 msgid "Trick of traps"
-msgstr "L'astuce des pièges"
+msgstr "La Combine des pièges"
 
 #: levelnames.txt:15
 msgid "No man's land"
-msgstr "Désert"
+msgstr "Le no man's land"
 
 #: levelnames.txt:16
 msgid "Oh, *******!!"
@@ -728,7 +727,7 @@ msgstr "Oh, *******!!"
 
 #: levelnames.txt:17
 msgid "Riddle of reason"
-msgstr "Énigme de la raison"
+msgstr "L'énigme de la raison"
 
 #: levelnames.txt:18
 msgid "Maze of mistakes"
@@ -752,7 +751,7 @@ msgstr "Regardez où vous mettez les pieds"
 
 #: levelnames.txt:24
 msgid "Short, but deadly"
-msgstr "Cour, mais mortel"
+msgstr "Court, mais mortel"
 
 #: levelnames.txt:25
 msgid "The maddening"
@@ -772,7 +771,7 @@ msgstr "Vous allez perdre"
 
 #: levelnames.txt:29
 msgid "Mind destroyer"
-msgstr "Destructeur d'esprit"
+msgstr "Le destructeur d'esprit"
 
 #: levelnames.txt:31
 msgid "Ball 2"
@@ -780,19 +779,19 @@ msgstr "Ball 2"
 
 #: levelnames.txt:32
 msgid "Mind Trap"
-msgstr "Piège à esprit"
+msgstr "Piège à Esprit"
 
 #: levelnames.txt:33
 msgid "Breaking Tower"
-msgstr "La tour qui casse"
+msgstr "La Tour Interrompue"
 
 #: levelnames.txt:34
 msgid "Great Fall"
-msgstr "La belle chute"
+msgstr "La Belle Chute"
 
 #: levelnames.txt:35
 msgid "Tower of Intrigue"
-msgstr "La tour des intrigues"
+msgstr "La tour de l'Intrigue"
 
 #: levelnames.txt:36
 msgid "Massacre"
@@ -800,7 +799,7 @@ msgstr "Massacre"
 
 #: levelnames.txt:37
 msgid "Bouncing Murders"
-msgstr "Meutres rebondissants"
+msgstr "Meutres Rebondissants"
 
 #: levelnames.txt:38
 msgid "Trial and error"
@@ -808,7 +807,7 @@ msgstr "Essai et erreur"
 
 #: levelnames.txt:39
 msgid "Tower of Pure Evil"
-msgstr "La tour du mal pur"
+msgstr "La tour du Mal Pur"
 
 #: levelnames.txt:41
 msgid "Ball 3"
@@ -816,19 +815,19 @@ msgstr "Ball 3"
 
 #: levelnames.txt:42
 msgid "Annoying Tower"
-msgstr "La tour agassante"
+msgstr "La Tour Agassante"
 
 #: levelnames.txt:43
 msgid "Cave of Failure"
-msgstr "La caverne de l'échec"
+msgstr "La Caverne de l'Échec"
 
 #: levelnames.txt:44
 msgid "Dividing path"
-msgstr "Le chemin qui divise"
+msgstr "Le chemin qui bifurque"
 
 #: levelnames.txt:45
 msgid "No Way Out?"
-msgstr "Pas de sortie ?"
+msgstr "Pas De Sortie ?"
 
 #: levelnames.txt:46
 msgid "Trap"
@@ -836,48 +835,48 @@ msgstr "Piège"
 
 #: levelnames.txt:47
 msgid "Tower of Mystery"
-msgstr "La tour des mystères"
+msgstr "La tour des Mystères"
 
 #: levelnames.txt:48
 msgid "Slip ... and die"
-msgstr "Dors... et meurs"
+msgstr "Glissez... et mourez"
 
 #: levelnames.txt:49
 msgid "Mission Impossible"
-msgstr "Mission impossible"
+msgstr "Mission Impossible"
 
 #: levelnames.txt:51
 msgid "ABC Towers"
-msgstr ""
+msgstr "Tours pour débuter"
 
 #: levelnames.txt:52
 msgid "Slices"
-msgstr "Tranches"
+msgstr "Passages"
 
 #: levelnames.txt:53
 msgid "Corridors"
-msgstr "Corridors"
+msgstr "Couloirs"
 
 #: levelnames.txt:54
 msgid "Higher Ground"
-msgstr "La plus haute position"
+msgstr "Terrain Élevé"
 
 #: levelnames.txt:55
 msgid "No Icing"
-msgstr "Pas de givre"
+msgstr "Pas de Glaçage"
 
 #: levelnames.txt:56
 msgid "Three Layers"
-msgstr "Trois couches"
+msgstr "Trois Niveaux"
 
 #: levelnames.txt:57
 msgid "Two Ways"
-msgstr "Deux routes"
+msgstr "Deux Voies"
 
 #: levelnames.txt:58
 msgid "Spiral"
-msgstr "Spirale"
+msgstr "La spirale"
 
 #: levelnames.txt:59
 msgid "Skygazer"
-msgstr ""
+msgstr "Le regarde-ciel"
