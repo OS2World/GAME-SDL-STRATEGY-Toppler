@@ -44,7 +44,15 @@ static Uint8 *slicedata, *battlementdata, *crossdata;
 static int slicestart;
 static int battlementstart;
 
-static unsigned short robotsst, ballst, boxst, snowballst, starst, crossst,
+static struct {
+  Uint8 count;            // how many pictures are in the animation of this robot
+  unsigned short start;   // number of first robot
+} robots[8];              // currently there are only 8 robots, later on we need to
+                          // make this dynamic;
+
+// robotsst,
+
+static unsigned short ballst, boxst, snowballst, starst, crossst,
          fishst, subst, torb;
 static int topplerstart;
 
@@ -366,7 +374,14 @@ static void loadgraphics(void) {
   arc_assign(spritedat);
 
   scr_read_palette(pal);
-  robotsst = scr_loadsprites(128, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites, true);
+
+  t = arc_getbyte();
+  assert(t == 8, "currently only exactly 8 robots are supported");
+
+  for (t = 0; t < 8; t++) {
+    robots[t].count = arc_getbyte();
+    robots[t].start = scr_loadsprites(robots[t].count, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites, true);
+  }
 
   scr_read_palette(pal);
   ballst = scr_loadsprites(2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites, true);
@@ -1097,16 +1112,16 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
     break;
   case TB_ROBOT4:
-    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
+    scr_blit(spr_spritedata(robots[0].start), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
     break;
   case TB_ROBOT5:
-    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
+    scr_blit(spr_spritedata(robots[0].start), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
     break;
   case TB_ROBOT6:
-    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
+    scr_blit(spr_spritedata(robots[0].start), x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
     break;
   case TB_ROBOT7:
-    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
+    scr_blit(spr_spritedata(robots[0].start), x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
     break;
   }
 }
@@ -1140,7 +1155,7 @@ static void putrobot(int t, int m, long x, long h)
   
     case OBJ_KIND_ROBOT_VERT:
     case OBJ_KIND_ROBOT_HORIZ:
-      nr = robotsst + (lev_towernr() & 0x7) * 16 + ((m / 2) & 0xf);
+      nr = robots[lev_towernr()].start + ((m / 2) % robots[lev_towernr()].count);
       break;
   
     default:
