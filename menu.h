@@ -102,16 +102,4 @@ void set_men_bgproc(menubg_callback_proc proc);
 /* menu shown to user when he presses esc during play */
 bool men_game(void);
 
-/* create a new text viewer */
-struct _textsystem *new_text_system(char *title, menuopt_callback_proc pr = NULL);
-/* add a line of text to the text viewer */
-struct _textsystem *add_text_line(struct _textsystem *ts, char *line);
-/* set a function that gets called every t updates when this text
-   viewing system is being run */
-struct _textsystem *set_text_system_timeproc(struct _textsystem *ts, long t, menuopt_callback_proc pr);
-/* free the text viewer */
-void free_text_system(struct _textsystem *ts);
-/* run the text viewer */
-struct _textsystem *run_text_system(struct _textsystem *ts);
-
 #endif

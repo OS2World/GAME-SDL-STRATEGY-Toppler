@@ -27,6 +27,7 @@
 #include "robots.h"
 #include "snowball.h"
 #include "menu.h"
+#include "txtsys.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -172,6 +173,10 @@ static void editor_background_proc(void) {
    scr_drawedit(bg_row * 4, bg_col * 8, false);
    if (bg_darken) scr_darkenscreen();
    if (bg_text) scr_writetext_center(5, bg_text);
+}
+
+static char *editor_background_menu_proc(void *ms) {
+    editor_background_proc();
 }
 
 static bool really_quit(int row, int col) {
@@ -403,7 +408,7 @@ static void createMission(void) {
 void le_showkeyhelp(int row, int col) {
   int k;
   int maxkeylen = 0;
-  struct _textsystem *ts = new_text_system("Editor Key Help");
+  textsystem *ts = new textsystem("Editor Key Help", editor_background_menu_proc);
   char tabbuf1[6], tabbuf2[6];
     
   if (!ts) return;
@@ -436,13 +441,12 @@ void le_showkeyhelp(int row, int col) {
       sprintf(tmpb, "~T%s%%s~T%s%%s", tabbuf2, tabbuf1);
       sprintf(buf, tmpb, knam, _ed_key_actions[_ed_keys[k].action]);
 	      
-      ts = add_text_line(ts, buf);
+      ts->addline(buf);
   }
   bg_darken = true;
-  set_men_bgproc(editor_background_proc);
-  ts = run_text_system(ts);
+  ts->run();
   bg_darken = false;
-  free_text_system(ts);
+  delete ts;
 }
 
 static int clipboard_rows = 0;
