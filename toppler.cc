@@ -233,12 +233,19 @@ static bool movetoppler(long x, long y) {
   return true;
 }
 
-static void slidestep(int left_right) {
+static void slidestep(int left_right, bool look_left) {
 
-  if (lev_is_sliding(verticalpos / 4 - 1, anglepos / 8)) {
-    if (!left_right)
-      movetoppler(1, 0);
-  }
+  if (left_right)
+    return;
+
+  int dir;
+
+  if (look_left)
+    dir = lev_is_sliding(verticalpos / 4 - 1, (anglepos) / 8);
+  else
+    dir = lev_is_sliding(verticalpos / 4 - 1, (anglepos-1) / 8);
+
+  movetoppler((long)dir, 0);
 }
 
 /* the state machine of the animal */
@@ -317,7 +324,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
               break;
             }
 
-            slidestep(left_right);
+            slidestep(left_right, look_left);
             topplershape = 0xc;
           }
         } else {
@@ -556,7 +563,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
     break;
 
   case STATE_SHOOTING:
-    slidestep(left_right);
+    slidestep(left_right, look_left);
     if (substate == 3) {
       walking();
     } else {

@@ -25,6 +25,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdarg.h>
 
 #if (SYSTEM != SYS_WINDOWS)
 
@@ -48,6 +49,7 @@ char curr_password[PASSWORD_LEN+1] = "";
 int  start_lives = 3;
 bool use_unicode_input = true;
 char editor_towername[TOWERNAMELEN+1] = "";
+int  debug_level = 0;
 
 typedef enum {
     CT_BOOL,
@@ -104,6 +106,15 @@ void dcl_wait(void) {
       while ((SDL_GetTicks() - last) < 55*1 ) SDL_Delay(2);
       last = SDL_GetTicks();
   }
+}
+
+void debugprintf(int lvl, char *fmt, ...) {
+    if (lvl <= debug_level) {
+        va_list args;
+        va_start(args, fmt);
+        vprintf(fmt, args);
+        va_end(args);
+    }
 }
 
 /* returns true, if file exists */

@@ -46,7 +46,8 @@ typedef enum {
   EDACT_PUTSPACE,
   EDACT_PUTSTEP,
   EDACT_PUTVANISHER,
-  EDACT_PUTSLIDER,
+  EDACT_PUTSLIDERLEFT,
+  EDACT_PUTSLIDERRIGHT,
   EDACT_PUTDOOR,
   EDACT_PUTGOAL,
   EDACT_CHECKTOWER,
@@ -88,6 +89,7 @@ typedef enum {
 struct _ed_key {
    key_actions action;
    SDLKey key;
+   Uint16 mod; /* KMOD_NONE|KMOD_SHIFT|KMOD_CTRL|KMOD_ALT */
 };
 
 #define TOWERPAGESIZE 5 /* pageup/pagedown moving */
@@ -96,7 +98,8 @@ struct _ed_key {
 const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Quit",          "Move up",        "Move down",       "Move left",
    "Move right",    "Insert row",     "Delete row",      "Rotate 180",
-   "Put space",     "Put step",       "Put vanisher",    "Put slider",
+   "Put space",     "Put step",       "Put vanisher",    "Put slider left",
+   "Put slider right",
    "Put door",      "Put goal",       "Check tower",     "Put robot 1",  
    "Put robot 2",   "Put robot 3",    "Put robot 4",     "Put robot 5",
    "Put robot 6",   "Put robot 7",    "Put lift",        "Lift middle stop",
@@ -111,6 +114,7 @@ const char *_ed_key_actions[NUMEDITORACTIONS] = {
 const struct _ed_key _ed_keys[] = {
    {EDACT_QUIT,          SDLK_ESCAPE},
    {EDACT_SHOWKEYHELP,   SDLK_F1},
+   {EDACT_SHOWKEYHELP,   SDLK_h},
    {EDACT_MOVEUP,        SDLK_UP},
    {EDACT_MOVEDOWN,      SDLK_DOWN},
    {EDACT_MOVELEFT,      SDLK_LEFT},
@@ -127,7 +131,8 @@ const struct _ed_key _ed_keys[] = {
    {EDACT_PUTSPACE,      SDLK_SPACE},
    {EDACT_PUTSTEP,       SDLK_w},
    {EDACT_PUTVANISHER,   SDLK_s},
-   {EDACT_PUTSLIDER,     SDLK_x},
+   {EDACT_PUTSLIDERLEFT, SDLK_x},
+   {EDACT_PUTSLIDERRIGHT,SDLK_x, KMOD_SHIFT},
    {EDACT_PUTDOOR,       SDLK_i},
    {EDACT_PUTGOAL,       SDLK_k},
    {EDACT_PUTROBOT1,     SDLK_1},
@@ -148,7 +153,8 @@ const struct _ed_key _ed_keys[] = {
    {EDACT_TESTTOWER,     SDLK_p},
    {EDACT_SETTOWERCOLOR, SDLK_v},
    {EDACT_SETTIME,       SDLK_b},
-   {EDACT_DECTIME,       SDLK_n},
+   {EDACT_INCTIME,       SDLK_n},
+   {EDACT_DECTIME,       SDLK_n, KMOD_SHIFT},
    {EDACT_CREATEMISSION, SDLK_m},
    {EDACT_NAMETOWER,     SDLK_t},
    {EDACT_REC_DEMO,      SDLK_F10},
@@ -317,6 +323,20 @@ static void edit_checktower(int &row, int &col) {
   bg_text = NULL;
 }
 
+char *keymod2str(Uint16 kmod) {
+    static char buf[256];
+    buf[0] = '\0';
+    if (kmod != KMOD_NONE) {
+	if ((kmod & KMOD_LSHIFT) ||
+	   (kmod & KMOD_RSHIFT)) sprintf(buf, "shift+");
+	if ((kmod & KMOD_LCTRL) ||
+	   (kmod & KMOD_RCTRL)) sprintf(&buf[strlen(buf)], "ctrl+");
+	if ((kmod & KMOD_LALT) ||
+	   (kmod & KMOD_RALT)) sprintf(&buf[strlen(buf)], "alt+");
+    }
+    return buf;
+}
+
 static void createMission(void) {
 
   scr_drawedit(0, 0, false);
@@ -389,7 +409,9 @@ void le_showkeyhelp(int row, int col) {
   if (!ts) return;
 
   for (k = 0; k < SIZE(_ed_keys); k++) {
-      int l = scr_textlength(SDL_GetKeyName(_ed_keys[k].key));
+      char knam[256];
+      sprintf(knam, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
+      int l = scr_textlength(knam);
       
       if (l > maxkeylen) maxkeylen = l;
   }
@@ -402,7 +424,9 @@ void le_showkeyhelp(int row, int col) {
   for (k = 0; k < SIZE(_ed_keys); k++) {
       char buf[256];
       char tmpb[256];
-      char *knam = SDL_GetKeyName(_ed_keys[k].key);
+      char knam[256];
+
+      sprintf(knam, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
       
       sprintf(tabbuf2, "%3i", maxkeylen - scr_textlength(knam));
       if (tabbuf2[0] < '0') tabbuf2[0] = '0';
@@ -414,7 +438,8 @@ void le_showkeyhelp(int row, int col) {
 	      
       ts = add_text_line(ts, buf);
   }
-  bg_darken = true;      
+  bg_darken = true;
+  set_men_bgproc(editor_background_proc);
   ts = run_text_system(ts);
   bg_darken = false;
   free_text_system(ts);
@@ -454,7 +479,8 @@ void le_edit(void) {
 
   bool ende = false;
   bool changed = false;
-  SDLKey inp;
+  SDLKey inp = SDLK_UNKNOWN;
+  Uint16 keymod;
   int row = 0, col = 0;
   int tstep = 0;
   int blink_r = 70, blink_g = 40, blink_b = 10;
@@ -471,8 +497,6 @@ void le_edit(void) {
   if (editor_towerpagesize < 1) {
       editor_towerpagesize = pagesize = TOWERPAGESIZE;
   } else pagesize = editor_towerpagesize;
-
-  inp = SDLK_UNKNOWN;
 
   set_men_bgproc(editor_background_proc);
 
@@ -512,10 +536,11 @@ void le_edit(void) {
     dcl_wait();
 
     inp = key_sdlkey();
-
-    if (inp)
-      printf("inp = %i\n", inp);
-
+    keymod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS|KMOD_MODE));
+    if (keymod & KMOD_SHIFT) keymod |= KMOD_SHIFT;
+    if (keymod & KMOD_CTRL) keymod |= KMOD_CTRL;
+    if (keymod & KMOD_ALT) keymod |= KMOD_ALT;
+    if (keymod & KMOD_META) keymod |= KMOD_META;
 
     if (inp != SDLK_UNKNOWN) {
       int k, action = -1;
@@ -523,10 +548,13 @@ void le_edit(void) {
       (void)key_sdlkey();
 
       for (k = 0; k < SIZE(_ed_keys); k++)
-        if (_ed_keys[k].key == inp) {
+        if (_ed_keys[k].key == inp && _ed_keys[k].mod == keymod) {
           action = _ed_keys[k].action;
           break;
         }
+
+      if (inp)
+	  debugprintf(4, "key=%i, mod=%i, action=%i\n", inp, keymod, action);
 
       switch (action) {
       case EDACT_QUIT:
@@ -585,8 +613,12 @@ void le_edit(void) {
         lev_putvanishingstep(row, -col & 0xf);
         changed = true;
         break;
-      case EDACT_PUTSLIDER:
-        lev_putslidingstep(row, -col & 0xf);
+      case EDACT_PUTSLIDERLEFT:
+        lev_putslidingstep_left(row, -col & 0xf);
+        changed = true;
+        break;
+      case EDACT_PUTSLIDERRIGHT:
+        lev_putslidingstep_right(row, -col & 0xf);
         changed = true;
         break;
       case EDACT_PUTDOOR:

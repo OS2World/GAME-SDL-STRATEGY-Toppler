@@ -977,6 +977,7 @@ static void putcase(unsigned char w, long x, long h) {
   case TB_STEP:
   case TB_STEP_VANISHER:
   case TB_STEP_LSLIDER:
+  case TB_STEP_RSLIDER:
     scr_blit(spr_spritedata((angle % SPR_STEPFRAMES) + step), x - (SPR_STEPWID / 2), h);
 
     break;
@@ -1034,6 +1035,10 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     break;
   case TB_STEP_LSLIDER:
     scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) + state % 4, h);
+    break;
+
+  case TB_STEP_RSLIDER:
+    scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) - state % 4, h);
     break;
 
   case TB_STICK:

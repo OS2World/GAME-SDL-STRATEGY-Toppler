@@ -27,25 +27,30 @@
 
 #define starstep 5
 
-static unsigned short starnr;
-
 struct _star {
   long x, y;
   int state;
   int size;
 };
 
+static unsigned short star_spr_nr;
 static int num_stars;
 static struct _star *stars = (struct _star *)0;
 
 void sts_draw(void)
 {
   for (int t = 0; t < num_stars; t++)
-    scr_blit(spr_spritedata((long)starnr + stars[t].size - (stars[t].state != 0)), stars[t].x, stars[t].y);
+    scr_blit(spr_spritedata((long)star_spr_nr + stars[t].size - (stars[t].state != 0)), stars[t].x, stars[t].y);
 }
 
 void sts_init(int sn, int nstar) {
-  assert(!stars, "sts_init called twice!");
+  if (stars) {
+      if (nstar <= num_stars) {
+	  star_spr_nr = sn;
+	  num_stars = nstar;
+	  return;
+      } else sts_done();
+  }
   assert(nstar > 1, "sts_init with too few stars!");
   
   stars = (struct _star *)malloc(sizeof(struct _star)*nstar);
@@ -59,13 +64,13 @@ void sts_init(int sn, int nstar) {
     stars[t].size = rand() / (RAND_MAX / 7);
   }
 
-  starnr = sn;
+  star_spr_nr = sn;
 }
 
 void
 sts_done(void)
 {
-    free(stars);
+    if (stars) free(stars);
     num_stars = 0;
     stars = 0;
 }

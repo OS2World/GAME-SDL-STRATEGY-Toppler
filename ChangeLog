@@ -1,8 +1,37 @@
+pasi:
+
+- bugfix: toggling alpha options doesn't change
+  the star positions now.
+- bugfix: the level editor key help showed the title
+  screen background if you went to the key help right
+  after entering the editor.
+- debugging level: output via debugprintf(),
+  debug level can be set on the command line. (-d option)
+- updated the man-page to have the -d parameter,
+  and some other small changes in it.
+- level editor keys can now have modifiers:
+  shift, control and/or alt.
+- new type of tower block: step that slides to right.
+  works like the slider left, exactly
+- added "Put slider right" to the level editor keys,
+  bound to shift+x.
+- readded "Decrease time" to the level editor keys,
+  bound to shift+n.
+- level editor shows key, key modifier and action on
+  the console if debug_level >= 4.
+- in toppler.spec.in lowered the BuildRequires SDL-devel
+  version from 1.2.4 down to 1.2.2.
+  (I use that SDL version to compile, so i guess it works ;)
+  [That is, if i'm guessing correctly what BuildRequires means...]
+  
+me:
+
 - bugfix for big endian systemy
 - some speed improvements (thanks to Aurel Schwarzentruber)
 - lots of typos were fixed, some function names were renamed to better
   enlish names
 - small updates to documentation
+- h and F1 activate helpscreen in leveleditor
 
 Version 0.98.2
 

@@ -42,6 +42,7 @@ typedef enum {
     TB_STEP,
     TB_STEP_VANISHER,
     TB_STEP_LSLIDER,
+    TB_STEP_RSLIDER,
     TB_BOX,
     TB_DOOR,
     TB_DOOR_TARGET,
@@ -186,8 +187,9 @@ bool lev_is_stick(int row, int col);
 /* is part of an elevator */
 bool lev_is_elevator(int row, int col);
 
-/* sliding step */
-bool lev_is_sliding(int row, int col);
+/* sliding step
+   returns: 0 = no sliding, 1 = sliding right, -1 = sliding left */
+int lev_is_sliding(int row, int col);
 
 /* start and stop elevator */
 void lev_platform2stick(int row, int col);
@@ -238,7 +240,8 @@ void lev_putrobot7(int row, int col);
 void lev_putrobot8(int row, int col);
 void lev_putstep(int row, int col);
 void lev_putvanishingstep(int row, int col);
-void lev_putslidingstep(int row, int col);
+void lev_putslidingstep_left(int row, int col);
+void lev_putslidingstep_right(int row, int col);
 void lev_putdoor(int row, int col);
 void lev_puttarget(int row, int col);
 void lev_putstick(int row, int col);

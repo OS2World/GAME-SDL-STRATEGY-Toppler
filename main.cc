@@ -31,13 +31,20 @@ static void printhelp(void) {
   printf("\n\tOptions:\n\n");
   printf("  -f\tEnable fullscreen mode\n");
   printf("  -s\tSilence, disable all sound\n");
+  printf("  -dX\tSet debug level to X  (default: %i)\n", debug_level);
 }
 
 static bool parse_arguments(int argc, char *argv[]) {
   for (int t = 1; t < argc; t++) {
     if (!strcmp(argv[t], "-f")) fullscreen = true;
     else if (!strcmp(argv[t], "-s")) nosound = true;
-    else {
+    else if (strstr(argv[t], "-d") == argv[t]) {
+	char parm = argv[t][2];
+	if (parm >= '0' && parm <= '9') {
+	    printf("Debug level is now %c.\n", parm);
+	    debug_level = (parm - '0');
+	} else printf("Illegal debug level value, using default.\n");
+    } else {
       printhelp();
       return false;
     }

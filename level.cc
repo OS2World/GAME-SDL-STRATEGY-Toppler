@@ -55,6 +55,7 @@ struct _tblockdata {
     { "step",             '-', TBF_PLATFORM },
     { "vanisher step",    '.', TBF_PLATFORM },
     { "slider > step",    '>', TBF_PLATFORM },
+    { "slider < step",    '<', TBF_PLATFORM },
     { "box",              'b', TBF_NONE },
     { "door",             '#', TBF_EMPTY },
     { "target door",      'T', TBF_EMPTY },
@@ -657,8 +658,10 @@ bool lev_is_box(int row, int col) {
   return tower[row][col] == TB_BOX;
 }
 
-bool lev_is_sliding(int row, int col) {
-  return tower[row][col] == TB_STEP_LSLIDER;
+int lev_is_sliding(int row, int col) {
+    return ((tower[row][col] == TB_STEP_LSLIDER) ? 1 :
+	    (tower[row][col] == TB_STEP_RSLIDER) ? -1 : 
+	    0);
 }
 
 bool lev_is_robot(int row, int col) {
@@ -941,7 +944,8 @@ void lev_putrobot6(int row, int col) { tower[row][col] = TB_ROBOT6; }
 void lev_putrobot7(int row, int col) { tower[row][col] = TB_ROBOT7; }
 void lev_putstep(int row, int col) { tower[row][col] = TB_STEP; }
 void lev_putvanishingstep(int row, int col) { tower[row][col] = TB_STEP_VANISHER; }
-void lev_putslidingstep(int row, int col) { tower[row][col] = TB_STEP_LSLIDER; }
+void lev_putslidingstep_left(int row, int col) { tower[row][col] = TB_STEP_LSLIDER; }
+void lev_putslidingstep_right(int row, int col) { tower[row][col] = TB_STEP_RSLIDER; }
 
 void lev_putdoor(int row, int col) {
 
@@ -997,10 +1001,12 @@ lev_problem lev_is_consistent(int &row, int &col) {
   // check first, if the starting point is correctly organized
   // so that there is no obstacle and we can survive there
   if ((tower[1][0] != TB_STICK) && (tower[1][0] != TB_STEP) &&
-       (tower[1][0] != TB_STEP_LSLIDER) && (tower[1][0] != TB_BOX) &&
+       (tower[1][0] != TB_STEP_LSLIDER) && (tower[1][0] != TB_STEP_RSLIDER) &&
+       (tower[1][0] != TB_BOX) &&
        (tower[1][0] != TB_ELEV_BOTTOM) &&
        (tower[0][0] != TB_STICK) && (tower[0][0] != TB_STEP) &&
-       (tower[0][0] != TB_STEP_LSLIDER) && (tower[0][0] != TB_BOX) &&
+       (tower[0][0] != TB_STEP_LSLIDER) && (tower[0][0] != TB_STEP_RSLIDER) &&
+       (tower[0][0] != TB_BOX) &&
        (tower[0][0] != TB_ELEV_BOTTOM)) {
     row = 1;
     col = 0;

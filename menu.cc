@@ -947,7 +947,6 @@ men_options_sounds(void *ms)
 static void
 reload_graphics(void) {
   spr_done();
-  sts_done();
 
   spr_init(1000);
   scr_reload_sprites();

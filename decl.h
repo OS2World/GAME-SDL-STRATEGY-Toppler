@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdarg.h>
 
 #if (SYSTEM != SYS_WINDOWS)
 #include <dirent.h>
@@ -169,6 +170,8 @@
 #define PASSWORD_LEN 5
 #define PASSWORD_CHARS "abcdefghijklmnopqrstuvwxyz0123456789"
 
+void debugprintf(int lvl, char *fmt, ...);
+
 /* waits around 1/18 of a second */
 void dcl_wait(void);
 
@@ -198,6 +201,7 @@ extern int  editor_towerstarthei;
 extern int  start_lives;
 extern char curr_password[PASSWORD_LEN+1];
 extern bool use_unicode_input;
+extern int  debug_level;
 
 /* Is the TT window active? */
 extern bool tt_has_focus;
