@@ -174,6 +174,10 @@ main(int argc, char *argv[]) {
   get(colors, mask, '/');
   get(colors, mask, '%');
   get(colors, mask, '&');
+  get(colors, mask, '\'');
+  get(colors, mask, '"');
+  get(colors, mask, '#');
+  get(colors, mask, '\\');
 
   fclose(outp);
 }
