@@ -9,7 +9,7 @@ LEVELDIR = ../../levels/mission1
 
 LEVELS = `find $(LEVELDIR) -maxdepth 1 -type f`
 
-OBJS = $(TOPPLERDIR)/level.o $(TOPPLERDIR)/decl.o $(TOPPLERDIR)/points.o \
+OBJS = $(TOPPLERDIR)/level.o $(TOPPLERDIR)/decl.o \
 	$(TOPPLERDIR)/keyb.o $(TOPPLERDIR)/configuration.o
 
 all: tower2inc
