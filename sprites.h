@@ -32,7 +32,7 @@ public:
 
   void freedata(void);
 
-  SDL_Surface * data(const Uint16 nr) const {if (nr < usage) return array[nr]; }
+  SDL_Surface * data(const Uint16 nr) const {if (nr < usage) return array[nr]; else return 0; }
   Uint16 save(SDL_Surface * s);
 
 private:

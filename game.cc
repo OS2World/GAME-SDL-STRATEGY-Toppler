@@ -296,6 +296,8 @@ static void timeout(int &tower_position, int &tower_anglepos) {
   bg_tower_pos = tower_position;
   bg_tower_angle = tower_anglepos;
   bg_time = 0;
+
+  set_men_bgproc(game_background_proc);
    
   men_info("Time over", 150);
 }

@@ -133,10 +133,50 @@ scr_savedisplaybmp(char *fname)
   SDL_SaveBMP(display, fname);
 }
 
+/*
+ * Set the pixel at (x, y) to the given value
+ * NOTE: The surface must be locked before calling this!
+ */
+void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
+{
+  int bpp = surface->format->BytesPerPixel;
+  /* Here p is the address to the pixel we want to set */
+  Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * bpp;
+
+  switch(bpp) {
+    case 1:
+      *p = pixel;
+      break;
+
+    case 2:
+      *(Uint16 *)p = pixel;
+      break;
+
+    case 3:
+      if(SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+        p[0] = (pixel >> 16) & 0xff;
+        p[1] = (pixel >> 8) & 0xff;
+        p[2] = pixel & 0xff;
+        } else {
+        p[0] = pixel & 0xff;
+        p[1] = (pixel >> 8) & 0xff;
+        p[2] = (pixel >> 16) & 0xff;
+        }
+        break;
+
+    case 4:
+        *(Uint32 *)p = pixel;
+        break;
+  }
+}
+
+
+
 Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha) {
   Uint16 erg = 0;
   Uint8 b, a;
   SDL_Surface *z;
+  Uint32 pixel;
 
   for (int t = 0; t < num; t++) {
     z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite) ? SDL_SRCALPHA : 0,
@@ -148,47 +188,31 @@ Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, b
     for (int y = 0; y < h; y++)
       for (int x = 0; x < w; x++) {
         b = fi->getbyte();
-#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = pal[b*3 + 2];
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 1];
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = pal[b*3 + 0];
-#else
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = pal[b*3 + 2];
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = pal[b*3 + 1];
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 0];
-#endif
+        pixel=SDL_MapRGB(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2]);
         if (sprite) {
           a = fi->getbyte();
-          if (use_alpha)
-#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
-            ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = a;
-#else
-            ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = a;
-#endif
-          else {
-            /* ok, this is the case where we have a sprite and don't want
-             to use alpha blending, so we use normal sprites with key color
-             instead, this is much faster. So if the pixel is more than 50% transparent
-             make the whole pixel transparent by setting this pixel to the
-             key color. if the pixel is not supoosed to be transparent
-             we need to check if the pixel color is by accident the key color,
-             if so we alter is slightly */
-            if (a < 128) {
-#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = 1;
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = 1;
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = 1;
-#else
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = 1;
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = 1;
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = 1;
-#endif
-            }  else {
+          if (use_alpha) {
+            pixel=SDL_MapRGBA(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2],a);
+          } else {
+            if (a<128)
+              pixel=SDL_MapRGB(z->format,1,1,1);
+            else
+            {
               if ((pal[b*3+2] == 1) && (pal[b*3+1] == 1) || (pal[b*3] == 1))
-                ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2]++;
+                pixel=SDL_MapRGB(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2]+1);
+              else
+                /* ok, this is the case where we have a sprite and don't want
+                 to use alpha blending, so we use normal sprites with key color
+                 instead, this is much faster. So if the pixel is more than 50% transparent
+                 make the whole pixel transparent by setting this pixel to the
+                 key color. if the pixel is not supoosed to be transparent
+                 we need to check if the pixel color is by accident the key color,
+                 if so we alter is slightly */
+                pixel=SDL_MapRGB(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2]);
             }
           }
         }
+        putpixel(z,x,y,pixel);
       }
 
     SDL_Surface * z2 = SDL_DisplayFormatAlpha(z);
@@ -237,6 +261,7 @@ static void scr_regensprites(Uint8 *data, SDL_Surface * const target, int num, i
   Uint8 a, b;
   Uint32 datapos = 0;
   SDL_Surface * z;
+  Uint32 pixel;
 
   if (screenformat) {
     z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite && use_alpha) ? SDL_SRCALPHA : 0,
@@ -253,47 +278,31 @@ static void scr_regensprites(Uint8 *data, SDL_Surface * const target, int num, i
     for (int y = 0; y < h; y++)
       for (int x = 0; x < w; x++) {
         b = data[datapos++];
-#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = pal[b*3 + 2];
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 1];
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = pal[b*3 + 0];
-#else
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = pal[b*3 + 2];
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = pal[b*3 + 1];
-        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 0];
-#endif
+        pixel=SDL_MapRGB(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2]);
         if (sprite) {
           a = data[datapos++];
           if (use_alpha) {
-#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
-            ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = a;
-#else
-            ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = a;
-#endif
+            pixel=SDL_MapRGBA(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2],a);
           } else {
-            /* ok, this is the case where we have a sprite and don't want
-             to use alpha blending, so we use normal sprites with key color
-             instead, this is much faster. So if the pixel is more than 50% transparent
-             make the whole pixel transparent by setting this pixel to the
-             key color. if the pixel is not supoosed to be transparent
-             we need to check if the pixel color is by accident the key color,
-             if so we alter is slightly */
-            if (a < 128) {
-#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = 1;
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = 1;
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = 1;
-#else
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = 1;
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = 1;
-              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = 1;
-#endif
-            }  else {
+            if (a<128)
+              pixel=SDL_MapRGB(z->format,1,1,1);
+            else
+            {
               if ((pal[b*3+2] == 1) && (pal[b*3+1] == 1) || (pal[b*3] == 1))
-                ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2]++;
+                pixel=SDL_MapRGB(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2]+1);
+              else
+                /* ok, this is the case where we have a sprite and don't want
+                 to use alpha blending, so we use normal sprites with key color
+                 instead, this is much faster. So if the pixel is more than 50% transparent
+                 make the whole pixel transparent by setting this pixel to the
+                 key color. if the pixel is not supoosed to be transparent
+                 we need to check if the pixel color is by accident the key color,
+                 if so we alter is slightly */
+                pixel=SDL_MapRGB(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2]);
             }
           }
         }
+        putpixel(z,x,y,pixel);
       }
   if (screenformat) {
     SDL_Rect r;
