@@ -1,4 +1,8 @@
-06.02.2002 Version 0.74
+- remove nosound option in config file, use -s option if you need it
+- fix bug with some elevators that didn't work properly
+- better depth ordering in output of tower, should be always right now
+
+06.02.2002 Version 0.95
 
 - changes to compile successfully on sparc
 - change some datatypes to Uintxx and Sintxx (from SDL)
