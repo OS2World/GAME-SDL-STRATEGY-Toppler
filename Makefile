@@ -1,6 +1,6 @@
 TOPPLERDIR = ../toppler
 
-all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm
+all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm pasi2.ttm
 	cp *.ttm ${TOPPLERDIR}
 
 clean:
@@ -70,5 +70,15 @@ abc.ttm: kallinen1/t1 kallinen1/t2 kallinen1/t3 kallinen1/t4 \
 	./cremission "ABC Towers" 12 t/t1 t/t2 t/t3 t/t4 t/t5 t/t6 t/t7 t/t8
 	rm ${HOME}/.toppler/t
 	mv "${HOME}/.toppler/ABC Towers.ttm" abc.ttm
+
+
+# RULE FOR PASIS MISSION 2
+
+pasi2.ttm: kallinen2/t1 kallinen2/t2 \
+         cremission
+	ln -s `pwd`/kallinen2 ${HOME}/.toppler/t
+	./cremission "Pasis 2 Towers" 12 t/t1 t/t2 
+	rm ${HOME}/.toppler/t
+	mv "${HOME}/.toppler/Pasis 2 Towers.ttm" pasi2.ttm
 
 
