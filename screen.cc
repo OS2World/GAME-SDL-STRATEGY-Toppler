@@ -958,7 +958,7 @@ static void draw_tower(long vert, long angle) {
       if (lev_is_door(slice, col)) {
         if (lev_is_door_upperend(slice, col))
           scr_blit(spr_spritedata(doors[a].s[2]), (SCREENWID / 2) + doors[a].xstart, ypos);
-        else if (lev_is_door_upperend(slice + 1, col))
+        else if (lev_is_door_upperend(slice - 1, col))
           scr_blit(spr_spritedata(doors[a].s[1]), (SCREENWID / 2) + doors[a].xstart, ypos);
         else
           scr_blit(spr_spritedata(doors[a].s[0]), (SCREENWID / 2) + doors[a].xstart, ypos);
@@ -993,10 +993,12 @@ static void draw_tower_editor(long vert, long angle, int state) {
         continue;
 
       if (lev_is_door(slice, col)) {
+
         if (lev_is_targetdoor(slice, col) && (state & 1)) continue;
+
         if (lev_is_door_upperend(slice, col))
           scr_blit(spr_spritedata(doors[a].s[2]), (SCREENWID / 2) + doors[a].xstart, ypos);
-        else if (lev_is_door_upperend(slice + 1, col))
+        else if (lev_is_door_upperend(slice - 1, col))
           scr_blit(spr_spritedata(doors[a].s[1]), (SCREENWID / 2) + doors[a].xstart, ypos);
         else
           scr_blit(spr_spritedata(doors[a].s[0]), (SCREENWID / 2) + doors[a].xstart, ypos);
