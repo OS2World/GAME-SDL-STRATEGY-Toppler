@@ -24,10 +24,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 #if (SYSTEM != SYS_WINDOWS)
 
+#include <unistd.h>
 #include <pwd.h>
 #include <dirent.h>
 

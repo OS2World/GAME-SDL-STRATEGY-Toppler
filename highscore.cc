@@ -22,7 +22,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <stdio.h>
 #include <fcntl.h>
 
@@ -32,6 +31,8 @@
 
 #if (SYSTEM != SYS_LINUX)
 #define gid_t int
+#else
+#include <unistd.h>
 #endif
 /* the group ids of the game */
 static gid_t UserGroupID, GameGroupID;

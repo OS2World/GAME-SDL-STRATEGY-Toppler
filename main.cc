@@ -28,10 +28,18 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include <unistd.h>
+
+#if ENABLE_NLS == 1
 #include <langinfo.h>
+#endif
+
 
 #include <stdexcept>
+
+#if (SYSTEM != SYS_WINDOWS)
+#include <unistd.h>
+#endif
+
 
 static void printhelp(void) {
   printf(_("\n\tOptions:\n\n  -f\tEnable fullscreen mode\n  -s\tSilence, disable all sound\n  -dX\tSet debug level to X  (default: %i)\n"), config.debug_level());
@@ -81,10 +89,10 @@ int main(int argc, char *argv[]) {
 
   dataarchive = new archive(open_data_file("toppler.dat"));
 
+#if ENABLE_NLS == 1
   setlocale(LC_MESSAGES, "");
   setlocale(LC_CTYPE, "");
 
-#if ENABLE_NLS == 1
   bindtextdomain("toppler", LOCALEDIR"/locale");
 //  bindtextdomain("toppler", "po");
   textdomain("toppler");

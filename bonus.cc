@@ -48,7 +48,7 @@ static Sint32 torpedox, torpedoy, subposx, subposy;
 
 /* current game time
  */
-static Uint32 time;
+static Sint32 time;
 
 /* current xposition, this is ongoing from tower to
  * tower so that you continue where you've left of in

@@ -456,7 +456,7 @@ void lev_selecttower(Uint8 number) {
         // get tower demo
         Uint16 *tmpbuf = NULL;
         Uint16 tmpbuf_len = mission[towerstart];
-        tmpbuf_len += long(mission[towerstart+1]) << 8;
+        tmpbuf_len += Uint16(mission[towerstart+1]) << 8;
         Uint16 ofs = 2;
 
         if (tmpbuf_len) {
@@ -666,7 +666,7 @@ bool lev_is_targetdoor(int row, int col) {
 /**************** everything for elevators ******************/
 
 bool lev_is_station(int row, int col) {
-  return ((towerblockdata[tower[row][col]].tf & TBF_STATION));
+  return ((towerblockdata[tower[row][col]].tf & TBF_STATION) != 0);
 }
 bool lev_is_up_station(int row, int col) {
    return ((tower[row][col] == TB_ELEV_BOTTOM) ||
@@ -681,7 +681,7 @@ bool lev_is_bottom_station(int row, int col) {
 }
 
 bool lev_is_platform(int row, int col) {
-  return ((towerblockdata[tower[row][col]].tf & TBF_PLATFORM));
+  return ((towerblockdata[tower[row][col]].tf & TBF_PLATFORM) != 0);
 }
 bool lev_is_stick(int row, int col) {
   return ((tower[row][col] == TB_STICK) ||
@@ -746,7 +746,7 @@ int lev_is_sliding(int row, int col) {
 }
 
 bool lev_is_robot(int row, int col) {
-  return ((towerblockdata[tower[row][col]].tf & TBF_ROBOT));
+  return ((towerblockdata[tower[row][col]].tf & TBF_ROBOT) != 0);
 }
 
 #ifndef CREATOR

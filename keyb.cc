@@ -27,7 +27,7 @@ static SDLKey sdlkeytyped;
 static Uint16 mouse_x, mouse_y;
 static bool mouse_moved;
 static Uint16 mouse_button;
-static bool joy_inited = 0;
+static int joy_inited = 0;
 static bool joy_action = 0;
 SDL_Joystick *joy;
 

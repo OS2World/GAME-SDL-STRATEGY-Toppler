@@ -203,7 +203,8 @@ int dcl_update_speed(int spd);
 
 #if (SYSTEM == SYS_WINDOWS)
 
-#include "windows.h"
+#include <windows.h>
+#include <ctype.h>
 
 typedef struct dirent {
   char d_name[200];

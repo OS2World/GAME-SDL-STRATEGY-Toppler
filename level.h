@@ -21,6 +21,10 @@
 
 #include <SDL_types.h>
 
+#if (SYSTEM == SYS_WINDOWS)
+#include "decl.h"
+#endif
+
 /* handles one mission with towers and the necessary manipulations
  on the towerlayout when the game is going on */
 
