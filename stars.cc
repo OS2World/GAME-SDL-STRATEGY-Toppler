@@ -33,19 +33,22 @@ static unsigned short starnr;
 static struct {
   long x, y;
   int state;
+  int size;
 } stars[NUM_STARS];
 
 void sts_draw(void)
 {
   for (int t = 0; t < NUM_STARS; t++)
-    scr_blit(spr_spritedata((long)starnr - stars[t].state), stars[t].x, stars[t].y);
+    scr_blit(spr_spritedata((long)starnr + stars[t].size - stars[t].state), stars[t].x, stars[t].y);
 }
 
 void sts_init(int sn) {
   for (int t = 0; t < NUM_STARS; t++) {
     stars[t].x = rand() / (RAND_MAX / SCREENWID) - SPR_STARWID;
     stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
+    stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
     stars[t].state = 0;
+    stars[t].size = rand() / (RAND_MAX / 5);
   }
 
   starnr = sn;

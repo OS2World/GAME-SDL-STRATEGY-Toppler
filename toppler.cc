@@ -532,7 +532,7 @@ void top_aktualtoppler(int left_right, int up_down, bool space) {
 
     default:
       if (substate >= 13 && substate <= 28) {
-        if (((substate -13) & 0x7) == 0)
+        if ((door_turner % 4) == 0)
           snd_doortap();
 
         tvisible = false;

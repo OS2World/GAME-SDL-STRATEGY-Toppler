@@ -334,7 +334,10 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
 
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
 
-  writebonus(tower_position, tower_angle, zeit, tec, extra, time);
+  do {
+     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
+     dcl_wait();
+  } while ((delay++ < 80) && (!key_keypressed(fire_key)));
 
   while (zeit > 0) {
     dcl_wait();
@@ -359,11 +362,11 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
     snd_play();
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
-   
+
   do {
      writebonus(tower_position, tower_angle, zeit, tec, extra, time);
      dcl_wait();
-  } while ((delay++ < 80) && (!key_keypressed(fire_key)));
+  } while ((delay++ < 30) && (!key_keypressed(fire_key)));
 
   pal_colors(pal_towergame);
 }

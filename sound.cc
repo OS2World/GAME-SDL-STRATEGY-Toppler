@@ -122,8 +122,6 @@ void snd_start(void) {         play |= 0x8000; }
 void snd_timeout(void) {       play |= 0x10000; }
 void snd_fall(void) {          play |= 0x20000; }
 
-static char doortap = 0;
-
 void snd_play(void) {
 
   if (nosound) return;
@@ -153,21 +151,8 @@ void snd_play(void) {
     Mix_Volume(Mix_PlayChannel(-1, sounds[11], 0), MIX_MAX_VOLUME);
   if (play & 0x800)
     Mix_Volume(Mix_PlayChannel(-1, sounds[12], 0), MIX_MAX_VOLUME);
-
-  if (doortap) doortap++;
-
-  if (doortap == 2) {
-    Mix_Volume(Mix_PlayChannel(-1, sounds[1], 0), 10);
-  }
-  if (doortap == 3) {
-    doortap = 0;
-    Mix_Volume(Mix_PlayChannel(-1, sounds[1], 0), 20);
-  }
-  if (play & 0x1000) {
-//    doortap = 1;
+  if (play & 0x1000)
     Mix_Volume(Mix_PlayChannel(-1, sounds[1], 0), MIX_MAX_VOLUME);
-  }
-
   if (play & 0x2000)
     Mix_Volume(Mix_PlayChannel(-1, sounds[16], 0), MIX_MAX_VOLUME);
   if (play & 0x4000)
