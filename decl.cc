@@ -353,10 +353,9 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
 
   struct dirent entry;
 
-
   char name[200];
 
-  snprintf(nam, 200e, "%s\\*", dir);
+  snprintf(name, 200, "%s\\*", dir);
 
   hand = FindFirstFile(name, &finddata);
 

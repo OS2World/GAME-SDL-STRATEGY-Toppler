@@ -1177,6 +1177,8 @@ main_game_loop()
   tower = lev_tower_passwd_entry(config.curr_password());
 
   gam_newgame();
+  bns_restart();
+
   do {
     snd_wateron();
     do {

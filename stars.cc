@@ -45,18 +45,18 @@ void sts_draw(void)
 
 void sts_init(int sn, int nstar) {
   if (stars) {
-      if (nstar <= num_stars) {
-	  star_spr_nr = sn;
-	  num_stars = nstar;
-	  return;
-      } else sts_done();
+    if (nstar <= num_stars) {
+      star_spr_nr = sn;
+      num_stars = nstar;
+      return;
+    } else sts_done();
   }
   assert(nstar > 1, "sts_init with too few stars!");
-  
+
   stars = new _star[nstar];
   assert(stars, "Failed to alloc memory!");
   num_stars = nstar;
-  
+
   for (int t = 0; t < num_stars; t++) {
     stars[t].x = rand() / (RAND_MAX / SCREENWID) - SPR_STARWID;
     stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
@@ -67,21 +67,19 @@ void sts_init(int sn, int nstar) {
   star_spr_nr = sn;
 }
 
-void
-sts_done(void)
+void sts_done(void)
 {
-    if (stars) delete [] stars;
-    num_stars = 0;
-    stars = 0;
+  if (stars) delete [] stars;
+  num_stars = 0;
+  stars = 0;
 }
 
-void 
-sts_blink(void)
+void sts_blink(void)
 {
-   for (int t = 0; t < num_stars; t++) {
-      if (stars[t].state > 0) stars[t].state = (stars[t].state + 1) % 4;
-      else if (!(rand() & 0xff)) stars[t].state++;
-   }
+  for (int t = 0; t < num_stars; t++) {
+    if (stars[t].state > 0) stars[t].state = (stars[t].state + 1) % 4;
+    else if (!(rand() & 0xff)) stars[t].state++;
+  }
 }
 
 void sts_move(long x, long y)

@@ -6,7 +6,9 @@
 #define TOWERNAMELEN 19
 #define PASSWORD_LEN 5
 
-/* the different types of waves used in waves_type */
+/* this module contains a class for configuration file
+ * handling loading and saving is handled
+ */
 
 class configuration {
 
@@ -42,6 +44,7 @@ public:
   bool use_full_scroller() const { return i_use_full_scroller; }
   void use_full_scroller(bool on) { need_save = true; i_use_full_scroller = on; }
 
+  /* the different types of waves used in waves_type */
   enum {
     waves_nonreflecting,
     waves_simple,

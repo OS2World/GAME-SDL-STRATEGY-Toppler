@@ -12,7 +12,6 @@ str2bool(char *s) {
   return false;
 }
 
-
 void configuration::parse(FILE * in) {
   char line[201], param[201];
 
@@ -43,11 +42,11 @@ void configuration::parse(FILE * in) {
           default: assert(0, "Unknown config data type.");
           }
           break;
-        } //if (strstr(...
+        }
         t = t->next;
-      } //for
-    } //if (fscanf(...
-  } //while (!feof(in))
+      }
+    }
+  }
 }
 
 void configuration::register_entry(char *cnf_name, cnf_type  cnf_typ, void *cnf_var, long maxlen) {
@@ -182,6 +181,5 @@ void configuration::editor_towername(char name[TOWERNAMELEN+1]) {
   strncpy(i_editor_towername, name, TOWERNAMELEN);
   i_editor_towername[TOWERNAMELEN] = 0;
 }
-
 
 configuration config(open_local_config_file(".toppler.rc"), open_local_config_file(".toppler.rc"));

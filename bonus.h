@@ -20,8 +20,15 @@
 #define BONUS_H
 
 /* this module contains the bonus game with the submarine and fish catching
- it is currently not completely implemented and not used */
+ it is currently not very well tuned */
 
+/* returns true, if the game can go on, false on user break
+ */
 bool bns_game(void);
+
+/* needs to be called bevore every new game, to (re)initialize the
+ * datastructures
+ */
+void bns_restart(void);
 
 #endif

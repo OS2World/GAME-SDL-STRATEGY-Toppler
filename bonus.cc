@@ -26,114 +26,128 @@
 
 #include <stdlib.h>
 
-#define fishcnt         15
+#define fishcnt         16
 #define gametime        500
 #define scrollerspeed   2
 
+/* position, status and movement direction
+ * of all the fishes
+ */
 static struct {
    Sint32 x;
    Sint32 y;
    Sint32 state;
    Sint32 ydir;
-} fish[fishcnt + 1];
+} fish[fishcnt];
 
+/* position of the submarine and the torpedo,
+ * the state is taken from time
+ */
 static Sint32 torpedox, torpedoy, subposx, subposy;
 
-static Sint32 callback_time;
-static Sint32 callback_x;
+/* current game time
+ */
+static Uint32 time;
 
-/* callback proc for men_yn() */
-static void
-bonus_background_proc(void)
-{
+/* current xposition, this is ongoing from tower to
+ * tower so that you continue where you've left of in
+ * the last bonus game
+ */
+static Uint32 xpos = 0;
+
+/* this function displays everything of the bonus game */
+static void show() {
+
+  /* lets first calc the position of the tower on the screen */
   Sint32 towerpos;
 
-  scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 255);
-
-  if (callback_time < 300)
-    towerpos = -(4*callback_time);
+  if (time < gametime/2)
+    towerpos = -(4*time);
   else
-    towerpos = gametime * scrollerspeed - 4*callback_time + SCREENWID + (SPR_SLICEWID*2);
+    towerpos = gametime * scrollerspeed - 4*time + SCREENWID + (SPR_SLICEWID*2);
 
-  scr_draw_bonus1(callback_x, towerpos);
+  /* draw the background layers */
+  scr_draw_bonus1(xpos, towerpos);
 
+  /* if the torpedo is visible, draw it */
   if (torpedox != -1)
     scr_draw_torpedo(torpedoy, torpedox);
-  scr_draw_submarine(subposy - 20, subposx, callback_time % 9);
 
-  for (Uint8 b = 0; b <= fishcnt; b++) {
+  /* output the submarine */
+  scr_draw_submarine(subposy - 20, subposx, time % 9);
+
+  /* and the fishes */
+  for (int b = 0; b < fishcnt; b++)
     if (fish[b].x >= -SPR_FISHWID)
       scr_draw_fish(fish[b].y, fish[b].x, fish[b].state);
 
-  }
-  scr_draw_bonus2(callback_x, towerpos);
-    
+  /* and finally the forground layers of the scroller */
+  scr_draw_bonus2(xpos, towerpos);
+}
+
+/* callback proc for menu drawing the current state and dim that picture */
+static void bonus_background_proc(void) {
+  show();
   scr_darkenscreen();
 }
 
-void bonus_wait_proc(void) {
-    (void)bonus_background_proc();
-}
-
-static bool 
-escape(Sint32 time, Uint32 x)
-{
-
-  callback_time = time;
-  callback_x = x;
+static bool escape(void) {
 
   set_men_bgproc(bonus_background_proc);
-
-  if (men_game())
-    return true;
-
-  return false;
+  return men_game();
 }
 
-static void pause(Sint32 time, Uint32 x) {
-   
-  callback_time = time;
-  callback_x = x;
-  set_men_bgproc(bonus_background_proc);
+static void pause(void) {
 
+  set_men_bgproc(bonus_background_proc);
   men_info("Pause", -1, 1);
 }
 
+void bns_restart(void) { xpos = 0; }
+
 bool bns_game(void) {
 
-  static Uint32 xpos = 0;
-
+  /* game local x position, moved since the start of
+   * this bonus game
+   */
   Uint32 xpos_ofs = 0;
 
-  Uint32 time, nextfish;
+  /* when will the next fish appear */
+  Uint32 nextfish = 30;
+
+  /* when automatic is switched on the submarine will move
+   * automatically to the tower base
+   */
   bool automatic = false;
+
+  /* the newtowercol is true, the towercolor has already been switched
+   * to the color of the tower we're going to arrive at
+   */
   bool newtowercol = false;
-  Sint32 towerpos;
 
   Uint8 b;
 
   subposx = SUBM_TARGET_X;
   subposy = SUBM_TARGET_Y;
 
-  for (b = 0; b <= fishcnt; b++)
+  /* no fished and no torpedo visible at game start */
+  for (b = 0; b < fishcnt; b++)
     fish[b].x = -(SPR_FISHWID+1);
-
   torpedox = -1;
 
+  /* restart timer */
   time = 0;
-  nextfish = 30;
-
-  set_men_bgproc(NULL);
 
   key_readkey();
 
   do {
-      
+
+    /* move torpedo */
     if (torpedox >= 0) {
       torpedox += 8;
       if (torpedox > (SCREENWID+SPR_TORPWID))
         torpedox = -1;
-      for (b = 0; b <= fishcnt; b++) {
+      for (b = 0; b < fishcnt; b++) {
         if (fish[b].x > 0 && fish[b].state >= 32) {
           if ((torpedox + SPR_TORPWID > fish[b].x) && (torpedox < fish[b].x + SPR_FISHWID) &&
               (torpedoy + SPR_TORPHEI > fish[b].y) && (torpedoy < fish[b].y + SPR_FISHHEI)) {
@@ -144,6 +158,7 @@ bool bns_game(void) {
       }
     }
 
+    /* move submarine */
     if (!automatic) {
       if (key_keypressed(fire_key)) {
         if (torpedox == -1) {
@@ -151,7 +166,7 @@ bool bns_game(void) {
           torpedoy = subposy + TORPEDO_OFS_Y;
         }
       }
-  
+
       if ((key_keystat() & down_key) != 0) {
         if (subposy < SUBM_MAX_Y)
           subposy += 4;
@@ -161,7 +176,7 @@ bool bns_game(void) {
             subposy -= 4;
         }
       }
-  
+
       if ((key_keystat() & left_key) != 0) {
         if (subposx > SUBM_MIN_X)
           subposx -= 8;
@@ -181,19 +196,21 @@ bool bns_game(void) {
         subposy -= 4;
     }
 
+    /* escape or pausekey pressed */
     if (key_keypressed(break_key))
-      if (escape(time, xpos)) {
+      if (escape()) {
         return false;
       }
 
     if (key_keypressed(pause_key))
-      pause(time, xpos);
+      pause();
 
     key_readkey();
 
-    for (b = 0; b <= fishcnt; b++) {
+    /* move the fish */
+    for (b = 0; b < fishcnt; b++) {
       if (fish[b].x >= -SPR_FISHWID) {
-        fish[b].x -= 2;
+        fish[b].x -= 8;
         fish[b].y += fish[b].ydir;
         if (fish[b].y > 300 || fish[b].y < 80)
           fish[b].ydir = -fish[b].ydir;
@@ -214,10 +231,11 @@ bool bns_game(void) {
       }
     }
 
+    /* nexfish handling */
     if (nextfish > 0)
       nextfish--;
     else {
-      for (b = 0; b <= fishcnt; b++) {
+      for (b = 0; b < fishcnt; b++) {
         if (fish[b].x < -SPR_FISHWID) {
           fish[b].x = SCREENWID;
           fish[b].y = rand() / (RAND_MAX / 140) + 120;
@@ -231,32 +249,13 @@ bool bns_game(void) {
       }
     }
 
-    if (time < 300)
-      towerpos = -(4*time);
-    else
-      towerpos = gametime * scrollerspeed - 4*time + SCREENWID + (SPR_SLICEWID*2);
-
-    scr_draw_bonus1(xpos, towerpos);
-
-    if (torpedox != -1)
-      scr_draw_torpedo(torpedoy, torpedox);
-
-    scr_draw_submarine(subposy - 20, subposx, time % 9);
-
-    for (b = 0; b <= fishcnt; b++) {
-      if (fish[b].x >= -SPR_FISHWID)
-        scr_draw_fish(fish[b].y, fish[b].x, fish[b].state);
+    /* change towercolor in the middle of the game */
+    if ((time > gametime/2) && !newtowercol) {
+      scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
+      newtowercol = true;
     }
 
-    scr_draw_bonus2(xpos, towerpos);
-
-    scr_swap();
-      
-    if ((xpos_ofs > 600) && !newtowercol) {
-	scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
-	newtowercol = true;
-    }
-
+    /* end of game, switch to automatic, stop scrolling */
     if (time == gametime) {
       automatic = true;
       if ((subposx == SUBM_TARGET_X) && (subposy == SUBM_TARGET_Y)) break;
@@ -265,6 +264,10 @@ bool bns_game(void) {
       xpos_ofs += 4;
       time++;
     }
+
+    /* display screen and wait */
+    show();
+    scr_swap();
     dcl_wait();
 
   } while (true);

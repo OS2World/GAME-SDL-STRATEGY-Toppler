@@ -29,6 +29,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include <stdexcept>
+
 static void printhelp(void) {
   printf("\n\tOptions:\n\n");
   printf("  -f\tEnable fullscreen mode\n");
@@ -41,11 +43,11 @@ static bool parse_arguments(int argc, char *argv[]) {
     if (!strcmp(argv[t], "-f")) config.fullscreen(true);
     else if (!strcmp(argv[t], "-s")) config.nosound(true);
     else if (strstr(argv[t], "-d") == argv[t]) {
-	char parm = argv[t][2];
-	if (parm >= '0' && parm <= '9') {
-	    printf("Debug level is now %c.\n", parm);
-	    config.debug_level(parm - '0');
-	} else printf("Illegal debug level value, using default.\n");
+      char parm = argv[t][2];
+      if (parm >= '0' && parm <= '9') {
+        printf("Debug level is now %c.\n", parm);
+        config.debug_level(parm - '0');
+      } else printf("Illegal debug level value, using default.\n");
     } else {
       printhelp();
       return false;
@@ -73,13 +75,16 @@ static void QuitFunction(void) {
    it again
    */
 
+  printf("exit function\n");
+
 #ifdef HISCOREDIR
+  dcl_stickyEnable();
   unlink(HISCOREDIR"/toppler.hsc.lck");
+  dcl_stickyDisable();
 #endif
 
   SDL_Quit();
 }
-
 
 int main(int argc, char *argv[]) {
 
@@ -99,7 +104,17 @@ int main(int argc, char *argv[]) {
     tt_has_focus = true;
     atexit(QuitFunction);
     srand(time(0));
-    startgame();
+    try {
+      startgame();
+    }
+    catch (std::exception e) {
+#ifdef HISCOREDIR
+      dcl_stickyEnable();
+      unlink(HISCOREDIR"/toppler.hsc.lck");
+      dcl_stickyDisable();
+#endif
+    }
+
     printf("Thanks for playing!\n");
     SDL_ShowCursor(mouse);
     SDL_Quit();

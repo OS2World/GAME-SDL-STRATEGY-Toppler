@@ -323,66 +323,66 @@ void rob_new(int verticalpos) {
         snd_cross();
 
       } else {
-	bool is_robo = false;
+        bool is_robo = false;
 
         /* find next robot */
         do {
           b = lev_tower(robots_ready, robots_angle);
-	  is_robo = lev_is_robot(robots_ready, robots_angle);
+          is_robo = lev_is_robot(robots_ready, robots_angle);
           a = robots_angle;
           h = robots_ready;
           robots_angle = (robots_angle + 1) & 0xf;
         } while ((!is_robo) && robots_angle != 0);
-  
+
         if (robots_angle == 0)
           robots_ready++;
-  
+
         /* no robot found */
         if (!is_robo) return;
 
         /* fill in data for robot */
         switch (b) {
 
-          case TB_ROBOT1:
-            object[t].subKind = 1;
-            object[t].futureKind = OBJ_KIND_FREEZEBALL;
-            break;
+        case TB_ROBOT1:
+          object[t].subKind = 1;
+          object[t].futureKind = OBJ_KIND_FREEZEBALL;
+          break;
 
-          case TB_ROBOT2:
-            object[t].subKind = 1;
-            object[t].futureKind = OBJ_KIND_JUMPBALL;
-            break;
+        case TB_ROBOT2:
+          object[t].subKind = 1;
+          object[t].futureKind = OBJ_KIND_JUMPBALL;
+          break;
 
-          case TB_ROBOT3:
-            object[t].subKind = 0;
-            object[t].futureKind = OBJ_KIND_JUMPBALL;
-            break;
+        case TB_ROBOT3:
+          object[t].subKind = 0;
+          object[t].futureKind = OBJ_KIND_JUMPBALL;
+          break;
 
-          case TB_ROBOT4:
-            object[t].subKind = 1;
-            object[t].futureKind = OBJ_KIND_ROBOT_VERT;
-            break;
+        case TB_ROBOT4:
+          object[t].subKind = 1;
+          object[t].futureKind = OBJ_KIND_ROBOT_VERT;
+          break;
 
-          case TB_ROBOT5:
-            object[t].subKind = 2;
-            object[t].futureKind = OBJ_KIND_ROBOT_VERT;
-            break;
+        case TB_ROBOT5:
+          object[t].subKind = 2;
+          object[t].futureKind = OBJ_KIND_ROBOT_VERT;
+          break;
 
-          case TB_ROBOT6:
-            object[t].subKind = 1;
-            object[t].futureKind = OBJ_KIND_ROBOT_HORIZ;
-            break;
+        case TB_ROBOT6:
+          object[t].subKind = 1;
+          object[t].futureKind = OBJ_KIND_ROBOT_HORIZ;
+          break;
 
-          case TB_ROBOT7:
-            object[t].subKind = 2;
-            object[t].futureKind = OBJ_KIND_ROBOT_HORIZ;
-            break;
+        case TB_ROBOT7:
+          object[t].subKind = 2;
+          object[t].futureKind = OBJ_KIND_ROBOT_HORIZ;
+          break;
         }
         object[t].anglepos = (a * 8) + 4;
         object[t].verticalpos = h * 4;
         object[t].kind = OBJ_KIND_APPEAR;
         object[t].time = 0;
-  
+
         /* empty the field in the level datastructure */
         lev_clear(h, a);
       }

@@ -82,17 +82,17 @@ void gam_arrival(void) {
   do {
     scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart, SF_NONE);
     scr_darkenscreen();
-       scr_writetext_center((SCREENHEI / 6), "You are entering the");
+    scr_writetext_center((SCREENHEI / 6), "You are entering the");
 
     if (strlen(lev_towername()))
-       scr_writetext_center((SCREENHEI*2 / 6), lev_towername());
+      scr_writetext_center((SCREENHEI*2 / 6), lev_towername());
     else
-       scr_writetext_center((SCREENHEI*2 / 6), "Nameless Tower");
-      
+      scr_writetext_center((SCREENHEI*2 / 6), "Nameless Tower");
+
     if (passwd && lev_show_passwd(lev_towernr())) {
-	char buf[50];
-	snprintf(buf, 50, "Password:   %s", passwd);
-	scr_writetext_center(SCREENHEI * 5 / 6, buf);
+      char buf[50];
+      snprintf(buf, 50, "Password:   %s", passwd);
+      scr_writetext_center(SCREENHEI * 5 / 6, buf);
     }
     scr_swap();
     snd_play();
@@ -430,6 +430,11 @@ static void escape(gam_states &state, int &tower_position, int &tower_anglepos, 
 
   snd_wateroff();
 
+  bg_tower_pos = tower_position;
+  bg_tower_angle = tower_anglepos;
+  bg_time = time;
+
+  set_men_bgproc(game_background_proc);
   if (men_game())
     state = STATE_ABORTED;
 
@@ -446,6 +451,7 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
   bg_tower_angle = tower_anglepos;
   bg_time = time;
    
+  set_men_bgproc(game_background_proc);
   men_info("Pause", -1, 1);
 
   snd_wateron();
@@ -488,7 +494,6 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
 
   assert(!(demo && !demobuf), "Trying to play or record a null demo.");
 
-  set_men_bgproc(game_background_proc);
 
   top_init();
 
