@@ -189,7 +189,7 @@ static void createMission(void) {
   set_men_bgproc(NULL);
 
   char missionname[25];
-  men_input(missionname, 25);
+  men_input(missionname, 15);
 
   if (!missionname[0]) {
     pal_colors(pal_towergame);
@@ -348,6 +348,10 @@ void le_showkeyhelp(int row, int col) {
   int c, k, offs = 0;
   bool ende = false;
   int lines = ((SCREENHEI - 50) / FONTHEI);
+  char point[2];
+
+  point[0] = fontpoint;
+  point[1] = 0;
 
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
 
@@ -367,8 +371,8 @@ void le_showkeyhelp(int row, int col) {
       scr_writetext(75 + FONTWID, k * FONTHEI + 50, _ed_key_actions[_ed_keys[k+offs].action]);
     }
 
-    if (offs > 0) scr_writetext(SCREENWID-FONTWID, 34, "*");
-    if (offs + lines < SIZE(_ed_keys)) scr_writetext(SCREENWID-FONTWID, SCREENHEI-FONTHEI, "*");
+    if (offs > 0) scr_writetext(SCREENWID-FONTWID, 34, point);
+    if (offs + lines < SIZE(_ed_keys)) scr_writetext(SCREENWID-FONTWID, SCREENHEI-FONTHEI, point);
 
     scr_swap();
     dcl_wait();

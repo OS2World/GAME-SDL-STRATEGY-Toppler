@@ -485,7 +485,7 @@ static void savescores(void) {
       if ((fread(&len, 1, 1, f) == 1) &&
           (fread(mname, 1, len, f) == len)) {
         mname[len] = 0;
-        if (strcmp(mname, lev_missionname(currentmission)) == 0) {
+        if (strcasecmp(mname, lev_missionname(currentmission)) == 0) {
 
           // this is necessary because some system can not switch
           // on the fly from reading to writing
@@ -529,7 +529,7 @@ static void getscores(void) {
           (fread(mname, 1, len, f) == len) &&
           (fread(scores, 1, sizeof(scores), f) == sizeof(scores))) {
         mname[len] = 0;
-        if (strcmp(mname, lev_missionname(currentmission)) == 0) {
+        if (strcasecmp(mname, lev_missionname(currentmission)) == 0) {
           break;
         }
       } else {
@@ -757,7 +757,7 @@ men_main_startgame_proc(void *ms)
     }
   }
   static char s[30];
-  sprintf(s, "Start %s", lev_missionname(currentmission));
+  sprintf(s, "Start: %s", lev_missionname(currentmission));
   return s;
 }
 
@@ -840,6 +840,8 @@ void men_input(char *s, int max_len, int xpos = -1, int ypos = (SCREENHEI  * 2) 
   char pos = 0;
 
   if (xpos < 0) xpos = (SCREENWID / 2) - max_len * (FONTMAXWID / 2);
+  if (xpos < 0) xpos = 0;
+
   if (ypos < 0) ypos = (SCREENHEI / 2) - (FONTHEI / 2);
 
   s[0] = 0;

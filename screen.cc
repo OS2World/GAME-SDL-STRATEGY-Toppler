@@ -349,7 +349,7 @@ static void loadscroller(void) {
 }
 
 void scr_init(void) {
-  spr_init(800);
+  spr_init(1000);
   loadgraphics();
   loadfont();
   loadscroller();

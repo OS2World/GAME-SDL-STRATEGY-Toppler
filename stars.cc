@@ -48,7 +48,7 @@ void sts_init(int sn) {
     stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
     stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
     stars[t].state = 0;
-    stars[t].size = rand() / (RAND_MAX / 5);
+    stars[t].size = rand() / (RAND_MAX / 4);
   }
 
   starnr = sn;

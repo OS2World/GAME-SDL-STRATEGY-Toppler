@@ -175,7 +175,7 @@
 
 /* the two special characters in the font */
 #define fonttoppler     '#'
-#define fontpoint       '*'
+#define fontpoint       '\\'
 
 #define FDECL(f,p) f p
 #define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))
