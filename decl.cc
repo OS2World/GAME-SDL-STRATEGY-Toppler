@@ -323,11 +323,11 @@ void save_config(void) {
   }
 }
 
-static int alphasort(const void *a, const void *b) {
+static int sort_by_name(const void *a, const void *b) {
   return(strcmp(((struct dirent *)a)->d_name, ((struct dirent *)b)->d_name));
 }
 
-int scandir(const char *dir, struct dirent ***namelist,
+int alpha_scandir(const char *dir, struct dirent ***namelist,
             int (*select)(const struct dirent *)) {
   DIR *d;
   struct dirent *entry;
@@ -359,7 +359,7 @@ int scandir(const char *dir, struct dirent ***namelist,
   if (i == 0)
     return(-1);
 
-  qsort((void *)(*namelist), (size_t)i, sizeof(struct dirent *), alphasort);
+  qsort((void *)(*namelist), (size_t)i, sizeof(struct dirent *), sort_by_name);
     
   return(i);
 }

@@ -103,7 +103,7 @@
 
 /*   define this if you want the bonus game to be accessible 
      from the main menu. */
-/*#define HUNT_THE_FISH*/
+#define HUNT_THE_FISH
 
 #define TOWERNAMELEN 19
 
@@ -210,7 +210,7 @@ void save_config(void);
 #define CONFIGDIR "/etc"
 #define HISCOREDIR "/var/games/nebulous"
 
-int scandir(const char *dir, struct dirent ***namelist,
+int alpha_scandir(const char *dir, struct dirent ***namelist,
             int (*select)(const struct dirent *));
 
 #endif

@@ -1,4 +1,10 @@
-Version 0.97
+my work
+
+- fix bug in config.in enabled SDL_mixer always
+- fix name clash with standard scandir and alphasort
+- remove some warnings
+
+Version 0.97 28.09.2002
 
 work from pasi
 

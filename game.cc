@@ -155,7 +155,7 @@ void gam_pick_up(Uint8 anglepos, Uint16 time) {
   /* the shapes of the toppler when it turns after leaving a door*/
   static unsigned char door4[4] = { 0xa, 0x9, 0x8, 0x0 };
 
-  int toppler, b, u, delay;
+  int toppler, b, u, delay = 0;
 
   b = u = 0;
   toppler = 8;

@@ -228,7 +228,7 @@ void lev_findmissions() {
   sprintf(pathname, "%s", "./");
 #endif
 
-  int n = scandir(pathname, &eps, missionfiles, alphasort);
+  int n = alpha_scandir(pathname, &eps, missionfiles);
 
   if (n >= 0) {
 
@@ -244,7 +244,7 @@ void lev_findmissions() {
   eps = NULL;
 
   sprintf(pathname, "%s/.toppler/", getenv("HOME"));
-  n = scandir(pathname, &eps, missionfiles, alphasort);
+  n = alpha_scandir(pathname, &eps, missionfiles);
 
   if (n >= 0) {
 
@@ -260,7 +260,7 @@ void lev_findmissions() {
   eps = NULL;
 
   sprintf(pathname, "%s/", TOP_DATADIR);
-  n = scandir(pathname, &eps, missionfiles, alphasort);
+  n = alpha_scandir(pathname, &eps, missionfiles);
 
   if (n >= 0) {
 

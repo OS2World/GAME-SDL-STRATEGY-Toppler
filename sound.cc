@@ -30,7 +30,7 @@
 
 #ifdef SDL_MIXER
 static Mix_Chunk *sounds[18];
-static Mix_Music *title, *tgame, *bgame;
+static Mix_Music *title, *tgame;
 #endif
 static int waterchannel;
 static int boinkmax = 0;

@@ -371,7 +371,7 @@ unsigned char men_yn(char *s, bool defchoice) {
   return ((doquit == 0) ? 0 : 1);
 }
 
-void men_info(char *s, long timeout = -1, int fire = 0) {
+void men_info(char *s, long timeout, int fire) {
    bool ende = false;
   do {
      if (menu_background_proc) (*menu_background_proc) ();
@@ -579,7 +579,6 @@ get_hiscores_string(int p, char **pos, char **points, char **name)
 void
 calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
 {
-  int mlen = 0;
   for (int x = 0; x < NUMHISCORES; x++) {
     char *a, *b, *c;
     int clen;
@@ -835,7 +834,7 @@ draw_input_box(int x, int y, int len, int cursor, char *txt)
   input_box_cursor_state++;
 }
 
-void men_input(char *s, int max_len, int xpos = -1, int ypos = (SCREENHEI  * 2) / 3) {
+void men_input(char *s, int max_len, int xpos, int ypos) {
   char inp;
   char pos = 0;
 

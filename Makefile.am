@@ -8,7 +8,7 @@ palette.h points.h robots.h screen.h snowball.h sound.h sprites.h stars.h topple
 
 scoredir = $(localstatedir)/@PACKAGE@
 scorefile = $(scoredir)/@PACKAGE@.hsc
-CPPFLAGS = @CPPFLAGS@ -DTOP_DATADIR=\"$(pkgdatadir)\" -DSCOREFILE=\"$(scorefile)\"
+CPPFLAGS = @CPPFLAGS@ -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DSCOREFILE=\"$(scorefile)\"
 bin_PROGRAMS = toppler
 toppler_SOURCES = archi.cc bonus.cc decl.cc elevators.cc game.cc keyb.cc level.cc menu.cc \
 main.cc palette.cc points.cc robots.cc screen.cc snowball.cc sound.cc sprites.cc stars.cc \

@@ -143,8 +143,6 @@ static void loadgraphics(void) {
   unsigned char pal[192];
   int t;
 
-  unsigned char buffer[4000];
-
   arc_assign(grafdat);
 
   for (t = 0; t < brickcnt; t++) {
@@ -244,11 +242,10 @@ static void loadfont(void) {
 
   unsigned char pal[fontcnt*3];
   Uint32 res;
-  SDL_Surface *s;
   char c;
   bool first;
-  int max_font_width;
-  int min_font_width;
+  int max_font_width = 0;
+  int min_font_width = 0;
 
   arc_assign(fontdat);
 
@@ -483,7 +480,7 @@ int scr_textlength(const char *s, int chars) {
 
   while (s[pos]) {
     if (s[pos] == ' ') {
-      len += FONTWID;
+      len += FONTMINWID;
     } else {
       c = s[pos] - 32;
       if ((c < 91) && (fontchars[c].s != 0))
@@ -504,9 +501,9 @@ void scr_writetext_center(long y, const char *s) {
 void scr_writetext(long x, long y, const char *s) {
   int t = 0;
   unsigned char c;
-  while (s[t] != 0) {
+  while (s[t]) {
     if (s[t] == ' ') {
-      x += FONTWID;
+      x += FONTMINWID;
       t++;
       continue;
     }
@@ -530,7 +527,7 @@ void scr_putbar(int x, int y, int br, int h, unsigned char col) {
 }
 
 void
-scr_putrect(int x, int y, int br, int h, unsigned char col = 0)
+scr_putrect(int x, int y, int br, int h, unsigned char col)
 {
   scr_putbar(x, y,      1     , h, col);
   scr_putbar(x, y,      br    , 1, col);
