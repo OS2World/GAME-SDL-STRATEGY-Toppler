@@ -498,6 +498,36 @@ static void cleardesk(void) {
   SDL_FillRect(display, &r, 0);
 }
 
+void scr_darkenscreen(void) {
+  static SDL_Surface *s = NULL;
+
+  if (!s) {
+    s = SDL_CreateRGBSurface(SDL_HWSURFACE, 20, 20, 24, 0xff, 0xff00, 0xff0000, 0);
+    SDL_SetColorKey(s, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0xff);
+  }
+
+  int x, y;
+
+  for (y = 0; y < 20; y++)
+    for (x = 0; x < 20; x++)
+      if (y & 1)
+        ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0;
+      else
+        ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0xff;
+
+  x = y = 0;
+
+  while (y < SCREENHEI) {
+    x = 0;
+    while (x < SCREENWID) {
+      scr_blit(s, x, y);
+      x += 20;
+    }
+    y += 20;
+  }
+}
+
+
 /*
  angle: 0 means column 0 is in front
         8 means comumn 1 ...
@@ -652,13 +682,66 @@ void scr_writetext(long x, long y, const char *s) {
   }
 }
 
+void scr_writeformattext(long x, long y, const char *s) {
+
+  int t = 0;
+  unsigned char c;
+  while (s[t]) {
+    switch(s[t]) {
+    case ' ':
+      x += FONTMINWID;
+      t++;
+      break;
+    case '~':
+      switch(s[t+1]) {
+      case 't':
+        x = (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
+        t += 5;
+        break;
+      default:
+        assert(0, "wrong command in formeted text");
+        t += 2;
+      }
+      break;
+    default:
+      c = s[t];
+      if (fontchars[c].s != 0) {
+        scr_blit(spr_spritedata(fontchars[c].s), x, y);
+        x += fontchars[c].width + 3;
+      }
+      t++;
+    }
+  }
+}
+
 void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb, Uint8 alpha) {
-  SDL_Rect r;
-  r.w = br;
-  r.h = h;
-  r.x = x;
-  r.y = y;
-  SDL_FillRect(display, &r, SDL_MapRGBA(display->format, colr, colg, colb, alpha));
+
+  if (alpha != 255) {
+
+    SDL_Surface *s = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, br, h, 24, 0xff, 0xff00, 0xff0000, 0);
+    SDL_SetAlpha(s, SDL_SRCALPHA, alpha);
+
+    SDL_Rect r;
+    r.w = br;
+    r.h = h;
+    r.x = 0;
+    r.y = 0;
+
+    SDL_FillRect(s, &r, SDL_MapRGB(display->format, colr, colg, colb));
+
+    scr_blit(s, x, y);
+
+    SDL_FreeSurface(s);
+
+  } else {
+
+    SDL_Rect r;
+    r.w = br;
+    r.h = h;
+    r.x = x;
+    r.y = y;
+    SDL_FillRect(display, &r, SDL_MapRGBA(display->format, colr, colg, colb, alpha));
+  }
 }
 
 void

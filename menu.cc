@@ -979,7 +979,7 @@ draw_input_box(int x, int y, int len, int cursor, char *txt)
   if ((input_box_cursor_state & 4) && ((cursor >= 0) && (cursor < len)))
     scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI,
                col_r, col_g, col_b, 128);
-  scr_putrect(x,y, len * FONTMAXWID, FONTHEI, col_r, col_g, col_b, 128);
+  scr_putrect(x,y, len * FONTMAXWID, FONTHEI, col_r, col_g, col_b, 255);
   input_box_cursor_state++;
 
   scr_color_ramp(&col_r, &col_g, &col_b);
@@ -997,7 +997,7 @@ void men_input(char *s, int max_len, int xpos, int ypos, const char *allowed) {
   int ztmp;
   bool ende = false;
 
-  if (xpos < 0) xpos = (SCREENWID / 2) - max_len * (FONTWID / 2);
+  if (xpos < 0) xpos = (SCREENWID / 2) - max_len * (FONTMAXWID / 2);
   if (xpos < 0) xpos = 0;
 
   if (ypos < 0) ypos = (SCREENHEI / 2) - (FONTHEI / 2);

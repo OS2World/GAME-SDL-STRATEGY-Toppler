@@ -274,6 +274,8 @@ static int bg_time = 0;
 static void game_background_proc(void) {
   scr_drawall(towerpos(top_verticalpos(), bg_tower_pos,
                        top_anglepos(), bg_tower_angle), (4 - top_anglepos()) & 0x7f, bg_time, false, 0, 0);
+
+  scr_darkenscreen();
 }
 
 static void timeout(int &tower_position, int &tower_anglepos) {
@@ -291,12 +293,14 @@ static void writebonus(int &tower_position, int tower_anglepos, int zeit, int te
   scr_drawall(towerpos(top_verticalpos(), tower_position,
                        top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
 
-  sprintf(s, "Time:      10 X %3d", zeit);
-  scr_writetext_center((SCREENHEI / 2) - FONTHEI * 3, s);
-  sprintf(s, "Technique: 10 X %3d", tec);
-  scr_writetext_center((SCREENHEI / 2), s);
-  sprintf(s, "Extra:     10 X %3d", extra);
-  scr_writetext_center((SCREENHEI / 2) + FONTHEI * 3, s);
+  scr_darkenscreen();
+
+  sprintf(s, "Time:      ~t35010 X %3d", zeit);
+  scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, s);
+  sprintf(s, "Technique: ~t35010 X %3d", tec);
+  scr_writeformattext(90, (SCREENHEI / 2), s);
+  sprintf(s, "Extra:     ~t35010 X %3d", extra);
+  scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, s);
 
   scr_swap();
 }

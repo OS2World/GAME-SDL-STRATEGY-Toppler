@@ -55,6 +55,15 @@ void scr_writetext(long x, long y, const char *s);
 /* centers the text horizontally */
 void scr_writetext_center(long y, const char *s);
 
+/* output text that can be interleaved with commands. these commands
+ have the from ~ followed by letter followed by a fixed set of parameters.
+ currently the following command(s) are defined:
+
+ t###: moves the x position to the given coordinate, ther number must
+       have 3 digits
+ */
+void scr_writeformattext(long x, long y, const char *s);
+
 /* returns the number of pixels the first chars characters in
  text needs in the display (if the sting is only n chars long
  then only n chars are claculated */
@@ -62,6 +71,9 @@ int scr_textlength(const char *s, int chars = 32000);
 
 /* draws a filles rectangle with color col */
 void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 col, Uint8 alpha);
+
+/* darkens all the pixel on the screen a bit */
+void scr_darkenscreen(void);
 
 /* draws a rectangle */
 void scr_putrect(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 col, Uint8 alpha);

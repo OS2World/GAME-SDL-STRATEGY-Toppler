@@ -41,7 +41,7 @@ static struct _star *stars = (struct _star *)0;
 void sts_draw(void)
 {
   for (int t = 0; t < num_stars; t++)
-    scr_blit(spr_spritedata((long)starnr + stars[t].size - stars[t].state), stars[t].x, stars[t].y);
+    scr_blit(spr_spritedata((long)starnr + stars[t].size - (stars[t].state != 0)), stars[t].x, stars[t].y);
 }
 
 void sts_init(int sn, int nstar) {
