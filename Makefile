@@ -203,11 +203,7 @@ sprites_robots_colors_rgb.png: assembler \
                                sprites_pov/robot4_rgb_colors.png \
                                sprites_pov/robot5_rgb_colors.png \
                                sprites_pov/robot6_rgb_colors.png \
-                               sprites_pov/robot7_rgb_colors.png \
-                               sprites_pov/robot8_rgb_colors.png
-	rm sprites_pov/robot0_rgb_colors.png sprites_pov/robot0_rgb_mask.png
-	mv sprites_pov/robot8_rgb_colors.png sprites_pov/robot0_rgb_colors.png
-	mv sprites_pov/robot8_rgb_mask.png sprites_pov/robot0_rgb_mask.png
+                               sprites_pov/robot7_rgb_colors.png
 	./assembler v sprites_robots_rgb sprites_pov/robot*_rgb_colors.png sprites_pov/robot*_rgb_mask.png
 	mv sprites_robots_rgb_colors.png sprites_robots_colors_rgb.png
 	mv sprites_robots_rgb_mask.png sprites_robots_mask_rgb.png
@@ -260,12 +256,6 @@ sprites_pov/robot7_rgb_colors.png: sprites_pov/robot7/obj00.png assembler
 sprites_pov/robot7/obj00.png: sprites_pov/robot7/obj.pov sprites_pov/robot7/obj.ini sprites_pov/environment.pov
 	( cd sprites_pov/robot7 && $(POVRAY) obj.ini )
 
-sprites_pov/robot8_rgb_colors.png: sprites_pov/robot8/obj00.png assembler
-	./assembler hm sprites_pov/robot8_rgb sprites_pov/robot8/*.png
-
-sprites_pov/robot8/obj00.png: sprites_pov/robot8/obj.pov sprites_pov/robot8/obj.ini sprites_pov/environment.pov
-	( cd sprites_pov/robot8 && $(POVRAY) obj.ini )
-
 sprites.clean:
 	rm -f sprites sprites.dat
 	rm -f sprites_robots_colors.png sprites_robots_colors_rgb.png sprites_robots_mask.png sprites_robots_mask_rgb.png
@@ -278,7 +268,6 @@ sprites.clean:
 	rm -f sprites_pov/robot5/obj*.png
 	rm -f sprites_pov/robot6/obj*.png
 	rm -f sprites_pov/robot7/obj*.png
-	rm -f sprites_pov/robot8/obj*.png
 	rm -f sprites_balls_colors.png sprites_balls_rgb_colors.png sprites_balls_mask.png sprites_balls_rgb_mask.png
 	rm -f sprites_pov/balls/obj*.png
 	rm -f sprites_box_colors.png sprites_box_rgb_colors.png sprites_box_mask.png sprites_box_rgb_mask.png
