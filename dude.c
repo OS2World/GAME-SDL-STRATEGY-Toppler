@@ -52,9 +52,8 @@ void write_palette(FILE *out, SDL_Surface *s) {
   }
 }
 
-main(int argc, char *argv[])
+int main()
 {
-  unsigned char p[400];
 
   SDL_Surface * colors = IMG_LoadPNG_RW(SDL_RWFromFile("dude_colors.png", "rb"));
   SDL_Surface * mask = IMG_LoadPNG_RW(SDL_RWFromFile("dude_mask.png", "rb"));

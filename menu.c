@@ -24,7 +24,7 @@ void write_palette(FILE *out, SDL_Surface *s) {
   }
 }
 
-int main(int argc, char *argv)
+int main()
 {
   int x, y;
 

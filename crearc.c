@@ -1,10 +1,15 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <zlib.h>
 
+#define FNAMELEN 12 /* 8.3 filename */
+#define NUMFILES 256
+#define BUFPADDING 0
 
 typedef struct filenode {
-  char name[8];
+  char name[FNAMELEN];
   long start, size, compressed;
 } filenode;
 
@@ -17,34 +22,58 @@ int filesize(FILE *f) {
   return erg;
 }
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-  filenode files[256];
-  int t, filecount, i;
+  filenode files[NUMFILES];
+  int t, i, filecount = 0;
   FILE *f;
   FILE *outf;
-  unsigned char buffer[10000000];
-  unsigned char buffer2[10000000];
-  unsigned char buffer3[10000000];
-
-  unsigned char compress_data[10000000];
+  unsigned char *buffer, *buffer2, *buffer3;
 
   long erg;
-  long err;
+  long largestsize = 0;
+    
+  if (argc < 2) return 1;
+    
+  for (t = 2; (t < argc) && (filecount < NUMFILES); t++) {
+      strncpy(files[filecount].name, argv[t], FNAMELEN);
 
-  filecount = 0;
-  for (t = 1; t < argc; t++) {
-    strcpy(files[filecount++].name, argv[t]);
+      f = fopen(argv[t], "rb");
+      if (!f) printf("Error reading file %s!\n", argv[t]);
+      else {
+	  files[filecount].size = filesize(f);
+	  if (largestsize < (files[filecount].size + BUFPADDING))
+	    largestsize = files[filecount].size + BUFPADDING;
+	  filecount++;
+	  fclose(f);
+      }
+  }
+    
+  buffer = (unsigned char *)malloc(largestsize);
+  buffer2 = (unsigned char *)malloc(largestsize);
+  buffer3 = (unsigned char *)malloc(largestsize);
+
+  if (!buffer || !buffer2 || !buffer3) {
+      printf("Error allocating memory!\n");
+      return 1;
   }
 
-  outf = fopen("toppler.dat", "wb");
+  outf = fopen(argv[1], "wb");
+    
+    if (!outf) {
+	printf("Error writing file %s!\n", argv[1]);
+	return 1;
+    }
 
   fwrite(&filecount, 1, 1, outf);
   fwrite(files, sizeof(filenode) * filecount, 1, outf);
-
+    
   for (t = 0; t < filecount; t++) {
-    char name[200];
-    sprintf(name, "%s.dat", files[t].name, files[t].name);
+      char name[50];
+
+      strncpy(name, files[t].name, FNAMELEN);
+      name[FNAMELEN] = '\0';
+      
     f = fopen(name, "rb");
 
     files[t].size = filesize(f);
@@ -52,18 +81,17 @@ main(int argc, char *argv[])
 
     fread(buffer, files[t].size, 1, f);
 
-
-    files[t].compressed = 10000000;
-    compress(buffer2, &files[t].compressed, buffer, files[t].size);
-    erg = 10000000;
-    uncompress(buffer3, &erg, buffer2, files[t].compressed);
+    files[t].compressed = largestsize;
+    compress(buffer2, (uLongf *)&(files[t].compressed), buffer, files[t].size);
+    erg = largestsize;
+    uncompress(buffer3, (uLongf *)&(erg), buffer2, files[t].compressed);
 
     if (erg != files[t].size)
-      printf("different sizes (%i <-> %i", erg, files[t].size);
+      printf("Different sizes (%li <-> %li)\n", erg, files[t].size);
 
     for (i = 0; i < files[t].size; i++)
       if (buffer[i] != buffer3[i]) {
-        printf("error in compression %i\n", i);
+        printf("Error in compression %i\n", i);
         break;
       }
 
@@ -73,8 +101,48 @@ main(int argc, char *argv[])
   }
   rewind(outf);
   fwrite(&filecount, 1, 1, outf);
+    
+  /*for (t = 0; t < filecount; t++) {      
+      unsigned char tmp;
+
+      fwrite(files[t].name, 1, FNAMELEN, outf);
+
+      tmp = (files[t].start >> 0) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+      tmp = (files[t].start >> 8) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+      tmp = (files[t].start >> 16) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+      tmp = (files[t].start >> 24) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+
+      tmp = (files[t].size >> 0) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+      tmp = (files[t].size >> 8) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+      tmp = (files[t].size >> 16) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+      tmp = (files[t].size >> 24) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+
+      tmp = (files[t].compressed >> 0) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+      tmp = (files[t].compressed >> 8) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+      tmp = (files[t].compressed >> 16) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+      tmp = (files[t].compressed >> 24) & 0xff;
+      fwrite(&tmp, 1, 1, outf);
+  }*/
+
   fwrite(files, sizeof(filenode) * filecount, 1, outf);
   fclose(outf);
+    
+  free(buffer);
+  free(buffer2);
+  free(buffer3);
+
+  return 0;
 }
 
 

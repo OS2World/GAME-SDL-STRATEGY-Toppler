@@ -25,7 +25,7 @@ SDL_Surface *inp;
 
 int main(int argn, char *args[]) {
   if (argn < 4)
-    return;
+    return 0;
 
   int vertical;
   int correction;

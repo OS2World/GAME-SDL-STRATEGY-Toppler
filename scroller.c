@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
+#include <stdlib.h>
 
 /*
  * this program loads a few picture files and creates a file with information
@@ -106,9 +107,11 @@ void save(layer * l, FILE * o) {
 
 int main(int argv, char* args[]) {
 
-  int i, l;
+  int l;
 
   printf("start\n");
+    
+  if (argv < 3) return 1;
 
   int layers; // number of layers
   sscanf(args[1], "%i", &layers);

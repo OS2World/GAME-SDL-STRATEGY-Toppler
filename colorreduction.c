@@ -9,13 +9,13 @@ int main(int argn, char *args[]) {
   Uint16 colors_num;
 
   if (argn != 4)
-    return;
+    return 0;
 
   SDL_Surface *in_image = IMG_LoadPNG_RW(SDL_RWFromFile(args[1], "rb"));
 
   if (in_image == NULL) {
     printf("oops, could not load file\n");
-    return;
+    return 0;
   }
 
   colors_num = atoi(args[2]);

@@ -24,7 +24,7 @@ void write_palette(FILE *out, SDL_Surface *s) {
   }
 }
 
-int main(int argn, char **args) {
+int main() {
 
   printf("loading image: colors\n");
   SDL_Surface *colors = IMG_LoadPNG_RW(SDL_RWFromFile("titles_colors.png", "rb"));
@@ -43,7 +43,7 @@ int main(int argn, char **args) {
 
   int x, y;
 
-  printf("writing data");
+  printf("writing data\n");
   for (y = 0; y < colors->h/2; y++)
     for (x = 0; x < colors->w; x++) {
       Uint8 c;

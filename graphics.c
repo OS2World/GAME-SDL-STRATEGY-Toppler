@@ -42,6 +42,29 @@ void putpixel(unsigned short x, unsigned short y, Uint32 b)
   ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+0] = b >> 16;
 }
 
+void putpixel_max(unsigned short x, unsigned short y, Uint32 t)
+{
+  Uint16 r, g, b, rp, gp, bp;
+
+  r = ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+2];
+  g = ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+1];
+  b = ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+0];
+
+  rp = (t >>  0) & 0xff;
+  gp = (t >>  8) & 0xff;
+  bp = (t >> 16) & 0xff;
+
+  if ((r != 0) || (g != 0) || (b != 0xff)) {
+    rp = (rp + r) / 2;
+    gp = (gp + g) / 2;
+    bp = (bp + b) / 2;
+  }
+
+  ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+2] = rp;
+  ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+1] = gp;
+  ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+0] = bp;
+}
+
 Uint8 getpixel(Uint16 x, Uint16 y)
 {
    return ((Uint8*)display->pixels)[y * display->pitch + x * display->format->BytesPerPixel];
@@ -55,7 +78,7 @@ double fmax(double a, double b)
     return b;
 }
 
-void createdoor(double w, unsigned short ys, unsigned short xm)
+void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth, double door_rad, double height, double doorl)
 {
   int xl, xr, y, a;
   double nl, nr;
@@ -63,9 +86,12 @@ void createdoor(double w, unsigned short ys, unsigned short xm)
   double x;
   Uint32 b;
 
-  double doorwidth = 30;
-  double doorlength = sqrt(4*radius*radius-doorwidth*doorwidth);
-  double doordiag = radius;
+  double doorlength = sqrt(4*door_rad*door_rad-doorwidth*doorwidth);
+
+  if (doorl <= 0)
+    doorl = doorlength;
+
+  double doordiag = door_rad;
   double beta = atan2(doorwidth, doorlength);
 
 
@@ -75,8 +101,8 @@ void createdoor(double w, unsigned short ys, unsigned short xm)
     w += 2 * M_PI;
 
   /* ok, lets first calculate the x coordinates of the borders of the door */
-  xl = (int)(radius * sin(w - beta) + 0.5);
-  xr = (int)(radius * sin(w + beta) + 0.5);
+  xl = (int)(door_rad * sin(w - beta) + 0.5);
+  xr = (int)(door_rad * sin(w + beta) + 0.5);
 
   /* the door is invisible if the left end is right of the right end */
   if (xl > xr)
@@ -94,16 +120,16 @@ void createdoor(double w, unsigned short ys, unsigned short xm)
   {
     /* we do this by looking how far we can look into the tunnel at the
      opposide edge */
-    double xl = radius * sin (w - beta + lw);
-    double xr = radius * sin (w + beta + lw);
+    double dxl = door_rad * sin (w - beta + lw);
+    double dxr = door_rad * sin (w + beta + lw);
 
-    ll = ((double)xl-xr) / ((double)xr+xl) * doorlength;
-    lr = ((double)xr-xl) / ((double)xr+xl) * doorlength;
+    ll = ((double)dxl-xr) / ((double)xr+dxl) * doorlength;
+    lr = ((double)dxr-xl) / ((double)xr+dxl) * doorlength;
   }
 
   /* so, now lets draw the doors line by line from
    top to bottom, the size is fixed: three layers */
-  for (y = 0; y < 3 * hoehe; y++) {
+  for (y = 0; y < height; y++) {
 
     /* calculate the layer and the hight inside the layer */
     Uint8 layer = y / hoehe;
@@ -157,6 +183,7 @@ void createdoor(double w, unsigned short ys, unsigned short xm)
           double n = (1-(pixelpos - (ll-10)) / (2*10)) * (nl -0.2) + 0.2;
           if (n < 0.2) n = 0.2;
           if (n > nl) n = nl;
+          if (pixelpos > doorl) n = 0;
 
           /* add shadowed values */
           c1 += (double)(b & 0xff) * nl;
@@ -181,7 +208,8 @@ void createdoor(double w, unsigned short ys, unsigned short xm)
           double n = (1-(pixelpos - (lr-5)) / (2*5)) * (nr -0.2) + 0.2;
           if (n < 0.2) n = 0.2;
           if (n > nr) n = nr;
-  
+          if (pixelpos > doorl) n = 0;
+
           c1 += (double)(b & 0xff) * n;
           c2 += (double)((b >> 8) & 0xff) * n;
           c3 += (double)((b >> 16) & 0xff) * n;
@@ -198,7 +226,7 @@ void createdoor(double w, unsigned short ys, unsigned short xm)
       b = (int)c3;
       b = (b << 8) | (int)c2;
       b = (b << 8) | (int)c1;
-      putpixel(x+xm, y + ys, b);
+      putpixel((int)x+xm, y + ys, b);
     }
   }
 
@@ -251,12 +279,13 @@ void putstein_slice(unsigned short ys, unsigned short x1, unsigned short x2, dou
       c2 = (long)(c2 * n + 0.5);
       c3 = (long)(c3 * n + 0.5);
 
-      if (c1 < 0)
+      /*
+       if (c1 < 0)
         c1 = 0;
       if (c2 < 0)
         c2 = 0;
       if (c3 < 0)
-        c3 = 0;
+        c3 = 0;*/
 
       b = c3;
       b = (b << 8) | c2;
@@ -332,18 +361,19 @@ void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, d
       c2 = (long)(c2 * n + 0.5);
       c3 = (long)(c3 * n + 0.5);
 
-      if (c1 < 0)
+      /*if (c1 < 0)
         c1 = 0;
       if (c2 < 0)
         c2 = 0;
       if (c3 < 0)
-        c3 = 0;
+        c3 = 0;*/
 
       b = c3;
       b = (b << 8) | c2;
       b = (b << 8) | c1;
 
-      putpixel(x, y + ys, b);
+      if (b)
+        putpixel_max(x, y + ys, b);
     }
   }
 }
@@ -360,10 +390,13 @@ void createzinne(unsigned short ys, double w)
 {
   double e, n;
   long t, z, x1, x2, xl;
+  long xmin = zinnenrad, xmax = zinnenrad;
 
-  for (z = 0; z <= 23; z++) {
-    for (t = 160 - zinnenrad; t <= zinnenrad + 160; t++)
-      putpixel((int)t, (int)(ys + z), 0);
+
+  for (t = 0; t < steinzahl; t++) {
+    e = 2 * M_PI * t / steinzahl + w;
+    if ((e < M_PI/2) || (e > 3*M_PI/2))
+      createdoor(e, ys, zinnenrad, 30, zinnenrad, 21, 10);
   }
   for (t = 0; t < steinzahl; t++) {
     e = 2 * M_PI * t / steinzahl + w;
@@ -373,8 +406,15 @@ void createzinne(unsigned short ys, double w)
     if (x1 < x2) {
       putstein_pinacle(ys, (int)x1, (int)x2, n);
       xl = x2;
+      if (x1 < xmin) xmin = x1;
+      if (x2 > xmax) xmax = x2;
     }
   }
+  for (z = 0; z < 3 * 16; z++)
+    for (t = 0; t < 2*zinnenrad; t++)
+      if ((t < xmin) || (t >= xmax))
+        putpixel(t, ys+z, SDL_MapRGBA(display->format, 0,255,0,255));
+
 }
 
 void getdoor(Uint16 ys, FILE *out) {
@@ -399,7 +439,7 @@ void getdoor(Uint16 ys, FILE *out) {
     fwrite(&xs, 1, 2, out);
     fwrite(&xs, 1, 2, out);
   } else {
-    int x, y, t;
+    /*int x, y, t;*/
     xs -= radius;
     fwrite(&xs, 1, 2, out);
     fwrite(&br, 1, 2, out);
@@ -412,7 +452,7 @@ void getdoor(Uint16 ys, FILE *out) {
   }
 }
 
-main(int argc, char *argv) {
+int main() {
   
   FILE *outp = fopen("graphics.dat", "wb");
 
@@ -442,9 +482,12 @@ main(int argc, char *argv) {
   for (t = 0; t < 8; t++)
     createzinne(t*16*3+ 8*16, wadd / 8 * t);
 
+//  SavePNGImage("ttttest.png", display);
+//  return;
+
   /* generate doors and save them */
   for (t = -36; t < 37; t++)
-    createdoor(t * wadd / 8, 8*16 + 8*3*16 + (t+36)*16*3, radius);
+    createdoor(t * wadd / 8, 8*16 + 8*3*16 + (t+36)*16*3, radius, 30, radius, 3*hoehe, 0);
 
 
   SDL_Surface *disp2 = colorreduction(display, 256);

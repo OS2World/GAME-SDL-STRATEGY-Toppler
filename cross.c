@@ -25,7 +25,7 @@ void write_palette(FILE *out, SDL_Surface *s) {
   }
 }
 
-int main(int argc, char *argv[]) {
+int main() {
 
   FILE *outf = fopen("cross.dat", "wb");
 

@@ -68,9 +68,9 @@ void render_star(SDL_Surface *s, Uint16 size, double power) {
 
 
       ((Uint8*)s->pixels)[y*s->pitch+x] = 255-(Uint8)alias;
-      ((Uint8*)s->pixels)[(size-1-y)*s->pitch+x] = 255-(Uint8)alias;
-      ((Uint8*)s->pixels)[y*s->pitch+size-1-x] = 255-(Uint8)alias;
-      ((Uint8*)s->pixels)[(size-1-y)*s->pitch+size-1-x] = 255-(Uint8)alias;
+      ((Uint8*)s->pixels)[(size-2-y)*s->pitch+x] = 255-(Uint8)alias;
+      ((Uint8*)s->pixels)[y*s->pitch+size-2-x] = 255-(Uint8)alias;
+      ((Uint8*)s->pixels)[(size-2-y)*s->pitch+size-2-x] = 255-(Uint8)alias;
     }
 }
 
@@ -104,9 +104,7 @@ struct LOC_putbits {
 } ;
 
 
-void putbits(w, b_)
-unsigned short w;
-unsigned char b_;
+void putbits(unsigned short w, unsigned char b_)
 {
   struct LOC_putbits V;
 
@@ -121,7 +119,7 @@ unsigned char b_;
 }
 
 
-main(int argc, char *argv[]) {
+int main() {
 
   Uint16 s, n, p, x, y;
 

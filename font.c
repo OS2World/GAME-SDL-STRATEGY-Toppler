@@ -77,7 +77,7 @@ void get(SDL_Surface *colors, SDL_Surface * mask, char c)
   }
 }
 
-main(int argc, char *argv[]) {
+int main() {
 
   SDL_Surface *colors = IMG_LoadPNG_RW(SDL_RWFromFile("font_colors.png", "rb"));
   SDL_Surface *mask = IMG_LoadPNG_RW(SDL_RWFromFile("font_mask.png", "rb"));
