@@ -172,7 +172,7 @@ configuration::~configuration(void) {
 void configuration::curr_password(char pwd[PASSWORD_LEN+1]) {
   need_save = true;
   strncpy(i_curr_password, pwd, PASSWORD_LEN);
-  i_curr_password[PASSOWRD_LEN] = 0;
+  i_curr_password[PASSWORD_LEN] = 0;
 }
 
 void configuration::editor_towername(char name[TOWERNAMELEN+1]) {

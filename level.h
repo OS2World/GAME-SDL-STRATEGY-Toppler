@@ -221,7 +221,8 @@ bool lev_loadtower(const char *fname);
 bool lev_savetower(const char *fname);
 
 /* rotate row clock and counter clockwise */
-void lev_rotaterow(bool clockwise);
+void lev_rotaterow(int row, bool clockwise);
+
 
 /* insert and delete one row */
 void lev_insertrow(int position);

@@ -17,7 +17,6 @@
  */
 
 #include "decl.h"
-#include "keyb.h"
 #include "configuration.h"
 
 #include <SDL.h>

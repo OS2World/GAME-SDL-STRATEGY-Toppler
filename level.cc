@@ -1364,7 +1364,7 @@ void lev_mission_addtower(char * name) {
     data = towerdemo[0];
     section_len = 2;
 
-    for (int idx = 1; idx < towerdemo_len; idx++) {
+    for (idx = 1; idx < towerdemo_len; idx++) {
       if ((data != towerdemo[idx]) || (run == 0xff)) {
         section_len += 3;
 
