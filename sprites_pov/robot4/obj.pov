@@ -1,31 +1,4 @@
-#include "colors.inc"
-#include "textures.inc"
-
-global_settings { assumed_gamma 1.8 }
-
-#declare rot = clock;
-#if (clock >= 1)
-#declare white = 1;
-#else
-#declare white = 0;
-#end
-#declare weiss = texture {
-  pigment { color rgb 1 }
-  finish { ambient 1 }
-}
-
-
-
-camera {  //  Camera Camera01
-  orthographic
-  location  <16,0,0>
-  sky       z  
-  up        <0,0,6>  
-  right     <6,0,0>
-  look_at   <0,0,0>
-}
-
-light_source { <16,-10,10> color 1 }
+#include "../environment.pov"
 
 declare pyramide = intersection {
   box {<-3,-3,0> <3,3,3>}
@@ -36,50 +9,38 @@ declare pyramide = intersection {
   plane { z+y ,sqrt(4.5) rotate z*288 }
   scale 0.5
   scale z*2
-#if (white = 1)
-  texture { weiss }
-#else
-  texture { Gold_Texture }
-#end
+  texture { T1 }
+}
+
+declare skrew = difference {
+  cylinder { <0, 0, -1> < 0, 0, 1> 0.5 }
+  box { <-0.1, -2, 2> <0.1, 2, 0.5> }
+  box { <-0.1, -2, -2> <0.1, 2, -0.5> }
 }
 
 
 union {
-  cylinder { <0,0,-0.1> <0,0,0.1> 3
-#if (white = 1)
-  texture { weiss }
-#else
+  cylinder { <0,0,-0.1> <0,0,0.1> 3 texture { T2 } }
 
-    texture { Silver_Texture }
-#end
-}
   object { pyramide }
   object { pyramide rotate x*180 rotate z*36 }
   union {
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*0 }
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*1 }
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*2 }
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*3 }
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*4 }
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*5 }
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*6 }
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*7 }
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*8 }
-    cylinder { <0,2.5,-1> <0,2.5,1> 0.5 rotate z*360/10*9 }
+    object { skrew rotate z * 34 translate y*2.5 rotate z*460/10*0 }
+    object { skrew rotate z * 14 translate y*2.5 rotate z*460/10*1 }
+    object { skrew rotate z * 47 translate y*2.5 rotate z*460/10*2 }
+    object { skrew rotate z * 32 translate y*2.5 rotate z*460/10*3 }
+    object { skrew rotate z * 25 translate y*2.5 rotate z*460/10*4 }
+    object { skrew rotate z * 75 translate y*2.5 rotate z*460/10*5 }
+    object { skrew rotate z * 99 translate y*2.5 rotate z*460/10*6 }
+    object { skrew rotate z * 65 translate y*2.5 rotate z*460/10*7 }
+    object { skrew rotate z * 44 translate y*2.5 rotate z*460/10*8 }
+    object { skrew rotate z * 35 translate y*2.5 rotate z*460/10*9 }
 
-#if (white = 1)
-  texture { weiss }
-#else
-    texture { Copper_Texture }
-#end
-}
+    texture { T3 }
+  }
 
-#if (white = 1)
-#else
-  finish { phong 1 ambient 0.3 }
-#end
-  rotate z*clock*72
-  rotate y*clock*180
+  rotate z*rot*72
+  rotate y*rot*180
   scale 0.9
 }
 

@@ -1,35 +1,4 @@
-//#declare trans
-
-#include "colors.inc"
-#include "textures.inc"
-#include "txt.inc"
-
-global_settings { assumed_gamma 1.8 }
-
-#declare rot = clock;
-#if (clock >= 1)
-#declare white = 1;
-#declare rot = clock - 1;
-#else
-#declare white = 0;
-#end
-#declare weiss = texture {
-  pigment { color rgb 1 }
-  finish { ambient 1 }
-}
-
-
-
-camera {  //  Camera Camera01
-  orthographic
-  location  <16,0,0>
-  sky       z  
-  up        <0,0,6>  
-  right     <6,0,0>
-  look_at   <0,0,0>
-}
-
-light_source { <16,-10,10> color 1 }
+#include "../environment.pov"
 
 declare pyramide = intersection {
   box {<-3,-3,0> <3,3,3>}
@@ -41,21 +10,13 @@ declare pyramide = intersection {
   scale (x+y)*0.3
   scale sin(rot*pi)*0.5+0.5
 
-#if (white = 1)
-  texture { weiss }
-#else
   texture { T2 }
-#end
 }
 
 
 union {
   sphere { <0,0,0> 1.5
-#if (white = 1)
-  texture { weiss }
-#else
     texture { T3 }
-#end
   }
 
   object { pyramide }
@@ -84,11 +45,6 @@ union {
   object { pyramide rotate x*135 rotate z*72*4 }
 
   object { pyramide rotate x*180 }
-
-#if (white = 1)
-#else
-  pigment { color rgb <1,1,0> }
-#end
 
   rotate z*rot*72
 
