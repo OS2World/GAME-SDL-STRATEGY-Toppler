@@ -771,42 +771,6 @@ bool lev_testfigure(long angle, long vert, long back,
   return true;
 }
 
-/* tests the underground of the animal at the given position returning
- 0 if everything is all right
- 1 if there is no underground below us (fall vertical)
- 2 if there is no underground behind us (fall backwards)
- 3 if there is no underground in front of us (fall forwards) */
-int lev_testuntergr(int verticalpos, int anglepos, bool look_left) {
-  static unsigned char unter[32] = {
-    0x11, 0x20, 0x02, 0x00,
-    0x11, 0x00, 0x32, 0x00,
-    0x11, 0x00, 0x32, 0x00,
-    0x11, 0x00, 0x11, 0x00,
-    0x11, 0x00, 0x11, 0x00,
-    0x11, 0x00, 0x11, 0x00,
-    0x11, 0x23, 0x00, 0x00,
-    0x11, 0x23, 0x00, 0x00
-  };
-
-  int erg;
-
-  int r = (verticalpos / 4) - 1;
-  int c = ((anglepos + 0x7a) / 8) & 0xf;
-
-  erg = (lev_is_empty(r, c) || lev_is_door(r, c)) ? 0 : 2;
-
-  c = ((anglepos + 0x7a) / 8 + 1) & 0xf;
-
-  if ((!lev_is_empty(r, c)) && (!lev_is_door(r, c))) erg++;
-
-  erg = unter[(anglepos & 0x7) * 4 + erg];
-
-  if (look_left)
-    return erg >> 4;
-  else
-    return erg & 0xf;
-}
-
 unsigned char lev_putplatform(int row, int col) {
   unsigned char erg = tower[row][col];
 
@@ -1358,7 +1322,8 @@ void lev_mission_addtower(char * name) {
       if (tower[row][col]) section_len++;
   write_fmission_section(TSS_TOWERDATA, section_len + 1);
 
-  printf("heiht: %i\n", towerheight);
+
+  fwrite(&towerheight, 1, 1, fmission);
 
   /* output bitmap */
   for (row = 0; row < rows; row++) {

@@ -97,6 +97,43 @@ void top_init(void) {
   technic = 0x100;
 }
 
+/* tests the underground of the animal at the given position returning
+ 0 if everything is all right
+ 1 if there is no underground below us (fall vertical)
+ 2 if there is no underground behind us (fall backwards)
+ 3 if there is no underground in front of us (fall forwards) */
+static int testunderground(int verticalpos, int anglepos, bool look_left) {
+  static unsigned char unter[32] = {
+    0x11, 0x20, 0x02, 0x00,
+    0x11, 0x00, 0x32, 0x00,
+    0x11, 0x00, 0x32, 0x00,
+    0x11, 0x00, 0x11, 0x00,
+    0x11, 0x00, 0x11, 0x00,
+    0x11, 0x00, 0x11, 0x00,
+    0x11, 0x23, 0x00, 0x00,
+    0x11, 0x23, 0x00, 0x00
+  };
+
+  int erg;
+
+  int r = (verticalpos / 4) - 1;
+  int c = ((anglepos + 0x7a) / 8) & 0xf;
+
+  erg = (lev_is_empty(r, c) || lev_is_door(r, c)) ? 0 : 2;
+
+  c = ((anglepos + 0x7a) / 8 + 1) & 0xf;
+
+  if ((!lev_is_empty(r, c)) && (!lev_is_door(r, c))) erg++;
+
+  erg = unter[(anglepos & 0x7) * 4 + erg];
+
+  if (look_left)
+    return erg >> 4;
+  else
+    return erg & 0xf;
+}
+
+
 
 /* makes the toppler fall down, the parameter specifies in
  which direction:
@@ -300,7 +337,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
 
   case STATE_STANDING: 
     lev_removevanishstep(verticalpos / 4 - 1, anglepos / 8);
-    switch (lev_testuntergr(verticalpos, anglepos, look_left)) {
+    switch (testunderground(verticalpos, anglepos, look_left)) {
       case 0:
         if (left_right == 0) {
           if (space)

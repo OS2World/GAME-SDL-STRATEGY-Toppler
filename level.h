@@ -209,8 +209,6 @@ void lev_platform2empty(int row, int col);
 bool lev_testfigure(long angle, long vert, long back,
                     long fore, long typ, long height, long width);
 
-/* checks the underground of the toppler */
-int lev_testuntergr(int verticalpos, int anglepos, bool look_left);
 
 /* used for the elevator */
 unsigned char lev_putplatform(int row, int col);

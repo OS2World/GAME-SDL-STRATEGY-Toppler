@@ -612,3 +612,46 @@ void rob_disappearall(void) {
   }
 }
 
+#if 0
+
+class robot {
+
+  /* creates new robots, depending on the current vertical position and
+   the actual number of robots existing */
+  robot(int verticalpos);
+
+  virtual bool behind(void);
+  virtual Uint16 sprite(void);
+  virtual int horizontal(void);
+  virtual int vertical(void);
+  
+  /* returns the object the snowball or animal collides with or -1 */
+  bool topplercollision(int angle, int vertical);
+  bool snowballcollision(int angle, int vertical);
+
+  /* move all the robots */
+  void update(void);
+  
+  /* call this if a robot got hit by the snowball, the function
+   returns the number of points the player gets */
+  int gothit();
+
+  /* the position of the robot */
+  int anglepos;
+  long verticalpos;
+
+  /* what kind of robot it is, an under classification
+   and what kind it will be after the appearing animation */
+  rob_kinds kind;
+  long subKind;
+  rob_kinds futureKind;
+
+  /* a timer for the animations of the robots */
+  long time;
+
+};
+
+class cross {
+}
+
+#endif

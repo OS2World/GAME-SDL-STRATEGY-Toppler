@@ -190,7 +190,7 @@ static void handleEvents(void) {
 void key_done(void) {
 }
 
-Uint8 key_keystat(void) {
+Uint16 key_keystat(void) {
   handleEvents();
   return keydown;
 }

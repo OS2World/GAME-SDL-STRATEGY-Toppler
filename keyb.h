@@ -51,7 +51,7 @@ void key_done(void);
 void wait_for_focus(void);
 
 /* returns bitmask with currently pressed keys */
-Uint8 key_keystat(void);
+Uint16 key_keystat(void);
 
 /* true, if key is pressed */
 bool key_keypressed(ttkey key);
