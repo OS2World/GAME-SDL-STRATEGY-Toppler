@@ -91,7 +91,6 @@ void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth
   if (doorl <= 0)
     doorl = doorlength;
 
-  double doordiag = door_rad;
   double beta = atan2(doorwidth, doorlength);
 
 
@@ -115,7 +114,7 @@ void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth
   nl = fmax(0.2, cos(-M_PI/2 - lw - w));
   nr = fmax(0.2, cos(M_PI/2 - lw - w));
 
-  /* and not how far the light reached into the tunnel bevore
+  /* and now how far the light reaches into the tunnel bevore
    the other edge casts a shadow on it */
   {
     /* we do this by looking how far we can look into the tunnel at the
@@ -123,8 +122,8 @@ void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth
     double dxl = door_rad * sin (w - beta + lw);
     double dxr = door_rad * sin (w + beta + lw);
 
-    ll = ((double)dxl-xr) / ((double)xr+dxl) * doorlength;
-    lr = ((double)dxr-xl) / ((double)xr+dxl) * doorlength;
+    ll = ((double)dxl-dxr) / ((double)dxr+dxl) * doorlength;
+    lr = ((double)dxr-dxl) / ((double)dxr+dxl) * doorlength;
   }
 
   /* so, now lets draw the doors line by line from
@@ -361,13 +360,6 @@ void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, d
       c2 = (long)(c2 * n + 0.5);
       c3 = (long)(c3 * n + 0.5);
 
-      /*if (c1 < 0)
-        c1 = 0;
-      if (c2 < 0)
-        c2 = 0;
-      if (c3 < 0)
-        c3 = 0;*/
-
       b = c3;
       b = (b << 8) | c2;
       b = (b << 8) | c1;
@@ -393,11 +385,13 @@ void createzinne(unsigned short ys, double w)
   long xmin = zinnenrad, xmax = zinnenrad;
 
 
+  /*
   for (t = 0; t < steinzahl; t++) {
     e = 2 * M_PI * t / steinzahl + w;
     if ((e < M_PI/2) || (e > 3*M_PI/2))
-      createdoor(e, ys, zinnenrad, 30, zinnenrad, 21, 10);
-  }
+      createdoor(e, ys, zinnenrad, 32, zinnenrad, 21, 10);
+      }
+      */
   for (t = 0; t < steinzahl; t++) {
     e = 2 * M_PI * t / steinzahl + w;
     x1 = (long)floor(zinnenrad * cos(e) + zinnenrad + 0.5);
@@ -410,11 +404,12 @@ void createzinne(unsigned short ys, double w)
       if (x2 > xmax) xmax = x2;
     }
   }
+  /*
   for (z = 0; z < 3 * 16; z++)
     for (t = 0; t < 2*zinnenrad; t++)
       if ((t < xmin) || (t >= xmax))
         putpixel(t, ys+z, SDL_MapRGBA(display->format, 0,255,0,255));
-
+*/
 }
 
 void getdoor(Uint16 ys, FILE *out) {
@@ -473,17 +468,19 @@ int main() {
   r.x = 0;
   r.y = 0;
 
-  /* generate the slices */
   SDL_FillRect(display, &r, SDL_MapRGBA(display->format, 0,0,255,255));
 
+  /* generate the slices */
   for (t = 0; t < 8; t++)
     createslice(wadd / 8 * t, t*16);
 
   for (t = 0; t < 8; t++)
     createzinne(t*16*3+ 8*16, wadd / 8 * t);
 
-//  SavePNGImage("ttttest.png", display);
-//  return;
+  /*
+  SavePNGImage("ttttest.png", display);
+  return 0;
+  */
 
   /* generate doors and save them */
   for (t = -36; t < 37; t++)
