@@ -139,6 +139,9 @@ scroller.clean:
 	rm -f scroller1_colors.png scroller1_mask.png
 	rm -f scroller2_colors.png scroller2_mask.png
 	rm -f scroller3_colors.png scroller3_mask.png
+	rm -f scroller1_colors_rgb.png scroller1_mask_rgb.png
+	rm -f scroller2_colors_rgb.png scroller2_mask_rgb.png
+	rm -f scroller3_colors_rgb.png scroller3_mask_rgb.png
 
 scroller1_colors.png: colorreduction scroller1_colors_rgb.png
 	./colorreduction scroller1_colors_rgb.png 256 scroller1_colors.png
@@ -157,6 +160,24 @@ scroller2_mask.png: colorreduction scroller2_mask_rgb.png
 
 scroller3_mask.png: colorreduction scroller3_mask_rgb.png
 	./colorreduction scroller3_mask_rgb.png 256 scroller3_mask.png
+
+scroller1_colors_rgb.png: scroller.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"scroller1_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+
+scroller2_colors_rgb.png: scroller.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"scroller2_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+
+scroller3_colors_rgb.png: scroller.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 2) \"scroller3_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+
+scroller1_mask_rgb.png: scroller.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 3) \"scroller1_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+
+scroller2_mask_rgb.png: scroller.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 4) \"scroller2_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+
+scroller3_mask_rgb.png: scroller.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 5) \"scroller3_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 #---------------------------------------------------------#
 # rules to create the data files necesary for the sprites #
