@@ -34,7 +34,7 @@ pkgdata_DATA = \
 
 man_MANS = toppler.6
 
-EXTRA_DIST = $(man_MANS) $(pkgdata_DATA) VERSION toppler.spec.in toppler.desktop.in toppler.xpm
+EXTRA_DIST = $(man_MANS) $(pkgdata_DATA) VERSION toppler.spec toppler.xpm
 
 scoredir = $(localstatedir)/@PACKAGE@
 scorefile = $(scoredir)/@PACKAGE@.hsc
