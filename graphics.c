@@ -301,45 +301,107 @@ void createcyl(Uint16 r, FILE *out)
 }
 
 
-void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, double n)
+void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, double n, double e)
 {
   unsigned short x, y;
-  long m;
-  Uint32 b, c1, c2, c3, a;
+  double m;
+  Uint32 b, a;
+  double c1, c2, c3;
+
+  static bool s_init = false;
+  static int b1 = 0;
+  static int b2 = 0;
+  static int b3 = 0;
+
+  if (!s_init) {
+    s_init = true;
+
+    x = 0;
+
+    while (*(Uint32*)((Uint8*)zinne->pixels + x * zinne->format->BytesPerPixel) == 0) {
+      x++;
+    }
+
+    b1 = x;
+
+    while (*(Uint32*)((Uint8*)zinne->pixels + x * zinne->format->BytesPerPixel) != 0) {
+      x++;
+      b2++;
+    }
+
+    b3 = zinne->w - b1 - b2;
+  }
+
+  e -= M_PI + M_PI/2;
+  double nn = b2 * sin(e) / 2;
+  double n55 = fmax(0.2, fabs( sin(e+lw)));
 
   n = -n;
 
   if (n < 0.2) n = 0.2;
 
   for (y = 0; y < hoehe * 3; y++) {
-    for (x = x1; x < x2; x++) {
-
+    for (x = 0; x < 2*zinnenrad; x++) {
 
       c1 = c2 = c3 = 0;
 
       for (a = 0; a < 8; a++) {
-        m = (long)((double)(x + (float)a / 8 - x1) / (x2 - x1) * zinne->w + 0.5);
-        if (m >= zinne->w)
-          m = zinne->w - 1;
+        m = (x + (double)a / 8 - x1) / (x2 - x1) * zinne->w;
 
-        b = *((Uint32 *)(((Uint8*)zinne->pixels) + y * zinne->pitch + m * zinne->format->BytesPerPixel));
+        if ((m >= zinne->w) || (m < 0))
+          b = 0;
+        else
+          b = *((Uint32 *)(((Uint8*)zinne->pixels) + y * zinne->pitch + ((long)(m+0.5)) * zinne->format->BytesPerPixel));
 
-        c1 += b & 0xff;
-        c2 += (b >> 8) & 0xff;
-        c3 += (b >> 16) & 0xff;
+        /* outside of the texture, here it is possible that another texture is used */
+        if (b == 0) {
+
+
+          if (m < zinne->w/2) {
+
+            /* left void */
+            if ((x + (double)a/8 > x1 + b1 * (x2-x1)/zinne->w - nn) && (nn > 0)) {
+
+              b = *((Uint32 *)(((Uint8*)zinne->pixels) +
+                               y * zinne->pitch +
+                               (long)((x+(double)a/8 - x1 - b1 * (x2-x1)/zinne->w) / (-nn-2) * b2 + b1 + 1.5) * zinne->format->BytesPerPixel));
+
+              c1 += n55 * (b & 0xff);
+              c2 += n55 * ((b >> 8) & 0xff);
+              c3 += n55 * ((b >> 16) & 0xff);
+            }
+          } else {
+            /* right void */
+            if ((x + (double)a/8 < x1 + (b1 + b2) * (x2-x1)/zinne->w - nn) && (nn < 0)) {
+
+              b = *((Uint32 *)(((Uint8*)zinne->pixels) +
+                               y * zinne->pitch +
+                               (long)((x+(double)a/8 - x1 - (b1 + b2) * (x2-x1)/zinne->w) / (-nn-2) * b2 + b1 + 1.5) * zinne->format->BytesPerPixel));
+
+              c1 += n55 * (b & 0xff);
+              c2 += n55 * ((b >> 8) & 0xff);
+              c3 += n55 * ((b >> 16) & 0xff);
+            }
+          }
+
+        } else {
+          c1 += n* (b & 0xff);
+          c2 += n* ((b >> 8) & 0xff);
+          c3 += n* ((b >> 16) & 0xff);
+        }
       }
 
       c1 /= 8;
       c2 /= 8;
       c3 /= 8;
 
-      c1 = (long)(c1 * n + 0.5);
-      c2 = (long)(c2 * n + 0.5);
-      c3 = (long)(c3 * n + 0.5);
+      c1 += 0.5;
+      c2 += 0.5;
+      c3 += 0.5;
 
-      b = c3;
-      b = (b << 8) | c2;
-      b = (b << 8) | c1;
+      b = (long)c3;
+      b = (b << 8) | (long)c2;
+      b = (b << 8) | (long)c1;
 
       if (b)
         putpixel(x, y + ys, b);
@@ -361,30 +423,31 @@ void createzinne(unsigned short ys, double w)
   long t, x1, x2, xl;
   long xmin = zinnenrad, xmax = zinnenrad;
 
-
-/*  for (t = 0; t < steinzahl; t++) {
-    e = 2 * M_PI * t / steinzahl + w;
-    if ((e < M_PI/2) || (e > 3*M_PI/2))
-      createdoor(e, ys, zinnenrad, 32, zinnenrad, 21, 10);
-  }*/
   for (t = 0; t < steinzahl; t++) {
     e = 2 * M_PI * t / steinzahl + w;
     x1 = (long)floor(zinnenrad * cos(e) + zinnenrad + 0.5);
     x2 = (long)floor(zinnenrad * cos(e + wadd) + zinnenrad + 0.5);
     n = sin(e + wadd + lw);
-    if (x1 < x2) {
-      putstein_pinacle(ys, (int)x1, (int)x2, n);
+    if ((x1 < x2) && (e < 3*M_PI/2-wadd/2) ) {
+      putstein_pinacle(ys, (int)x1, (int)x2, n, e+ wadd/2);
       xl = x2;
       if (x1 < xmin) xmin = x1;
       if (x2 > xmax) xmax = x2;
     }
   }
-  /*
-  for (z = 0; z < 3 * 16; z++)
-    for (t = 0; t < 2*zinnenrad; t++)
-      if ((t < xmin) || (t >= xmax))
-        putpixel(t, ys+z, SDL_MapRGBA(display->format, 0,255,0,255));
-*/
+
+  for (t = steinzahl-1; t >= 0; t--) {
+    e = 2 * M_PI * t / steinzahl + w;
+    x1 = (long)floor(zinnenrad * cos(e) + zinnenrad + 0.5);
+    x2 = (long)floor(zinnenrad * cos(e + wadd) + zinnenrad + 0.5);
+    n = sin(e + wadd + lw);
+    if ((x1 < x2) && (e >= 3*M_PI/2-wadd/2) ) {
+      putstein_pinacle(ys, (int)x1, (int)x2, n, e+ wadd/2);
+      xl = x2;
+      if (x1 < xmin) xmin = x1;
+      if (x2 > xmax) xmax = x2;
+    }
+  }
 }
 
 void getdoor(Uint16 ys, FILE *out) {
@@ -433,6 +496,7 @@ int main() {
   int img_height = 8*16+8*3*16+73*16*3;
 
   display = SDL_CreateRGBSurface(SDL_SWSURFACE, 2* zinnenrad, img_height, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0);
+  //display = SDL_SetVideoMode(640, 480, 32, 0);
 
   brick = IMG_LoadPNG_RW(SDL_RWFromFile("graphics_brick.png", "rb"));
   zinne = IMG_LoadPNG_RW(SDL_RWFromFile("graphics_pinacle.png", "rb"));
@@ -450,13 +514,11 @@ int main() {
     createslice(wadd / 8 * t, t*16);
 
   for (t = 0; t < 8; t++)
-    createzinne(t*16*3+ 8*16, wadd / 8 * t);
+    createzinne(t*16*3 + 8*16, wadd / 8 * t);
 
   /* generate doors and save them */
   for (t = -36; t < 37; t++)
     createdoor(t * wadd / 8, 8*16 + 8*3*16 + (t+36)*16*3, radius, 30, radius, 3*hoehe, 0);
-
-  SavePNGImage("ttttest.png", display);
 
   SDL_Surface *disp2 = colorreduction(display, 256);
   SDL_FreeSurface(display);
