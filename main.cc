@@ -28,9 +28,6 @@
 #include <time.h>
 #include <string.h>
 
-archive dataarchive(open_data_file("toppler.dat"));
-configuration config(open_global_config_file(".toppler.rc"), open_local_config_file(".toppler.rc"));
-
 static void printhelp(void) {
   printf("\n\tOptions:\n\n");
   printf("  -f\tEnable fullscreen mode\n");

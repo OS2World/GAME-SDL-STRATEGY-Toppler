@@ -28,15 +28,13 @@
  header defining the start and size of the different files */
 
 
-#define FNAMELEN 12 /* 8.3 filename */
-
 /* forward declaration */
 class file;
 
 
 /*
  * this class handles one archive, each archive can contain any number of
- * files with names of up to FNAMELEN characters to open one file use assign
+ * files with 0 terminated names. to open one file use assign
  * and use the returned file class
  */
 
@@ -59,7 +57,7 @@ private:
   FILE *f;
   
   typedef struct {
-    char name[FNAMELEN];
+    char *name;
     Uint32 start, size, compress;
   } fileindex;
   
@@ -73,8 +71,8 @@ private:
  * this class is used to handle the access to the different files inside
  * the archive(s) internally it only handles one bich chunk of memory
  * so take care that your files do not grow beyond all limits and
- * do not forget to delete the files, otherwis you will have a memory
- * leak
+ * do not forget to delete the files, because assign returns a new object
+ * of this class
  */
 
 class file {
