@@ -1,13 +1,14 @@
 # translation of de.po to Deutsch
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR Andreas R?er.
-# Andreas Röver <roever@users.sf.net>, 2003.
+# Andreas Röver <roever@users.sf.net>, 2003, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
-"POT-Creation-Date: 2003-11-26 21:15+0100\n"
-"PO-Revision-Date: 2003-11-26 21:33+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-04 09:20+0100\n"
+"PO-Revision-Date: 2004-01-04 09:35+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -134,7 +135,7 @@ msgstr "mission_addtower ohne vorherigen mission_new Aufruf"
 msgid "called mission_finish without mission_new"
 msgstr "mission_finish ohne vorherigen mission_new Aufruf"
 
-#: leveledit.cc:103 menu.cc:914
+#: leveledit.cc:103 menu.cc:938
 msgid "Quit"
 msgstr "Beenden"
 
@@ -548,157 +549,125 @@ msgstr "Feuer"
 msgid "Password: %s"
 msgstr "Passwort: %s"
 
-#: menu.cc:162
-msgid "Status on top "
-msgstr "Status oben  "
+#: menu.cc:163 menu.cc:164
+msgid "Status on top"
+msgstr "Status oben"
 
-#: menu.cc:163
-msgid "Status on top "
-msgstr "Status oben "
-
-#: menu.cc:182
+#: menu.cc:185
 msgid "Lives: "
 msgstr "Leben: "
 
-#: menu.cc:210
+#: menu.cc:213
 #, c-format
 msgid "Game Speed: %i"
 msgstr "Spielgeschwindigkeit: %i"
 
-#: menu.cc:220
-msgid "Bonus "
-msgstr "Bonus "
+#: menu.cc:224 menu.cc:225
+msgid "Bonus"
+msgstr "Bonus"
 
-#: menu.cc:221
-msgid "Bonus "
-msgstr "Bonus "
-
-#: menu.cc:226
+#: menu.cc:232
 msgid "Game Options"
 msgstr "Spieloptionen"
 
-#: menu.cc:239 menu.cc:259 menu.cc:415 menu.cc:439 menu.cc:463 menu.cc:620
+#: menu.cc:245 menu.cc:265 menu.cc:439 menu.cc:463 menu.cc:487 menu.cc:644
 msgid "Back"
 msgstr "Zurück"
 
-#: menu.cc:250 menu.cc:265
+#: menu.cc:256 menu.cc:271
 msgid "Redefine Keys"
 msgstr "Tasten umdefinieren"
 
-#: menu.cc:276
-msgid "Fullscreen "
-msgstr "Vollbild "
+#: menu.cc:283 menu.cc:284
+msgid "Fullscreen"
+msgstr "Vollbild"
 
-#: menu.cc:277
-msgid "Fullscreen "
-msgstr "Vollbild "
+#: menu.cc:304 menu.cc:305
+msgid "Sounds"
+msgstr "Sounds"
 
-#: menu.cc:294
-msgid "Sounds "
-msgstr "Sounds "
+#: menu.cc:339 menu.cc:340
+msgid "Font alpha"
+msgstr "Schrift glätten"
 
-#: menu.cc:295
-msgid "Sounds "
-msgstr "Sounds "
+#: menu.cc:353 menu.cc:354
+msgid "Sprites alpha"
+msgstr "Sprites glätten"
 
-#: menu.cc:326
-msgid "Font alpha "
-msgstr "Schrift glätten "
+#: menu.cc:367 menu.cc:368
+msgid "Scroller alpha"
+msgstr "Scroller glätten"
 
-#: menu.cc:327
-msgid "Font alpha "
-msgstr "Schrift glätten "
+#: menu.cc:380 menu.cc:381
+msgid "Shadowing"
+msgstr "Schattieren"
 
-#: menu.cc:337
-msgid "Sprites alpha "
-msgstr "Sprites glätten "
-
-#: menu.cc:338
-msgid "Sprites alpha "
-msgstr "Sprites glätten "
-
-#: menu.cc:348
-msgid "Scroller alpha "
-msgstr "Scroller glätten "
-
-#: menu.cc:349
-msgid "Scroller alpha "
-msgstr "Scroller glätten "
-
-#: menu.cc:358
-msgid "Shadowing "
-msgstr "Schattieren "
-
-#: menu.cc:359
-msgid "Shadowing "
-msgstr "Schattieren "
-
-#: menu.cc:382
+#: menu.cc:406
 msgid "Nonreflecting waves"
 msgstr "Nicht reflektierende Wellen"
 
-#: menu.cc:383
+#: menu.cc:407
 msgid "Simple waves"
 msgstr "Einfache Wellen"
 
-#: menu.cc:384
+#: menu.cc:408
 msgid "Expensive waves"
 msgstr "Teure Wellen"
 
-#: menu.cc:385
+#: menu.cc:409
 msgid "Error"
 msgstr "Fehler"
 
-#: menu.cc:395
+#: menu.cc:419
 msgid "Complete Scroller"
 msgstr "Vollständiger Scroller"
 
-#: menu.cc:396
+#: menu.cc:420
 msgid "2 layers Scoller"
 msgstr "2-Schichten Scroller"
 
-#: menu.cc:402
+#: menu.cc:426
 msgid "Alpha Options"
 msgstr "Glättungsoptionen"
 
-#: menu.cc:426
+#: menu.cc:450
 msgid "Graphics"
 msgstr "Grafik"
 
-#: menu.cc:450
+#: menu.cc:474
 msgid "Options"
 msgstr "Optionen"
 
-#: menu.cc:593
+#: menu.cc:617
 msgid "HighScores"
 msgstr "Siegerliste"
 
-#: menu.cc:598
+#: menu.cc:622
 #, c-format
 msgid "Scores for %s"
 msgstr "Punkte für %s"
 
-#: menu.cc:622
+#: menu.cc:646
 msgid "OK"
 msgstr "Ok"
 
-#: menu.cc:635
+#: menu.cc:659
 msgid "Congratulations! You are"
 msgstr "Gratulation! Du bist"
 
-#: menu.cc:636
+#: menu.cc:660
 msgid "probably good enough to"
 msgstr "wahrscheinlich gut genug"
 
-#: menu.cc:637
+#: menu.cc:661
 msgid "enter the highscore table!"
 msgstr "für die Siegerliste!"
 
-#: menu.cc:639
+#: menu.cc:663
 msgid "Please enter your name"
 msgstr "Gibt Deinen Namen ein"
 
-#: menu.cc:693
+#: menu.cc:717
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -712,36 +681,36 @@ msgstr ""
 "eine neue Version von\n"
 "Toppler, Weiter?"
 
-#: menu.cc:754
+#: menu.cc:778
 msgid "Hunt the Fish"
 msgstr "Fischjagt"
 
-#: menu.cc:777
+#: menu.cc:801
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Start: %s %c"
 
-#: menu.cc:787
+#: menu.cc:811
 msgid "Highscores"
 msgstr "Siegerliste"
 
-#: menu.cc:799
+#: menu.cc:823
 msgid "Level Editor"
 msgstr "Leveleditor"
 
-#: menu.cc:860
+#: menu.cc:884
 msgid "Return to Game"
 msgstr "Zurück zum Spiel"
 
-#: menu.cc:870
+#: menu.cc:894
 msgid "Quit Game"
 msgstr "Beende Spiel"
 
-#: menu.cc:877
+#: menu.cc:901
 msgid "DEBUG MENU"
 msgstr "DEBUG MENÜ"
 
-#: menu.cc:882
+#: menu.cc:906
 msgid "Back to Game"
 msgstr "Zurück zum Spiel"
 
@@ -1024,3 +993,28 @@ msgstr "Ball 3"
 #: levelnames.txt:1
 msgid "ABC Towers"
 msgstr "Turm-ABC"
+
+#~ msgid "Status on top "
+#~ msgstr "Status oben "
+
+#~ msgid "Bonus "
+#~ msgstr "Bonus "
+
+#~ msgid "Fullscreen "
+#~ msgstr "Vollbild "
+
+#~ msgid "Sounds "
+#~ msgstr "Sounds "
+
+#~ msgid "Font alpha "
+#~ msgstr "Schrift glätten "
+
+#~ msgid "Sprites alpha "
+#~ msgstr "Sprites glätten "
+
+#~ msgid "Scroller alpha "
+#~ msgstr "Scroller glätten "
+
+#~ msgid "Shadowing "
+#~ msgstr "Schattieren "
+

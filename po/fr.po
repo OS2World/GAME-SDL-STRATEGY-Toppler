@@ -6,8 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
-"POT-Creation-Date: 2003-11-26 21:15+0100\n"
-"PO-Revision-Date: 2004-01-01 17:27+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-01-04 09:20+0100\n"
+"PO-Revision-Date: 2004-01-04 09:34+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -134,7 +135,7 @@ msgstr "mission_addtower appelé sans mission_new"
 msgid "called mission_finish without mission_new"
 msgstr "mission_finish appelé sans mission_new"
 
-#: leveledit.cc:103 menu.cc:914
+#: leveledit.cc:103 menu.cc:938
 msgid "Quit"
 msgstr "Quitter"
 
@@ -548,173 +549,126 @@ msgstr "Feu"
 msgid "Password: %s"
 msgstr "Mot de passe : %s"
 
-#: menu.cc:162
-#, fuzzy
-msgid "Status on top "
-msgstr "Statut au sommet "
+#: menu.cc:163 menu.cc:164
+msgid "Status on top"
+msgstr "Statut au sommet"
 
-#: menu.cc:163
-#, fuzzy
-msgid "Status on top "
-msgstr "Statut au sommet "
-
-#: menu.cc:182
+#: menu.cc:185
 msgid "Lives: "
 msgstr "Vies :"
 
-#: menu.cc:210
+#: menu.cc:213
 #, c-format
 msgid "Game Speed: %i"
 msgstr "Vitesse de jeu : %i"
 
-#: menu.cc:220
-#, fuzzy
-msgid "Bonus "
-msgstr "Bonus "
+#: menu.cc:224 menu.cc:225
+msgid "Bonus"
+msgstr "Bonus"
 
-#: menu.cc:221
-#, fuzzy
-msgid "Bonus "
-msgstr "Bonus "
-
-#: menu.cc:226
+#: menu.cc:232
 msgid "Game Options"
 msgstr "Options du jeu"
 
-#: menu.cc:239 menu.cc:259 menu.cc:415 menu.cc:439 menu.cc:463 menu.cc:620
+#: menu.cc:245 menu.cc:265 menu.cc:439 menu.cc:463 menu.cc:487 menu.cc:644
 msgid "Back"
 msgstr "Retour"
 
-#: menu.cc:250 menu.cc:265
+#: menu.cc:256 menu.cc:271
 msgid "Redefine Keys"
 msgstr "Redéfinir les touches"
 
-#: menu.cc:276
-#, fuzzy
-msgid "Fullscreen "
-msgstr "Plein écran "
+#: menu.cc:283 menu.cc:284
+msgid "Fullscreen"
+msgstr "Plein écran"
 
-#: menu.cc:277
-#, fuzzy
-msgid "Fullscreen "
-msgstr "Plein écran "
+#: menu.cc:304 menu.cc:305
+msgid "Sounds"
+msgstr "Sons"
 
-#: menu.cc:294
-#, fuzzy
-msgid "Sounds "
-msgstr "Sons "
+#: menu.cc:339 menu.cc:340
+msgid "Font alpha"
+msgstr "Polices transparentes"
 
-#: menu.cc:295
+#: menu.cc:353 menu.cc:354
 #, fuzzy
-msgid "Sounds "
-msgstr "Sons "
-
-#: menu.cc:326
-#, fuzzy
-msgid "Font alpha "
-msgstr "Polices transparentes "
-
-#: menu.cc:327
-#, fuzzy
-msgid "Font alpha "
-msgstr "Polices transparentes "
-
-#: menu.cc:337
-#, fuzzy
-msgid "Sprites alpha "
+msgid "Sprites alpha"
 msgstr "Sprites transparents"
 
-#: menu.cc:338
-#, fuzzy
-msgid "Sprites alpha "
-msgstr "Sprites transparents"
+#: menu.cc:367 menu.cc:368
+msgid "Scroller alpha"
+msgstr "Défilement transparent"
 
-#: menu.cc:348
-#, fuzzy
-msgid "Scroller alpha "
-msgstr "Défilement transparent "
+#: menu.cc:380 menu.cc:381
+msgid "Shadowing"
+msgstr "Ombres"
 
-#: menu.cc:349
-#, fuzzy
-msgid "Scroller alpha "
-msgstr "Défilement transparent "
-
-#: menu.cc:358
-#, fuzzy
-msgid "Shadowing "
-msgstr "Ombres "
-
-#: menu.cc:359
-#, fuzzy
-msgid "Shadowing "
-msgstr "Ombres "
-
-#: menu.cc:382
+#: menu.cc:406
 msgid "Nonreflecting waves"
 msgstr "Vagues sans reflets"
 
-#: menu.cc:383
+#: menu.cc:407
 msgid "Simple waves"
 msgstr "Vagues simples"
 
-#: menu.cc:384
+#: menu.cc:408
 msgid "Expensive waves"
 msgstr "Vagues coûteuses"
 
-#: menu.cc:385
+#: menu.cc:409
 msgid "Error"
 msgstr "Erreur"
 
-#: menu.cc:395
+#: menu.cc:419
 msgid "Complete Scroller"
 msgstr "Défilement complet"
 
-#: menu.cc:396
+#: menu.cc:420
 msgid "2 layers Scoller"
 msgstr "Défilement deux couches"
 
-#: menu.cc:402
+#: menu.cc:426
 msgid "Alpha Options"
 msgstr "Options de transparence"
 
-#: menu.cc:426
+#: menu.cc:450
 msgid "Graphics"
 msgstr "Graphismes"
 
-#: menu.cc:450
+#: menu.cc:474
 msgid "Options"
 msgstr "Options"
 
-#: menu.cc:593
+#: menu.cc:617
 msgid "HighScores"
 msgstr "Meilleurs scores"
 
-#: menu.cc:598
+#: menu.cc:622
 #, c-format
 msgid "Scores for %s"
 msgstr "Scores pour %s"
 
-#: menu.cc:622
+#: menu.cc:646
 msgid "OK"
 msgstr "OK"
 
-#: menu.cc:635
+#: menu.cc:659
 msgid "Congratulations! You are"
 msgstr "Félicitations ! Vous êtes"
 
-#: menu.cc:636
+#: menu.cc:660
 msgid "probably good enough to"
 msgstr "Probablement suffisament bon pour"
 
-#: menu.cc:637
+#: menu.cc:661
 msgid "enter the highscore table!"
 msgstr "##Vous entrez dans le tableau des scores !"
 
-#: menu.cc:639
+#: menu.cc:663
 msgid "Please enter your name"
 msgstr "Veuillez entrer votre nom"
 
-#: menu.cc:693
+#: menu.cc:717
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -728,36 +682,36 @@ msgstr ""
 "version de Tower Toppler.\n"
 "Voulez-vous continuer ?"
 
-#: menu.cc:754
+#: menu.cc:778
 msgid "Hunt the Fish"
 msgstr "À la pêche"
 
-#: menu.cc:777
+#: menu.cc:801
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Démarrer : %s %c"
 
-#: menu.cc:787
+#: menu.cc:811
 msgid "Highscores"
 msgstr "Meilleurs scores"
 
-#: menu.cc:799
+#: menu.cc:823
 msgid "Level Editor"
 msgstr "Éditeur de niveau"
 
-#: menu.cc:860
+#: menu.cc:884
 msgid "Return to Game"
 msgstr "Retourner au jeu"
 
-#: menu.cc:870
+#: menu.cc:894
 msgid "Quit Game"
 msgstr "Quitter le jeu"
 
-#: menu.cc:877
+#: menu.cc:901
 msgid "DEBUG MENU"
 msgstr "MENU DE DÉBUGGAGE"
 
-#: menu.cc:882
+#: menu.cc:906
 msgid "Back to Game"
 msgstr "Retour au jeu"
 
@@ -1040,3 +994,36 @@ msgstr "Ball 3"
 #: levelnames.txt:1
 msgid "ABC Towers"
 msgstr "Les tours ABC"
+
+#, fuzzy
+#~ msgid "Status on top "
+#~ msgstr "Statut au sommet "
+
+#, fuzzy
+#~ msgid "Bonus "
+#~ msgstr "Bonus "
+
+#, fuzzy
+#~ msgid "Fullscreen "
+#~ msgstr "Plein écran "
+
+#, fuzzy
+#~ msgid "Sounds "
+#~ msgstr "Sons "
+
+#, fuzzy
+#~ msgid "Font alpha "
+#~ msgstr "Polices transparentes "
+
+#, fuzzy
+#~ msgid "Sprites alpha "
+#~ msgstr "Sprites transparents"
+
+#, fuzzy
+#~ msgid "Scroller alpha "
+#~ msgstr "Défilement transparent "
+
+#, fuzzy
+#~ msgid "Shadowing "
+#~ msgstr "Ombres "
+
