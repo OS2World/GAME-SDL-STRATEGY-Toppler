@@ -7,7 +7,7 @@ clean:
 	rm -f *.ttm cremission
 
 cremission: cremission.cc ${TOPPLERDIR}/level.cc ${TOPPLERDIR}/level.h
-	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/keyb.o ${TOPPLERDIR}/level.o ${TOPPLERDIR}/points.o ${TOPPLERDIR}/decl.o -lSDL -o cremission
+	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/keyb.o ${TOPPLERDIR}/level.o ${TOPPLERDIR}/points.o ${TOPPLERDIR}/decl.o ${TOPPLERDIR}/configuration.o -lSDL -o cremission
 
 # RULE FOR MISSION 1
 
