@@ -362,13 +362,11 @@ void createzinne(unsigned short ys, double w)
   long xmin = zinnenrad, xmax = zinnenrad;
 
 
-  /*
-  for (t = 0; t < steinzahl; t++) {
+/*  for (t = 0; t < steinzahl; t++) {
     e = 2 * M_PI * t / steinzahl + w;
     if ((e < M_PI/2) || (e > 3*M_PI/2))
       createdoor(e, ys, zinnenrad, 32, zinnenrad, 21, 10);
-      }
-      */
+  }*/
   for (t = 0; t < steinzahl; t++) {
     e = 2 * M_PI * t / steinzahl + w;
     x1 = (long)floor(zinnenrad * cos(e) + zinnenrad + 0.5);
@@ -459,7 +457,6 @@ int main() {
     createdoor(t * wadd / 8, 8*16 + 8*3*16 + (t+36)*16*3, radius, 30, radius, 3*hoehe, 0);
 
   SavePNGImage("ttttest.png", display);
-  return 0;
 
   SDL_Surface *disp2 = colorreduction(display, 256);
   SDL_FreeSurface(display);
