@@ -138,6 +138,10 @@ void lev_get_towerdemo(int &demolen, Uint16 *&demobuf);
 /* the number of the actual tower */
 Uint8 lev_towernr(void);
 
+/* the number of the robot used */
+Uint8 lev_robotnr(void);
+void lev_set_robotnr(Uint8 robot);
+
 /* the time the player has to reach the top */
 Uint16 lev_towertime(void);
 

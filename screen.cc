@@ -50,8 +50,6 @@ static struct {
 } robots[8];              // currently there are only 8 robots, later on we need to
                           // make this dynamic;
 
-// robotsst,
-
 static unsigned short ballst, boxst, snowballst, starst, crossst,
          fishst, subst, torb;
 static int topplerstart;
@@ -1112,16 +1110,20 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
     break;
   case TB_ROBOT4:
-    scr_blit(spr_spritedata(robots[0].start), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
+    scr_blit(spr_spritedata(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
+             x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
     break;
   case TB_ROBOT5:
-    scr_blit(spr_spritedata(robots[0].start), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
+    scr_blit(spr_spritedata(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
+             x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
     break;
   case TB_ROBOT6:
-    scr_blit(spr_spritedata(robots[0].start), x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
+    scr_blit(spr_spritedata(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
+             x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
     break;
   case TB_ROBOT7:
-    scr_blit(spr_spritedata(robots[0].start), x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
+    scr_blit(spr_spritedata(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
+             x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
     break;
   }
 }
@@ -1155,7 +1157,7 @@ static void putrobot(int t, int m, long x, long h)
   
     case OBJ_KIND_ROBOT_VERT:
     case OBJ_KIND_ROBOT_HORIZ:
-      nr = robots[lev_towernr()].start + ((m / 2) % robots[lev_towernr()].count);
+      nr = robots[lev_robotnr()].start + ((m / 2) % robots[lev_robotnr()].count);
       break;
   
     default:
