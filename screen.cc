@@ -611,7 +611,7 @@ void scr_reload_sprites(Uint8 what) {
 
 void scr_init(void) {
 
-  scr_reinit();
+  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (config.fullscreen()) ? (SDL_FULLSCREEN) : (0));
 
   load_sprites(0xff);
 
@@ -630,7 +630,6 @@ void scr_init(void) {
 
 void scr_reinit() {
   display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (config.fullscreen()) ? (SDL_FULLSCREEN) : (0));
-  assert(display, "could not open display");
 }
 
 void scr_done(void) {
