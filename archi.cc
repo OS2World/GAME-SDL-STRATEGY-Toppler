@@ -17,57 +17,53 @@
  */
 
 #include "archi.h"
-
 #include "decl.h"
 
-#include <SDL_endian.h>
-
-#include <string.h>
-#include <stdlib.h>
-
 #if (SYSTEM == SYS_WINDOWS)
-
 #define _WINDOWS
 #define ZLIB_DLL
-
 #endif
 
 #include <zlib.h>
+#include <string.h>
+#include <stdlib.h>
 
-#define FNAMELEN 12 /* 8.3 filename */
+/* this value is used as a sanity check for filnename lengths
+ */
+#define FNAMELEN 250
 
-archive::archive(FILE *stream) {
+archive::archive(FILE *stream) : f(stream) {
 
-  f = stream;
-
+  /* find out the number of files inside the archive
+   * alloce the neccessary memory
+   */
   fread(&filecount, 1, 1, f);
-
   files = new fileindex[filecount];
-
   assert(files, "Failed to alloc memory for archive index.");
 
+  /* read the information for each file */
   for (Uint8 file = 0; file < filecount; file++) {
 
-    Uint8 strpos = 0;
-    char c;
+    Uint8 strlen = 0;
 
-    long start = ftell(f);
+    /* find ut the length of the name string */
+    {
+      char c;
+      long currentpos = ftell(f);
 
-    do {
-      strpos++;
-      fread(&c, 1, 1, f);
-    } while (c);
+      do {
+        strlen++;
+        assert(strlen <= FNAMELEN, "Filename too long, datafile corrupt?");
+        fread(&c, 1, 1, f);
+      } while (c);
 
+      fseek(f, currentpos, SEEK_SET);
+    }
+
+    /* alloc memory for string and read it */
     files[file].name = new char[strpos];
-
-    fseek(f, start, SEEK_SET);
-
-    strpos = 0;
-
-    do {
-      fread(&c, 1, 1, f);
-      files[file].name[strpos++] = c;
-    } while (c);
+    for (int pos = 0; pos < strlen; pos++)
+      fread(&files[file].name[pos], 1, 1, f);
 
     Uint8 tmp;
 
@@ -104,44 +100,49 @@ archive::archive(FILE *stream) {
 }
 
 archive::~archive() {
+
+  /* free memory allocated for filenames */
   for (int i = 0; i < filecount; i++)
     delete [] files[i].name;
 
+  /* free the file header array */
   delete [] files;
+
   fclose(f);
 }
 
-file * archive::assign(char *name) {
+file::file(const archive *arc, const char *name) : bufferpos(0) {
 
-  for (Uint8 i = 0; i < filecount; i++)
-    if (strncmp(name, files[i].name, FNAMELEN) == 0) {
+  for (Uint8 i = 0; i < arc->filecount; i++) {
+    if (strncmp(name, arc->files[i].name, FNAMELEN) == 0) {
 
-      Uint8 *buffer = new Uint8[files[i].size];
-      Uint8 *b = new Uint8[files[i].compress];
+      /* allocate buffer for compressed data */
+      Uint8 *b = new Uint8[arc->files[i].compress];
 
-      unsigned long erg;
+      /* allocate buffer for uncompressed data */
+      fsize = arc->files[i].size;
+      buffer = new Uint8[fsize];
 
-      fseek(f, files[i].start, SEEK_SET);
-      fread(b, files[i].compress, 1, f);
-      erg = files[i].size;
-      uncompress(buffer, &erg, b, files[i].compress);
+      /* read the compressed data */
+      fseek(arc->f, arc->files[i].start, SEEK_SET);
+      fread(b, arc->files[i].compress, 1, arc->f);
 
-      assert(erg == files[i].size, "Data file corrupt.");
+      /* decompress it and check results */
+      assert(uncompress(buffer, &fsize, b, arc->files[i].compress) == Z_OK, "Decompression problem, data file corrupt?");
+      assert(fsize == arc->files[i].size, "Data file corrupt.");
 
+      /* free temporary buffer */
       delete [] b;
-      return new file(buffer, files[i].size);
-    }
 
+      return;
+    }
+  }
+
+  /* if we arrive here we couldn't find the file we looked for */
   assert(0, "File not found in archive!");
 }
 
 file::~file() { delete(buffer); }
-
-Uint32 file::size(void) { return fsize; }
-
-bool file::eof(void) {
-  return bufferpos >= fsize;
-}
 
 Uint32 file::read(void *buf, Uint32 size) {
   memcpy(buf, &buffer[bufferpos], size);

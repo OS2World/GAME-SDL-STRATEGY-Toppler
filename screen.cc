@@ -316,33 +316,32 @@ static void loadgraphics(Uint8 what) {
 
   unsigned char pal[3*256];
   int t;
-  file * fi;
 
   if (what == 0xff) {
 
-    fi = dataarchive.assign(grafdat);
+    file fi(&dataarchive, grafdat);
   
-    fi->read(towerpal, 2*256);
+    fi.read(towerpal, 2*256);
   
     slicedata = (Uint8*)malloc(SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
-    fi->read(slicedata, SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
+    fi.read(slicedata, SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
   
     battlementdata = (Uint8*)malloc(SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
-    fi->read(battlementdata, SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
+    fi.read(battlementdata, SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
   
     slicestart = scr_gensprites(&restsprites, SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false, false, true);
     battlementstart = scr_gensprites(&restsprites, SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false, false, true);
   
     for (t = -36; t < 37; t++) {
   
-      doors[t+36].xstart = fi->getword();
-      doors[t+36].width = fi->getword();
+      doors[t+36].xstart = fi.getword();
+      doors[t+36].width = fi.getword();
   
       for (int et = 0; et < 3; et++)
         if (doors[t+36].width != 0) {
           doors[t+36].s[et] = scr_gensprites(&restsprites, 1, doors[t+36].width, 16, false, false, true);
           doors[t+36].data[et] = (Uint8*)malloc(doors[t+36].width*16);
-          fi->read(doors[t+36].data[et], doors[t+36].width*16);
+          fi.read(doors[t+36].data[et], doors[t+36].width*16);
         } else {
           doors[t+36].s[et] = 0;
           doors[t+36].data[et] = NULL;
@@ -352,80 +351,80 @@ static void loadgraphics(Uint8 what) {
     for (t = 0; t < 256; t++) {
       unsigned char c1, c2;
   
-      c1 = fi->getbyte();
-      c2 = fi->getbyte();
+      c1 = fi.getbyte();
+      c2 = fi.getbyte();
   
       pal[3*t] = c1;
       pal[3*t+1] = c2;
       pal[3*t+2] = c2;
     }
   
-    step = scr_loadsprites(&restsprites, fi, SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal, false);
-    elevatorsprite = scr_loadsprites(&restsprites, fi, SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal, false);
-    stick = scr_loadsprites(&restsprites, fi, 1, SPR_STICKWID, SPR_STICKHEI, false, pal, false);
+    step = scr_loadsprites(&restsprites, &fi, SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal, false);
+    elevatorsprite = scr_loadsprites(&restsprites, &fi, SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal, false);
+    stick = scr_loadsprites(&restsprites, &fi, 1, SPR_STICKWID, SPR_STICKHEI, false, pal, false);
+  }
+
+  {
+    file fi(&dataarchive, topplerdat);
+    
+    scr_read_palette(&fi, pal);
   
-    delete fi;
+    topplerstart = scr_loadsprites(&objectsprites, &fi, 74, SPR_HEROWID, SPR_HEROHEI, true, pal, config.use_alpha_sprites());
   }
 
-  fi = dataarchive.assign(topplerdat);
+  {
+    file fi(&dataarchive, spritedat);
+
+    scr_read_palette(&fi, pal);
   
-  scr_read_palette(fi, pal);
-
-  topplerstart = scr_loadsprites(&objectsprites, fi, 74, SPR_HEROWID, SPR_HEROHEI, true, pal, config.use_alpha_sprites());
-
-  delete fi;
-  fi = dataarchive.assign(spritedat);
-
-  scr_read_palette(fi, pal);
-
-  robotcount = fi->getbyte();
-
-  robots = new robot_data[robotcount];
-
-  for (t = 0; t < 8; t++) {
-    robots[t].count = fi->getbyte();
-    robots[t].start = scr_loadsprites(&objectsprites, fi, robots[t].count, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites());
+    robotcount = fi.getbyte();
+  
+    robots = new robot_data[robotcount];
+  
+    for (t = 0; t < 8; t++) {
+      robots[t].count = fi.getbyte();
+      robots[t].start = scr_loadsprites(&objectsprites, &fi, robots[t].count, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites());
+    }
+  
+    scr_read_palette(&fi, pal);
+    ballst = scr_loadsprites(&objectsprites, &fi, 2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites());
+  
+    scr_read_palette(&fi, pal);
+    boxst = scr_loadsprites(&objectsprites, &fi, 16, SPR_BOXWID, SPR_BOXHEI, true, pal, config.use_alpha_sprites());
+  
+    scr_read_palette(&fi, pal);
+    snowballst = scr_loadsprites(&objectsprites, &fi, 1, SPR_AMMOWID, SPR_AMMOHEI, true, pal, config.use_alpha_sprites());
+  
+    scr_read_palette(&fi, pal);
+    starst = scr_loadsprites(&objectsprites, &fi, 16, SPR_STARWID, SPR_STARHEI, true, pal, config.use_alpha_sprites());
+    sts_init(starst + 9, NUM_STARS);
+  
+    scr_read_palette(&fi, pal);
+    fishst = scr_loadsprites(&objectsprites, &fi, 32*2, SPR_FISHWID, SPR_FISHHEI, true, pal, config.use_alpha_sprites());
+  
+    scr_read_palette(&fi, pal);
+    subst = scr_loadsprites(&objectsprites, &fi, 31, SPR_SUBMWID, SPR_SUBMHEI, true, pal, config.use_alpha_sprites());
+  
+    scr_read_palette(&fi, pal);
+    torb = scr_loadsprites(&objectsprites, &fi, 1, SPR_TORPWID, SPR_TORPHEI, true, pal, config.use_alpha_sprites());
   }
 
-  scr_read_palette(fi, pal);
-  ballst = scr_loadsprites(&objectsprites, fi, 2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites());
+  {
+    file fi(&dataarchive, crossdat);
 
-  scr_read_palette(fi, pal);
-  boxst = scr_loadsprites(&objectsprites, fi, 16, SPR_BOXWID, SPR_BOXHEI, true, pal, config.use_alpha_sprites());
-
-  scr_read_palette(fi, pal);
-  snowballst = scr_loadsprites(&objectsprites, fi, 1, SPR_AMMOWID, SPR_AMMOHEI, true, pal, config.use_alpha_sprites());
-
-  scr_read_palette(fi, pal);
-  starst = scr_loadsprites(&objectsprites, fi, 16, SPR_STARWID, SPR_STARHEI, true, pal, config.use_alpha_sprites());
-  sts_init(starst + 9, NUM_STARS);
-
-  scr_read_palette(fi, pal);
-  fishst = scr_loadsprites(&objectsprites, fi, 32*2, SPR_FISHWID, SPR_FISHHEI, true, pal, config.use_alpha_sprites());
-
-  scr_read_palette(fi, pal);
-  subst = scr_loadsprites(&objectsprites, fi, 31, SPR_SUBMWID, SPR_SUBMHEI, true, pal, config.use_alpha_sprites());
-
-  scr_read_palette(fi, pal);
-  torb = scr_loadsprites(&objectsprites, fi, 1, SPR_TORPWID, SPR_TORPHEI, true, pal, config.use_alpha_sprites());
-
-  delete fi;
-  fi = dataarchive.assign(crossdat);
-
-  Uint8 numcol = fi->getbyte();
-
-  for (t = 0; t < numcol + 1; t++) {
-    crosspal[2*t] = fi->getbyte();
-    fi->getbyte();
-    crosspal[2*t+1] = fi->getbyte();
+    Uint8 numcol = fi.getbyte();
+  
+    for (t = 0; t < numcol + 1; t++) {
+      crosspal[2*t] = fi.getbyte();
+      fi.getbyte();
+      crosspal[2*t+1] = fi.getbyte();
+    }
+  
+    crossdata = (Uint8*)malloc(120*SPR_CROSSWID*SPR_CROSSHEI*2);
+    fi.read(crossdata, 120*SPR_CROSSWID*SPR_CROSSHEI*2);
+  
+    crossst = scr_gensprites(&objectsprites, 120, SPR_CROSSWID, SPR_CROSSHEI, true, config.use_alpha_sprites(), false);
   }
-
-  crossdata = (Uint8*)malloc(120*SPR_CROSSWID*SPR_CROSSHEI*2);
-  fi->read(crossdata, 120*SPR_CROSSWID*SPR_CROSSHEI*2);
-
-  crossst = scr_gensprites(&objectsprites, 120, SPR_CROSSWID, SPR_CROSSHEI, true, config.use_alpha_sprites(), false);
-
-  delete fi;
 }
 
 Uint8 scr_numrobots(void) { return robotcount; }
@@ -510,33 +509,31 @@ static void loadfont(void) {
   Uint8 c;
   int fontheight;
 
-  file * fi = dataarchive.assign(fontdat);
+  file fi(&dataarchive, fontdat);
 
-  scr_read_palette(fi, pal);
+  scr_read_palette(&fi, pal);
 
-  fontheight = fi->getbyte();
+  fontheight = fi.getbyte();
 
-  while (!fi->eof()) {
-    c = fi->getbyte();
+  while (!fi.eof()) {
+    c = fi.getbyte();
 
     if (!c || (c >= MAXCHARNUM)) break;
 
-    fontchars[c].width = fi->getbyte();
-    fontchars[c].s = scr_loadsprites(&fontsprites, fi, 1, fontchars[c].width, fontheight, true, pal, config.use_alpha_font());
+    fontchars[c].width = fi.getbyte();
+    fontchars[c].s = scr_loadsprites(&fontsprites, &fi, 1, fontchars[c].width, fontheight, true, pal, config.use_alpha_font());
   }
-
-  delete fi;
 }
 
 static void loadscroller(void) {
 
-  file * fi = dataarchive.assign(scrollerdat);
+  file fi(&dataarchive, scrollerdat);
 
   Uint8 layers;
   Uint8 towerpos;
   Uint8 pal[3*256];
 
-  layers = fi->getbyte();
+  layers = fi.getbyte();
 
   num_scrolllayers = layers;
 
@@ -545,25 +542,23 @@ static void loadscroller(void) {
   scroll_layers = new _scroll_layer[layers];
   assert(scroll_layers, "Failed to alloc memory for bonus scroller!");
     
-  towerpos = fi->getbyte();
+  towerpos = fi.getbyte();
     
   sl_tower_depth = towerpos;
 
-  sl_tower_num = fi->getword();
-  sl_tower_den = fi->getword();
+  sl_tower_num = fi.getword();
+  sl_tower_den = fi.getword();
 
   for (int l = 0; l < layers; l++) {
 
-    scroll_layers[l].width = fi->getword();
-    scroll_layers[l].num = fi->getword();
-    scroll_layers[l].den = fi->getword();
+    scroll_layers[l].width = fi.getword();
+    scroll_layers[l].num = fi.getword();
+    scroll_layers[l].den = fi.getword();
 
-    scr_read_palette(fi, pal);
+    scr_read_palette(&fi, pal);
 
-    scroll_layers[l].image = scr_loadsprites(&layersprites, fi, 1, scroll_layers[l].width, 480, l != 0, pal, config.use_alpha_layers());
+    scroll_layers[l].image = scr_loadsprites(&layersprites, &fi, 1, scroll_layers[l].width, 480, l != 0, pal, config.use_alpha_layers());
   }
-
-  delete fi;
 }
 
 static void load_sprites(Uint8 what) {

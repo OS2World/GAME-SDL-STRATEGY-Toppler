@@ -45,15 +45,11 @@ void dcl_init(void) {
   setegid(UserGroupID);
 }
 
-/* this function enable the additionat abilities given with
- the sticky bit
- */
-static void dcl_stickyEnable(void) {
+void dcl_stickyEnable(void) {
   setegid(GameGroupID);
 }
 
-/* this function disables the sticky bit abilities again */
-static void dcl_stickyDisable(void) {
+void dcl_stickyDisable(void) {
   setegid(UserGroupID);
 }
 

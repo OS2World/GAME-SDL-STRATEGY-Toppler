@@ -4,6 +4,7 @@ me:
 - replace all sprintf with snprintf to avoid buffer overflows
 - finally there is the global highscore table
 - fix config saving bug
+- cleanup of archive interface, makes it easier to handle
 
 Version 0.98.4 14.Jan.2003
 

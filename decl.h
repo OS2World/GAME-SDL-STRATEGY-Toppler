@@ -228,4 +228,13 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
  */
 void dcl_init(void);
 
+/* this function enable the additionat abilities given with
+ the sticky bit
+ */
+void dcl_stickyEnable(void);
+
+/* this function disables the sticky bit abilities again */
+void dcl_stickyDisable(void);
+
+
 #endif

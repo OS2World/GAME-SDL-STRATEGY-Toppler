@@ -21,94 +21,119 @@
 
 #include <SDL.h>
 
-/* this module contains all file access functions necessary
- except the ones for the highscore file
-
- all the data is organized inside a small archive that contains a
- header defining the start and size of the different files */
-
-
-/* forward declaration */
-class file;
-
-
-/*
- * this class handles one archive, each archive can contain any number of
- * files with 0 terminated names. to open one file use assign
- * and use the returned file class
+/* this module contains a simple archive access class. an archive
+ * is a collection of zlib compressed files with a header defining
+ * compressed, uncompressed size and the start of the data inside
+ * the archive
+ *
+ * because the file gets decompressed in one run and saved inside a
+ * memory block be careful not to create too big files
  */
 
+class archive;
+
+/* this class is used to handle the access to the different files inside
+ * the archive(s) 
+ */
+class file {
+
+public:
+
+  /* you need to give the archive with your file and
+   * the name of the file you want to open to the
+   * constructor
+   */
+  file(const archive *arc, const char *name);
+
+  /* close the file and free memory
+   */
+  ~file();
+
+  /* returns the size of the currently opened file
+   */
+  Uint32 size(void) { return fsize; }
+
+  /* returns true if the current file is completely read
+   */
+  bool eof(void) { return bufferpos >= fsize; }
+
+  /* reads up to size bytes into the buffer, returning in result
+   * the real number read
+   */
+  Uint32 read(void *buf, Uint32 size);
+
+  /* read one byte from currently opened file
+   */
+  Uint8 getbyte(void);
+
+  /* read one word from currently opened file this read is endian save
+   */
+  Uint16 getword(void);
+
+private:
+
+  /* the buffer containing the uncompressed file data
+   */
+  Uint8* buffer;
+
+  /* current position inside the file data
+   */
+  Uint32 bufferpos;
+
+  /* size of the file
+   */
+  unsigned long fsize;
+
+};
+
+/* this class handles one archive, each archive can contain any number of
+ * files with 0 terminated names. 
+ */
 class archive {
 
 public:
+
   /* opens the archive, you must give the FILE handle to the
    * file that is the archive to this constructor
    */
   archive(FILE *file);
 
-  /* closes the archive */
+  /* closes the archive and frees memory
+   */
   ~archive();
-
-  /* opens one file inside the archive */
-  file * assign(char *name);
 
 private:
 
   FILE *f;
-  
+
+  /* this structur contains all the information inside the
+   * header for one file, it's used build an array of
+   * files upon archive opening
+   */
   typedef struct {
     char *name;
     Uint32 start, size, compress;
   } fileindex;
-  
+
+  /* the pointer to the file array
+   */
   fileindex *files;
+
+  /* number of files inside the archive
+   */
   Uint8 filecount;
+
+  /* the constructor for the archive file must access the files and
+   * filecount members, so it must be a friend
+   */
+  friend file::file(const archive *arc, const char *name);
 };
 
-
-
-/*
- * this class is used to handle the access to the different files inside
- * the archive(s) internally it only handles one bich chunk of memory
- * so take care that your files do not grow beyond all limits and
- * do not forget to delete the files, because assign returns a new object
- * of this class
+/* it is arguably, if this is the right place for this declaration, but
+ * if you assume that everybody who wants to access an archive does need the
+ * class definition and this global variable at the same time, it's not so wrong
+ * either
  */
-
-class file {
-
-public:
-
-  /* close the file and free memory */
-  ~file();
-
-  /* returns the size of the currently opened file */
-  Uint32 size(void);
-
-  /* returns true if the current file is completely read */
-  bool eof(void);
-
-  /* reads up to size bytes into the buffer, returning in result
-   the real number read */
-  Uint32 read(void *buf, Uint32 size);
-
-  /* read one byte from currently opened file */
-  Uint8 getbyte(void);
-
-  /* read one word from currently opened file this read is endian save */
-  Uint16 getword(void);
-
-private:
-
-  Uint8* buffer;
-  Uint32 fsize, bufferpos;
-
-  file(Uint8 *buf, Uint32 sz) : buffer(buf), fsize(sz), bufferpos(0) {};
-
-  friend file * archive::assign(char *name);
-
-};
-
 extern archive dataarchive;
 
 #endif

@@ -115,22 +115,18 @@ static
 void men_reload_sprites(Uint8 what) {
   Uint8 pal[3*256];
 
-  file *fi;
-
   if (what & 1) {
-    fi = dataarchive.assign(menudat);
+    file fi(&dataarchive, menudat);
 
-    scr_read_palette(fi, pal);
-    menupicture = scr_loadsprites(&restsprites, fi, 1, 640, 480, false, pal, 0);
-    delete fi;
+    scr_read_palette(&fi, pal);
+    menupicture = scr_loadsprites(&restsprites, &fi, 1, 640, 480, false, pal, 0);
   }
 
   if (what & 2) {
-    fi = dataarchive.assign(titledat);
+    file fi(&dataarchive, titledat);
 
-    scr_read_palette(fi, pal);
-    titledata = scr_loadsprites(&fontsprites, fi, 1, SPR_TITLEWID, SPR_TITLEHEI, true, pal, config.use_alpha_font());
-    delete fi;
+    scr_read_palette(&fi, pal);
+    titledata = scr_loadsprites(&fontsprites, &fi, 1, SPR_TITLEWID, SPR_TITLEHEI, true, pal, config.use_alpha_font());
   }
 }
 
@@ -1579,12 +1575,13 @@ void men_highscore(unsigned long pt, int twr) {
    code it is extremely important that the file is deleted upon
    leaving this block */
 
+  dcl_stickyEnable();
   if (dcl_fileexists(HISCOREDIR"/toppler.hsc")) {
 
     int lockfd;
   
     scr_writetext_center(90,"Highscorefile locked");
-    scr_writetext_center(110,"please wait");
+    scr_writetext_center(130,"please wait");
     scr_swap();
   
     while ((lockfd = open(HISCOREDIR"/toppler.hsc.lck", O_CREAT | O_RDWR | O_EXCL)) == -1) {
@@ -1594,6 +1591,7 @@ void men_highscore(unsigned long pt, int twr) {
     close(lockfd);
 
   }
+  dcl_stickyDisable();
 
 #endif
 
@@ -1638,7 +1636,9 @@ void men_highscore(unsigned long pt, int twr) {
   }
 
 #ifdef HISCOREDIR
+  dcl_stickyEnable();
   unlink(HISCOREDIR"/toppler.hsc.lck");
+  dcl_stickyDisable();
 #endif
 
   show_scores(false, t);

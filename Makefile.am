@@ -21,9 +21,9 @@ EXTRA_DIST = $(man_MANS) $(datafiles) $(headerfiles) VERSION toppler.spec.in top
  config.sub config.guess toppler.xpm
 
 global_highscore:
-	-(chgrp games $(DESTDIR)$(bindir)/$$p; chmod g+s $(DESTDIR)$(bindir)/$$p)
+	-(chgrp games $(DESTDIR)$(bindir)/toppler; chmod g+s $(DESTDIR)$(bindir)/toppler)
 	install -d $(DESTDIR)$(scoredir)
 	touch $(DESTDIR)$(scorefile)
 	-(chgrp games $(DESTDIR)$(scorefile); chmod g+rw $(DESTDIR)$(scorefile))
-
+	-(chgrp games $(DESTDIR)$(scoredir); chmod g+rw $(DESTDIR)$(scoredir))
 
