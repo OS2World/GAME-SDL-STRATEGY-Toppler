@@ -13,6 +13,11 @@
 int main(int argn, char *args[]) {
 
   int i;
+    
+  if (argn < 4) {
+      printf("Usage: %s mission_name priority towerfile [towerfile ...]\n", args[0]);
+      return 1;
+  }
 
   printf("create %s\n", args[1]);
   lev_mission_new(args[1], atoi(args[2]));

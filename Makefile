@@ -1,11 +1,13 @@
 TOPPLERDIR = ../toppler
-HOME = /home/andy
 
-all: m1.ttm m2.ttm ball1.ttm kallinen1.ttm
+all: m1.ttm m2.ttm ball1.ttm abc.ttm
 	cp *.ttm ${TOPPLERDIR}
 
+clean:
+	rm -f *.ttm cremission
+
 cremission: cremission.cc ${TOPPLERDIR}/level.cc ${TOPPLERDIR}/level.h
-	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/level.o ${TOPPLERDIR}/points.o ${TOPPLERDIR}/decl.o -lSDL -o cremission
+	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/keyb.o ${TOPPLERDIR}/level.o ${TOPPLERDIR}/points.o ${TOPPLERDIR}/decl.o -lSDL -o cremission
 
 # RULE FOR MISSION 1
 
@@ -40,9 +42,9 @@ ball1.ttm: ball1/lev1 ball1/lev2 ball1/lev3 ball1/lev4 \
 
 # RULE FOR PASIS MISSION 1
 
-kallinen1.ttm: kallinen1/t1 kallinen1/t2 kallinen1/t3 kallinen1/t4 \
-              kallinen1/t5 kallinen1/t6 kallinen1/t7 kallinen1/t8 \
-              cremission
+abc.ttm: kallinen1/t1 kallinen1/t2 kallinen1/t3 kallinen1/t4 \
+         kallinen1/t5 kallinen1/t6 kallinen1/t7 kallinen1/t8 \
+         cremission
 	ln -s `pwd`/kallinen1 ${HOME}/.toppler/t
 	./cremission "ABC Towers" 12 t/t1 t/t2 t/t3 t/t4 t/t5 t/t6 t/t7 t/t8
 	rm ${HOME}/.toppler/t
