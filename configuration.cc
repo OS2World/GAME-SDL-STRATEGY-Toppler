@@ -132,6 +132,8 @@ configuration::~configuration(void) {
 
     if (!f) f = create_local_config_file(".toppler.rc");
 
+    rewind(f);
+
     config_data *t = first_data;
 
     while(t) {

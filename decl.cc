@@ -181,7 +181,7 @@ FILE *open_local_config_file(const char *name) {
 #else
 
   if (dcl_fileexists(name))
-    return fopen(name, "r");
+    return fopen(name, "r+");
 
   return NULL;
 

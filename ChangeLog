@@ -1,5 +1,11 @@
 me:
 
+- fix highscore bug
+
+Version 0.98.4 14.Jan.2003
+
+me:
+
 - switch to 16 bit graphic mode -> huge speed improvement
 - accelerate waves
 - option to switch off all but the top and bottom layer in bonus game
@@ -22,6 +28,8 @@ me:
 - readme update (options menu, speed indicator, fileformats)
 - use old highscore fileformat with fixed number of entries, because
   new code results in crashes with old fileformat
+- fix windows sound
+- fix keyboard problems on Windows systems and on some keyboards  
 
 Version 0.98.3 20.Dec.2002
 

@@ -88,7 +88,7 @@ static void handleEvents(void) {
 
     switch (e.type) {
     case SDL_ACTIVEEVENT:
-      if ((e.active.state == SDL_APPINPUTFOCUS) || (e.active.state == SDL_APPACTIVE))
+      if ((e.active.state & SDL_APPINPUTFOCUS) || (e.active.state & SDL_APPACTIVE))
         tt_has_focus = (e.active.gain == 1);
       break;
     case SDL_MOUSEMOTION:

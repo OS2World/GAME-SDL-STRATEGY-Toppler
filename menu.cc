@@ -955,12 +955,10 @@ static void savescores(void) {
 
   if (f) {
     unsigned char len;
-    char mname[30];
-    Uint8 nscores;
+    char mname[256];
 
     while (!feof(f)) {
 
-      fread(&nscores, 1, 1, f);
       if ((fread(&len, 1, 1, f) == 1) &&
           (fread(mname, 1, len, f) == len)) {
         mname[len] = 0;
@@ -982,9 +980,6 @@ static void savescores(void) {
 
     unsigned char tmp = strlen(lev_missionname(currentmission));
 
-    if (!scores)
-      scores = new _scores[NUMHISCORES];
-
     fwrite(&tmp, 1, 1, f);
     fwrite(lev_missionname(currentmission), 1, tmp, f);
     fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
@@ -1001,8 +996,6 @@ static void getscores(void) {
   FILE *f = open_highscore_file("toppler.hsc");
 #endif
 
-  bool foundit = false;
-
   if (!scores)
     scores = new _scores[NUMHISCORES];
 
@@ -1017,18 +1010,15 @@ static void getscores(void) {
           (fread(mname, 1, len, f) == len) &&
           (fread(scores, 1, sizeof(_scores) * NUMHISCORES, f) == sizeof(_scores) * NUMHISCORES)) {
         mname[len] = 0;
-        if (strcasecmp(mname, lev_missionname(currentmission)) == 0) {
-          foundit = true;
-          break;
-        }
+        if (strcasecmp(mname, lev_missionname(currentmission)) == 0)
+          return;
       }
     }
 
     fclose(f);
   }
 
-  if (!foundit)
-    emptyscoretable();
+  emptyscoretable();
 }
 
 static int hiscores_timer = 0;
