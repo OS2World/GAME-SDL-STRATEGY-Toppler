@@ -57,6 +57,8 @@ void snd_watervolume(int v);
 
 void snd_playtitle(void);
 void snd_stoptitle(void);
+void snd_playtgame(void);
+void snd_stoptgame(void);
 
 #endif
 

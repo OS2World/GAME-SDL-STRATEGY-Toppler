@@ -12,7 +12,7 @@
 
 #ifdef SDL_MIXER
 static Mix_Chunk *sounds[18];
-static Mix_Music *music;
+static Mix_Music *title, *tgame, *bgame;
 #endif
 static int waterchannel;
 static int boinkmax = 0;
@@ -62,7 +62,8 @@ void snd_init(void) {
   sounds[16] = LoadWAV("subraise.wav");
   sounds[17] = LoadWAV("timeout.wav");
 
-  music = Mix_LoadMUS("title.ogg");
+  title = Mix_LoadMUS("title.xm");
+  tgame = Mix_LoadMUS("tower.xm");
 #endif
 }
 
@@ -76,7 +77,7 @@ void snd_done(void) {
     if (sounds[t])
       Mix_FreeChunk(sounds[t]);
 
-  Mix_FreeMusic(music);
+  Mix_FreeMusic(title);
 
   Mix_CloseAudio();
 
@@ -168,31 +169,50 @@ void snd_play(void) {
 void snd_wateron(void) {
   if (nosound) return;
 #ifdef SDL_MIXER
-  waterchannel = Mix_PlayChannel(-1, sounds[0], -1);
+  if (use_water)
+    waterchannel = Mix_PlayChannel(-1, sounds[0], -1);
 #endif
 }
 void snd_wateroff(void) {
   if (nosound) return;
 #ifdef SDL_MIXER
-  Mix_HaltChannel(waterchannel);
+  if (use_water)
+    Mix_HaltChannel(waterchannel);
 #endif
 }
 void snd_watervolume(int v) {
   if (nosound) return;
 #ifdef SDL_MIXER
-  Mix_Volume(waterchannel, v);
+  if (use_water)
+    Mix_Volume(waterchannel, v);
 #endif
 }
 
 void snd_playtitle(void) {
 #ifdef SDL_MIXER
-  Mix_PlayMusic(music, -1);
+  Mix_PlayMusic(title, -1);
 #endif
 }
 
 void snd_stoptitle(void) {
 #ifdef SDL_MIXER
-  Mix_HaltMusic();
+  Mix_FadeOutMusic(1000);
+
+  while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
+#endif
+}
+
+void snd_playtgame(void) {
+#ifdef SDL_MIXER
+  Mix_PlayMusic(tgame, -1);
+#endif
+}
+
+void snd_stoptgame(void) {
+#ifdef SDL_MIXER
+  Mix_FadeOutMusic(1000);
+
+  while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
 #endif
 }
 

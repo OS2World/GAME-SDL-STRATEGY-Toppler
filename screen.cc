@@ -765,7 +765,7 @@ static void putrobot(int t, int m, long x, long h)
   
     case OBJ_KIND_ROBOT_VERT:
     case OBJ_KIND_ROBOT_HORIZ:
-      nr = robotsst + lev_towernr() * 16 + ((m / 2) & 0xf);
+      nr = robotsst + (lev_towernr() & 0x7) * 16 + ((m / 2) & 0xf);
       break;
   
     default:

@@ -11,6 +11,7 @@
 bool fullscreen;
 bool nosound;
 bool doublescale;
+bool use_water = true;
 
 void dcl_wait(void) {
   static Uint32 last;

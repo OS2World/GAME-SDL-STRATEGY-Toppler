@@ -45,7 +45,6 @@ static void startgame(void) {
   while (stat > 0) {
     gam_newgame();
     tower = 0;
-
     do {
       snd_wateron();
       do {
@@ -53,8 +52,10 @@ static void startgame(void) {
         pal_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
         pal_calcdark(pal_towergame);
         snd_watervolume(128);
+        snd_playtgame();
         gam_arrival();
         gameresult = gam_towergame(anglepos, resttime);
+        snd_stoptgame();
       } while ((gameresult == GAME_DIED) && pts_lifesleft());
 
       if (gameresult == GAME_FINISHED) {

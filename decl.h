@@ -92,6 +92,7 @@ FILE *create_local_data_file(char *name);
 extern bool fullscreen;
 extern bool nosound;
 extern bool doublescale;
+extern bool use_water;
 
 void load_config(void);
 void save_config(void);
