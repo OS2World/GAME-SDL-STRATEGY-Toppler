@@ -1,3 +1,11 @@
+- bugfix for big endian systemy
+- some speed improvements (thanks to Aurel Schwarzentruber)
+- lots of typos were fixed, some function names were renamed to better
+  enlish names
+- small updates to documentation
+
+Version 0.98.2
+
 -when user selects "Quit game" from the game menu during
  game, do not show hiscores after that, but go directly
  back to main menu.

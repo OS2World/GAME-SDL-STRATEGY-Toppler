@@ -46,15 +46,15 @@ int rob_angle(int nr);
 int rob_vertical(int nr);
 
 /* returns the object the snowball or animal collides with or -1 */
-int rob_topplerkollision(int angle, int vertical);
-int rob_snowballkollision(int angle, int vertical);
+int rob_topplercollision(int angle, int vertical);
+int rob_snowballcollision(int angle, int vertical);
 
-/* creates new robots, depending on the actual vertical position and
+/* creates new robots, depending on the current vertical position and
  the actual number of robots existing */
 void rob_new(int verticalpos);
 
 /* move all the robots */
-void rob_aktualize(void);
+void rob_update(void);
 
 /* call this if a robot got hit by the snowball, the function
  returns the number of points the player gets */

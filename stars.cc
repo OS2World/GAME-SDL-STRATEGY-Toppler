@@ -86,8 +86,6 @@ void sts_move(long x, long y)
   for (t = 0; t < num_stars; t++) {
     stars[t].x += starstep * x;
     stars[t].y += y;
-  }
-  for (t = 0; t < num_stars; t++) {
     if (stars[t].x > SCREENWID) {
       stars[t].x = rand() / (RAND_MAX / starstep) - SPR_STARWID;
       stars[t].y = rand() / (RAND_MAX / SCREENHEI);
@@ -97,7 +95,6 @@ void sts_move(long x, long y)
         stars[t].y = rand() / (RAND_MAX / SCREENHEI);
       }
     }
-
     if (stars[t].y > SCREENHEI) {
       stars[t].y = -SPR_STARHEI;
       stars[t].x = rand() / (RAND_MAX / (SCREENWID + SPR_STARWID)) - SPR_STARWID;

@@ -56,7 +56,7 @@ void snb_movesnowball(void) {
     return;
   }
 
-  nr = rob_snowballkollision(an, ve);
+  nr = rob_snowballcollision(an, ve);
 
   if (nr == -1)
     return;

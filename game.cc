@@ -548,13 +548,13 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
 
     ele_update();
     snb_movesnowball();
-    top_aktualtoppler(left_right, up_down, space);
+    top_updatetoppler(left_right, up_down, space);
 
     if (!top_dying())
       rob_new(top_verticalpos());
 
-    rob_aktualize();
-    top_testkollision();
+    rob_update();
+    top_testcollision();
 
     akt_time(time, timecount, state);
     new_height(top_verticalpos(), reached_height);
@@ -572,7 +572,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
     for (int i = 0; i < 6; i++) {
       top_show(door3[i], top_verticalpos(), top_anglepos());
 
-      rob_aktualize();
+      rob_update();
       scr_drawall(towerpos(top_verticalpos(), tower_position,
                            top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
       scr_swap();
@@ -587,7 +587,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
         top_drop1layer();
       }
 
-      rob_aktualize();
+      rob_update();
       scr_drawall(towerpos(top_verticalpos(), tower_position,
                            top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
       scr_swap();

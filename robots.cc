@@ -58,12 +58,12 @@ static int nextcrosscolor;
 
 /******** PRIVATE FUNCTIONS ********/
 
-/* returns the index of the figure the given figure (nr) kollides
+/* returns the index of the figure the given figure (nr) collides
  with or -1 if there is no such object */
-static int figurkollision(int nr) {
+static int figurecollision(int nr) {
 
-  /* help field for kollisions between two objects */
-  static unsigned char kollision[16] = {
+  /* help field for collisions between two objects */
+  static unsigned char collision[16] = {
     0x1c, 0x3e, 0x3e, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x7f, 0x3e, 0x3e, 0x1c, 0x00
   };
 
@@ -79,7 +79,7 @@ static int figurkollision(int nr) {
       i = object[nr].anglepos - object[t].anglepos;
       j = object[t].verticalpos - object[nr].verticalpos;
       if ((-4 < i) && (i < 4)  && (-8 < j) && (j < 8)) {
-        if ((kollision[j + 7] >> (i + 3)) & 1)
+        if ((collision[j + 7] >> (i + 3)) & 1)
           return t;
         else
           return -1;
@@ -192,7 +192,7 @@ static void moverobothorizontal(int t) {
 
   object[t].anglepos += object[t].subKind;
   object[t].anglepos &= 0x7f;
-  if (testroboter(t) || (figurkollision(t) != -1)) {
+  if (testroboter(t) || (figurecollision(t) != -1)) {
     object[t].subKind = -object[t].subKind;
     object[t].anglepos += object[t].subKind;
     object[t].anglepos &= 0x7f;
@@ -224,7 +224,7 @@ void rob_initialize(void) {
 
 }
 
-int rob_topplerkollision(int angle, int vertical) {
+int rob_topplercollision(int angle, int vertical) {
   long i, j;
 
   for (int t = 0; t < MAX_OBJECTS; t++) {
@@ -246,10 +246,10 @@ int rob_topplerkollision(int angle, int vertical) {
   return -1;
 }
 
-int rob_snowballkollision(int angle, int vertical) {
+int rob_snowballcollision(int angle, int vertical) {
 
-  /* help field for kollisions between two objects */
-  static unsigned char kollision[16] = {
+  /* help field for collisions between two objects */
+  static unsigned char collision[16] = {
      0x00, 0x1c, 0x1c, 0x3e, 0x3e, 0x3e, 0x3e, 0x3e, 0x3e, 0x3e, 0x1c, 0x1c, 0x00, 0x00, 0x00, 0x10
   };
 
@@ -262,7 +262,7 @@ int rob_snowballkollision(int angle, int vertical) {
       i = angle - object[t].anglepos;
       j = object[t].verticalpos - vertical;
       if ((-4 < i) && (i < 4)  && (-8 < j) && (j < 8)) {
-        if ((kollision[j + 7] >> (i + 3)) & 1)
+        if ((collision[j + 7] >> (i + 3)) & 1)
           return t;
         else
           return -1;
@@ -392,7 +392,7 @@ void rob_new(int verticalpos) {
   }
 }
 
-void rob_aktualize(void) {
+void rob_update(void) {
 
   /* the vertical movement of the jumping ball */
   static long jumping_ball[11] = {
@@ -465,7 +465,7 @@ void rob_aktualize(void) {
         while (h != 0) {
 
           object[t].verticalpos += h;
-          if (testroboter(t) | (figurkollision(t) != -1)) break;
+          if (testroboter(t) | (figurecollision(t) != -1)) break;
           object[t].verticalpos -= h;
 
           if (h > 0)
@@ -508,7 +508,7 @@ void rob_aktualize(void) {
         while (h != 0) {
 
           object[t].verticalpos += h;
-          if (!testroboter(t) || (figurkollision(t) != -1)) break;
+          if (!testroboter(t) || (figurecollision(t) != -1)) break;
           object[t].verticalpos -= h;
 
           if (h > 0)
@@ -576,7 +576,7 @@ void rob_aktualize(void) {
         else {
           object[t].verticalpos += object[t].subKind;
 
-          if (testroboter(t) || (figurkollision(t) != -1)) {
+          if (testroboter(t) || (figurecollision(t) != -1)) {
             object[t].subKind *= -1;
             object[t].verticalpos += object[t].subKind;
           }

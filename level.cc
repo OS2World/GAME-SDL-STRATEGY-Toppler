@@ -667,7 +667,7 @@ bool lev_is_robot(int row, int col) {
 
 
 /* returns true, if the given figure can be at the given position
- without kolliding with fixed objects of the tower */
+ without colliding with fixed objects of the tower */
 bool lev_testfigure(long angle, long vert, long back,
                     long fore, long typ, long height, long width) {
   long hinten, vorn, y, x = 0, k, t;
@@ -723,9 +723,9 @@ bool lev_testfigure(long angle, long vert, long back,
 
 /* tests the underground of the animal at the given position returning
  0 if everything is all right
- 1 if there is no undergound below us (fall vertical)
- 2 if there is no undergound behind us (fall backwards)
- 3 if there is no underfound in front of us (fall forwards) */
+ 1 if there is no underground below us (fall vertical)
+ 2 if there is no underground behind us (fall backwards)
+ 3 if there is no underground in front of us (fall forwards) */
 int lev_testuntergr(int verticalpos, int anglepos, bool look_left) {
   static unsigned char unter[32] = {
     0x11, 0x20, 0x02, 0x00,

@@ -242,7 +242,7 @@ static void slidestep(int left_right) {
 }
 
 /* the state machine of the animal */
-void top_aktualtoppler(int left_right, int up_down, bool space) {
+void top_updatetoppler(int left_right, int up_down, bool space) {
 
   /* table specifying the number for the animal sprite if it is turning
    around */
@@ -647,7 +647,7 @@ void top_aktualtoppler(int left_right, int up_down, bool space) {
   }
 }
 
-void top_testkollision(void) {
+void top_testcollision(void) {
   int nr;
 
   if ((state == STATE_TOPPLING) ||
@@ -671,7 +671,7 @@ void top_testkollision(void) {
     }
     return;
   } else {
-    nr = rob_topplerkollision(anglepos, verticalpos + 1);
+    nr = rob_topplercollision(anglepos, verticalpos + 1);
     if (nr != -1) {
 
       if (rob_kind(nr) == OBJ_KIND_CROSS)

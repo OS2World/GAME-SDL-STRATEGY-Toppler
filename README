@@ -27,7 +27,7 @@ Commandline Parameters
 ----------------------
 
 -f starts the game in fullscreen mode. But be careful! If the game
-crashes it doesn't restore the original resolution, it stays in 660x480
+crashes it doesn't restore the original resolution, it stays in 640x480
 pixel mode.
 
 -s makes the game silent. If you don't have a soundcard or for another
@@ -54,7 +54,7 @@ The game finally has a leveleditor. Because I've been too lazy to make
 new graphics for special objects all tower objects are drawn using the
 existing graphics.
 
-Because The only thing you can rely on on a keyboard are the numbers
+Because the only thing you can rely on on a keyboard are the numbers
 and the letter keys I have used only these. The layout is choosen so
 that keys with a similar task are next to each other and not that the
 letters mean something.
@@ -63,14 +63,14 @@ Otherwise the editor is relatively simple:
 
 help:
 
-h    shows a list of all keys with explainations
+h    shows a list of all keys with explanations
 
-you can move in the list with up, down and pgup, pgdown
+You can move in the list with up, down and pgup, pgdown
 
 cursor movement:
 
-curcor keys
-pg up and down: 5 rows up and down
+cursor keys
+page up and down: 5 rows up and down
 y               half turn of the tower (for doors)
 HOME            go to starting position
 
@@ -82,10 +82,10 @@ l    load tower
 o    save tower
 z    check consistency of tower
 
-the consitency chech checks, if all doors are exactly 3 layers high, if
+The consistency check checks if all doors are exactly 3 layers high, if
 there isn't a undefined symbol in there and if there is always the
-opposite platform for the elevators (without unremovable ostacles
-inbetween). If there is something wrong with the tower, the cursor
+opposite platform for the elevators (without unremovable obstacles
+in between). If there is something wrong with the tower, the cursor
 moves to the position of the problem.
 
 editing:
@@ -93,13 +93,13 @@ editing:
 ins  inserts a row below the current position
 del  deletes the current row
 
-with this actions you must be careful because they can destroy doors.
+with these actions you must be careful because they can destroy doors.
 
 objects:
 
 space   clear field
 
-q       normal stick
+q       normal pillar
 a       flashing box
 
 w       normal step
@@ -112,17 +112,17 @@ c       elevator top station
 
 the elevator stations are shown by a moving platform. The platform is
 moving into the direction the elevator can move. So for the bottom
-stations the platform is repeatinglymocing up and  jumping down. 
+stations the platform is repeatingly moving up and jumping down. 
 
 1-7     the different kinds of robots
 
 for the eye robot the movement is shown by the movement of the robot in
-the editor. the slow miving version moves half as far as the fast
+the editor. The slow moving version moves half as far as the fast
 moving one.
 
 The two jumping balls can be identified by ball movement: one is
 standing still. This is the one that jumps on its place until the
-toppler gets near. The ball that has a shideway movement from it's
+toppler gets near. The ball that has a sideway movement from it's
 beginning on is moving in the editor too.
 
 i       normal door
@@ -138,12 +138,12 @@ The target door command doesn't place a door on the opposite side
 parameter of the tower:
 
 the parameter are always in a range of values. To allow fast
-alertations of the values the difference between the old and the
+alterations of the values the difference between the old and the
 changed value increases every time you go into the same direction. So
-if you increase the time for the tower by pressing 'h' the first time
+if you increase the time for the tower by pressing 'b' the first time
 the value increses by one the second time by two the third time by
 three and so on. This size is reset to one as soon as you change the
-direction of your changes. This sounds complicated the best thig is to
+direction of your changes. This sounds complicated but the best thing is to
 try it
 
 b       increase time
@@ -153,20 +153,20 @@ v       open palette dialog
 
 In the palette dialog up and down change the color you want to change.
 Left and Right change the value by one, PgUp and PgDown change by 10
-and the numbers make the value jumpt to 10 equally distributed
-positions on the scale
+and the numbers make the value jump to 10 equally distributed positions on the
+scale
 
 Tower File Format
 -----------------
 
 Just in case you are interested in the format of the tower file:
 
-First line is the name. The second line coes contain the color of the
+First line is the name. The second line contains the color of the
 tower as 3 valued between 0 ... 255 separated by comma. Third line is
-the time that the player has to reach the target door. Last line bevore
+the time that the player has to reach the target door. Last line before
 the tower bitmap is the height in rows of the tower.
 
-The following table explains the caracters used for the tower bitmap
+The following table explains the characters used for the tower bitmap
 and their meaning.
 
    empty
@@ -180,7 +180,7 @@ v  top elevator station
 5  robot, up down fast
 6  robot left right
 7  robot left right fast
-!  stick
+!  pillar
 -  platform
 b  flashing box
 #  normal door
@@ -195,18 +195,18 @@ these.
 Mission Creation
 ----------------
 
-With the key m in the leveleditor you start creating a new mission. Be
-aware that mission do contain your towers in a compressed format and I
+With the key m in the level editor you start creating a new mission. Be
+aware that mission contain your towers in a compressed format and I
 will not provide a method to extract the original tower from this to
 prevent player from cheating. So keep your original tower files in case
 there are bugs in your towers and you need to change things.
 
-What follows now are a pile of questions you have to answer by keyboad
+What follows now are a pile of questions you have to answer by keyboard
 input.
 
 First the name of the mission. The mission creator will write a file to
 your disk with the same name as the name of the mission, but you are
-welcome to rename the file because the mission name is saves inside the
+welcome to rename the file because the mission name is saved inside the
 file too. The only thing you have to take care of is that the file has
 ".ttm" (tower toppler mission) as extension.
 
@@ -219,7 +219,7 @@ If all towers have been input enter an empty name to finish this list.
 Now the file will be written and you should be able to select your new
 mission in the main menu.
 
-IMPORTANT: please chach your towers, bevore you create a mission, for
+IMPORTANT: please check your towers, before you create a mission, for
 inconsistencies, because this is not done in the created mission file.
 
 Helpful Hints
@@ -261,7 +261,7 @@ local configuration file, read/write/create
   in home directory
 
 
-leveleditor, new missions, towers read/write/create
+level editor, new missions, towers read/write/create
 
   in home dir (/home/user/.toppler/...)
 

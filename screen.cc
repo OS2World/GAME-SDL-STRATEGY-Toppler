@@ -136,13 +136,23 @@ unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *
     for (int y = 0; y < h; y++)
       for (int x = 0; x < w; x++) {
         b = arc_getbyte();
+#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = pal[b*3 + 2];
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 1];
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = pal[b*3 + 0];
+#else
+        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = pal[b*3 + 2];
+        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = pal[b*3 + 1];
+        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 0];
+#endif
         if (sprite) {
           a = arc_getbyte();
           if (use_alpha)
+#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
             ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = a;
+#else
+            ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = a;
+#endif
           else {
             /* ok, this is the case where we have a sprite and don't want
              to use alpha blending, so we use normal sprites with key color
@@ -152,9 +162,15 @@ unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *
              we need to check if the pixel color is by accident the key color,
              if so we alter is slightly */
             if (a < 128) {
+#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
               ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = 1;
               ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = 1;
               ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = 1;
+#else
+              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = 1;
+              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = 1;
+              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = 1;
+#endif
             }  else {
               if ((pal[b*3+2] == 1) && (pal[b*3+1] == 1) || (pal[b*3] == 1))
                 ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2]++;
@@ -182,8 +198,10 @@ static unsigned short scr_gensprites(int num, int w, int h, bool sprite, bool us
                              w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite && use_alpha) ? 0xFF000000 : 0);
   
     if (sprite & !use_alpha)
-      SDL_SetColorKey(z, SDL_SRCCOLORKEY/* | SDL_RLEACCEL*/, SDL_MapRGB(z->format, 1, 1, 1));
-    /* FIXME: SDL_RLEACCEL was buggy in my version of SDL, maybe it can be reincluded later on */
+      /* SDL_RLEACCEL is not allowed here, because we need to edit the data later
+       on for the new colors */
+      SDL_SetColorKey(z, SDL_SRCCOLORKEY, SDL_MapRGB(z->format, 1, 1, 1));
+    
 
     if (t == 0)
       erg = spr_savesprite(z);
@@ -202,13 +220,23 @@ static void scr_regensprites(Uint8 *data, SDL_Surface *z, int num, int w, int h,
     for (int y = 0; y < h; y++)
       for (int x = 0; x < w; x++) {
         b = data[datapos++];
+#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = pal[b*3 + 2];
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 1];
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = pal[b*3 + 0];
+#else
+        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = pal[b*3 + 2];
+        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = pal[b*3 + 1];
+        ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 0];
+#endif
         if (sprite) {
           a = data[datapos++];
           if (use_alpha) {
+#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
             ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = a;
+#else
+            ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = a;
+#endif
           } else {
             /* ok, this is the case where we have a sprite and don't want
              to use alpha blending, so we use normal sprites with key color
@@ -218,9 +246,15 @@ static void scr_regensprites(Uint8 *data, SDL_Surface *z, int num, int w, int h,
              we need to check if the pixel color is by accident the key color,
              if so we alter is slightly */
             if (a < 128) {
+#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
               ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = 1;
               ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = 1;
               ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = 1;
+#else
+              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = 1;
+              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = 1;
+              ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = 1;
+#endif
             }  else {
               if ((pal[b*3+2] == 1) && (pal[b*3+1] == 1) || (pal[b*3] == 1))
                 ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2]++;
@@ -539,12 +573,31 @@ void scr_done(void) {
   sts_done();
 }
 
-static void cleardesk(void) {
+static void cleardesk(long height) {
   SDL_Rect r;
-  r.w = SCREENWID;
-  r.h = SCREENHEI;
+  height *= 4;
+
+/* clear left side from top to water */
+  r.w = (SCREENWID - SPR_SLICEWID) / 2;
+  if (height < (SCREENHEI / 2))
+    r.h = (SCREENHEI / 2) + height;
+  else
+    r.h = SCREENHEI;
   r.x = r.y = 0;
   SDL_FillRect(display, &r, 0);
+
+/* clear right side from top to water */
+  r.x = (SCREENWID - SPR_SLICEWID) / 2 + SPR_SLICEWID;
+  SDL_FillRect(display, &r, 0);
+
+/* clear middle row from top to battlement */
+  int upend = (SCREENHEI / 2) - (lev_towerrows() * SPR_SLICEHEI - height + SPR_BATTLHEI);
+  if (upend > 0) {
+    r.x = (SCREENWID - SPR_SLICEWID) / 2;
+    r.w = SPR_SLICEWID;
+    r.h = upend;
+    SDL_FillRect(display, &r, 0);
+  }
 }
 
 void scr_darkenscreen(void) {
@@ -808,15 +861,15 @@ void scr_swap(void) {
 }
 
 void scr_setclipping(int x, int y, int w, int h) {
-    if (x < 0) SDL_SetClipRect(display, NULL);
-    else {
-	SDL_Rect r;
-	r.x = x;
-	r.y = y;
-	r.w = w;
-	r.h = h;
-	SDL_SetClipRect(display, &r);
-    }
+  if (x < 0) SDL_SetClipRect(display, NULL);
+  else {
+    SDL_Rect r;
+    r.x = x;
+    r.y = y;
+    r.w = w;
+    r.h = h;
+    SDL_SetClipRect(display, &r);
+  }
 }
 
 void scr_blit(SDL_Surface *s, int x, int y) {
@@ -964,19 +1017,19 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     break;
   case TB_STEP_VANISHER:
     if (use_alpha_sprites) {
-	SDL_Surface *s = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, SPR_STEPWID, SPR_STEPHEI, 24, 0xff, 0xff00, 0xff0000, 0);
-	SDL_Rect r;
-	r.w = SPR_STEPWID;
-	r.h = SPR_STEPHEI;
-	r.x = 0;
-	r.y = 0;
-	SDL_BlitSurface(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), NULL, s, &r);
-	SDL_SetAlpha(s, SDL_SRCALPHA, 96);
-	scr_blit(s, x - (SPR_STEPWID / 2), h);
-	SDL_FreeSurface(s);
+      SDL_Surface *s = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, SPR_STEPWID, SPR_STEPHEI, 24, 0xff, 0xff00, 0xff0000, 0);
+      SDL_Rect r;
+      r.w = SPR_STEPWID;
+      r.h = SPR_STEPHEI;
+      r.x = 0;
+      r.y = 0;
+      SDL_BlitSurface(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), NULL, s, &r);
+      SDL_SetAlpha(s, SDL_SRCALPHA, 96);
+      scr_blit(s, x - (SPR_STEPWID / 2), h);
+      SDL_FreeSurface(s);
     } else {
-	if (state & 1)
-	  scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
+      if (state & 1)
+        scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
     }
     break;
   case TB_STEP_LSLIDER:
@@ -1171,8 +1224,8 @@ long scr_formattextlength(long x, long y, const char *s) {
 /* draws something of the tower */
 
 /* vert is the vertical position of the tower
- * a is the angle on the tower to be drawn 0 front, 32 right, ...
- * angle is the angle of the tower, 0 column 0 in front, 8, column 1, ...
+ * a is the angle on the tower to be drawn: 0 front, 32 right, ...
+ * angle is the angle of the tower: 0 column 0 in front, 8, column 1, ...
  * hs, he are start and ending rows to be drawn
  */
 static void putthings(long vert, long a, long angle) {
@@ -1248,23 +1301,25 @@ static void putthings_editor(long vert, long a, long angle, int state) {
 /* draws everything behind the tower */
 static void draw_behind(long vert, long angle)
 {
-  for (int a = 1; a < 32; a ++) {
-    putthings(vert, 64 - a, angle);
-    putthings(vert, 64 + a, angle);
+  for (int a = 0; a < 16; a ++) {
+/* angle 48 to 31 */
+    putthings(vert, 48 - a, angle);
+/* amgle 80 to 95 */
+    putthings(vert, 80 + a, angle);
   }
 }
 
 
 static void draw_behind_editor(long vert, long angle, int state)
 {
-  for (int a = 0; a < 32; a ++) {
-    putthings_editor(vert, 64 - a, angle, state);
-    putthings_editor(vert, 64 + a, angle, state);
+  for (int a = 0; a < 16; a ++) {
+    putthings_editor(vert, 48 - a, angle, state);
+    putthings_editor(vert, 80 + a, angle, state);
   }
 }
 
 /* draws everything in front of the tower */
-static void draw_bevore(long  vert, long angle)
+static void draw_before(long  vert, long angle)
 {
   for (int a = 0; a < 32; a ++) {
     putthings(vert, 32 - a, angle);
@@ -1273,7 +1328,7 @@ static void draw_bevore(long  vert, long angle)
   putthings(vert, 0, angle);
 }
 
-static void draw_bevore_editor(long  vert, long angle, int state)
+static void draw_before_editor(long  vert, long angle, int state)
 {
   for (int a = 0; a < 32; a ++) {
     putthings_editor(vert, 32 - a, angle, state);
@@ -1282,8 +1337,8 @@ static void draw_bevore_editor(long  vert, long angle, int state)
   putthings_editor(vert, 0, angle, state);
 }
 
-/* draws the cross that moves to and fro over the screen */
-static void putkreuz(long vert)
+/* draws the cross that flies over the screen */
+static void putcross(long vert)
 {
   long i, y;
 
@@ -1292,8 +1347,7 @@ static void putkreuz(long vert)
       i = (rob_angle(t) - 60) * 5;
       y = (vert - rob_vertical(t)) * 4 + (SCREENHEI / 2) - SPR_CROSSHEI;
       if (y > -SPR_CROSSHEI && y < SCREENHEI)
-        scr_blit(spr_spritedata(crossst + labs(rob_time(t)) % 120), i + (SCREENWID/2) - (SPR_CROSSWID/2), y);
-
+        scr_blit(spr_spritedata(crossst + labs(rob_time(t)) % 120), i + (SCREENWID - SPR_CROSSWID) / 2, y);
       return;
     }
   }
@@ -1339,13 +1393,13 @@ void scr_drawall(long vert,
                  screenflag flags
                 ) {
 
-  cleardesk();
+  cleardesk(vert);
 
   sts_blink();
   sts_draw();
   draw_behind(vert * 4, angle);
   draw_tower(vert * 4, angle);
-  draw_bevore(vert * 4, angle);
+  draw_before(vert * 4, angle);
 
   if (snb_exists())
     scr_blit(spr_spritedata(snowballst),
@@ -1370,7 +1424,7 @@ void scr_drawall(long vert,
 
   }
 
-  putkreuz(vert);
+  putcross(vert);
 
   putbattlement(angle, vert * 4);
 
@@ -1419,11 +1473,11 @@ void scr_drawedit(long vpos, long apos, bool showtime) {
     angle &= 0x7f;
   }
 
-  cleardesk();
+  cleardesk(vert);
 
   draw_behind_editor(vert * 4, angle, boxstate);
   draw_tower_editor(vert * 4, angle, boxstate);
-  draw_bevore_editor(vert * 4, angle, boxstate);
+  draw_before_editor(vert * 4, angle, boxstate);
 
   putbattlement(angle, vert * 4);
 

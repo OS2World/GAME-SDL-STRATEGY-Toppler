@@ -100,7 +100,7 @@ const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Put door",      "Put goal",       "Check tower",     "Put robot 1",  
    "Put robot 2",   "Put robot 3",    "Put robot 4",     "Put robot 5",
    "Put robot 6",   "Put robot 7",    "Put lift",        "Lift middle stop",
-   "Lift top stop", "Put stick",      "Put box",         "Load tower",
+   "Lift top stop", "Put pillar",     "Put box",         "Load tower",
    "Save tower",    "Test tower",     "Set tower color", "Increase time",
    "Decrease time", "Create mission", "Move page up",    "Move page down",
    "Go to start",   "Show this help", "Name the tower",  "Set tower time",
@@ -512,6 +512,10 @@ void le_edit(void) {
     dcl_wait();
 
     inp = key_sdlkey();
+
+    if (inp)
+      printf("inp = %i\n", inp);
+
 
     if (inp != SDLK_UNKNOWN) {
       int k, action = -1;

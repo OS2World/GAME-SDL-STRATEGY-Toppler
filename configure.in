@@ -19,6 +19,6 @@ AC_CHECK_LIB(z, uncompress,
   LIBS="$LIBS -lz",
   AC_MSG_ERROR([can not find libz toppler needs it to uncompress the data tile]))
   
-AC_CONFIG_FILES([Makefile toppler.spec])
+AC_CONFIG_FILES([Makefile toppler.spec toppler.desktop])
 
 AC_OUTPUT

@@ -23,15 +23,14 @@
  on the tower and its shape corresponding to the shape of the tower */
 
 
-/* initializes the variables, call this function each time
- you start at the tower. */
+/* initializes the variables, call this function each time you start at the tower. */
 void top_init(void);
 
 /* actualizes the position and shape of the toppler considering the given keyposition */
-void top_aktualtoppler(int left_right, int up_down, bool space);
+void top_updatetoppler(int left_right, int up_down, bool space);
 
 /* tests, if the toppler collides with something while it is on the elevator */
-void top_testkollision(void);
+void top_testcollision(void);
 
 /* the following functions return several of the necessary variables for the toppler */
 
