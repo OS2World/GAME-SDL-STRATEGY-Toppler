@@ -1,5 +1,13 @@
+#define CREATOR
 
-#include "level.h"
+#define NULL 0
+#define TOP_DATADIR "./"
+
+#include <configuration.h>
+
+#include <level.h>
+#include <level.cc>
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -69,7 +77,7 @@ int main(int argc, char **argv) {
         case TB_ELEV_MIDDLE:
         case TB_ELEV_TOP:      txt = "elev"; break;
         case TB_STICK:         txt = "pillar"; break;
-	case TB_BOX:           txt = "boxx"; break;
+        case TB_BOX:           txt = "boxx"; break;
         default: break;
         }
         if (txt)

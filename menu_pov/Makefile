@@ -1,4 +1,3 @@
-
 TOPPLERDIR = ../../toppler
 
 LEVELDIR = ../../levels/mission1
@@ -10,9 +9,7 @@ LEVELDIR = ../../levels/mission1
 
 LEVELS = `find $(LEVELDIR) -maxdepth 1 -type f`
 
-OBJS = $(TOPPLERDIR)/level.o $(TOPPLERDIR)/decl.o \
-	$(TOPPLERDIR)/keyb.o $(TOPPLERDIR)/configuration.o \
-	$(TOPPLERDIR)/points.o
+OBJS = $(TOPPLERDIR)/decl.o
 
 all: tower2inc
 	( ln -s `pwd`/$(LEVELDIR) $(HOME)/.toppler/t && \
