@@ -10,7 +10,9 @@ TARGETDIR = ../toppler
 TOPPLERDAT = toppler.dat
 
 DATFILES = cross.dat font.dat graphics.dat menu.dat scroller.dat \
-	   sprites.dat titles.dat dude.dat
+	   sprites.dat titles.dat dude.dat \
+       alarm.wav boing.wav bubbles.wav fanfare.wav hit.wav honk.wav rumble.wav score.wav \
+       sonar.wav splash.wav swoosh.wav tap.wav tick.wav torpedo.wav water.wav
 
 CLEANRULES = cross.clean font.clean graphics.clean menu.clean \
 	     scroller.clean sprites.clean titles.clean dude.clean
