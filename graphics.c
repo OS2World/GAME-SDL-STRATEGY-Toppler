@@ -42,29 +42,6 @@ void putpixel(unsigned short x, unsigned short y, Uint32 b)
   ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+0] = b >> 16;
 }
 
-void putpixel_max(unsigned short x, unsigned short y, Uint32 t)
-{
-  Uint16 r, g, b, rp, gp, bp;
-
-  r = ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+2];
-  g = ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+1];
-  b = ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+0];
-
-  rp = (t >>  0) & 0xff;
-  gp = (t >>  8) & 0xff;
-  bp = (t >> 16) & 0xff;
-
-  if ((r != 0) || (g != 0) || (b != 0xff)) {
-    rp = (rp + r) / 2;
-    gp = (gp + g) / 2;
-    bp = (bp + b) / 2;
-  }
-
-  ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+2] = rp;
-  ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+1] = gp;
-  ((Uint8*)display->pixels)[y*display->pitch+x*display->format->BytesPerPixel+0] = bp;
-}
-
 Uint8 getpixel(Uint16 x, Uint16 y)
 {
    return ((Uint8*)display->pixels)[y * display->pitch + x * display->format->BytesPerPixel];
@@ -365,7 +342,7 @@ void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, d
       b = (b << 8) | c1;
 
       if (b)
-        putpixel_max(x, y + ys, b);
+        putpixel(x, y + ys, b);
     }
   }
 }
