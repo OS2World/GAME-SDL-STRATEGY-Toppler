@@ -162,7 +162,7 @@ Uint16 max (Uint16 a, Uint16 b, Uint16 c) {
 }
 
 Uint16 findbiggest(Uint16 c) {
-  /*
+
   int n;
   int largest_block = 0;
   int largest_dim = max(boundaries[0].rmax-boundaries[0].rmin,
@@ -177,9 +177,9 @@ Uint16 findbiggest(Uint16 c) {
       largest_block = n;
       largest_dim = ld;
     }
-    }
-    */
+  }
 
+  /*
   int n;
   int largest_block = -1;
 
@@ -189,7 +189,7 @@ Uint16 findbiggest(Uint16 c) {
         (boundaries[n].bmax != boundaries[n].bmin))
       if ((largest_block == -1) || (boundaries[n].count > boundaries[largest_block].count))
          largest_block = n;
-  }
+  } */
 
   if (largest_block != -1)
     return largest_block;
