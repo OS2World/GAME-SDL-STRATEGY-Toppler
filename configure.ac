@@ -2,7 +2,7 @@
 AC_INIT
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
-#AC_CHECK_TOOL
+AC_CHECK_TOOL
 AM_INIT_AUTOMAKE([toppler],[`cat VERSION`])
 AC_CONFIG_SRCDIR([toppler.cc])
 AM_CONFIG_HEADER(config.h)
@@ -16,6 +16,11 @@ AC_DEFINE_UNQUOTED(SYS_BEOS,2,BeOs)
 AC_DEFINE_UNQUOTED(SYS_MACOSX,3,MacOSX)
 AC_DEFINE_UNQUOTED(SYSTEM,SYS_LINUX,System)
 
+# I18n.
+AM_GNU_GETTEXT
+AM_GNU_GETTEXT_VERSION(0.10.35)
+ALL_LINGUAS="de fi fr "
+
 # Checks for programs.
 AC_PROG_AWK
 AC_PROG_CXX
@@ -26,15 +31,15 @@ AC_PROG_LN_S
 # Checks for libraries.
 SDL_VERSION=1.2.0
 AM_PATH_SDL($SDL_VERSION, :,
-            AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
+  AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
 AC_CHECK_LIB(SDL_mixer, main, ,
-  AC_MSG_WARN([can not find SDL_mixer tower toppler will have no sound]))
+  AC_MSG_WARN([Can't find SDL_mixer. Toppler will have no sound.]))
 
 AC_CHECK_LIB(z, uncompress, ,
-  AC_MSG_ERROR([can not find libz toppler needs it to uncompress the data tile]))
+  AC_MSG_ERROR([Can't find libz. Toppler needs it to uncompress the data tile!]))
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -51,8 +56,6 @@ AC_FUNC_MALLOC
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit memmove memset mkdir strcasecmp strchr strstr])
 
-AM_GNU_GETTEXT([external])
-
 # Output.
-AC_CONFIG_FILES([Makefile toppler.spec toppler.desktop po/Makefile.in])
+AC_CONFIG_FILES([Makefile toppler.spec toppler.desktop intl/Makefile po/Makefile.in m4/Makefile])
 AC_OUTPUT

@@ -1,4 +1,6 @@
 CPPFLAGS = @CPPFLAGS@ -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(scoredir)\" -DLOCALEDIR=\"$(datadir)\"
+SUBDIRS = intl po m4
+ACLOCAL_AMFLAGS = -I m4
 
 bin_PROGRAMS = toppler
 
@@ -34,12 +36,10 @@ pkgdata_DATA = \
 
 man_MANS = toppler.6
 
-EXTRA_DIST = config.rpath  $(man_MANS) $(pkgdata_DATA) VERSION toppler.spec toppler.xpm
+EXTRA_DIST = mkinstalldirs $(man_MANS) $(pkgdata_DATA) VERSION toppler.spec toppler.xpm levelnames.txt
 
 scoredir = $(localstatedir)/@PACKAGE@
 scorefile = $(scoredir)/@PACKAGE@.hsc
-
-SUBDIRS = po
 
 install_exec_local:
 	-(chgrp games $(DESTDIR)$(bindir)/toppler; chmod g+s $(DESTDIR)$(bindir)/toppler)
