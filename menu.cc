@@ -280,16 +280,6 @@ men_options_sounds(_menusystem *ms)
   else return "Sounds \x04";
 }
 
-static char *
-men_options_bonus(_menusystem *ms)
-{
-  if (ms) {
-    config.nobonus(!config.nobonus());
-  }
-  if (config.nobonus()) return "Bonus \x03";
-  else return "Bonus \x04";
-}
-
 static void
 reload_font_graphics(void) {
   fontsprites.freedata();
@@ -452,7 +442,6 @@ men_options(_menusystem *mainmenu) {
     ms = add_menu_option(ms, NULL, run_redefine_menu);
     ms = add_menu_option(ms, NULL, men_options_graphic);
     ms = add_menu_option(ms, NULL, men_options_sounds);
-    ms = add_menu_option(ms, NULL, men_options_bonus);
 
     ms = add_menu_option(ms, NULL, NULL);
     ms = add_menu_option(ms, "Back", NULL);
@@ -721,9 +710,8 @@ main_game_loop()
         // load next tower, because its colors will be needed for bonus game
         gam_loadtower(tower);
 
-	if (!config.nobonus())
-          if (!bns_game())
-            gameresult = GAME_ABORTED;
+        if (!bns_game())
+          gameresult = GAME_ABORTED;
       }
     } else {
       ttsounds::instance()->stopsound(SND_WATER);

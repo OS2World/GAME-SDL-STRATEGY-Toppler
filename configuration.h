@@ -94,9 +94,6 @@ public:
   int  game_speed() const { return i_game_speed; }
   void game_speed(int spd) { need_save = true; i_game_speed = spd; }
 
-  int  nobonus() const { return i_nobonus; }
-  void nobonus(bool on) { need_save = true; i_nobonus = on; }
-
 private:
 
   FILE *f;
@@ -138,7 +135,6 @@ private:
   char i_curr_password[PASSWORD_LEN+1];
   int  i_debug_level;
   int  i_game_speed;
-  int  i_nobonus;
 
   bool need_save;
 
