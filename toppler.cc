@@ -54,7 +54,7 @@ int topple_min;
  reached the next brick layer */
 bool topple_delay;
 
-/* is decreased each time the toppler gets
+/* technique points; is decreased each time the toppler gets
  thrown down */
 int technic;
 
@@ -65,7 +65,7 @@ static bool tvisible;
 static bool on_elevator;
 /* the actual shape of the toppler */
 static int topplershape;
-/* the direction the toppler look */
+/* the direction the toppler is looking at */
 static bool look_left;
 
 
@@ -218,8 +218,8 @@ static void topple(void) {
 }
 
 /* tries to move the toppler by the given amount, returns true on
- success and false if the move is not possible (kollision with
- the tower */
+ success and false if the move is not possible (collision with
+ a tower element) */
 static bool movetoppler(long x, long y) {
 
   if (verticalpos + y < 0) {
@@ -241,7 +241,7 @@ static void slidestep(int left_right) {
   }
 }
 
-/* the statmashine of the animal */
+/* the state machine of the animal */
 void top_aktualtoppler(int left_right, int up_down, bool space) {
 
   /* table specifying the number for the animal sprite if it is turning
@@ -272,7 +272,7 @@ void top_aktualtoppler(int left_right, int up_down, bool space) {
   static long jump0[12] = { 3, 2, 2, 1, 1, 0, 0, -1, -1, -2, -2, -3 };
   static long jump1[7] = { 2, 2, 1, 0, -1, -2, -2 };
   
-  /* sprites for throwing the snowpall */
+  /* sprites for throwing the snowball */
   static unsigned char schiessen[3] = {
     0x00, 0x1a, 0x1b
   };

@@ -70,9 +70,10 @@ ttkey key_sdlkey2conv(SDLKey k, bool game);
 /* Converts internal key to sdlkey, or returns SDLK_UNKNOWN. */
 SDLKey key_conv2sdlkey(ttkey k, bool game);
 
-/* returns a types character */
+/* returns a typed character */
 char key_chartyped(void);
 
+/* combines key_sdlkey(), key_readkey() and key_chartyped() */
 void key_keydatas(SDLKey &sdlkey, ttkey &tkey, char &ch);
 
 /* waits until no key is pressed, calling bg while waiting */

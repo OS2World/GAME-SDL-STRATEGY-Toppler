@@ -21,7 +21,7 @@
 
 #include <SDL.h>
 
-/* this modules handles nearly all the output onto the screen */
+/* this module handles nearly all the output onto the screen */
 
 /* screen flags for scr_drawall() */
 typedef enum {
@@ -49,7 +49,7 @@ void scr_reload_sprites(void);
 /* frees graphics */
 void scr_done(void);
 
-/* loads a number of sprite, enters it into the sprite collection
+/* loads a number of sprites, enters them into the sprite collection
  and returns the index of the first sprite */
 void scr_read_palette(Uint8 *pal);
 unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal, bool usealpha);
@@ -70,7 +70,7 @@ void scr_writetext(long x, long y, const char *s, int maxchars = -1);
 void scr_writetext_center(long y, const char *s);
 
 /* output text that can be interleaved with commands. these commands
- have the from ~ followed by letter followed by a fixed set of parameters.
+ have the form ~ followed by letter followed by a fixed set of parameters.
  currently the following command(s) are defined:
 
  t###: moves the x position to the given coordinate, relative to the
@@ -112,8 +112,12 @@ void scr_drawall(long vert, long angle, long time, bool svisible, int subshape, 
 /* draws everything for the edit mode */
 void scr_drawedit(long vert, long angle, bool showtime);
 
+/* draws the bonus game layers behind the tower */
 void scr_draw_bonus1(long horiz, long towerpos);
+
+/* draws the bonus game layers before the tower */
 void scr_draw_bonus2(long horiz, long towerpos);
+
 void scr_draw_submarine(long vert, long x, long number);
 void scr_draw_fish(long vert, long x, long number);
 void scr_draw_torpedo(long vert, long x);

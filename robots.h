@@ -36,7 +36,7 @@ typedef enum {
   OBJ_KIND_ROBOT_HORIZ
 } rob_kinds;
 
-/* initialize all fields, call this when you start a new towergame*/
+/* initialize all fields, call this when you start a new towergame */
 void rob_initialize(void);
 
 /* return the position and state of one robot */
@@ -56,11 +56,11 @@ void rob_new(int verticalpos);
 /* move all the robots */
 void rob_aktualize(void);
 
-/* call this if a robot got hit my the snowball, the function
+/* call this if a robot got hit by the snowball, the function
  returns the number of points the player gets */
 int rob_gothit(int nr);
 
-/* makes all the robots diappear */
+/* makes all the robots disappear */
 void rob_disappearall(void);
 
 #endif

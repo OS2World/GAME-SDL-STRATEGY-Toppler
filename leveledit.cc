@@ -95,17 +95,17 @@ struct _ed_key {
 
 const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Quit",          "Move up",        "Move down",       "Move left",
-   "Move right",    "Insert Row",     "Delete Row",      "Rotate 180",
-   "Put Space",     "Put Step",       "Put Vanisher",    "Put Slider",
-   "Put Door",      "Put Goal",       "Check Tower",     "Put Robot 1",  
-   "Put Robot 2",   "Put Robot 3",    "Put Robot 4",     "Put Robot 5",
-   "Put Robot 6",   "Put Robot 7",    "Put Lift",        "Lift Middle stop",
-   "Lift Top stop", "Put Stick",      "Put Box",         "Load Tower",   
-   "Save Tower",    "Test Tower",     "Set Tower Color", "Increase Time", 
-   "Decrease Time", "Create Mission", "Move Page Up",    "Move Page Down",  
-   "Go To Start",   "Show This Help", "Name The Tower",  "Set Tower time",
-   "Record Demo",   "Play Demo",      "Adjust Tower Height", "Go To End",
-   "Cut Row",       "Paste Row"
+   "Move right",    "Insert row",     "Delete row",      "Rotate 180",
+   "Put space",     "Put step",       "Put vanisher",    "Put slider",
+   "Put door",      "Put goal",       "Check tower",     "Put robot 1",  
+   "Put robot 2",   "Put robot 3",    "Put robot 4",     "Put robot 5",
+   "Put robot 6",   "Put robot 7",    "Put lift",        "Lift middle stop",
+   "Lift top stop", "Put stick",      "Put box",         "Load tower",
+   "Save tower",    "Test tower",     "Set tower color", "Increase time",
+   "Decrease time", "Create mission", "Move page up",    "Move page down",
+   "Go to start",   "Show this help", "Name the tower",  "Set tower time",
+   "Record demo",   "Play demo",      "Adjust tower height", "Go to end",
+   "Cut row",       "Paste row"
 };
 
 const struct _ed_key _ed_keys[] = {
@@ -308,7 +308,7 @@ static void edit_checktower(int &row, int &col) {
   bg_row = r;
   bg_col = -c;
 
-  bg_text = "Tower Check:";
+  bg_text = "Tower check:";
   bg_darken = true;
   men_info(problemstr[pr % NUM_TPROBLEMS], 50, 2);
   bg_darken = false;
@@ -358,7 +358,7 @@ static void createMission(void) {
   while (true) {
 
     scr_drawedit(0, 0, false);
-    scr_writetext_center(30, "Mission creationg");
+    scr_writetext_center(30, "Mission creation");
     scr_writetext_center(70, "enter name of");
 
     char s[30];
@@ -648,7 +648,7 @@ void le_edit(void) {
         if (changed)
           if (!really_load(row, col))
             break;
-        bg_text = "Load Tower:";
+        bg_text = "Load tower:";
 	bg_darken = true;
 	key_wait_for_none(editor_background_proc);
         while (!men_input(editor_towername, TOWERNAMELEN)) ;
@@ -663,7 +663,7 @@ void le_edit(void) {
 	if (row >= lev_towerrows()) row = lev_towerrows()-1;
         break;
       case EDACT_SAVETOWER:
-        bg_text = "Save Tower:";
+        bg_text = "Save tower:";
 	bg_darken = true;
 	key_wait_for_none(editor_background_proc);
         while (!men_input(editor_towername, TOWERNAMELEN)) ;
@@ -758,7 +758,7 @@ void le_edit(void) {
 
 	  sprintf(buf, "%d", lev_towertime());
 
-          bg_text = "Enter Tower Time:";
+          bg_text = "Enter tower time:";
 	  bg_darken = true;
 	  key_wait_for_none(editor_background_proc);
           while (!men_input((char *)buf, 15, -1, -1, "0123456789")) ;
@@ -774,7 +774,7 @@ void le_edit(void) {
 	    
 	    sprintf(buf, "0");
 	    
-	    bg_text = "Adjust Tower Height:";
+	    bg_text = "Adjust tower height:";
 	    bg_darken = true;
 	    key_wait_for_none(editor_background_proc);
 	    while (!men_input((char *)buf, 15, -1, -1, "-+0123456789")) ;
@@ -854,7 +854,7 @@ void le_edit(void) {
 	}
 	break;
       case EDACT_NAMETOWER:
-        bg_text = "Name the Tower:";
+        bg_text = "Name the tower:";
 	bg_darken = true;
 	key_wait_for_none(editor_background_proc);
         while (!men_input(lev_towername(), TOWERNAMELEN)) ;

@@ -461,19 +461,19 @@ run_menu_system(struct _menusystem *ms)
 
 struct _textsystem {
     char *title;
-    int  numlines;
-    int  shownlines;
-    int  ystart;
-    long max_length;
+    int  numlines;                  // # of lines
+    int  shownlines;                // # of lines shown on screen
+    int  ystart;                    // screen y coord where text starts
+    long max_length;                // how long is the longest line?
     char **lines;
-    menuopt_callback_proc mproc;
-    menuopt_callback_proc timeproc;
-    long curr_mtime;
-    long mtime;
-    long xoffs;
-    long yoffs;
-    long disp_xoffs;
-    long disp_yoffs;
+    menuopt_callback_proc mproc;    // background drawing proc
+    menuopt_callback_proc timeproc; // timer proc
+    long curr_mtime;                // current ticks
+    long mtime;                     // when to call timeproc?
+    long xoffs;                     // current x offset
+    long yoffs;                     // current y offset
+    long disp_xoffs;                // displayed x offset
+    long disp_yoffs;                // displayed y offset
     SDLKey key;
 };
 
@@ -1290,7 +1290,7 @@ static void show_scores(bool back = true, int mark = -1) {
   if (back)
     ms = add_menu_option(ms, "Back", NULL);
   else
-    ms = add_menu_option(ms, "Ok", NULL);
+    ms = add_menu_option(ms, "OK", NULL);
 
   ms = run_menu_system(ms);
 

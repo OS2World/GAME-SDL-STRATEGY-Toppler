@@ -23,7 +23,7 @@
 
 /* coordinates a collection of sprites */
 
-/* initializes with a maximum number of possible prites */
+/* initializes with a maximum number of possible sprites */
 void spr_init(Uint16 maxsp);
 
 /* frees all sprites */

@@ -40,8 +40,7 @@ typedef void FDECL((*menubg_callback_proc), (void));
 /* load graphics */
 void men_init(void);
 
-/* the main menu, return 0 for quit and
- bigger values for the missions */
+/* the main menu */
 void men_main(void);
 
 /* highscores, after the game */
@@ -50,7 +49,11 @@ void men_highscore(unsigned long pt);
 /* free graphics */
 void men_done(void);
 
-/* input line */
+/* input line; asks the user for a string.
+ * 
+ * This function returns immediately, and the return
+ * value tells whether the user finished editing the string.
+ */
 bool men_input(char *origs, int max_len, int xpos = -1,
                int ypos = (SCREENHEI  * 2) / 3,
                const char *allowed = NULL);
@@ -59,7 +62,7 @@ bool men_input(char *origs, int max_len, int xpos = -1,
    1 if "yes" */
 unsigned char men_yn(char *s, bool defchoice);
 
-/* shows string s, waits either a certain time, (-1 = indefinitely),
+/* shows string s, waits a certain time, (-1 = indefinitely),
    and if fire = 1 -> "press fire", if fire = 2 -> "press space" */
 void men_info(char *s, long timeout = -1, int fire = 0);
 
@@ -96,15 +99,16 @@ void set_men_bgproc(menubg_callback_proc proc);
 /* menu shown to user when he presses esc during play */
 bool men_game(void);
 
-/**/
+/* create a new text viewer */
 struct _textsystem *new_text_system(char *title, menuopt_callback_proc pr = NULL);
-/**/
+/* add a line of text to the text viewer */
 struct _textsystem *add_text_line(struct _textsystem *ts, char *line);
-/**/
+/* set a function that gets called every t updates when this text
+   viewing system is being run */
 struct _textsystem *set_text_system_timeproc(struct _textsystem *ts, long t, menuopt_callback_proc pr);
-/**/
+/* free the text viewer */
 void free_text_system(struct _textsystem *ts);
-/**/
+/* run the text viewer */
 struct _textsystem *run_text_system(struct _textsystem *ts);
 
 #endif

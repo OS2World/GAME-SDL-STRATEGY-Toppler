@@ -31,7 +31,7 @@ void ele_init(void);
  active elevator */
 void ele_select(Uint16 row, Uint8 col);
 
-/* the elevator gets startet */
+/* the elevator gets started */
 void ele_activate(Sint8 dir);
 
 /* moves the elevator one level up */

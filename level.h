@@ -79,6 +79,8 @@ typedef enum {
  */
 void lev_findmissions();
 Uint16 lev_missionnumber();
+
+/* returns the name of the Nth mission */
 const char * lev_missionname(Uint16 num);
 
 /* Convert a char into towerblock */
@@ -163,7 +165,7 @@ bool lev_is_targetdoor(int row, int col);
 /* completely empty */
 bool lev_is_empty(int row, int col);
 
-/* contains a flahing box */
+/* contains a flashing box */
 bool lev_is_box(int row, int col);
 
 /* empty this field */
@@ -178,10 +180,10 @@ bool lev_is_bottom_station(int row, int col);
 /* contains a platform */
 bool lev_is_platform(int row, int col);
 
-/* conatins stick */
+/* contains stick */
 bool lev_is_stick(int row, int col);
 
-/* id part of an elevator */
+/* is part of an elevator */
 bool lev_is_elevator(int row, int col);
 
 /* sliding step */
@@ -210,7 +212,7 @@ void lev_restore(int row, int col, unsigned char bg);
 
 /* --- the following commands are for the level editor ---  */
 
-/* load and save a tower */
+/* load and save a tower in a human readable format */
 bool lev_loadtower(char *fname);
 bool lev_savetower(char *fname);
 
@@ -221,10 +223,10 @@ void lev_rotaterow(bool clockwise);
 void lev_insertrow(int position);
 void lev_deleterow(int position);
 
-/* creates a simple tower consisting 'hei' rows */
+/* creates a simple tower consisting of 'hei' rows */
 void lev_new(Uint8 hei);
 
-/* functions to change on field on the tower */
+/* functions to change one field on the tower */
 void lev_putspace(int row, int col);
 void lev_putrobot1(int row, int col);
 void lev_putrobot2(int row, int col);
@@ -253,14 +255,15 @@ void lev_save(unsigned char *&data);
 void lev_restore(unsigned char *&data);
 
 /* check the tower for consistency. This function checks doors
- * and elevators if something is found row and col contain the
+ * and elevators, and if something is found, row and col contain the
  * coordinates, and the return value is one of TPROB_xxx
  */
 lev_problem lev_is_consistent(int &row, int &col);
 
-/* mission creation: first call mission_new, then for each tower mission_addtower
- * finally to complete mission_finish, never use another calling order or you may
- * create corrupted mission files
+/* mission creation: first call mission_new(), then 
+ * for each tower mission_addtower() and finally to complete
+ * the mission mission_finish(). never use another calling order 
+ * or you may create corrupted mission files.
  */
 bool lev_mission_new(char * name, Uint8 prio = 255);
 void lev_mission_addtower(char * name);

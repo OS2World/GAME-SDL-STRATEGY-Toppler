@@ -25,7 +25,7 @@
 typedef enum {
   GAME_FINISHED,    // the tower has been finished successfully
   GAME_DIED,        //  the toppler died
-  GAME_ABORTED      // the game was abborted (ESC)
+  GAME_ABORTED      // the game was aborted (ESC)
 } gam_result;
 
 /* load data */

@@ -103,8 +103,8 @@
 #define SPR_FISHHEI  40
 
 /* submarine sprite size */
-#define SPR_SUBMWID 120 // 60
-#define SPR_SUBMHEI 80 // 17
+#define SPR_SUBMWID 120 
+#define SPR_SUBMHEI 80
 
 /* submarine ammunition, torpedo */
 #define SPR_TORPWID 32
@@ -154,14 +154,14 @@
 #define scrollerdat     "scroller.dat"
 
 /* the special characters in the font */
-#define fonttoppler     '\x01'
+#define fonttoppler     '\x01' // static view of our hero for status lines
 #define fontpoint       '\x02'
-#define fontemptytagbox '\x03'
-#define fonttagedtagbox '\x04'
-#define fontptrup       '\x05'
-#define fontptrright    '\x06'
-#define fontptrdown     '\x07'
-#define fontptrleft     '\x08'
+#define fontemptytagbox '\x03' // checkbox
+#define fonttagedtagbox '\x04' // checkbox with tickmark
+#define fontptrup       '\x05' // arrow up
+#define fontptrright    '\x06' // arrow right
+#define fontptrdown     '\x07' // arrow down
+#define fontptrleft     '\x08' // arrow left
 
 #define FDECL(f,p) f p
 #define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))

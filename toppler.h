@@ -23,17 +23,17 @@
  on the tower and its shape corresponding to the shape of the tower */
 
 
-/* initisalizes the variables, call this function each time a
+/* initializes the variables, call this function each time
  you start at the tower. */
 void top_init(void);
 
-/* actualizes the position and sgape of the toppler considering the given keyposition */
+/* actualizes the position and shape of the toppler considering the given keyposition */
 void top_aktualtoppler(int left_right, int up_down, bool space);
 
 /* tests, if the toppler collides with something while it is on the elevator */
 void top_testkollision(void);
 
-/* the following functions return serveral of the necesary variables for the toppler */
+/* the following functions return several of the necessary variables for the toppler */
 
 /* its vertial position on the tower */
 int top_verticalpos(void);
@@ -53,7 +53,7 @@ int top_shape(void);
 /* is it on an elevator */
 bool top_onelevator(void);
 
-/* technice bonus points, how often got it thrown down */
+/* technique bonus points, how often got it thrown down */
 int top_technic(void);
 
 /* the actual state of the toppler */
@@ -80,7 +80,7 @@ void top_drop1layer(void);
 /* hide the toppler */
 void top_hide(void);
 
-/* show it and set its shape vertical and angular position */
+/* show it and set its shape, vertical and angular position */
 void top_show(int shape, int vpos, int apos);
 
 /* move the toppler to the side until it is at a valid position

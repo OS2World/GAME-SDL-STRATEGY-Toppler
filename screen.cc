@@ -78,13 +78,16 @@ static struct {
   unsigned char width;
 } fontchars[MAXCHARNUM];
 
+/* bonus game scrolling layer */
 struct _scroll_layer {
-  long width;
-  int  num, den;
+  long width;    // width of the layer
+  int  num, den; // speed
   Uint16 image;
 };
 
+/* # of scrolling layers in the bonus game */
 static int num_scrolllayers;
+/* tower layering depth and scrolling speed in the bonus game */
 static int sl_tower_depth,
            sl_tower_num,
            sl_tower_den;
@@ -1361,7 +1364,6 @@ void scr_drawall(long vert,
   }
 
   if (svisible) {
-    /* TODO: use SPR_SUBMxxx */
     scr_blit(spr_spritedata(subst + subshape),
              (SCREENWID / 2) - 70,
              (SCREENHEI / 2) + 12 - substart + 16);

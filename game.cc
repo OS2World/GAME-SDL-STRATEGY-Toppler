@@ -156,7 +156,7 @@ void gam_arrival(void) {
   } while (!((b == 5) || key_keypressed(fire_key)));
 
   /* wait until the key has been released otherwise the space key
-   might already result in a snowball beein thrown */
+   might already result in a snowball being thrown */
   key_wait_for_none(NULL);
   svisible = false;
 }

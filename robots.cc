@@ -35,7 +35,7 @@ static struct {
   int anglepos;
   long verticalpos;
 
-  /* what kind of robot it is, an under classifikation
+  /* what kind of robot it is, an under classification
    and what kind it will be after the appearing animation */
   rob_kinds kind;
   long subKind;
@@ -46,7 +46,7 @@ static struct {
 } object[MAX_OBJECTS];
 
 
-/* the position up to where the the robots are worked out */
+/* the position up to where the robots are worked out */
 static int robots_ready;
 static int robots_angle;
 
@@ -89,7 +89,7 @@ static int figurkollision(int nr) {
   return -1;
 }
 
-/* returns true, if the roboter can be at the given position without colliding
+/* returns true, if the robot can be at the given position without colliding
  with an element from the tower */
 static bool testroboter(int nr) {
   return (!lev_testfigure((long)object[nr].anglepos, object[nr].verticalpos, -2L, 1L, 1L, 1L, 7L));

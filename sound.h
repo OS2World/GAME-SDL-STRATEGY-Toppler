@@ -45,7 +45,7 @@ void snd_hit(void);
 void snd_drown(void);
 /* submarine is coming out of the water */
 void snd_sub_raise(void);
-/* submarine is giong into the water */
+/* submarine is going into the water */
 void snd_sub_down(void);
 /* ball jumping and hitting something */
 void snd_boink(int vol);
