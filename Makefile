@@ -112,9 +112,9 @@ menu.clean:
 scroller.dat: scroller scroller1_colors.png scroller1_mask.png \
                        scroller2_colors.png scroller2_mask.png \
                        scroller3_colors.png scroller3_mask.png
-	./scroller 3 2 1/1 scroller3_colors.png scroller3_mask.png 1/2 \
-                       scroller2_colors.png scroller2_mask.png 1/1 \
-                       scroller1_colors.png scroller1_mask.png 2/1
+	./scroller 3 2 1/1 scroller3_colors.png scroller3_mask.png 0/0/640 1/2 \
+                       scroller2_colors.png scroller2_mask.png 0/0/640 1/1 \
+                       scroller1_colors.png scroller1_mask.png 0/0/640 2/1
 
 scroller: scroller.c
 	$(GCC) $(CFLAGS) scroller.c -o scroller

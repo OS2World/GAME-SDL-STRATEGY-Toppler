@@ -7,7 +7,7 @@
  * for the program for the scroller
  * the input pictures must be .PNG
  *
- * the data file should allow for any number of layers, each layer must be 240 pixel high
+ * the data file should allow for any number of layers, each layer can be up to 480 pixel high
  * but can have a different width
  * you must specify the speed by which the image is moved with 2 numbers. the speed
  * will actually be the fraction of number one and two
@@ -20,8 +20,10 @@
  */
 typedef struct layer {
 
-  unsigned int width;
+  unsigned int xpos, ypos;
+  unsigned int width, height;
   unsigned int numerator, denominator;
+  unsigned int xrepeat;
 
   SDL_Surface * colors;
   SDL_Surface * mask;
@@ -30,7 +32,7 @@ typedef struct layer {
 } layer;
 
 /*
- * the layer list ancor
+ * the layer list anchor
  */
 layer * layer_ancor = NULL;
 
@@ -55,36 +57,37 @@ void write_palette(FILE *out, SDL_Surface *s) {
   }
 }
 
+void write_uint(unsigned int x, FILE * out) {
+    unsigned char c;
+    
+    c = x & 0xff;
+    fwrite(&c, 1, 1, out);
+    c = x >> 8;
+    fwrite(&c, 1, 1, out);
+}
+
 /*
  * writes on layer to the file
  */
 void write_layer(layer * l, FILE * out) {
 
-  unsigned char c;
   int x, y;
 
   static int first = 0;
 
   Uint8 b;
 
-  c = l->width & 0xff;
-  fwrite(&c, 1, 1, out);
-  c = l->width >> 8;
-  fwrite(&c, 1, 1, out);
-
-  c = l->numerator & 0xff;
-  fwrite(&c, 1, 1, out);
-  c = l->numerator >> 8;
-  fwrite(&c, 1, 1, out);
-
-  c = l->denominator & 0xff;
-  fwrite(&c, 1, 1, out);
-  c = l->denominator >> 8;
-  fwrite(&c, 1, 1, out);
+  write_uint(l->xpos, out);
+  write_uint(l->ypos, out);
+  write_uint(l->width, out);
+  write_uint(l->height, out);
+  write_uint(l->numerator, out);
+  write_uint(l->denominator, out);
+  write_uint(l->xrepeat, out);
 
   write_palette(out, l->colors);
 
-  for (y = 0; y < 480; y++)
+  for (y = 0; y < l->height; y++)
     for (x = 0; x < l->width; x++) {
       b = get_color(l->colors, x, y);
       fwrite(&b, 1, 1, out);
@@ -105,20 +108,26 @@ void save(layer * l, FILE * o) {
   }
 }
 
+/*
+ *
+ * scroller number_of_layers tower_pos tower_spd_num/tower_spd_den \
+ *     [ pic_file mask_file xpos/ypos/xrepeat spd_num/spd_den ]...
+ */
+
 int main(int argv, char* args[]) {
 
   int l;
+  int layers; // number of layers
+  unsigned int towerpos;
+  unsigned int towerspeed_num, towerspeed_den;
 
-  printf("start\n");
-    
   if (argv < 3) return 1;
 
-  int layers; // number of layers
+  printf("start\n");
+
   sscanf(args[1], "%i", &layers);
   printf("generating %i layers\n", layers);
 
-  int towerpos;
-  int towerspeed_num, towerspeed_den;
   sscanf(args[2], "%i", &towerpos);
   sscanf(args[3], "%i/%i", &towerspeed_num, &towerspeed_den);
   printf("putting tower as layer %i with speed %i/%i\n", towerpos, towerspeed_num, towerspeed_den);
@@ -126,14 +135,23 @@ int main(int argv, char* args[]) {
   for (l = 0; l < layers; l++) {
     layer * la = (layer*)malloc(sizeof(layer));
 
-    la->colors = IMG_LoadPNG_RW(SDL_RWFromFile(args[4+3*l], "rb"));
-    la->mask = IMG_LoadPNG_RW(SDL_RWFromFile(args[4+3*l+1], "rb"));
+    if (l == towerpos) printf("tower, speed %i/%i\n", towerspeed_num, towerspeed_den);
+      
+    la->colors = IMG_LoadPNG_RW(SDL_RWFromFile(args[4+4*l], "rb"));
+    la->mask = IMG_LoadPNG_RW(SDL_RWFromFile(args[4+4*l+1], "rb"));
 
     la->width = la->colors->w;
+    la->height = la->colors->h;
 
-    sscanf(args[4+3*l+2], "%i/%i", &la->numerator, &la->denominator);
+    sscanf(args[4+4*l+2], "%i/%i/%i", &la->xpos, &la->ypos, &la->xrepeat);
 
-    printf("image %s with speed %i/%i\n", args[4+3*l], la->numerator, la->denominator);
+    sscanf(args[4+4*l+3], "%i/%i", &la->numerator, &la->denominator);
+
+    printf("image %s, size (%i,%i), at (%i,%i), speed %i/%i, repeat %i\n", args[4+4*l],
+	   la->width, la->height,
+	   la->xpos, la->ypos,
+	   la->numerator, la->denominator,
+	   la->xrepeat);
 
     la->next = layer_ancor;
     layer_ancor = la;
@@ -142,20 +160,12 @@ int main(int argv, char* args[]) {
   printf("\n saving...\n");
 
   FILE * o = fopen("scroller.dat", "wb");
-  char c;
 
   fwrite(&layers, 1, 1, o);
   fwrite(&towerpos, 1, 1, o);
 
-  c = towerspeed_num & 0xff;
-  fwrite(&c, 1, 1, o);
-  c = towerspeed_num >> 8;
-  fwrite(&c, 1, 1, o);
-
-  c = towerspeed_den & 0xff;
-  fwrite(&c, 1, 1, o);
-  c = towerspeed_den >> 8;
-  fwrite(&c, 1, 1, o);
+  write_uint(towerspeed_num, o);
+  write_uint(towerspeed_den, o);
 
   save(layer_ancor, o);
 
