@@ -1,0 +1,61 @@
+.de Op
+.BR -\\$1
+..
+.TH TOPPLER 6
+.SH NAME
+toppler - clone of the old "Nebulous" game
+.SH SYNOPSIS
+.B toppler [-f] [-s]
+.SH DESCRIPTION
+This manual page documents briefly the
+.B toppler
+command.
+This manual page was adapted from the README for the Debian GNU/Linux
+distribution because the original program does not have a manual page.
+.br
+The target of the game is to reach the target door of each of the 8
+towers in currently 2 missions with this little green animal. This
+door is usually at the very top of the tower.
+.br
+But finding the way by using elevators and walking trough a maze of
+doors and platforms is not the only problem you have to solve. There
+is a bunch of other creatures living on the tower that will hinder
+you to reach your target by pushing you over the edge of the
+platforms.
+.br
+The only weapon of defence you have is to throw a little snowball. But
+most of the other creatures just don't care about this. So you must
+avoid them.
+.br
+.SH CONTROLS
+In the menu you can select the mission you want to play next with the
+left and right cursor keys. Press space or return on the start menu
+item to start the game
+.br
+The animal is controlled by the cursor keys and space (or return).
+Left and Right make the animal walk. Up and down make the elevators
+move (if you are on one of it. The elevator platforms are a little
+bit smaller than the normal platforms).
+.br
+If you are in front of a door press up to enter it.
+Pressing the space key will either throw a snowwball, if you are
+standing still or make the animal jump, if you are walking.
+.br
+.PP
+.SH OPTIONS
+The program understands the following command line options.
+.TP
+.Op -f
+starts the game in fullscreen mode.  But be careful! If the game
+crashes it doesn't restore the original resolution, it stays in 660x480
+pixel mode.
+.TP
+.Op -s
+makes the game silent.  If you don't have a soundcard or for another
+reason get an "can't open audio" error try this option.
+.SH AUTHOR
+Toppler was written by Andreas Röver <roever@users.sf.net>.
+.br
+This manual page was written by Ben Bell <bjb@debian.org>
+for the Debian GNU/Linux system (but may be used by others).
+It was revised by Dylan Thurston <dpt@math.harvard.edu>.
