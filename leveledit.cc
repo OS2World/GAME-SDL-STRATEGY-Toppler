@@ -442,7 +442,7 @@ static void le_showkeyhelp(int row, int col) {
       if (tabbuf2[2] < '0') tabbuf2[2] = '0';
 
       snprintf(tmpb, 256, "~T%s%%s~T%s%%s", tabbuf2, tabbuf1);
-      snprintf(buf, 256, tmpb, knam, gettext(_ed_key_actions[_ed_keys[k].action]));
+      snprintf(buf, 256, tmpb, knam, _(_ed_key_actions[_ed_keys[k].action]));
 
       ts->addline(buf);
   }

@@ -1,9 +1,57 @@
-Version 1.0.0 8.Mar.2004
+Version 1.1.0
+
+- remove a possibility for the toppler to get stuck, when the elevator fell down
+- make it possible to not use internationalisation for BeOS
+- fix saving of bonus level option
+- add joystick support (untested by me)
+
+
+- add 5000 points for each life left after the last tower is finished
+- more characters, should now be possible to add all unicode character,
+  it's not a nice solution, but simple and working
+- add characters for Esperanto ^c, ^g, ^h, ^j, ^s and ~u
+- fix mismatching new [] delete problem
+
+
+- fix encoding bugs
+- fix ê letter
+
+
+- smoother toppler images
+- move bonus level switch into game menu
+- internationalze, add German, add French
+- add some french letters, resize letters for accents
+
+
+- add switch to skip bonus level, thanks to Beni Cherniavsky
+- add checks for different video modis (thanks Stephane Marchesin)
+- fixed bug with freeze balls that makes them go wild, when the
+  ground blow them vanished
+- hopefully fix bug that caused the timeout screen to become
+  a highscore screen with timeout text
+  
+Version 1.0.2 8.Jun.2003
+
+- add check for sound on torpedo off, this fixes a crash
+- update the green dude to have a higher resolution
+- add not into README that signed versions of the game
+  are allowed
+- new sound system
+- update build system
+- display check on start
+- add switch to skip bonus level thanks to Beni Cherniavsky
+
+Version 1.0.1
+
+- remove debug printf in highscore module
+- add asert after screen initialisation to check for failure
+
+Version 1.0.0 8.Mar.2003
 
 - check for the existence of the datafile
 - merge the 2 READMEs the have somehow appeared
 - some soundeffects for the bonusgame
-- GLP header for files
+- GPL header for files
 
 Version 0.99.2
 

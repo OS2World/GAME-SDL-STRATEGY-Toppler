@@ -530,7 +530,7 @@ static void loadfont(void) {
   while (!fi.eof()) {
     c = fi.getword();
 
-    if (!c || (c >= MAXCHARNUM)) break;
+    if (!c) break;
 
     fontchars[c].width = fi.getbyte();
     fontchars[c].s = scr_loadsprites(&fontsprites, &fi, 1, fontchars[c].width, fontheight, true, pal, config.use_alpha_font());
@@ -621,7 +621,7 @@ void scr_reload_sprites(Uint8 what) {
 
 void scr_init(void) {
 
-  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (config.fullscreen()) ? (SDL_FULLSCREEN) : (0));
+  scr_reinit();
 
   load_sprites(0xff);
 
@@ -640,6 +640,7 @@ void scr_init(void) {
 
 void scr_reinit() {
   display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (config.fullscreen()) ? (SDL_FULLSCREEN) : (0));
+  assert(display, _("could not open display"));
 }
 
 void scr_done(void) {

@@ -103,6 +103,7 @@ configuration::configuration(FILE *glob, FILE *local) {
   i_editor_towername[0] = 0;
   i_debug_level = 0;
   i_game_speed = DEFAULT_GAME_SPEED;
+  i_nobonus = false;
 
   first_data = 0;
   need_save = (local == 0);
@@ -127,6 +128,7 @@ configuration::configuration(FILE *glob, FILE *local) {
   CNF_CHAR( "password",            &i_curr_password, PASSWORD_LEN );
   CNF_INT(  "start_lives",         &i_start_lives );
   CNF_INT(  "game_speed",          &i_game_speed);
+  CNF_BOOL( "nobonus",             &i_nobonus);
 
   if (glob) {
     parse(glob);

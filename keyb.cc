@@ -88,7 +88,7 @@ void key_init(void) {
 	joy_inited = 2;
       } else {
 	SDL_JoystickEventState(SDL_ENABLE);
-	printf(_("Joystick enabled\n"));
+	printf("Joystick enabled\n");
 	joy_inited = 1;
       }
     }

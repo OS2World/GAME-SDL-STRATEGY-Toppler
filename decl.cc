@@ -232,7 +232,7 @@ FILE *create_local_data_file(const char *name) {
 }
 
 static int sort_by_name(const void *a, const void *b) {
-  return(strcmp(((struct dirent *)a)->d_name, ((struct dirent *)b)->d_name));
+  return(strcmp((*((struct dirent **)a))->d_name, ((*(struct dirent **)b))->d_name));
 }
 
 #if (SYSTEM == SYS_WINDOWS)

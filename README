@@ -123,6 +123,12 @@ complete (currently 3 layer) scroller. The 2 layer scroller only draws
 the front and the backround layer of the underwater scroller in the
 bonus level.
 
+Bonuses:
+
+This toggle allows you to suppress bonus levels.  Some people don't enjoy
+hunting fish as much as climbing towers, this allows them to only play the
+fun part ;-).
+
 Speed Indicator
 ---------------
 

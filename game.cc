@@ -85,7 +85,7 @@ void gam_arrival(void) {
     scr_writetext_center((SCREENHEI / 6), _("You are entering the"));
 
     if (strlen(lev_towername()))
-      scr_writetext_center((SCREENHEI*2 / 6), gettext(lev_towername()));
+      scr_writetext_center((SCREENHEI*2 / 6), _(lev_towername()));
     else
       scr_writetext_center((SCREENHEI*2 / 6), _("Nameless Tower"));
 
@@ -391,8 +391,8 @@ static void bonus(int &tower_position, int &tower_angle, int time, bool lifes) {
     while (lif > 0) {
       dcl_wait();
       countdown(lif, 5000);
-      snd_score();
-      snd_play();
+      ttsounds::instance()->startsound(SND_SCORE);
+      ttsounds::instance()->play();
       writebonus(tower_position, tower_angle, zeit, tec, extra, time, lif, lifes);
     }
   }

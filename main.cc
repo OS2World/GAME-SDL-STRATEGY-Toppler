@@ -75,9 +75,11 @@ int main(int argc, char *argv[]) {
 
   setlocale(LC_MESSAGES, "");
   setlocale(LC_CTYPE, "");
+#ifdef USE_INTERNATIONALISATION
   bindtextdomain("toppler", LOCALEDIR"/locale");
 //  bindtextdomain("toppler", "po");
   textdomain("toppler");
+#endif
 
 #ifdef VERSION
   printf(_("Nebulous version %s\n"), VERSION);

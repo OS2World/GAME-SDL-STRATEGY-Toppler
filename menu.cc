@@ -305,6 +305,7 @@ men_options_sounds(_menusystem *ms)
   return txt;
 }
 
+
 static void
 reload_font_graphics(void) {
   fontsprites.freedata();
@@ -747,8 +748,9 @@ main_game_loop()
         // load next tower, because its colors will be needed for bonus game
         gam_loadtower(tower);
 
-        if (!bns_game())
-          gameresult = GAME_ABORTED;
+        if (!config.nobonus())
+          if (!bns_game())
+            gameresult = GAME_ABORTED;
       }
     } else {
       ttsounds::instance()->stopsound(SND_WATER);
@@ -794,7 +796,7 @@ men_main_startgame_proc(_menusystem *ms)
     }
   }
   static char s[30];
-  snprintf(s, 30, _("%c Start: %s %c"), fontptrleft, gettext(lev_missionname(currentmission)), fontptrright);
+  snprintf(s, 30, _("%c Start: %s %c"), fontptrleft, _(lev_missionname(currentmission)), fontptrright);
   return s;
 }
 

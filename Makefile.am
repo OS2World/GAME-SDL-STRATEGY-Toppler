@@ -1,13 +1,4 @@
-datafiles = toppler.dat \
-m1.ttm m2.ttm ball1.ttm ball2.ttm ball3.ttm abc.ttm \
-toppler.xpm
-headerfiles = archi.h bonus.h config.h decl.h elevators.h game.h keyb.h level.h menu.h \
-points.h robots.h screen.h snowball.h sound.h sprites.h stars.h toppler.h leveledit.h txtsys.h \
-configuration.h highscore.h menusys.h
-
-scoredir = $(localstatedir)/@PACKAGE@
-scorefile = $(scoredir)/@PACKAGE@.hsc
-CPPFLAGS = @CPPFLAGS@ -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(scoredir)\" -DVERSION=\"@TOPPLER_VERSION@\"
+CPPFLAGS = @CPPFLAGS@ -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(scoredir)\" -DLOCALEDIR=\"$(datadir)\"
 
 noinst_PROGRAMS = toppler
 
@@ -42,8 +33,11 @@ pkgdata_DATA = \
   toppler.xpm
 
 man_MANS = toppler.6
-EXTRA_DIST = $(man_MANS) $(datafiles) $(headerfiles) VERSION toppler.spec.in toppler.spec toppler.desktop.in \
- config.sub config.guess toppler.xpm
+
+EXTRA_DIST = $(man_MANS) $(pkgdata_DATA) VERSION toppler.spec toppler.xpm
+
+scoredir = $(localstatedir)/@PACKAGE@
+scorefile = $(scoredir)/@PACKAGE@.hsc
 
 install_exec_local:
 	-(chgrp games $(DESTDIR)$(bindir)/toppler; chmod g+s $(DESTDIR)$(bindir)/toppler)
@@ -52,3 +46,6 @@ install_exec_local:
 	-(chgrp games $(DESTDIR)$(scorefile); chmod g+rw $(DESTDIR)$(scorefile))
 	-(chgrp games $(DESTDIR)$(scoredir); chmod g+rw $(DESTDIR)$(scoredir))
 
+uninstall_local:
+	rm $(scoredir)/@PACKAGE@.hsc
+	rmdir $(scoredir)
