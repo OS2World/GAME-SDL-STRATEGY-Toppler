@@ -29,7 +29,7 @@ toppler_SOURCES =                  \
 
 pkgdata_DATA = \
   toppler.dat \
-  m1.ttm m2.ttm ball1.ttm ball2.ttm ball3.ttm abc.ttm \
+  m1.ttm m2.ttm ball1.ttm ball2.ttm ball3.ttm abc.ttm pasi2.ttm \
   toppler.xpm
 
 man_MANS = toppler.6
