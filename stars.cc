@@ -18,6 +18,7 @@
 
 #include "stars.h"
 
+#include "decl.h"
 #include "sprites.h"
 #include "screen.h"
 
@@ -25,56 +26,66 @@
 #include "stdlib.h"
 
 #define starstep 5
+#define NUM_STARS 20
 
 static unsigned short starnr;
 
 static struct {
   long x, y;
-} stars[21];
+  int state;
+} stars[NUM_STARS];
 
 void sts_draw(void)
 {
-  SDL_Surface *p = spr_spritedata((long)starnr);
-
-  for (int t = 0; t <= 20; t++)
-    scr_blit(p, stars[t].x, stars[t].y);
+  for (int t = 0; t < NUM_STARS; t++)
+    scr_blit(spr_spritedata((long)starnr - stars[t].state), stars[t].x, stars[t].y);
 }
 
 void sts_init(int sn) {
-  for (int t = 0; t <= 20; t++) {
-    stars[t].x = rand() / (RAND_MAX / 320) - 16;
-    stars[t].y = rand() / (RAND_MAX / 240) - 16;
+  for (int t = 0; t < NUM_STARS; t++) {
+    stars[t].x = rand() / (RAND_MAX / SCREENWID) - SPR_STARWID;
+    stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
+    stars[t].state = 0;
   }
 
   starnr = sn;
+}
+
+void 
+sts_blink(void)
+{
+   for (int t = 0; t < NUM_STARS; t++) {
+      if (stars[t].state > 0) stars[t].state = (stars[t].state + 1) % 4;
+      else if (!(rand() & 0xff)) stars[t].state++;
+   }
 }
 
 void sts_move(long x, long y)
 {
   int t;
 
-  for (t = 0; t <= 20; t++) {
+  for (t = 0; t < NUM_STARS; t++) {
     stars[t].x += starstep * x;
     stars[t].y += y;
   }
-  for (t = 0; t <= 20; t++) {
-    if (stars[t].x > 320) {
-      stars[t].x = rand() / (RAND_MAX / starstep) + 16;
-      stars[t].y = rand() / (RAND_MAX / 240);
+  for (t = 0; t < NUM_STARS; t++) {
+    if (stars[t].x > SCREENWID) {
+      stars[t].x = rand() / (RAND_MAX / starstep) - SPR_STARWID;
+      stars[t].y = rand() / (RAND_MAX / SCREENHEI);
     } else {
-      if (stars[t].x < -16) {
-        stars[t].x = 320 - rand() / (RAND_MAX / starstep);
-        stars[t].y = rand() / (RAND_MAX / 240);
+      if (stars[t].x < -SPR_STARWID) {
+        stars[t].x = SCREENWID - rand() / (RAND_MAX / starstep);
+        stars[t].y = rand() / (RAND_MAX / SCREENHEI);
       }
     }
 
-    if (stars[t].y > 240) {
-      stars[t].y = -16;
-      stars[t].x = rand() / (RAND_MAX / 336) - 16;
+    if (stars[t].y > SCREENHEI) {
+      stars[t].y = -SPR_STARHEI;
+      stars[t].x = rand() / (RAND_MAX / (SCREENWID + SPR_STARWID)) - SPR_STARWID;
     } else {
-      if (stars[t].y < -16) {
-        stars[t].y = 240;
-        stars[t].x = rand() / (RAND_MAX / 336) - 16;
+      if (stars[t].y < -SPR_STARHEI) {
+        stars[t].y = SCREENHEI;
+        stars[t].x = rand() / (RAND_MAX / (SCREENWID + SPR_STARWID)) - SPR_STARWID;
       }
     }
   }

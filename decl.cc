@@ -33,6 +33,8 @@ bool nosound;
 bool doublescale;
 bool use_water = true;
 
+char editor_towername[TOWERNAMELEN+1] = "";
+
 void dcl_wait(void) {
   static Uint32 last;
   while ((SDL_GetTicks() - last) < 55*1 ) SDL_Delay(2);
@@ -267,16 +269,23 @@ FILE *create_local_data_file(char *name) {
 
 
 static void parse_config(FILE * in) {
-  char line[200];
+  char line[200], param[200];
 
   while (!feof(in)) {
-    int i;
-    fscanf(in, "%s %i\n", line, &i);
+    fscanf(in, "%s %s\n", line, param);
 
     if (strstr(line, "fullscreen")) {
-      fullscreen = (i == 1);
-    } else if (strstr(line, "scale2x")){
-      doublescale = (i == 1);
+      fullscreen = (atoi(param) == 1);
+    } else if (strstr(line, "scale2x")) {
+      doublescale = (atoi(param) == 1);
+    } else if (strstr(line, "nosound")) {
+      nosound = (atoi(param) == 1);
+    } else if (strstr(line, "editor_towername")) {
+      int len = strlen(param);
+      if (len <= TOWERNAMELEN) {
+	 memcpy(editor_towername, param, strlen(param));
+	 editor_towername[len] = '\0';
+      } else editor_towername[0] = '\0';
     }
   }
 }
@@ -307,6 +316,8 @@ void save_config(void) {
   if (out) {
     fprintf(out, "fullscreen: %i\n", (fullscreen)?(1):(0));
     fprintf(out, "scale2x: %i\n", (doublescale)?(1):(0));
+     fprintf(out, "nosound: %i\n", (nosound)?(1):(0));
+     fprintf(out, "editor_towername: %s\n", editor_towername);
   
     fclose(out);
   }

@@ -36,6 +36,12 @@ SDL_Surface *display;
 
 static SDL_Surface *second;
 
+void
+scr_savedisplaybmp(char *fname)
+{
+   SDL_SaveBMP(display, fname);
+}
+
 static int slicestart;
 static int battlementstart;
 
@@ -147,8 +153,8 @@ static void loadgraphics(void) {
     pal_setbrickpal(t, c1, c2);
   }
 
-  slicestart = scr_loadsprites(8, 96, 8, 4, brickcol, false);
-  battlementstart = scr_loadsprites(8, 144, 24, 4, brickcol, false);
+  slicestart = scr_loadsprites(SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, 4, brickcol, false);
+  battlementstart = scr_loadsprites(SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, 4, brickcol, false);
 
   for (t = -36; t <= 36; t++) {
 
@@ -175,9 +181,10 @@ static void loadgraphics(void) {
   for (t = 0; t < envirocnt; t++)
     pal_setpal(envirocol + t, pal[2*t+1], pal[2*t], pal[2*t], pal_towergame);
 
-  step = scr_loadsprites(1, 20, 7, 4, envirocol, false);
-  elevatorsprite = scr_loadsprites(1, 16, 7, 4, envirocol, false);
-  stick = scr_loadsprites(1, 8, 7, 4, envirocol, false);
+  step = scr_loadsprites(SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, 4, envirocol, false);
+  elevatorsprite = scr_loadsprites(SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, 4, envirocol, false);
+  stick = scr_loadsprites(1, SPR_STICKWID, SPR_STICKHEI, 4, envirocol, false);
+
 
   arc_closefile();
 
@@ -187,31 +194,31 @@ static void loadgraphics(void) {
   for (t = 0; t < 8; t++)
     pal_setpal(topplercol + t, pal[t * 3], pal[t * 3 + 1], pal[t * 3 + 2], pal_towergame);
 
-  topplerstart = scr_loadsprites(74, 20, 20, 4, topplercol, true);
+  topplerstart = scr_loadsprites(74, SPR_HEROWID, SPR_HEROHEI, 4, topplercol, true);
 
   arc_assign(spritedat);
 
   loadcolors(robotscnt, robotscol);
-  robotsst = scr_loadsprites(128, 16, 16, 6, robotscol, true);
+  robotsst = scr_loadsprites(128, SPR_ROBOTWID, SPR_ROBOTHEI, 6, robotscol, true);
 
   loadcolors(ballcnt, ballcol);
-  ballst = scr_loadsprites(2, 16, 16, 5, ballcol, true);
+  ballst = scr_loadsprites(2, SPR_ROBOTWID, SPR_ROBOTHEI, 5, ballcol, true);
 
   loadcolors(boxcnt, boxcol);
-  boxst = scr_loadsprites(16, 8, 8, 4, boxcol, true);
+  boxst = scr_loadsprites(16, SPR_BOXWID, SPR_BOXHEI, 4, boxcol, true);
 
   loadcolors(snowballcnt, snowballcol);
-  snowballst = scr_loadsprites(1, 8, 8, 3, snowballcol, true);
+  snowballst = scr_loadsprites(1, SPR_AMMOWID, SPR_AMMOHEI, 3, snowballcol, true);
 
   loadcolors(starcnt, starcol);
-  starst = scr_loadsprites(16, 16, 16, 3, starcol, true);
+  starst = scr_loadsprites(16, SPR_STARWID, SPR_STARHEI, 3, starcol, true);
   sts_init(starst + 10);
 
   loadcolors(subcnt, subcol);
-  fishst = scr_loadsprites(16, 20, 20, 6, subcol, true);
-  haube = scr_loadsprites(1, 20, 20, 6, subcol, true);
-  subst = scr_loadsprites(6, 60, 17, 6, subcol, true);
-  torb = scr_loadsprites(1, 16, 16, 6, subcol, true);
+  fishst = scr_loadsprites(16, SPR_FISHWID, SPR_FISHHEI, 6, subcol, true);
+  haube = scr_loadsprites(1, SPR_HAUBEWID, SPR_HAUBEHEI, 6, subcol, true);
+  subst = scr_loadsprites(6, SPR_SUBMWID, SPR_SUBMHEI, 6, subcol, true);
+  torb = scr_loadsprites(1, SPR_TORPWID, SPR_TORPHEI, 6, subcol, true);
 
   arc_closefile();
 
@@ -225,7 +232,7 @@ static void loadgraphics(void) {
     pal_setcrosspal(t, r, g, b);
   }
 
-  crossst = scr_loadsprites(120, 16, 16, 4, crosscol+1, true);
+  crossst = scr_loadsprites(120, SPR_CROSSWID, SPR_CROSSHEI, 4, crosscol+1, true);
 
   arc_closefile();
 }
@@ -234,7 +241,7 @@ static void loadfont(void) {
 
   unsigned char pal[fontcnt*3];
   Uint32 res;
-  unsigned char p[6*16];
+  unsigned char p[(FONTWID * FONTHEI / 2)];
   SDL_Surface *s;
   char c;
 
@@ -251,7 +258,7 @@ static void loadfont(void) {
   while (!arc_eof()) {
     arc_read(&c, 1, &res);
     if (!c) break;
-    fontchars[c-32] = scr_loadsprites(1, 12, 16, 4, fontcol, true);
+    fontchars[c-32] = scr_loadsprites(1, FONTWID, FONTHEI, 4, fontcol, true);
   }
   arc_closefile();
 }
@@ -326,21 +333,21 @@ void scr_init(void) {
   loadfont();
   loadscroller();
   if (doublescale)
-    display = SDL_SetVideoMode(640, 480, 8,
+    display = SDL_SetVideoMode(SCREENWID*2, SCREENHEI*2, 8,
                                SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
   else
-    display = SDL_SetVideoMode(320, 240, 8,
+    display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 8,
                                SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
-  second = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 8, 0, 0, 0, 0);
+  second = SDL_CreateRGBSurface(SDL_SWSURFACE, SCREENWID, SCREENHEI, 8, 0, 0, 0, 0);
   pal_setstdpalette(second);
 }
 
 void scr_reinit() {
   if (doublescale)
-    display = SDL_SetVideoMode(640, 480, 8,
+    display = SDL_SetVideoMode(SCREENWID*2, SCREENHEI*2, 8,
                                SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
   else
-    display = SDL_SetVideoMode(320, 240, 8,
+    display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 8,
                                SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
   pal_colors(pal_menu);
 }
@@ -352,8 +359,8 @@ void scr_done(void) {
 
 static void cleardesk(void) {
   SDL_Rect r;
-  r.w = 320;
-  r.h = 240;
+  r.w = SCREENWID;
+  r.h = SCREENHEI;
   r.x = r.y = 0;
   SDL_FillRect(second, &r, 0);
 }
@@ -364,26 +371,26 @@ static void puttower(long angle, long height, long towerheight, int shift = 0) {
 
   height *= 2;
 
-  if (height < 120)
-    w = 112 + height;
+  if (height < (SCREENHEI / 2))
+    w = (SCREENHEI / 2) - SPR_SLICEHEI + height;
   else
-    w = 232 + (height & 0x7);
+    w =  SCREENHEI      - SPR_SLICEHEI + (height % SPR_SLICEHEI);
 
-  upend = 120 - (towerheight - height);
+  upend = (SCREENHEI / 2) - (towerheight - height);
 
-  a = ((height - w) / 2) & 4;
+  a = ((height - w) / 2) & (SPR_SLICEANGLES / 2);
 
-  if (w > 232)
-    scr_blit(spr_spritedata((angle + a) & 0x7 + slicestart), 112 + shift, w);
+  if (w > (SCREENHEI - SPR_SLICEHEI))
+    scr_blit(spr_spritedata(((angle + a) % SPR_SLICEANGLES) + slicestart), (SCREENWID / 2) - (SPR_SLICEWID / 2) + shift, w);
 
   while ((w >= 0) && (w >= upend)) {
-    scr_blit(spr_spritedata((angle + a) & 0x7 + slicestart), 112 + shift, w);
-    w -= 8;
-    a += 4;
+    scr_blit(spr_spritedata(((angle + a) % SPR_SLICEANGLES) + slicestart), (SCREENWID / 2) - (SPR_SLICEWID / 2) + shift, w);
+    w -= SPR_SLICEHEI;
+    a += (SPR_SLICEANGLES / 2);
   }
 
-  if ((w < 0) && (w>-8) && (w>=upend))
-    scr_blit(spr_spritedata((angle+a) & 0x7 + slicestart), 112, w);
+  if ((w < 0) && (w > -SPR_SLICEHEI) && (w >= upend))
+    scr_blit(spr_spritedata(((angle + a) % SPR_SLICEANGLES) + slicestart), (SCREENWID / 2) - (SPR_SLICEWID / 2), w);
 }
 
 static void putbattlement(long angle, long height) {
@@ -392,10 +399,10 @@ static void putbattlement(long angle, long height) {
 
   height *= 2;
 
-  upend = 120-(lev_towerrows() * 8 - height);
+  upend = (SCREENHEI / 2) - (lev_towerrows() * SPR_SLICEHEI - height);
 
   if (upend > 0)
-    scr_blit(spr_spritedata((angle & 7) + battlementstart), 88, upend - 24);
+    scr_blit(spr_spritedata((angle % SPR_BATTLFRAMES) + battlementstart), (SCREENWID / 2) - (SPR_BATTLWID / 2), upend - SPR_BATTLHEI);
 }
 
 static void putwater(long height) {
@@ -415,33 +422,33 @@ static void putwater(long height) {
 
   height *= 2;
 
-  if (height < 120) {
-    for (y = 1; y <= 120 - height; y++) {
-      t = 120 + height - y - 1 - waves[(wavetime * 4 + y * 2) & 0x7f];
+  if (height < (SCREENHEI / 2)) {
+    for (y = 1; y <= (SCREENHEI / 2) - height; y++) {
+      t = (SCREENHEI / 2) + height - y - 1 - waves[(wavetime * 4 + y * 2) & 0x7f];
       if (t <= 0) t = 0;
       z = waves[(wavetime*5 + y) & 0x7f];
       if (abs(z - 4) > y) {
         if (z < 4) {
           v = 4-y;
-          z = 120 + height + y - 1;
+          z = (SCREENHEI / 2) + height + y - 1;
         } else {
           v = 4+y;
-          z =120 + height + y - 1;
+          z = (SCREENHEI / 2) + height + y - 1;
         }
       } else {
         v = z;
-        z = 120 + height + y - 1;
+        z = (SCREENHEI / 2) + height + y - 1;
       }
 
       for(x = 0; x < 10; x++) {
-        ((unsigned char *)(second->pixels))[z*320+x] = pal_dark(0);
-        ((unsigned char *)(second->pixels))[z*320+x+310] = pal_dark(0);
+        ((unsigned char *)(second->pixels))[z * SCREENWID + x] = pal_dark(0);
+        ((unsigned char *)(second->pixels))[z * SCREENWID + x + SCREENWID - 10] = pal_dark(0);
       }
 
-      for(x = 0; x < 320; x++) {
-        if ((x+v > 0) && (x+v < 320))
-          ((unsigned char *)(second->pixels))[z*320+x+v] =
-            pal_dark(((unsigned char *)(second->pixels))[t*320+x]);
+      for(x = 0; x < SCREENWID; x++) {
+        if ((x+v > 0) && (x+v < SCREENWID))
+          ((unsigned char *)(second->pixels))[z * SCREENWID + x + v] =
+            pal_dark(((unsigned char *)(second->pixels))[t * SCREENWID + x]);
       }
     }
   }
@@ -449,7 +456,7 @@ static void putwater(long height) {
 }
 
 void scr_writetext_center(long y, const char *s) {
-  scr_writetext (160 - 6*strlen(s), y, s);
+  scr_writetext ((SCREENWID / 2) - ((FONTWID / 2) * strlen(s)), y, s);
 }
 
 void scr_writetext(long x, long y, const char *s) {
@@ -462,7 +469,7 @@ void scr_writetext(long x, long y, const char *s) {
       c = s[t] - 32;
     if ((c < 59) && (fontchars[c] != 0))
       scr_blit(spr_spritedata(fontchars[c]), x, y);
-    x += 12;
+    x += FONTWID;
     t++;
   }
 }
@@ -476,6 +483,15 @@ void scr_putbar(int x, int y, int br, int h, unsigned char col) {
   SDL_FillRect(second, &r, col);
 }
 
+void
+scr_putrect(int x, int y, int br, int h, unsigned char col = 0)
+{
+   scr_putbar(x, y,      1     , h, col);
+   scr_putbar(x, y,      br    , 1, col);
+   scr_putbar(x + br, y, 1     , h, col);
+   scr_putbar(x, y + h , br + 1, 1, col);
+}
+
 /* exchange active and inactive page */
 void scr_swap(void) {
   if (doublescale) {
@@ -483,21 +499,21 @@ void scr_swap(void) {
     int p = 0;
     int q = 0;
     unsigned char i = ((unsigned char *)(second->pixels))[0];
-    for (int y = 0; y < 240; y++) {
-      for (int x = 0; x < 320; x++) {
+    for (int y = 0; y < SCREENHEI; y++) {
+      for (int x = 0; x < SCREENWID; x++) {
         ((char *)(display->pixels))[p++] = i;
         ((char *)(display->pixels))[p++] = i;
         q++;
         i = ((unsigned char *)(second->pixels))[q];
       }
-      memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - 640], 640);
-      p += 640;
+      memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - (SCREENWID*2)], SCREENWID*2);
+      p += (SCREENWID * 2);
     }
   } else {
     int d = 0;
     int s = 0;
-    for (int y = 0; y < 240; y++) {
-      memmove(&((char *)(display->pixels))[d], &((char *)(second->pixels))[s], 320);
+    for (int y = 0; y < SCREENHEI; y++) {
+      memmove(&((char *)(display->pixels))[d], &((char *)(second->pixels))[s], SCREENWID);
       d += display->pitch;
       s += second->pitch;
     }
@@ -528,12 +544,12 @@ static void draw_tower(long vert, long angle, long hs, long he) {
 
   while (a <= 36) {
     an = ((a - angle) / 8) & 0xf;
-    y = (vert * 2) - ((hs-1) * 8) + 112;
+    y = (vert * 2) - ((hs-1) * 8) + (SCREENHEI / 2) - 8;
     for (h = hs-1; h <= he; h++) {
       if (lev_is_door_upperend(h, an) && doors[a + 36].br) {
-        scr_blit(spr_spritedata(doors[a + 36].s[2]), doors[a + 36].xs, y);
-        scr_blit(spr_spritedata(doors[a + 36].s[1]), doors[a + 36].xs, y-8);
-        scr_blit(spr_spritedata(doors[a + 36].s[0]), doors[a + 36].xs, y-16);
+        scr_blit(spr_spritedata(doors[a + 36].s[2]), (SCREENWID / 2) - 160 + doors[a + 36].xs, y);
+        scr_blit(spr_spritedata(doors[a + 36].s[1]), (SCREENWID / 2) - 160 + doors[a + 36].xs, y-8);
+        scr_blit(spr_spritedata(doors[a + 36].s[0]), (SCREENWID / 2) - 160 + doors[a + 36].xs, y-16);
       }
       y -= 8;
     }
@@ -553,12 +569,12 @@ static void draw_tower_editor(long vert, long angle, long hs, long he, int state
 
   while (a <= 36) {
     an = ((a - angle) / 8) & 0xf;
-    y = (vert * 2) - (hs * 8) + 112;
+    y = (vert * 2) - (hs * 8) + (SCREENHEI / 2) - 8;
     for (h = hs; h <= he; h++) {
       if (lev_is_door(h, an) &&
           (!lev_is_targetdoor(h, an) || (state & 1))
           && doors[a + 36].br) {
-        scr_blit(spr_spritedata(doors[a + 36].s[2]), doors[a + 36].xs, y);
+        scr_blit(spr_spritedata(doors[a + 36].s[2]), (SCREENWID / 2) - 160 + doors[a + 36].xs, y);
       }
       y -= 8;
     }
@@ -569,6 +585,7 @@ static void draw_tower_editor(long vert, long angle, long hs, long he, int state
 
 /* draws something of the environment */
 static void putcase(unsigned char w, long x, long h) {
+  long angle = 0;
   switch (w) {
 
   case 0:
@@ -578,32 +595,33 @@ static void putcase(unsigned char w, long x, long h) {
   case 0x85:
   case 0x89:
   case 0x8d:
-    scr_blit(spr_spritedata(elevatorsprite), 152 + x, h);
+    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), (SCREENWID / 2) - (SPR_ELEVAWID / 2) + x, h);
 
     break;
 
   case 0x81:
   case 0x91:
   case 0xb1:
-    scr_blit(spr_spritedata(step), 150 + x, h);
+    scr_blit(spr_spritedata((angle % SPR_STEPFRAMES) + step), (SCREENWID / 2) - (SPR_STEPWID / 2) + x, h);
 
     break;
 
   case 0x80:
   case 0x84:
   case 0x8c:
-    scr_blit(spr_spritedata(stick), 156 + x, h);
+    scr_blit(spr_spritedata(stick), (SCREENWID / 2) - (SPR_STICKWID / 2) + x, h);
 
     break;
 
   case 0x82:
-    scr_blit(spr_spritedata(boxst + boxstate), x + 160 - 4, h);
+    scr_blit(spr_spritedata(boxst + boxstate), x + (SCREENWID / 2) - (SPR_BOXWID / 2), h);
 
     break;
   }
 }
 
 static void putcase_editor(unsigned char w, long x, long h, int state) {
+   long angle = 0;
   switch (w) {
 
   case 0:
@@ -611,54 +629,53 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     break;
 
   case 0x85:
-    scr_blit(spr_spritedata(elevatorsprite), 152 + x, h - (state % 4));
+    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), (SCREENWID / 2) - (SPR_ELEVAWID / 2) + x, h - (state % 4));
     break;
   case 0x0c:
-    scr_blit(spr_spritedata(elevatorsprite), 152 + x, h - 4 + abs(state - 8));
+    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), (SCREENWID / 2) - (SPR_ELEVAWID / 2) + x, h - 4 + abs(state - 8));
     break;
   case 0x08:
-    scr_blit(spr_spritedata(elevatorsprite), 152 + x, h + (state % 4));
+    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), (SCREENWID / 2) - (SPR_ELEVAWID / 2) + x, h + (state % 4));
     break;
-
   case 0x81:
-    scr_blit(spr_spritedata(step), 150 + x, h);
+    scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), (SCREENWID / 2) - (SPR_STEPWID / 2) + x, h);
     break;
   case 0x91:
     if (state & 1)
-      scr_blit(spr_spritedata(step), 150 + x, h);
+      scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), (SCREENWID / 2) - (SPR_STEPWID / 2) + x, h);
     break;
   case 0xb1:
-    scr_blit(spr_spritedata(step), 150 + x + state % 4, h);
+    scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), (SCREENWID / 2) - (SPR_STEPWID / 2) + x + state % 4, h);
     break;
 
   case 0x80:
-    scr_blit(spr_spritedata(stick), 156 + x, h);
+    scr_blit(spr_spritedata(stick), (SCREENWID / 2) - (SPR_STICKWID / 2) + x, h);
     break;
 
   case 0x82:
-    scr_blit(spr_spritedata(boxst + boxstate), x + 160 - 4, h);
+    scr_blit(spr_spritedata(boxst + boxstate), x + (SCREENWID / 2) - (SPR_BOXWID / 2), h);
     break;
 
   case 0x10:
-    scr_blit(spr_spritedata(ballst + 1), x + 160 - 8, h - 8);
+    scr_blit(spr_spritedata(ballst + 1), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - 8);
     break;
   case 0x20:
-    scr_blit(spr_spritedata(ballst), x + 160 - 8 + state / 2, h - 8);
+    scr_blit(spr_spritedata(ballst), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2) + state / 2, h - 8);
     break;
   case 0x30:
-    scr_blit(spr_spritedata(ballst), x + 160 - 8, h - 8);
+    scr_blit(spr_spritedata(ballst), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - 8);
     break;
   case 0x40:
-    scr_blit(spr_spritedata(robotsst), x + 160 - 8, h - 4 + abs(state - 8));
+    scr_blit(spr_spritedata(robotsst), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - 4 + abs(state - 8));
     break;
   case 0x50:
-    scr_blit(spr_spritedata(robotsst), x + 160 - 8, h - 8 + abs(state - 8) * 2);
+    scr_blit(spr_spritedata(robotsst), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - 8 + abs(state - 8) * 2);
     break;
   case 0x60:
-    scr_blit(spr_spritedata(robotsst), x + 160 - 8 + abs(state - 8), h);
+    scr_blit(spr_spritedata(robotsst), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2) + abs(state - 8), h);
     break;
   case 0x70:
-    scr_blit(spr_spritedata(robotsst), x + 160 - 8 + 2 * abs(state - 8), h);
+    scr_blit(spr_spritedata(robotsst), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h);
     break;
   }
 }
@@ -669,7 +686,7 @@ static void putrobot(int t, int m, long x, long h)
 {
   int nr;
 
-  if (h > 256) return;
+  if (h > (SCREENHEI + SPR_ROBOTHEI)) return;
 
   switch (t) {
 
@@ -700,7 +717,7 @@ static void putrobot(int t, int m, long x, long h)
       break;
   }
 
-  scr_blit(spr_spritedata(nr), x + 160 - 8, h - 16);
+  scr_blit(spr_spritedata(nr), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI);
 }
 
 /* draws something of the tower */
@@ -712,7 +729,7 @@ static void putthings(long vert, long a, long angle, long hs, long he) {
     x = sintab[a + 60];
     y = (vert * 2) - (hs * 8) + 112;
     for (h = hs; h <= he; h++) {
-      putcase(lev_tower(h, ((a - angle) / 8) & 0xf), x, y);
+      putcase(lev_tower(h, ((a - angle) / 8) & 0xf), x, y + (SCREENHEI / 2) - 120);
       y -= 8;
     }
   }
@@ -722,7 +739,7 @@ static void putthings(long vert, long a, long angle, long hs, long he) {
       x = ((rob_angle(h) + angle + 56) & 0x7f) - 52;
       if (x > a + 4 && x <= a + 8)
         putrobot(rob_kind(h), rob_time(h),
-                 sintab[x + 52], ((vert - rob_vertical(h)) * 2) + 120);
+                 sintab[x + 52], ((vert - rob_vertical(h)) * 2) + (SCREENHEI / 2));
     }
   }
 }
@@ -734,7 +751,7 @@ static void putthings_editor(long vert, long a, long angle, long hs, long he, in
   x = sintab[a + 60];
   y = (vert * 2) - (hs * 8) + 112;
   for (h = hs; h <= he; h++) {
-    putcase_editor(lev_tower(h, ((a - angle) / 8) & 0xf), x, y, state);
+    putcase_editor(lev_tower(h, ((a - angle) / 8) & 0xf), x, y + (SCREENHEI / 2) - 120, state);
     y -= 8;
   }
 }
@@ -826,11 +843,11 @@ static void putkreuz(long vert)
   for (int t = 0; t <= 3; t++) {
     if (rob_kind(t) == OBJ_KIND_CROSS) {
       i = rob_angle(t) * 3 - 28;
-      if ((i <= -16) || (i >= 320))
+      if ((i <= -SPR_CROSSWID) || (i >= SCREENWID))
         return;
-      y = (vert - rob_vertical(t)) * 2 + 104;
-      if (y > -16 && y < 240)
-        scr_blit(spr_spritedata(crossst + labs(rob_time(t)) % 120), i, y);
+      y = (vert - rob_vertical(t)) * 2 + (SCREENHEI / 2) - SPR_CROSSHEI;
+      if (y > -SPR_CROSSHEI && y < SCREENHEI)
+        scr_blit(spr_spritedata(crossst + labs(rob_time(t)) % 120), i + (SCREENWID / 2) - 160, y);
 
       return;
     }
@@ -869,12 +886,13 @@ void scr_drawall(long vert,
 
   cleardesk();
 
-  hs = vert / 4 - 16;
+  hs = vert / 4 - ((SCREENHEI / 2) / 8 + 1);
   if (hs < 0) hs = 0;
 
-  he = vert / 4 + 16;
+  he = vert / 4 + ((SCREENHEI / 2) / 8 + 1);
   if (he > lev_towerrows()) he = lev_towerrows() - 1;
 
+  sts_blink();
   sts_draw();
   draw_behind(vert, angle, hs, he);
   draw_tower(vert, angle, hs, he);
@@ -882,27 +900,29 @@ void scr_drawall(long vert,
 
   if (snb_exists())
     scr_blit(spr_spritedata(snowballst),
-             sintab[((snb_anglepos() + angle) & 0x7f) + 60] + 148,
-             ((vert - snb_verticalpos()) * 2) + 112);
+             sintab[((snb_anglepos() + angle) & 0x7f) + 60] + (SCREENWID / 2) - (SPR_HEROWID - SPR_AMMOWID),
+             ((vert - snb_verticalpos()) * 2) + (SCREENHEI / 2) - SPR_AMMOHEI);
 
   if (top_visible()) {
       scr_blit(spr_spritedata(topplerstart + top_shape() +
                               ((top_look_left()) ?  umkehr : 0)),
-               150, (vert - top_verticalpos()) * 2 + 100);
+               (SCREENWID / 2) - (SPR_HEROWID / 2),
+	       (vert - top_verticalpos()) * 2 + (SCREENHEI / 2) - SPR_HEROHEI);
 
     if (top_onelevator())
-      scr_blit(spr_spritedata(elevatorsprite), 152, vert - top_verticalpos() + 120);
-
+      scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), (SCREENWID / 2) - (SPR_ELEVAWID / 2),
+	       vert - top_verticalpos() + (SCREENHEI / 2));
   }
 
   if (svisible) {
+    /* TODO: use SPR_SUBMxxx */
     scr_blit(spr_spritedata((long)subst),
-             115 + 16,
-             132 - substart + 16);
-
+             (SCREENWID / 2) - 45 + 16,
+             (SCREENHEI / 2) + 12 - substart + 16);
+    /* TODO: use SPR_HAUBExxx */
     scr_blit(spr_spritedata(haube),
-             171 - subshape - 16 - 8,
-             120 - substart + 8 * 2);
+             (SCREENWID / 2) + 11 - subshape - 16 - 8,
+             (SCREENHEI / 2) - substart + 8 * 2);
 
   }
 
@@ -971,8 +991,11 @@ void scr_drawedit(long vpos, long apos) {
 
   putwater(vert);
 
-  if (boxstate & 1)
-    scr_putbar(160 - 8, 120 - 8, 16, 8, envirocol + boxstate);
+  if (boxstate & 1) {
+//    scr_putbar((SCREENWID / 2) - (16 / 2), (SCREENHEI / 2) - 8, 16, 8, envirocol + boxstate);
+     scr_putrect((SCREENWID / 2) - (16 / 2), (SCREENHEI / 2) - 8, 16, 8, envirocol + boxstate);
+  }
+
 
   char s[20];
   sprintf(s, "%u", lev_towertime());
@@ -984,7 +1007,7 @@ void scr_drawedit(long vpos, long apos) {
 static void put_scrollerlayer(long horiz, int layer) {
   horiz %= layerwidth[layer];
   scr_blit(layerimage[layer], -horiz, 0);
-  if (horiz + 320 > layerwidth[layer])
+  if (horiz + SCREENWID > layerwidth[layer])
     scr_blit(layerimage[layer], layerwidth[layer] - horiz, 0);
 }
 
@@ -992,7 +1015,7 @@ void scr_draw_bonus1(long horiz, long towerpos) {
   put_scrollerlayer(1*horiz/2, 0);
   put_scrollerlayer(1*horiz/1  , 1);
 
-  puttower(1, 60, 240, towerpos);
+  puttower(1, 60, SCREENHEI, towerpos);
 }
 void scr_draw_bonus2(long horiz, long towerpos) {
   put_scrollerlayer(2*horiz/1, 2);
@@ -1002,6 +1025,7 @@ void scr_draw_bonus2(long horiz, long towerpos) {
 
 void scr_draw_submarine(long vert, long x, long number) {
   scr_blit(spr_spritedata(subst+number), x, vert);
+  /* TODO: use SPR_HAUBExxx */
   scr_blit(spr_spritedata(haube), x+20, vert-12);
 }
 

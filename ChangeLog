@@ -1,5 +1,14 @@
+Version 0.97
+
 work from pasi
 
+- fixed typo "abbort".
+- fixed bug that made stars appear in the sky when moving to right.
+- fix compiler complaints.
+- allow toggling sounds on/off from the options -menu.
+- better looking hiscore list.
+- blinking stars.
+- spiffy new line inputting routine.
 - more user-friendly Yes/No -menu, where user can select with keyboard.
 - interactive tower color changer in level editor.
 - status line in level editor.
@@ -7,6 +16,7 @@ work from pasi
 
 my work
 
+- include basses nice new layered graphics for the bonus game
 - include compression in the datafile (zlib)
 - change layers data to use data file too (remove layer?.tga)
 - get rid of this terrible page wise saving of data, so I could finally remove

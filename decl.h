@@ -24,6 +24,91 @@
 #include <stdio.h>
 #include <dirent.h>
 
+/* screen width and height, in pixels. */
+#define SCREENWID 320
+#define SCREENHEI 240
+
+/* font width and height, in pixels. */
+#define FONTWID 12
+#define FONTHEI 16
+
+/* title sprite "NEBULOUS" width and height, in pixels */
+#define SPR_TITLEWID 304
+#define SPR_TITLEHEI 47
+
+/* star sprite size */
+#define SPR_STARWID 16
+#define SPR_STARHEI 16
+
+/* size of one layer sprite of tower */
+#define SPR_SLICEWID 96
+#define SPR_SLICEHEI 8
+#define SPR_SLICEANGLES 8
+#define SPR_SLICEFRAMES 1
+#define SPR_SLICESPRITES (SPR_SLICEANGLES * SPR_SLICEFRAMES)
+
+/* size of the battlement sprite on top of the tower */
+#define SPR_BATTLWID 144
+#define SPR_BATTLHEI 24
+#define SPR_BATTLFRAMES 8
+
+/* size of platform sprite */
+#define SPR_STEPWID 20
+#define SPR_STEPHEI 7
+#define SPR_STEPFRAMES 1
+
+/* size of elevator sprite */
+#define SPR_ELEVAWID 16
+#define SPR_ELEVAHEI 7
+#define SPR_ELEVAFRAMES 1
+
+/* size of elevator stick / wall */
+#define SPR_STICKWID 8
+#define SPR_STICKHEI 7
+
+/* size of shootable flashing box */
+#define SPR_BOXWID 8
+#define SPR_BOXHEI 8
+
+/* size of our hero */
+#define SPR_HEROWID 20
+#define SPR_HEROHEI 20
+
+/* size of hero's ammunition, the snowball */
+#define SPR_AMMOWID 8
+#define SPR_AMMOHEI 8
+
+/* size of robot sprite */
+#define SPR_ROBOTWID 16
+#define SPR_ROBOTHEI 16
+
+/* cross sprite size */
+#define SPR_CROSSWID 16
+#define SPR_CROSSHEI 16
+
+/* size of the bonus game fish */
+#define SPR_FISHWID  20
+#define SPR_FISHHEI  20
+
+/* size of submarine top sprite */
+#define SPR_HAUBEWID 20
+#define SPR_HAUBEHEI 20
+
+/* submarine sprite size */
+#define SPR_SUBMWID 60
+#define SPR_SUBMHEI 17
+
+/* submarine ammunition, torpedo */
+#define SPR_TORPWID 16
+#define SPR_TORPHEI 16
+
+
+/*   define this if you want the bonus game to be accessible 
+     from the main menu. */
+/* #define HUNT_THE_FISH */
+
+#define TOWERNAMELEN 19
+
 /* names of the different data files */
 #define grafdat         "graphics"
 #define fontdat         "font"
@@ -91,9 +176,12 @@
 #define pal_bonusgame 2
 
 
-/* the two special caracters in the font */
+/* the two special characters in the font */
 #define fonttoppler     '#'
 #define fontpoint       '*'
+
+#define FDECL(f,p) f p
+#define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))
 
 /* waits around 1/18 of a second */
 void dcl_wait(void);
@@ -113,6 +201,8 @@ extern bool fullscreen;
 extern bool nosound;
 extern bool doublescale;
 extern bool use_water;
+extern char editor_towername[TOWERNAMELEN+1];
+
 
 void load_config(void);
 void save_config(void);

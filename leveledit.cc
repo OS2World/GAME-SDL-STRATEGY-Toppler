@@ -83,16 +83,17 @@ static bool edit_towercolor(int row, int col) {
 
       for (tmp = 0 ; tmp < 3; tmp++) {
 	 tmpcol = newc[tmp];
-	 z = 170 + tmp * 18;
+	 z = ((SCREENHEI * 2) / 3) + tmp * (FONTHEI + 2);
 
-	 scr_putbar(160 - (128 + 8), z, 256 + (8 * 2), 16, (tmp == activecol) ? bgcol : 66);
-	 scr_putbar(160 - 128, z, 256, 16, 0);
-	 scr_putbar(160 - 128, z, tmpcol, 16, 62);
+	 scr_putbar((SCREENWID / 2) - (128 + 8), z, 256 + (8 * 2), FONTHEI, (tmp == activecol) ? bgcol : 66);
+	 scr_putbar((SCREENWID / 2) - 128, z, 256, FONTHEI, 0);
+	 scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, 62);
 	 cbuf[0] = '\0';
 	 sprintf(cbuf, "%5s  %.3d", colorname[tmp], tmpcol);
 	 scr_writetext_center(z, cbuf);
-	 bgcol = (bgcol + 1) & 0x1f;
       }
+      
+      bgcol = get_blink_color(); 
       
       scr_swap();
       dcl_wait();
@@ -165,10 +166,10 @@ static void createMission(void) {
   scr_drawedit(0, 0);
   scr_writetext_center(30, "MISSION CREATION");
   scr_writetext_center(60, "ENTER MISSION NAME");
-  scr_writetext_center(70, "EMPTY TO ABBORT");
+  scr_writetext_center(70, "EMPTY TO ABORT");
 
   char missionname[25];
-  men_input(missionname, 25, 160);
+  men_input(missionname, 25);
 
   if (!missionname[0]) {
     pal_colors(pal_towergame);
@@ -181,7 +182,7 @@ static void createMission(void) {
     scr_writetext_center(30, "MISSION CREATION");
 
     scr_writetext_center(70, "COULD NOT CREATE FILE");
-    scr_writetext_center(90, "ABBORTING");
+    scr_writetext_center(90, "ABORTING");
 
     scr_swap();
 
@@ -210,7 +211,7 @@ static void createMission(void) {
     scr_writetext_center(70, s);
 
     towername[0] = 0;
-    men_input(towername, 25, 160);
+    men_input(towername, 25);
 
     if (!towername[0]) break;
 
@@ -279,8 +280,6 @@ const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Go To Start",   "Show This Help"
 };
 
-#define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))
-
 struct _ed_key {
    int action;
    char key;
@@ -328,6 +327,7 @@ struct _ed_key {
 void le_showkeyhelp(int row, int col) {
   int c, k, offs = 0;
   bool ende = false;
+  int lines = ((SCREENHEI - 50) / FONTHEI);
 
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
 
@@ -336,17 +336,17 @@ void le_showkeyhelp(int row, int col) {
      
      scr_writetext_center(22, "Editor Key Help");
      
-     for (k = 0; k < 11; k++) {
+     for (k = 0; k < lines; k++) {
 	char buf[80];
 	buf[0] = '\0';
 	sprintf(buf, "%5s  %.20s", key_name(_ed_keys[k+offs].key), 
 		_ed_key_actions[_ed_keys[k+offs].action]);
 	
-	scr_writetext(0, k * 16 + 50, buf);
+	scr_writetext(0, k * FONTHEI + 50, buf);
      }
 
-     if (offs > 0) scr_writetext(304, 34, "*");
-     if (offs + 11 < SIZE(_ed_keys)) scr_writetext(304, 224, "*");
+     if (offs > 0) scr_writetext(SCREENWID-FONTWID, 34, "*");
+     if (offs + lines < SIZE(_ed_keys)) scr_writetext(SCREENWID-FONTWID, SCREENHEI-FONTHEI, "*");
      
      scr_swap();
      dcl_wait();
@@ -355,10 +355,10 @@ void le_showkeyhelp(int row, int col) {
      
      switch (c) {
       case 1: if (offs > 0) offs--; break;
-      case 2: if (offs + 11 < SIZE(_ed_keys)) offs++; break;
-      case 7: if (offs > 11) offs -= 11; else offs = 0; break;
+      case 2: if (offs + lines < SIZE(_ed_keys)) offs++; break;
+      case 7: if (offs > lines) offs -= lines; else offs = 0; break;
       case ' ':
-      case 8: if (offs + (11 * 2) < SIZE(_ed_keys)) offs += 11; else offs = SIZE(_ed_keys) - 11; break;
+      case 8: if (offs + (lines * 2) < SIZE(_ed_keys)) offs += lines; else offs = SIZE(_ed_keys) - lines; break;
       case '\r':
       case 27: ende = true; break;
      }
@@ -375,7 +375,7 @@ void le_edit(void) {
   char inp;
   int row = 0, col = 0;
   int tstep = 0;
-  char tname[20] = "tower";
+//  char tname[TOWERNAMELEN+1] = "tower";
 
   lev_new();
 
@@ -402,10 +402,10 @@ void le_edit(void) {
      sprintf(status, "%c  X%d  Y%d", 
 	     changed ? '*' : ' ', -col & 0xf, row);
      
-     scr_putbar(312, 240-lev_towerrows(), 8, lev_towerrows(), 10);
-     scr_putbar(312, 240-row-1, 8, 1, 100);
+     scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(), 10);
+     scr_putbar(SCREENWID-8, SCREENHEI-row-1, 8, 1, get_blink_color());
 
-     scr_writetext(0, 240-16, status);
+     scr_writetext(0, SCREENHEI-FONTHEI, status);
      
      scr_swap();
      dcl_wait();
@@ -467,6 +467,7 @@ void le_edit(void) {
 	case EDACT_PUTSLIDER:
 	  lev_putslidingstep(row, -col & 0xf);
 	  changed = true;
+	  break;
 	case EDACT_PUTDOOR:
 	  lev_putdoor(row, -col & 0xf);
 	  changed = true;
@@ -538,8 +539,8 @@ void le_edit(void) {
 	  if (changed)
 	    if (!really_load(row, col))
 	      break;
-	  men_input(tname, 19, 160);
-	  lev_loadtower(tname);
+	  men_input(editor_towername, TOWERNAMELEN);
+	  lev_loadtower(editor_towername);
 	  pal_settowercolor(lev_towercol_red(),
 			    lev_towercol_green(),
 			    lev_towercol_blue());
@@ -548,8 +549,8 @@ void le_edit(void) {
 	  changed = false;
 	  break;
 	case EDACT_SAVETOWER:
-	  men_input(tname, 19, 160);
-	  lev_savetower(tname);
+	  men_input(editor_towername, TOWERNAMELEN);
+	  lev_savetower(editor_towername);
 	  changed = false;
 	  break;
 	case EDACT_TESTTOWER:
@@ -567,6 +568,7 @@ void le_edit(void) {
 	       snd_wateroff();
 	       lev_restore(p);
 	       key_readkey();
+	       set_men_bgproc(editor_background_proc);
 	    }
 	  break;
 	case EDACT_SETTOWERCOLOR: 

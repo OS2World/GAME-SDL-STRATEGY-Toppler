@@ -26,6 +26,8 @@
 
  these palettes are managed in this module */
 
+int get_blink_color(void);
+
 /* sets one color in a palette*/
 void pal_setpal(unsigned char nr, unsigned char r, unsigned char g, unsigned char b, unsigned char pal);
 

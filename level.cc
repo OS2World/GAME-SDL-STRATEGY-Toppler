@@ -79,10 +79,34 @@
 static Uint8 * mission = NULL;
 static Uint8 towerheight;
 static Uint8 tower[256][16];
-static char towername[20];
+static char towername[TOWERNAMELEN+1];
 static Uint8 towernumber;
 static Uint8 towercolor_red, towercolor_green, towercolor_blue;
 static Uint16 towertime;
+
+struct _towercharconv {
+   Uint8 dat;
+   char  ch;
+} static towerchar_conv[] = {
+     {0x00, ' '},
+     {0x10, '1'},
+     {0x20, '2'},
+     {0x30, '3'},
+     {0x40, '4'},
+     {0x50, '5'},
+     {0x60, '6'},
+     {0x70, '7'},
+     {0x80, '!'},
+     {0x81, '-'},
+     {0x82, 'b'},
+     {0x83, '#'},
+     {0xc3, 'T'},
+     {0x85, '^'},
+     {0x08, 'v'},
+     {0x0c, '+'},
+     {0x91, '.'},
+     {0xb1, '>'},
+};
 
 typedef struct mission_node {
   char name[30];
@@ -100,6 +124,19 @@ static int missionfiles (const struct dirent *file)
           (file->d_name[len - 2] == 't') &&
           (file->d_name[len - 3] == 't') &&
           (file->d_name[len - 4] == '.'));
+}
+
+
+Uint8 conv_char2towercode(char ch) {
+   for (int x = 0; x < SIZE(towerchar_conv); x++)
+     if (ch == towerchar_conv[x].ch) return towerchar_conv[x].dat;
+   return 0x00;
+}
+
+char conv_towercode2char(Uint8 code) {
+   for (int x = 0; x < SIZE(towerchar_conv); x++)
+     if (code == towerchar_conv[x].dat) return towerchar_conv[x].ch;
+   return ' ';
 }
 
 static void add_mission(char *fname) {
@@ -325,7 +362,7 @@ void lev_selecttower(Uint8 number) {
     towerstart += long(mission[idxpos + 4 * number + 2]) << 16;
     towerstart += long(mission[idxpos + 4 * number + 3]) << 24;
   }
-
+   
   // extract towername
   memmove(towername, &mission[towerstart + 1], mission[towerstart]);
   towername[mission[towerstart]] = 0;
@@ -614,44 +651,19 @@ bool lev_loadtower(char *fname) {
 
   if (in == NULL) return false;
 
-  fgets(towername, 20, in);
+  fgets(towername, TOWERNAMELEN+1, in);
   fscanf(in, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);
 
-  fscanf(in, "%i\n", &towertime);
-  fscanf(in, "%i\n", &towerheight);
+  fscanf(in, "%hu\n", &towertime);
+  fscanf(in, "%hhu\n", &towerheight);
 
   for (int row = towerheight - 1; row >= 0; row--) {
     char line[200];
 
     fgets(line, 200, in);
 
-    for (int col = 0; col < 16; col++) {
-      switch(line[col]) {
-      case '1': tower[row][col] = 0x10; break;
-      case '2': tower[row][col] = 0x20; break;
-      case '3': tower[row][col] = 0x30; break;
-      case '4': tower[row][col] = 0x40; break;
-      case '5': tower[row][col] = 0x50; break;
-      case '6': tower[row][col] = 0x60; break;
-      case '7': tower[row][col] = 0x70; break;
-
-      case '!': tower[row][col] = 0x80; break;
-      case '-': tower[row][col] = 0x81; break;
-      case 'b': tower[row][col] = 0x82; break;
-
-      case '#': tower[row][col] = 0x83; break;
-      case 'T': tower[row][col] = 0xc3; break;
-
-      case '^': tower[row][col] = 0x85; break;
-      case 'v': tower[row][col] = 0x08; break;
-      case '+': tower[row][col] = 0x0c; break;
-
-      case '.': tower[row][col] = 0x91; break;
-      case '>': tower[row][col] = 0xb1; break;
-      default:
-         tower[row][col] = 0; break;
-      }
-    }
+    for (int col = 0; col < 16; col++) 
+      tower[row][col] = conv_char2towercode(line[col]);
   }
 
   fclose(in);
@@ -664,40 +676,15 @@ bool lev_savetower(char *fname) {
   if (out == NULL) return false;
 
   fprintf(out, "%s\n", towername);
-  fprintf(out, "%i, %i, %i\n", towercolor_red, towercolor_green, towercolor_blue);
-  fprintf(out, "%i\n", towertime);
-  fprintf(out, "%i\n", towerheight);
+  fprintf(out, "%hhu, %hhu, %hhu\n", towercolor_red, towercolor_green, towercolor_blue);
+  fprintf(out, "%hu\n", towertime);
+  fprintf(out, "%hhu\n", towerheight);
 
   for (int row = towerheight - 1; row >= 0; row--) {
-    char line[18];
+    char line[16+2];
 
-    for (int col = 0; col < 16; col++) {
-      switch(tower[row][col]) {
-      case 0x10: line[col] = '1'; break;
-      case 0x20: line[col] = '2'; break;
-      case 0x30: line[col] = '3'; break;
-      case 0x40: line[col] = '4'; break;
-      case 0x50: line[col] = '5'; break;
-      case 0x60: line[col] = '6'; break;
-      case 0x70: line[col] = '7'; break;
-
-      case 0x80: line[col] = '!'; break;
-      case 0x81: line[col] = '-'; break;
-      case 0x82: line[col] = 'b'; break;
-
-      case 0x83: line[col] = '#'; break;
-      case 0xc3: line[col] = 'T'; break;
-
-      case 0x85: line[col] = '^'; break;
-      case 0x08: line[col] = 'v'; break;
-      case 0x0c: line[col] = '+'; break;
-
-      case 0x91: line[col] = '.'; break;
-      case 0xb1: line[col] = '>'; break;
-      default:
-         line[col] = ' '; break;
-      }
-    }
+    for (int col = 0; col < 16; col++)
+      line[col] = conv_towercode2char(tower[row][col]);
     line[16] = '|';
     line[17] = 0;
     fprintf(out, "%s\n", line);
@@ -816,6 +803,7 @@ void lev_puttarget(int row, int col) {
     tower[row + 2][col] = 0xc3;
   }
 }
+
 void lev_putstick(int row, int col) { tower[row][col] = 0x80; }
 void lev_putbox(int row, int col) { tower[row][col] = 0x82; }
 void lev_putelevator(int row, int col) { tower[row][col] = 0x85; }
@@ -1057,8 +1045,8 @@ void lev_mission_addtower(char * name) {
   nmission++;
 
   {
-    char towername[20];
-    fgets(towername, 20, in);
+    char towername[TOWERNAMELEN+1];
+    fgets(towername, TOWERNAMELEN+1, in);
 
     Uint8 tmp = strlen(towername);
     fwrite(&tmp, 1, 1, fmission);
@@ -1070,8 +1058,8 @@ void lev_mission_addtower(char * name) {
     Uint16 towertime;
 
     fscanf(in, "%hhu, %hhu, %hhu\n", &red, &green, &blue);
-    fscanf(in, "%i\n", &towertime);
-    fscanf(in, "%i\n", &towerheight);
+    fscanf(in, "%hu\n", &towertime);
+    fscanf(in, "%hhu\n", &towerheight);
 
     fwrite(&towerheight, 1, 1, fmission);
     tmp = towertime & 0xff;
@@ -1093,32 +1081,8 @@ void lev_mission_addtower(char * name) {
 
     fgets(line, 200, in);
 
-    for (col = 0; col < 16; col++) {
-      switch(line[col]) {
-      case '1': tower[row][col] = 0x10; break;
-      case '2': tower[row][col] = 0x20; break;
-      case '3': tower[row][col] = 0x30; break;
-      case '4': tower[row][col] = 0x40; break;
-      case '5': tower[row][col] = 0x50; break;
-      case '6': tower[row][col] = 0x60; break;
-      case '7': tower[row][col] = 0x70; break;
-
-      case '!': tower[row][col] = 0x80; break;
-      case '-': tower[row][col] = 0x81; break;
-      case 'b': tower[row][col] = 0x82; break;
-
-      case '#': tower[row][col] = 0x83; break;
-      case 'T': tower[row][col] = 0xc3; break;
-
-      case '^': tower[row][col] = 0x85; break;
-      case 'v': tower[row][col] = 0x08; break;
-      case '+': tower[row][col] = 0x0c; break;
-
-      case '.': tower[row][col] = 0x91; break;
-      case '>': tower[row][col] = 0xb1; break;
-      default:  tower[row][col] = 0x00; break;
-      }
-    }
+    for (Uint8 col = 0; col < 16; col++)
+       tower[row][col] = conv_char2towercode(line[col]);
   }
 
   /* output bitmap */

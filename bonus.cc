@@ -36,39 +36,54 @@ static long fish[fishcnt + 1][4];
 static long torpedox, torpedoy, subposx, subposy;
 static int substat;
 
-static bool escape(long time, long x) {
+static long callback_time;
+static long callback_x;
+
+/* callback proc for men_yn() */
+static void
+bonus_background_proc(void)
+{
   long towerpos;
   int b;
 
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
+  scr_putbar(0, 0, SCREENWID, SCREENHEI);
 
-  scr_putbar(0, 0, 320, 240);
-
-  if (time < 300)
-    towerpos = -(2*time);
+  if (callback_time < 300)
+    towerpos = -(2*callback_time);
   else
-    towerpos = gametime * scrollerspeed - 2*time;
+    towerpos = gametime * scrollerspeed - 2*callback_time;
 
-  scr_draw_bonus1(x, towerpos);
+  scr_draw_bonus1(callback_x, towerpos);
 
   if (torpedox != -1)
     scr_draw_torpedo(torpedoy, torpedox);
-  scr_draw_submarine(subposy, subposx, (time & 1) * 3 + substat);
+  scr_draw_submarine(subposy, subposx, (callback_time & 1) * 3 + substat);
 
   for (b = 0; b <= fishcnt; b++) {
     if (fish[b][0] >= 0)
       scr_draw_fish(fish[b][1], fish[b][0], fish[b][2]);
 
   }
-  scr_draw_bonus2(x, towerpos);
+  scr_draw_bonus2(callback_x, towerpos);
+}
 
-  key_wait_for_any();
+static bool 
+escape(long time, long x) 
+{
+   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
+
+   key_wait_for_any();
    
-  if (men_yn("Really quit", false)) {
+   callback_time = time;
+   callback_x = x;
+   
+   set_men_bgproc(bonus_background_proc);
+   
+   if (men_yn("Really quit", false)) 
      return true;
-  } else pal_colors(pal_bonusgame);
+   else pal_colors(pal_bonusgame);
    
-  return false;
+   return false;
 }
 
 static void pause(long time, long x) {
@@ -78,7 +93,7 @@ static void pause(long time, long x) {
   key_readkey();
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
 
-  scr_putbar(0, 0, 320, 240);
+  scr_putbar(0, 0, SCREENWID, SCREENHEI);
 
   if (time < 300)
     towerpos = -(2*time);
@@ -120,7 +135,7 @@ bool bns_game(void) {
 
   int b;
 
-  subposx = 160-30;
+  subposx = (SCREENWID / 2) - 30;
   subposy = 60;
 
   for (b = 0; b <= fishcnt; b++)
@@ -143,7 +158,7 @@ bool bns_game(void) {
     
     if (torpedox >= 0) {
       torpedox += 4;
-      if (torpedox > 330)
+      if (torpedox > (SCREENWID+10))
         torpedox = -1;
       for (b = 0; b <= fishcnt; b++) {
         if (fish[b][0] > 0 && fish[b][2] >= 8) {
@@ -190,9 +205,9 @@ bool bns_game(void) {
         }
       }
     } else {
-      if (subposx > 160 - 30)
+      if (subposx > (SCREENWID / 2) - 30)
         subposx -= 4;
-      else if (subposx < 160 -30)
+      else if (subposx < (SCREENWID / 2) -30)
         subposx += 2;
 
       if (subposy > 60)
@@ -237,7 +252,7 @@ bool bns_game(void) {
     else {
       for (b = 0; b <= fishcnt; b++) {
         if (fish[b][0] < 0) {
-          fish[b][0] = 320;
+          fish[b][0] = SCREENWID;
           fish[b][1] = rand() / (RAND_MAX / 70) + 60;
           fish[b][2] = 8;
           do {
@@ -249,7 +264,7 @@ bool bns_game(void) {
       }
     }
 
-    scr_putbar(0, 0, 320, 240);
+    scr_putbar(0, 0, SCREENWID, SCREENHEI);
 
     if (time < 300)
       towerpos = -(2*time);
@@ -279,7 +294,7 @@ bool bns_game(void) {
 
     if (time == gametime) {
       automatic = true;
-      if ((subposx == 160-30) && (subposy == 60)) break;
+      if ((subposx == (SCREENWID / 2) - 30) && (subposy == 60)) break;
     } else {
       x +=2;
       time++;

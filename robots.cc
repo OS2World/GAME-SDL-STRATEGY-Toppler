@@ -18,6 +18,7 @@
 
 #include "robots.h"
 
+#include "decl.h"
 #include "level.h"
 #include "palette.h"
 #include "toppler.h"

@@ -33,6 +33,18 @@ static color crosspal[crosscnt];
 static color towercolors[brickcnt];
 static unsigned char dark[256];
 
+static int blink_color = 0;
+static int blink_color_dir = 1;
+
+int get_blink_color(void) {
+   blink_color += blink_color_dir;
+   
+   if (blink_color > 0x0d) blink_color_dir = -1;
+   else if (blink_color < 1) blink_color_dir = 1;
+   
+   return blink_color;
+}
+
 void pal_setpal(unsigned char nr, unsigned char r, unsigned char g, unsigned char b, unsigned char p) {
   pal[nr][p].r = r;
   pal[nr][p].g = g;

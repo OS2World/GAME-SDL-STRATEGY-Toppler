@@ -23,6 +23,7 @@
 
 /* this modules handles nearly all the output onto the screen */
 
+void scr_savedisplaybmp(char *fname);
 
 /* initializes the module, loads the graphics, sets up the display */
 void scr_init(void);
@@ -47,6 +48,9 @@ void scr_writetext_center(long y, const char *s);
 
 /* draws a filles rectangle with color col */
 void scr_putbar(int x, int y, int br, int h, unsigned char col = 0);
+
+/* draws a rectangle */
+void scr_putrect(int x, int y, int br, int h, unsigned char col = 0);
 
 /* for the submarine game i intend to use a simpel voxel space (maybe)*/
 void scr_putvoxel(long xpos, unsigned char (*grnd)[100][256],

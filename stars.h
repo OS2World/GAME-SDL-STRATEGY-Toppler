@@ -23,6 +23,8 @@
 
 void sts_draw(void);
 
+void sts_blink(void);
+
 void sts_init(int sn);
 
 void sts_move(long x, long y);
