@@ -175,6 +175,9 @@ void dcl_wait(void);
 /* returns true, if the last wait didn't have enough time */
 bool dcl_wait_overflow(void);
 
+/* true, if files exitst */
+bool dcl_fileexists(const char *n);
+
 /* opens files looking into the right directories */
 FILE *open_data_file(const char *name);
 FILE *open_global_config_file(const char *name);

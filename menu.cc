@@ -1579,7 +1579,7 @@ void men_highscore(unsigned long pt, int twr) {
    code it is extremely important that the file is deleted upon
    leaving this block */
 
-  if (dcl_fileexists(HISCOREDIR"/toppler.hsc", name)) {
+  if (dcl_fileexists(HISCOREDIR"/toppler.hsc")) {
 
     int lockfd;
   

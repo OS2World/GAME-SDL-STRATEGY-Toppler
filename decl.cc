@@ -71,7 +71,7 @@ void debugprintf(int lvl, char *fmt, ...) {
 }
 
 /* returns true, if file exists */
-static bool dcl_fileexists(const char *n) {
+bool dcl_fileexists(const char *n) {
   FILE *f = fopen(n, "r");
 
   if (f) {
