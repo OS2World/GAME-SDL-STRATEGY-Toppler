@@ -25,64 +25,70 @@
 #include <dirent.h>
 
 /* screen width and height, in pixels. */
-#define SCREENWID 320
-#define SCREENHEI 240
+#define SCREENWID 640
+#define SCREENHEI 480
 
 /* font width and height, in pixels. */
-#define FONTWID 12
-#define FONTMINWID 5
-#define FONTMAXWID 20
-#define FONTHEI 20
+#define FONTWID 24
+#define FONTMINWID 10
+#define FONTMAXWID 40
+#define FONTHEI 40
+
+/* the tower dimensions */
+#define TOWER_SLICE_HEIGHT 16
+#define TOWER_RADIUS 96
+#define TOWER_COLUMNS 16
+#define TOWER_STEPS_PER_COLUMN 8
 
 /* title sprite "NEBULOUS" width and height, in pixels */
-#define SPR_TITLEWID 304
-#define SPR_TITLEHEI 47
+#define SPR_TITLEWID 602
+#define SPR_TITLEHEI 90
 
 /* star sprite size */
 #define SPR_STARWID 16
 #define SPR_STARHEI 16
 
 /* size of one layer sprite of tower */
-#define SPR_SLICEWID 96
-#define SPR_SLICEHEI 8
+#define SPR_SLICEWID 96 * 2
+#define SPR_SLICEHEI 8 * 2
 #define SPR_SLICEANGLES 8
 #define SPR_SLICEFRAMES 1
 #define SPR_SLICESPRITES (SPR_SLICEANGLES * SPR_SLICEFRAMES)
 
 /* size of the battlement sprite on top of the tower */
-#define SPR_BATTLWID 144
-#define SPR_BATTLHEI 24
+#define SPR_BATTLWID 144 * 2
+#define SPR_BATTLHEI 24 * 2
 #define SPR_BATTLFRAMES 8
 
 /* size of platform sprite */
-#define SPR_STEPWID 20
-#define SPR_STEPHEI 7
+#define SPR_STEPWID 40
+#define SPR_STEPHEI 14
 #define SPR_STEPFRAMES 1
 
 /* size of elevator sprite */
-#define SPR_ELEVAWID 16
-#define SPR_ELEVAHEI 7
+#define SPR_ELEVAWID 32
+#define SPR_ELEVAHEI 14
 #define SPR_ELEVAFRAMES 1
 
 /* size of elevator stick / wall */
-#define SPR_STICKWID 8
-#define SPR_STICKHEI 7
+#define SPR_STICKWID 16
+#define SPR_STICKHEI 14
 
 /* size of shootable flashing box */
 #define SPR_BOXWID 8
 #define SPR_BOXHEI 8
 
 /* size of our hero */
-#define SPR_HEROWID 20
-#define SPR_HEROHEI 20
+#define SPR_HEROWID 40
+#define SPR_HEROHEI 40
 
 /* size of hero's ammunition, the snowball */
-#define SPR_AMMOWID 8
-#define SPR_AMMOHEI 8
+#define SPR_AMMOWID 16
+#define SPR_AMMOHEI 16
 
 /* size of robot sprite */
 #define SPR_ROBOTWID 16
-#define SPR_ROBOTHEI 16
+#define SPR_ROBOTHEI 32
 
 /* cross sprite size */
 #define SPR_CROSSWID 16
@@ -196,9 +202,9 @@ FILE *create_local_data_file(char *name);
 /* GAME PARAMETERS */
 extern bool fullscreen;
 extern bool nosound;
-extern bool doublescale;
 extern bool use_water;
 extern char editor_towername[TOWERNAMELEN+1];
+extern bool use_alpha;
 
 void load_config(void);
 void save_config(void);

@@ -54,17 +54,23 @@ static struct {
 
 void men_init(void) {
 
-  Uint8 pal[3*240];
+  Uint8 pal[3*256];
   Uint32 res;
+  Uint8 num;
 
   arc_assign(menudat);
-  arc_read(pal, 3*240, &res);
-  menupicture = scr_loadsprites(1, SCREENWID, SCREENHEI, 8, false, pal);
+
+  arc_read(&num, 1, &res);
+  arc_read(pal, 3*num+3, &res);
+
+  menupicture = scr_loadsprites_new(1, 640, 480, false, pal);
   arc_closefile();
 
   arc_assign(titledat);
-  arc_read(pal, 3*16, &res);
-  titledata = scr_loadsprites(1, SPR_TITLEWID, SPR_TITLEHEI, 4, true, pal);
+
+  arc_read(&num, 1, &res);
+  arc_read(pal, 3*num+3, &res);
+  titledata = scr_loadsprites_new(1, SPR_TITLEWID, SPR_TITLEHEI, true, pal);
   arc_closefile();
 }
 
@@ -392,7 +398,7 @@ men_options_background_proc(void *ms)
 {
   if (ms) {
     scr_blit(spr_spritedata(menupicture), 0, 0);
-    scr_blit(spr_spritedata(titledata), (SCREENWID / 2) - (SPR_TITLEWID / 2), 20);
+    scr_blit(spr_spritedata(titledata), (SCREENWID - spr_spritedata(titledata)->w) / 2, 20);
     return NULL;
   }
   return "";
@@ -413,11 +419,11 @@ static char *
 men_options_scaling(void *ms)
 {
   if (ms) {
-    doublescale = !doublescale;
+//    doublescale = !doublescale;
     scr_reinit();
   }
-  if (doublescale) return "Do not scale";
-  else return "Scale  2x";
+/*  if (doublescale) return "Do not scale";
+  else*/ return "Scale  2x";
 }
 
 static char *
@@ -443,7 +449,7 @@ men_options(void *mainmenu) {
   static char s[20] = "Options";
   if (mainmenu) {
 
-    struct _menusystem *ms = new_menu_system(s, men_options_background_proc, 0, SPR_TITLEHEI+30);
+    struct _menusystem *ms = new_menu_system(s, men_options_background_proc, 0, spr_spritedata(titledata)->h+30);
 
     if (!ms) return NULL;
 
@@ -636,11 +642,11 @@ men_hiscores_background_proc(void *ms)
       get_hiscores_string(cs, &pos, &points, &name);
       if (cs == hiscores_hilited) {
         int clen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20 + 10;
-        scr_putbar(hiscores_xpos - 5, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45 - 3, clen, FONTHEI + 3, blink_color, blink_color, blink_color);
+        scr_putbar(hiscores_xpos - 5, (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45 - 3, clen, FONTHEI + 3, blink_color, blink_color, blink_color);
       }
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, pos);
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 10 + hiscores_maxlen_points - scr_textlength(points) , (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, points);
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, name);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, pos);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 10 + hiscores_maxlen_points - scr_textlength(points) , (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, points);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points, (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, name);
     }
     blink_color = (blink_color + 5) & 0xFF;
 
@@ -785,7 +791,7 @@ men_main_leveleditor_proc(void *ms)
 void men_main() {
   struct _menusystem *ms;
 
-  ms = new_menu_system("", men_options_background_proc, 0, SPR_TITLEHEI+10);
+  ms = new_menu_system("", men_options_background_proc, 0, spr_spritedata(titledata)->h + 10);
 
   if (!ms) return;
 

@@ -32,6 +32,7 @@ bool fullscreen;
 bool nosound;
 bool doublescale;
 bool use_water = true;
+bool use_alpha = true;
 
 char editor_towername[TOWERNAMELEN+1] = "";
 
