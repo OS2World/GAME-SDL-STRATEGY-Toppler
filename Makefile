@@ -6,8 +6,13 @@ all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm
 clean:
 	rm -f *.ttm cremission
 
-cremission: cremission.cc ${TOPPLERDIR}/level.cc ${TOPPLERDIR}/level.h
-	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/keyb.o ${TOPPLERDIR}/level.o ${TOPPLERDIR}/points.o ${TOPPLERDIR}/decl.o ${TOPPLERDIR}/configuration.o -lSDL -o cremission
+cremission: cremission.cc level.o
+	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/keyb.o level.o \
+    ${TOPPLERDIR}/points.o ${TOPPLERDIR}/decl.o ${TOPPLERDIR}/configuration.o \
+    -lSDL -lSDL_mixer -lz -o cremission
+
+level.o: ${TOPPLERDIR}/level.cc ${TOPPLERDIR}/level.h
+	g++ ${TOPPLERDIR}/level.cc -I${TOPPLERDIR} -I/usr/include/SDL -D CREATOR -D TOP_DATADIR=\"./\" -c -o level.o
 
 # RULE FOR MISSION 1
 
