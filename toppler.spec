@@ -1,6 +1,6 @@
 
 Name: toppler
-Version: 0.97.2
+Version: 0.98.0
 Release: 1
 
 URL: http://toppler.soureforge.net

@@ -38,6 +38,8 @@ static int splashmax = 0;
 
 static long play;
 
+static bool nosoundinit;
+
 #ifdef SDL_MIXER
 static Mix_Chunk *LoadWAV(char *name) {
   FILE *f = open_data_file(name);
@@ -53,11 +55,19 @@ void snd_init(void) {
   if (nosound) return;
 
 #ifdef SDL_MIXER
-  SDL_InitSubSystem(SDL_INIT_AUDIO);
+  if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
+    printf("couldn't init the sound system, muting\n");
+    nosoundinit = true;
+    return;
+  }
+
+  nosoundinit = false;
 
   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
     printf("could not open audio, muting\n");
-    nosound = true;
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+    nosoundinit = true;
+    return;
   }
 
   sounds[0] = LoadWAV("water.wav");
@@ -86,7 +96,7 @@ void snd_init(void) {
 }
 
 void snd_done(void) {
-  if (nosound) return;
+  if (nosound || nosoundinit) return;
 
 #ifdef SDL_MIXER
   while (Mix_Playing(-1)) dcl_wait();
@@ -124,7 +134,7 @@ void snd_fall(void) {          play |= 0x20000; }
 
 void snd_play(void) {
 
-  if (nosound) return;
+  if (nosound || nosoundinit) return;
 
 #ifdef SDL_MIXER
   if (play & 0x01)
@@ -170,21 +180,21 @@ void snd_play(void) {
 }
 
 void snd_wateron(void) {
-  if (nosound) return;
+  if (nosound || nosoundinit) return;
 #ifdef SDL_MIXER
   if (use_water)
     waterchannel = Mix_PlayChannel(-1, sounds[0], -1);
 #endif
 }
 void snd_wateroff(void) {
-  if (nosound) return;
+  if (nosound || nosoundinit) return;
 #ifdef SDL_MIXER
   if (use_water)
     Mix_HaltChannel(waterchannel);
 #endif
 }
 void snd_watervolume(int v) {
-  if (nosound) return;
+  if (nosound || nosoundinit) return;
 #ifdef SDL_MIXER
   if (use_water)
     Mix_Volume(waterchannel, v);
@@ -192,12 +202,14 @@ void snd_watervolume(int v) {
 }
 
 void snd_playtitle(void) {
+  if (nosound || nosoundinit) return;
 #ifdef SDL_MIXER
   Mix_PlayMusic(title, -1);
 #endif
 }
 
 void snd_stoptitle(void) {
+  if (nosound || nosoundinit) return;
 #ifdef SDL_MIXER
   Mix_FadeOutMusic(1000);
 
@@ -206,12 +218,14 @@ void snd_stoptitle(void) {
 }
 
 void snd_playtgame(void) {
+  if (nosound || nosoundinit) return;
 #ifdef SDL_MIXER
   Mix_PlayMusic(tgame, -1);
 #endif
 }
 
 void snd_stoptgame(void) {
+  if (nosound || nosoundinit) return;
 #ifdef SDL_MIXER
   Mix_FadeOutMusic(1000);
 

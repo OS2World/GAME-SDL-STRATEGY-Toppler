@@ -322,7 +322,7 @@ static void loadgraphics(void) {
 
   read_palette(pal);
   starst = scr_loadsprites_new(16, SPR_STARWID, SPR_STARHEI, true, pal);
-  sts_init(starst + 10);
+  sts_init(starst + 9);
 
   arc_read(pal, 3*subcnt - 3, &res);
   fishst = scr_loadsprites(16, SPR_FISHWID, SPR_FISHHEI, 6, true, pal);

@@ -26,7 +26,7 @@
 #include "stdlib.h"
 
 #define starstep 5
-#define NUM_STARS 20
+#define NUM_STARS 100
 
 static unsigned short starnr;
 
@@ -48,7 +48,7 @@ void sts_init(int sn) {
     stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
     stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
     stars[t].state = 0;
-    stars[t].size = rand() / (RAND_MAX / 4);
+    stars[t].size = rand() / (RAND_MAX / 7);
   }
 
   starnr = sn;
