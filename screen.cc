@@ -601,8 +601,8 @@ static void draw_tower(long vert, long angle, long hs, long he) {
 
   while (a <= 36) {
     an = ((a - angle) / 8) & 0xf;
-    y = (vert * 2) - (hs * 8) + 112;
-    for (h = hs; h <= he; h++) {
+    y = (vert * 2) - ((hs-1) * 8) + 112;
+    for (h = hs-1; h <= he; h++) {
       if (lev_is_door_upperend(h, an) && doors[a + 36].br) {
         scr_blit(spr_spritedata(doors[a + 36].s[2]), doors[a + 36].xs, y);
         scr_blit(spr_spritedata(doors[a + 36].s[1]), doors[a + 36].xs, y-8);
@@ -781,17 +781,19 @@ static void putthings(long vert, long a, long angle, long hs, long he) {
 
   long x, y, h;
 
-  x = sintab[a + 60];
-  y = (vert * 2) - (hs * 8) + 112;
-  for (h = hs; h <= he; h++) {
-    putcase(lev_tower(h, ((a - angle) / 8) & 0xf), x, y);
-    y -= 8;
+  if (((a - angle) & 0x7) == 0) {
+    x = sintab[a + 60];
+    y = (vert * 2) - (hs * 8) + 112;
+    for (h = hs; h <= he; h++) {
+      putcase(lev_tower(h, ((a - angle) / 8) & 0xf), x, y);
+      y -= 8;
+    }
   }
 
   for (h = 0; h <= 3; h++) {
     if (rob_kind(h) != OBJ_KIND_NOTHING && rob_kind(h) != OBJ_KIND_CROSS) {
       x = ((rob_angle(h) + angle + 56) & 0x7f) - 52;
-      if (x > a && x <= a + 8)
+      if (x > a + 4 && x <= a + 8)
         putrobot(rob_kind(h), rob_time(h),
                  sintab[x + 52], ((vert - rob_vertical(h)) * 2) + 120);
     }
@@ -816,21 +818,18 @@ static void draw_behind(long vert, long angle, long hs, long he)
   long a;
 
   a = -60;
-  while ((a - angle) & 0x7) a++;
-
   while (a <= -37) {
     putthings(vert, a, angle, hs, he);
-    a += 8;
+    a++;
   }
 
   a = 60;
-  while ((a - angle) & 0x7) a--;
-
   while (a >= 37) {
     putthings(vert, a, angle, hs, he);
-    a -= 8;
+    a--;
   }
 }
+
 
 static void draw_behind_editor(long vert, long angle, long hs, long he, int state)
 {
@@ -859,19 +858,15 @@ static void draw_bevore(long  vert, long angle, long hs, long he)
   long a;
 
   a = -36;
-  while ((a - angle) & 0x7) a++;
-
   while (a <= -1) {
     putthings(vert, a, angle, hs, he);
-    a += 8;
+    a ++;
   }
 
   a = 36;
-  while ((a - angle) & 0x7) a--;
-
   while (a >= 0) {
     putthings(vert, a, angle, hs, he);
-    a -= 8;
+    a --;
   }
 }
 
