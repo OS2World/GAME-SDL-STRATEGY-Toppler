@@ -15,7 +15,7 @@ static int splashmax = 0;
 static long play;
 
 static Mix_Chunk *LoadWAV(char *name) {
-  FILE *f = open_data_file("water.wav", "rb");
+  FILE *f = open_data_file(name);
 
   if (f)
     return Mix_LoadWAV_RW(SDL_RWFromFP(f, 1), 1);
@@ -23,7 +23,7 @@ static Mix_Chunk *LoadWAV(char *name) {
     return NULL;
 }
 
-void snd_init() {
+void snd_init(void) {
   if (nosound) return;
 
   SDL_InitSubSystem(SDL_INIT_AUDIO);
@@ -56,7 +56,7 @@ void snd_init() {
   music = Mix_LoadMUS("title.ogg");
 }
 
-void snd_done() {
+void snd_done(void) {
   if (nosound) return;
 
   while (Mix_Playing(-1)) dcl_wait();
@@ -72,28 +72,28 @@ void snd_done() {
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
-void snd_tap() {           play |= 0x1; }
+void snd_tap(void) {           play |= 0x1; }
 void snd_boink(int vol) {  play |= 0x2; if (vol > boinkmax) boinkmax = vol; }
-void snd_hit() {           play |= 0x4; }
-void snd_cross() {         play |= 0x8; }
-void snd_tick() {          play |= 0x10; }
-void snd_drown() {         play |= 0x20; }
+void snd_hit(void) {           play |= 0x4; }
+void snd_cross(void) {         play |= 0x8; }
+void snd_tick(void) {          play |= 0x10; }
+void snd_drown(void) {         play |= 0x20; }
 void snd_splash(int vol) { play |= 0x40; if (vol > splashmax) splashmax = vol; }
-void snd_shoot() {         play |= 0x80; }
-void snd_alarm() {         play |= 0x100; }
-void snd_score() {         play |= 0x200; }
-void snd_crumble() {       play |= 0x400; }
-void snd_fanfare() {       play |= 0x800; }
-void snd_doortap() {       play |= 0x1000; }
-void snd_sub_raise() {     play |= 0x2000; }
-void snd_sub_down() {      play |= 0x4000; }
-void snd_start() {         play |= 0x8000; }
-void snd_timeout() {       play |= 0x10000; }
-void snd_fall() {          play |= 0x20000; }
+void snd_shoot(void) {         play |= 0x80; }
+void snd_alarm(void) {         play |= 0x100; }
+void snd_score(void) {         play |= 0x200; }
+void snd_crumble(void) {       play |= 0x400; }
+void snd_fanfare(void) {       play |= 0x800; }
+void snd_doortap(void) {       play |= 0x1000; }
+void snd_sub_raise(void) {     play |= 0x2000; }
+void snd_sub_down(void) {      play |= 0x4000; }
+void snd_start(void) {         play |= 0x8000; }
+void snd_timeout(void) {       play |= 0x10000; }
+void snd_fall(void) {          play |= 0x20000; }
 
 static char doortap = 0;
 
-void snd_play() {
+void snd_play(void) {
 
   if (nosound) return;
 
@@ -151,11 +151,11 @@ void snd_play() {
   splashmax = boinkmax = 0;
 }
 
-void snd_wateron() {
+void snd_wateron(void) {
   if (nosound) return;
   waterchannel = Mix_PlayChannel(-1, sounds[0], -1);
 }
-void snd_wateroff() {
+void snd_wateroff(void) {
   if (nosound) return;
   Mix_HaltChannel(waterchannel);
 }
@@ -164,10 +164,11 @@ void snd_watervolume(int v) {
   Mix_Volume(waterchannel, v);
 }
 
-void snd_playtitle() {
+void snd_playtitle(void) {
   Mix_PlayMusic(music, -1);
 }
 
-void snd_stoptitle() {
+void snd_stoptitle(void) {
   Mix_HaltMusic();
 }
+

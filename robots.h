@@ -17,7 +17,7 @@
 #define OBJ_KIND_ROBOT_HORIZ 9
 
 /* initialize all fields, call this when you start a new towergame*/
-void rob_initialize();
+void rob_initialize(void);
 
 /* return the position and state of one robot */
 int rob_kind(int nr);
@@ -34,13 +34,13 @@ int rob_snowballkollision(int angle, int vertical);
 void rob_new(int verticalpos);
 
 /* move all the robots */
-void rob_aktualize();
+void rob_aktualize(void);
 
 /* call this if a robot got hit my the snowball, the function
  returns the number of points the player gets */
 int rob_gothit(int nr);
 
 /* makes all the robots diappear */
-void rob_disappearall();
+void rob_disappearall(void);
 
 #endif

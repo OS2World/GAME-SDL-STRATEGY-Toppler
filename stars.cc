@@ -14,7 +14,7 @@ static struct {
   long x, y;
 } stars[21];
 
-void sts_draw()
+void sts_draw(void)
 {
   SDL_Surface *p = spr_spritedata((long)starnr);
 

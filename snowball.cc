@@ -8,12 +8,12 @@ static long subKind;
 static long ve;
 static long time;
 
-void snb_init() {
+void snb_init(void) {
   time = -1;
 }
 
 /* move the snowball and check if it hits something */
-void snb_movesnowball() {
+void snb_movesnowball(void) {
 
   /* the snowball moves up this fiels specifies by how much */
   static long schusshoch[12] = {
@@ -49,7 +49,7 @@ void snb_movesnowball() {
   }
 }
 
-bool snb_exists() { return time != -1; }
+bool snb_exists(void) { return time != -1; }
 
 void snb_start(int verticalpos, int anglepos, bool look_left) {
 
@@ -65,6 +65,6 @@ void snb_start(int verticalpos, int anglepos, bool look_left) {
   time = 0;
 }
 
-int snb_verticalpos() { return ve; }
-int snb_anglepos() { return an; }
+int snb_verticalpos(void) { return ve; }
+int snb_anglepos(void) { return an; }
 

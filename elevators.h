@@ -5,7 +5,7 @@
  elevators */
 
 /* initializes the elevator structures */
-void ele_init();
+void ele_init(void);
 
 /* activates the elevator. there can be only one
  active elevator */
@@ -15,16 +15,16 @@ void ele_select(int row, int col);
 void ele_activate(int dir);
 
 /* moves the elevator one level up */
-void ele_move();
+void ele_move(void);
 
 /* return true, if the elevator is at a station */
-bool ele_is_atstop();
+bool ele_is_atstop(void);
 
 /* the animal leaves the elevator or got thrown off.
  after a timeout the elevator will automatically fall down */
-void ele_deactivate();
+void ele_deactivate(void);
 
 /* call once per update to check elevator falldown */
-void ele_update();
+void ele_update(void);
 
 #endif

@@ -7,60 +7,60 @@
 
 /* initisalizes the variables, call this function each time a
  you start at the tower. */
-void top_init();
+void top_init(void);
 
 /* actualizes the position and sgape of the toppler considering the given keyposition */
 void top_aktualtoppler(int left_right, int up_down, bool space);
 
 /* tests, if the toppler collides with something while it is on the elevator */
-void top_testkollision();
+void top_testkollision(void);
 
 /* the following functions return serveral of the necesary variables for the toppler */
 
 /* its vertial position on the tower */
-int top_verticalpos();
+int top_verticalpos(void);
 
 /* the angle position on the tower */
-int top_anglepos();
+int top_anglepos(void);
 
 /* is it visible */
-bool top_visible();
+bool top_visible(void);
 
 /* does it look left (or right) */
-bool top_look_left();
+bool top_look_left(void);
 
 /* the shape, independent of the direction */
-int top_shape();
+int top_shape(void);
 
 /* is it on an elevator */
-bool top_onelevator();
+bool top_onelevator(void);
 
 /* technice bonus points, how often got it thrown down */
-int top_technic();
+int top_technic(void);
 
 /* the actual state of the toppler */
 
 /* drowned */
-bool top_died();
+bool top_died(void);
 
 /* reached target */
-bool top_targetreached();
+bool top_targetreached(void);
 
 /* the game ended, either drowned or reached target */
-bool top_ended();
+bool top_ended(void);
 
 /* the animal is currently drowning */
-bool top_dying();
+bool top_dying(void);
 
 /* it is moving */
-bool top_walking();
+bool top_walking(void);
 
 /* needed for destruction of tower, to drop the toppler
  one layer of the tower */
-void top_drop1layer();
+void top_drop1layer(void);
 
 /* hide the toppler */
-void top_hide();
+void top_hide(void);
 
 /* show it and set its shape vertical and angular position */
 void top_show(int shape, int vpos, int apos);
@@ -68,7 +68,7 @@ void top_show(int shape, int vpos, int apos);
 /* move the toppler to the side until it is at a valid position
  this function is necessary for the downfalling elevators to
  push the animal aside  */
-void top_sidemove();
+void top_sidemove(void);
 
 
 #endif

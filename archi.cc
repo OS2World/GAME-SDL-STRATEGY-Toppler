@@ -18,7 +18,7 @@ static struct {
 
 
 void arc_init(char *name) {
-  f = open_data_file(name, "rb");
+  f = open_data_file(name);
 
   assert(f != 0, "archive file not opened\n");
 
@@ -26,12 +26,10 @@ void arc_init(char *name) {
   fread(files, sizeof(files), 1, f);
 }
 
-void arc_closefile()
-{
+void arc_closefile(void) {
 }
 
-void arc_done()
-{
+void arc_done(void) {
   arc_closefile();
 
   fclose(f);
@@ -59,7 +57,7 @@ void arc_read(void *buf, int size, int *result) {
   *result = fread(buf, 1, size, f);
 }
 
-static unsigned char getbyte() {
+static unsigned char getbyte(void) {
   unsigned char erg;
   int res;
 
@@ -81,15 +79,11 @@ unsigned short arc_getbits(int anz) {
   return result;
 }
 
-long arc_filesize() {
+long arc_filesize(void) {
   return files[pos].size;
 }
 
-bool arc_eof() {
+bool arc_eof(void) {
   return ftell(f) > files[pos].start + files[pos].size;
 }
-
-SDL_RWops *arc_getRWops() {
-}
-
 

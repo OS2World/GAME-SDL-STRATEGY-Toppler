@@ -18,7 +18,7 @@ void spr_init(int maxsp) {
     sarray[i] = NULL;
 }
 
-void spr_done() {
+void spr_done(void) {
 
   delete [] sarray;
 

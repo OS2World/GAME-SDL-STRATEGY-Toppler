@@ -187,7 +187,7 @@ int rob_time(int nr) { return object[nr].time; }
 int rob_angle(int nr) { return object[nr].anglepos; }
 int rob_vertical(int nr) { return object[nr].verticalpos; }
 
-void rob_initialize() {
+void rob_initialize(void) {
 
   for (int b = 0; b <= 4; b++) {
     object[b].kind = OBJ_KIND_NOTHING;
@@ -275,7 +275,7 @@ void rob_new(int verticalpos) {
 
 
       /* if there is currently no chance for a new robot check for a cross */
-      if ((robots_ready == lev_towerheight()) || (h <= robots_ready)) {
+      if ((robots_ready == lev_towerrows() * 8) || (h <= robots_ready)) {
 
         /* check if time is ripe */
         if (next_cross_timer == -1) return;
@@ -316,40 +316,40 @@ void rob_new(int verticalpos) {
   
         /* no robot found */
         if ((b & 0x80) != 0 || (b & 0x70) == 0) return;
-  
+
         /* fill in data for robot */
         switch (b) {
-  
+
           case 0x10:
             object[t].subKind = 1;
             object[t].futureKind = OBJ_KIND_FREEZEBALL;
             break;
-    
+
           case 0x20:
             object[t].subKind = 1;
             object[t].futureKind = OBJ_KIND_JUMPBALL;
             break;
-    
+
           case 0x30:
             object[t].subKind = 0;
             object[t].futureKind = OBJ_KIND_JUMPBALL;
             break;
-    
+
           case 0x40:
             object[t].subKind = 1;
             object[t].futureKind = OBJ_KIND_ROBOT_VERT;
             break;
-    
+
           case 0x50:
             object[t].subKind = 2;
             object[t].futureKind = OBJ_KIND_ROBOT_VERT;
             break;
-    
+
           case 0x60:
             object[t].subKind = 1;
             object[t].futureKind = OBJ_KIND_ROBOT_HORIZ;
             break;
-    
+
           case 0x70:
             object[t].subKind = 2;
             object[t].futureKind = OBJ_KIND_ROBOT_HORIZ;
@@ -369,7 +369,7 @@ void rob_new(int verticalpos) {
   }
 }
 
-void rob_aktualize() {
+void rob_aktualize(void) {
 
   /* the vertical movement of the jumping ball */
   static long jumping_ball[11] = {
@@ -580,7 +580,7 @@ int rob_gothit(int nr) {
 
 }
 
-void rob_disappearall() {
+void rob_disappearall(void) {
 
   for (int t = 0; t <= 3; t++) {
     if (object[t].kind != OBJ_KIND_NOTHING) {

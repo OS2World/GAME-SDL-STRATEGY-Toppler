@@ -7,19 +7,19 @@
 #define GAME_ABBORTED 2
 
 /* load data */
-void gam_init();
+void gam_init(void);
 
 /* free data */
-void gam_done();
+void gam_done(void);
 
 /* initialize a completely new game, points to zero, ... */
-void gam_newgame();
+void gam_newgame(void);
 
 /* initializes the tower specific data structures */
 void gam_loadtower(int tow);
 
 /* leave toppler at the base of the tower */
-void gam_arrival();
+void gam_arrival(void);
 
 
 /* plays the towergame

@@ -5,19 +5,19 @@
  the animal */
 
 /* init, delete snowball */
-void snb_init();
+void snb_init(void);
 
 /* updates the position of the snowball */
-void snb_movesnowball();
+void snb_movesnowball(void);
 
 /* checks is there is already a snowball */
-bool snb_exists();
+bool snb_exists(void);
 
 /* creates a new one */
 void snb_start(int verticalpos, int anglepos, bool look_left);
 
 /* returns the position of the ball */
-int snb_verticalpos();
-int snb_anglepos();
+int snb_verticalpos(void);
+int snb_anglepos(void);
 
 #endif

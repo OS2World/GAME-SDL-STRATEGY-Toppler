@@ -2,6 +2,7 @@
 
 #include "points.h"
 #include "archi.h"
+#include "decl.h"
 
 #include <string.h>
 
@@ -47,7 +48,7 @@
       ||||
       |||+------\
       |||       > modifier for steps 1 = disappering, 3 = sliding, 2 = unused
-      ||+-------/ 
+      ||+-------/
       ||
       |+-------- = 1 means targetdoor
       |
@@ -58,8 +59,25 @@
 static unsigned char mission[4096];
 static int towerheight;
 static unsigned char tower[256][16];
-static char towername[17];
+static char towername[20];
 static int towernumber;
+static unsigned char towercolor_red, towercolor_green, towercolor_blue;
+static int towertime;
+
+/* the different colors for the eight towers */
+static struct {
+  unsigned char r, g, b;
+} tcolors[8] = {
+  { 255, 0, 0 },
+  { 150, 150, 255 },
+  { 170, 170, 170 },
+  { 163, 120, 88 },
+  { 0, 155, 155 },
+  { 255, 100, 100 },
+  { 150, 255, 150 },
+  { 255, 155, 0 }
+};
+
 
 void lev_loadmission(char *filename) {
   int res;
@@ -67,6 +85,10 @@ void lev_loadmission(char *filename) {
   arc_assign(filename);
   arc_read(mission, arc_filesize(), &res);
   arc_closefile();
+}
+
+int lev_towernumber(void) {
+  return 8;
 }
 
 void lev_selecttower(int number) {
@@ -110,24 +132,55 @@ void lev_selecttower(int number) {
       else
         tower[row][col] = 0;
       bpos++;
-  }
+    }
+
+  towercolor_red = tcolors[number].r;
+  towercolor_green = tcolors[number].g;
+  towercolor_blue = tcolors[number].b;
+
+  towertime = 500 + towernumber * 100;
 }
 
+void lev_set_towercol(unsigned char r, unsigned char g, unsigned char b) {
+  towercolor_red = r;
+  towercolor_green = g;
+  towercolor_blue = b;
+}
+
+unsigned char lev_towercol_red() {
+  return towercolor_red;
+}
+
+unsigned char lev_towercol_green() {
+  return towercolor_green;
+}
+
+unsigned char lev_towercol_blue() {
+  return towercolor_blue;
+}
 
 unsigned char lev_tower(int row, int column) {
   return tower[row][column];
 }
 
-int lev_towerheight() {
-  return towerheight * 8;
+int lev_towerrows(void) {
+  return towerheight;
 }
 
-char *lev_towername() {
+char *lev_towername(void) {
   return towername;
 }
 
-int lev_towernr() {
+int lev_towernr(void) {
   return towernumber;
+}
+
+int lev_towertime(void) {
+  return towertime;
+}
+
+void lev_set_towertime(int time) {
+  towertime = time;
 }
 
 void lev_removelayer(int layer) {
@@ -319,10 +372,6 @@ int lev_testuntergr(int verticalpos, int anglepos, bool look_left) {
     return erg & 0xf;
 }
 
-int lev_towertime() {
-  return  towernumber * 50 + 500;
-}
-
 unsigned char lev_putplatform(int row, int col) {
   unsigned char erg = tower[row][col];
 
@@ -335,3 +384,408 @@ void lev_restore(int row, int col, unsigned char bg) {
   tower[row][col] = bg;
 }
 
+
+/* load and save a tower */
+bool lev_loadtower(char *fname) {
+  FILE *in = open_local_data_file(fname);
+
+  if (in == NULL) return false;
+
+  fgets(towername, 20, in);
+  fscanf(in, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);
+
+  fscanf(in, "%i\n", &towertime);
+  fscanf(in, "%i\n", &towerheight);
+
+  for (int row = towerheight - 1; row >= 0; row--) {
+    char line[200];
+
+    fgets(line, 200, in);
+
+    for (int col = 0; col < 16; col++) {
+      switch(line[col]) {
+      case '1': tower[row][col] = 0x10; break;
+      case '2': tower[row][col] = 0x20; break;
+      case '3': tower[row][col] = 0x30; break;
+      case '4': tower[row][col] = 0x40; break;
+      case '5': tower[row][col] = 0x50; break;
+      case '6': tower[row][col] = 0x60; break;
+      case '7': tower[row][col] = 0x70; break;
+
+      case '!': tower[row][col] = 0x80; break;
+      case '-': tower[row][col] = 0x81; break;
+      case 'b': tower[row][col] = 0x82; break;
+
+      case '#': tower[row][col] = 0x83; break;
+      case 'T': tower[row][col] = 0xc3; break;
+
+      case '^': tower[row][col] = 0x85; break;
+      case 'v': tower[row][col] = 0x08; break;
+      case '+': tower[row][col] = 0x0c; break;
+
+      case '.': tower[row][col] = 0x91; break;
+      case '>': tower[row][col] = 0xb1; break;
+      default:
+         tower[row][col] = 0; break;
+      }
+    }
+  }
+
+  fclose(in);
+  return true;
+}
+
+bool lev_savetower(char *fname) {
+  FILE *out = create_local_data_file(fname);
+
+  if (out == NULL) return false;
+
+  fprintf(out, "%s\n", towername);
+  fprintf(out, "%i, %i, %i\n", towercolor_red, towercolor_green, towercolor_blue);
+  fprintf(out, "%i\n", towertime);
+  fprintf(out, "%i\n", towerheight);
+
+  for (int row = towerheight - 1; row >= 0; row--) {
+    char line[18];
+
+    for (int col = 0; col < 16; col++) {
+      switch(tower[row][col]) {
+      case 0x10: line[col] = '1'; break;
+      case 0x20: line[col] = '2'; break;
+      case 0x30: line[col] = '3'; break;
+      case 0x40: line[col] = '4'; break;
+      case 0x50: line[col] = '5'; break;
+      case 0x60: line[col] = '6'; break;
+      case 0x70: line[col] = '7'; break;
+
+      case 0x80: line[col] = '!'; break;
+      case 0x81: line[col] = '-'; break;
+      case 0x82: line[col] = 'b'; break;
+
+      case 0x83: line[col] = '#'; break;
+      case 0xc3: line[col] = 'T'; break;
+
+      case 0x85: line[col] = '^'; break;
+      case 0x08: line[col] = 'v'; break;
+      case 0x0c: line[col] = '+'; break;
+
+      case 0x91: line[col] = '.'; break;
+      case 0xb1: line[col] = '>'; break;
+      default:
+         line[col] = ' '; break;
+      }
+    }
+    line[16] = '|';
+    line[17] = 0;
+    fprintf(out, "%s\n", line);
+  }
+
+  fclose(out);
+
+  return true;
+}
+
+/* rotate row clock and counter clockwise */
+void lev_rotaterow(int row, bool clockwise) {
+  if (clockwise) {
+    int k = tower[row][0];
+    for (int i = 1; i < 16; i++)
+      tower[row][i - 1] = tower[row][i];
+    tower[row][15] = k;
+  } else {
+    int k = tower[row][15];
+    for (int i = 15; i >= 0; i++)
+      tower[row][i] = tower[row][i - 1];
+    tower[row][0] = k;
+  }
+}
+
+/* insert and delete one row */
+void lev_insertrow(int position) {
+  if ((towerheight < 255) && (position < towerheight)) {
+    int k = towerheight - 1;
+    while (k >= position) {
+      for (int i = 0; i < 16; i++)
+        tower[k + 1][i] = tower[k][i];
+      k--;
+    }
+    for (int i = 0; i < 16; i++)
+      tower[position][i] = 0;
+    towerheight++;
+    return;
+  }
+  if (towerheight == 0) {
+    for (int i = 0; i < 16; i++)
+      tower[0][i] = 0;
+    towerheight = 1;
+  }
+}
+
+void lev_deleterow(int position) {
+  if ((position < towerheight) && (position >= 0)) {
+    int k = position + 1;
+    while (k < towerheight) {
+      for (int i = 0; i < 16; i++)
+        tower[k - 1][i] = tower[k][i];
+      k++;
+    }
+    towerheight--;
+  }
+}
+
+void lev_new(void) {
+  towerheight = 1;
+
+  for (int i = 0; i < 16; i++)
+    tower[0][i] = 0;
+}
+
+void lev_putspace(int row, int col) {
+
+  // always delete the whole door
+  if (lev_is_door(row, col)) {
+    int r = row - 1;
+    while (lev_is_door(r, col)) {
+      tower[r][col] = 0x00;
+      r--;
+    }
+    r = row + 1;
+    while (lev_is_door(r, col)) {
+      tower[r][col] = 0x00;
+      r++;
+    }
+  }
+  tower[row][col] = 0x00;
+}
+void lev_putrobot1(int row, int col) { tower[row][col] = 0x10; }
+void lev_putrobot2(int row, int col) { tower[row][col] = 0x20; }
+void lev_putrobot3(int row, int col) { tower[row][col] = 0x30; }
+void lev_putrobot4(int row, int col) { tower[row][col] = 0x40; }
+void lev_putrobot5(int row, int col) { tower[row][col] = 0x50; }
+void lev_putrobot6(int row, int col) { tower[row][col] = 0x60; }
+void lev_putrobot7(int row, int col) { tower[row][col] = 0x70; }
+void lev_putstep(int row, int col) { tower[row][col] = 0x81; }
+void lev_putvanishingstep(int row, int col) { tower[row][col] = 0x91; }
+void lev_putslidingstep(int row, int col) { tower[row][col] = 0xb1; }
+
+void lev_putdoor(int row, int col) {
+
+  if (row + 2 < towerheight) {
+
+    tower[row][col] = 0x83;
+    tower[row + 1][col] = 0x83;
+    tower[row + 2][col] = 0x83;
+
+    if ((tower[row][(col + 8) & 0xf] == 0) &&
+        (tower[row + 1][(col + 8) & 0xf] == 0) &&
+        (tower[row + 2][(col + 8) & 0xf] == 0)) {
+      tower[row][(col + 8) & 0xf] = 0x83;
+      tower[row + 1][(col + 8) & 0xf] = 0x83;
+      tower[row + 2][(col + 8) & 0xf] = 0x83;
+    }
+  }
+}
+
+void lev_puttarget(int row, int col) {
+  if (row + 2 < towerheight) {
+    tower[row][col] = 0xc3;
+    tower[row + 1][col] = 0xc3;
+    tower[row + 2][col] = 0xc3;
+  }
+}
+void lev_putstick(int row, int col) { tower[row][col] = 0x80; }
+void lev_putbox(int row, int col) { tower[row][col] = 0x82; }
+void lev_putelevator(int row, int col) { tower[row][col] = 0x85; }
+void lev_putmiddlestation(int row, int col) { tower[row][col] = 0x0c; }
+void lev_puttopstation(int row, int col) { tower[row][col] = 0x08; }
+
+
+void lev_save(unsigned char *&data) {
+  data = new unsigned char[256*16+1];
+
+  data[0] = towerheight;
+  memmove(&data[1], tower, 256 * 16);
+}
+
+void lev_restore(unsigned char *&data) {
+  memmove(tower, &data[1], 256 * 16);
+  towerheight = data[0];
+
+  delete [] data;
+}
+
+bool lev_is_consistent(int &row, int &col) {
+
+  // check first, if the starting point is correctly organized
+  // so that there is no obstacle and we can survive there
+  if ((tower[2][0] >= 0x10) ||
+      (tower[3][0] >= 0x10) ||
+      (tower[4][0] >= 0x10) ||
+      ((tower[1][0] != 0x80) && (tower[1][0] != 0x81) &&
+       (tower[1][0] != 0x82) && (tower[1][0] != 0x85) &&
+       (tower[1][0] != 0xb1))) {
+    row = 1;
+    col = 0;
+    return false;
+  }
+
+  for (int r = 0; r < towerheight; r++)
+    for (int c = 0; c < 16; c++) {
+
+      // check for undefined symbols
+      if ((tower[r][c] != 0x00) &&
+          (tower[r][c] != 0x10) &&
+          (tower[r][c] != 0x20) &&
+          (tower[r][c] != 0x30) &&
+          (tower[r][c] != 0x40) &&
+          (tower[r][c] != 0x50) &&
+          (tower[r][c] != 0x60) &&
+          (tower[r][c] != 0x70) &&
+          (tower[r][c] != 0x80) &&
+          (tower[r][c] != 0x81) &&
+          (tower[r][c] != 0x82) &&
+          (tower[r][c] != 0x83) &&
+          (tower[r][c] != 0xc3) &&
+          (tower[r][c] != 0x85) &&
+          (tower[r][c] != 0x08) &&
+          (tower[r][c] != 0x0c) &&
+          (tower[r][c] != 0x91) &&
+          (tower[r][c] != 0xb1) &&
+          (tower[r][c] != 0x00) &&
+          (tower[r][c] != 0x00) &&
+          (tower[r][c] != 0x00)) {
+        row = r;
+        col = c;
+        return false;
+      }
+
+      // check if elevators alway have an opposing end without unremovable
+      // obstacles
+      if (tower[r][c] == 0x85) {
+        int d = r + 1;
+        while ((tower[d][c] != 0x08) && (d < towerheight)) {
+          if ((tower[d][c] != 0x00) &&
+              (tower[d][c] != 0x10) &&
+              (tower[d][c] != 0x20) &&
+              (tower[d][c] != 0x30) &&
+              (tower[d][c] != 0x40) &&
+              (tower[d][c] != 0x50) &&
+              (tower[d][c] != 0x60) &&
+              (tower[d][c] != 0x70) &&
+              (tower[d][c] != 0x82) &&
+              (tower[d][c] != 0x0c) &&
+              (tower[d][c] != 0x91)) {
+            row = r;
+            col = c;
+            return false;
+          }
+          d++;
+        }
+        if (d >= towerheight) {
+          row = r;
+          col = c;
+          return false;
+        }
+      }
+
+      if (tower[r][c] == 0x0c) {
+        int d = r + 1;
+        while ((tower[d][c] != 0x08) && (d < towerheight)) {
+          if ((tower[d][c] != 0x00) &&
+              (tower[d][c] != 0x10) &&
+              (tower[d][c] != 0x20) &&
+              (tower[d][c] != 0x30) &&
+              (tower[d][c] != 0x40) &&
+              (tower[d][c] != 0x50) &&
+              (tower[d][c] != 0x60) &&
+              (tower[d][c] != 0x70) &&
+              (tower[d][c] != 0x82) &&
+              (tower[d][c] != 0x0c) &&
+              (tower[d][c] != 0x91)) {
+            row = r;
+            col = c;
+            return false;
+          }
+          d++;
+        }
+        if (d >= towerheight) {
+          row = r;
+          col = c;
+          return false;
+        }
+        d = r - 1;
+        while ((tower[d][c] != 0x85) && (d >= 0)) {
+          if ((tower[d][c] != 0x00) &&
+              (tower[d][c] != 0x10) &&
+              (tower[d][c] != 0x20) &&
+              (tower[d][c] != 0x30) &&
+              (tower[d][c] != 0x40) &&
+              (tower[d][c] != 0x50) &&
+              (tower[d][c] != 0x60) &&
+              (tower[d][c] != 0x70) &&
+              (tower[d][c] != 0x82) &&
+              (tower[d][c] != 0x0c) &&
+              (tower[d][c] != 0x91)) {
+            row = r;
+            col = c;
+            return false;
+          }
+          d--;
+        }
+        if (d < 0) {
+          row = r;
+          col = c;
+          return false;
+        }
+      }
+
+      if (tower[r][c] == 0x08) {
+        int d = r - 1;
+        while ((tower[d][c] != 0x85) && (d >= 0)) {
+          if ((tower[d][c] != 0x00) &&
+              (tower[d][c] != 0x10) &&
+              (tower[d][c] != 0x20) &&
+              (tower[d][c] != 0x30) &&
+              (tower[d][c] != 0x40) &&
+              (tower[d][c] != 0x50) &&
+              (tower[d][c] != 0x60) &&
+              (tower[d][c] != 0x70) &&
+              (tower[d][c] != 0x82) &&
+              (tower[d][c] != 0x0c) &&
+              (tower[d][c] != 0x91)) {
+            row = r;
+            col = c;
+            return false;
+          }
+          d--;
+        }
+        if (d < 0) {
+          row = r;
+          col = c;
+          return false;
+        }
+      }
+
+      // check doors
+      if ((tower[r][c] == 0x83) &&
+          ((tower[r][(c + 8) & 0xf] & 0x83) != 0x83)) {
+        row = r;
+        col = c;
+        return false;
+      }
+      if ((tower[r][c] & 0x83) == 0x83) {
+        bool A = (r > 0) && (tower[r-1][c] == tower[r][c]);
+        bool B = (r > 1) && (tower[r-2][c] == tower[r][c]);
+        bool D = (r + 1 < towerheight) && (tower[r+1][c] == tower[r][c]);
+        bool E = (r + 2 < towerheight) && (tower[r+2][c] == tower[r][c]);
+
+        if (!(A&&B||A&&D||D&&E)) {
+          row = r;
+          col = c;
+          return false;
+        }
+      }
+    }
+
+  return true;
+}

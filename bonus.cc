@@ -5,6 +5,7 @@
 #include "points.h"
 #include "sprites.h"
 #include "palette.h"
+#include "level.h"
 
 #include <stdlib.h>
 
@@ -21,7 +22,7 @@ static bool escape(long time, long x) {
   int b;
 
   key_readkey();
-  pal_darkening(fontcol, fontcol + fontcnt - 1);
+  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
 
   scr_putbar(0, 0, 320, 240);
 
@@ -53,7 +54,7 @@ static bool escape(long time, long x) {
   if (key_keypressed(break_key)) {
     return true;
   }else
-    pal_colors();
+    pal_colors(pal_bonusgame);
 
   return false;
 }
@@ -63,7 +64,7 @@ static void pause(long time, long x) {
   int b;
 
   key_readkey();
-  pal_darkening(fontcol, fontcol + fontcnt - 1);
+  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
 
   scr_putbar(0, 0, 320, 240);
 
@@ -92,11 +93,11 @@ static void pause(long time, long x) {
   do {
     dcl_wait();
   } while (!key_keypressed(fire_key));
-  pal_colors();
+  pal_colors(pal_bonusgame);
 }
 
 
-bool bns_game(unsigned char ncr, unsigned char ncg, unsigned char ncb) {
+bool bns_game(void) {
 
   static unsigned short x;
   
@@ -120,13 +121,7 @@ bool bns_game(unsigned char ncr, unsigned char ncg, unsigned char ncb) {
 
   x = 0;
 
-  void *p;
-
-  pal_savepal(&p);
-  
-  for (int i = 0; i < 152; i++)
-    pal_setpal(16 + i, scrollerpalette[i*3+2], scrollerpalette[i*3+1], scrollerpalette[i*3+0]);
-  pal_colors();
+  pal_colors(pal_bonusgame);
 
   key_readkey();
 
@@ -192,7 +187,6 @@ bool bns_game(unsigned char ncr, unsigned char ncg, unsigned char ncb) {
 
     if (key_keypressed(break_key))
       if (escape(time, x)) {
-        pal_restorepal(p);
         return false;
       }
 
@@ -241,7 +235,6 @@ bool bns_game(unsigned char ncr, unsigned char ncg, unsigned char ncb) {
       }
     }
 
-
     scr_putbar(0, 0, 320, 240);
 
     if (time < 300)
@@ -262,12 +255,12 @@ bool bns_game(unsigned char ncr, unsigned char ncg, unsigned char ncb) {
     }
     scr_draw_bonus2(x, towerpos);
 
-
     scr_swap();
 
     if (x == 300) {
-      pal_settowercolor(ncr, ncg, ncb);
-      pal_colors();
+      pal_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
+      pal_calcdark(pal_towergame);
+      pal_colors(pal_bonusgame);
     }
 
     if (time == gametime) {
@@ -280,8 +273,6 @@ bool bns_game(unsigned char ncr, unsigned char ncg, unsigned char ncb) {
     dcl_wait();
 
   } while (true);
-
-  pal_restorepal(p);
 
   return true;
 }

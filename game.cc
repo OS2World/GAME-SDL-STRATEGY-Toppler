@@ -21,17 +21,17 @@
 #define STATE_TIMEOUT 3
 #define STATE_FINISHED 4
 
-void gam_init() {
+void gam_init(void) {
   scr_init();
   key_init();
 }
 
-void gam_done() {
+void gam_done(void) {
   key_done();
   scr_done();
 }
 
-void gam_newgame() {
+void gam_newgame(void) {
   pts_reset();
 }
 
@@ -39,7 +39,7 @@ void gam_loadtower(int tow) {
   lev_selecttower(tow);
 }
 
-void gam_arrival() {
+void gam_arrival(void) {
   int b, toppler, delay;
 
   rob_initialize();
@@ -61,7 +61,7 @@ void gam_arrival() {
   scr_writetext_center(40L, "you are entering the");
   scr_writetext_center(70L, lev_towername());
   scr_swap();
-  pal_colors();
+  pal_colors(pal_towergame);
 
   do {
     scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart);
@@ -336,17 +336,10 @@ static void akt_time(int &time, int &timecount, int &state) {
       timecount = 0;
       time--;
       if (time <= 20 || (time <= 40 && (time % 2)))
-	snd_alarm;
+	snd_alarm();
       if (time == 0)
         state = STATE_TIMEOUT;
     }
-#if 0
-    if (time <= 50) {
-      int x = 5*(50-time) + timecount;
-      if ((125*x + x*x)/2500 > (125*(x-1) + (x-1)*(x-1))/2500)
-        snd_alarm();
-    }
-#endif
   }
 }
 
@@ -377,7 +370,7 @@ static void get_keys(int &left_right, int &up_down, bool &space) {
 
 static void escape(int &state, int &tower_position, int &tower_anglepos, int time) {
   key_readkey();
-  pal_darkening(fontcol, fontcol + fontcnt - 1);
+  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
   scr_drawall(towerpos(top_verticalpos(), tower_position,
                        top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
   scr_writetext_center(61, "REALLY QUIT?");
@@ -387,12 +380,17 @@ static void escape(int &state, int &tower_position, int &tower_anglepos, int tim
   snd_wateroff();
 
   scr_swap();
+
+  int inp = key_chartyped();
+
+
   do {
-  } while (!key_keypressed(any_key));
-  if (key_keypressed(break_key)) {
+    inp = key_chartyped();
+  } while (!inp);
+  if (inp == 27) {
     state = STATE_ABBORTED;
   }else
-    pal_colors();
+    pal_colors(pal_towergame);
 
   snd_wateron();
   towerpos(top_verticalpos(), tower_position,
@@ -401,7 +399,7 @@ static void escape(int &state, int &tower_position, int &tower_anglepos, int tim
 
 static void pause(int &tower_position, int tower_anglepos, int time) {
   key_readkey();
-  pal_darkening(fontcol, fontcol + fontcnt - 1);
+  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
   scr_drawall(towerpos(top_verticalpos(), tower_position,
                        top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
   scr_writetext(160 -  5 * 6, 61, "PAUSE");
@@ -413,7 +411,7 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
   do {
     dcl_wait();
   } while (!key_keypressed(fire_key));
-  pal_colors();
+  pal_colors(pal_towergame);
 
   snd_wateron();
   towerpos(top_verticalpos(), tower_position,
@@ -444,7 +442,6 @@ int gam_towergame(int &anglepos, int &resttime) {
   /* time left for the player to reach the tower */
   int time = lev_towertime();
   
-//      return GAME_FINISHED;
   top_init();
 
   reached_height = tower_position = top_verticalpos();

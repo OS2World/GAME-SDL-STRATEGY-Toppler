@@ -3,7 +3,7 @@
 
 /* handles the stars */
 
-void sts_draw();
+void sts_draw(void);
 
 void sts_init(int sn);
 

@@ -7,23 +7,35 @@
 /* loads a mission from the file with the given name */
 void lev_loadmission(char *filename);
 
+/* returns the number of towers that are in the current mission */
+int lev_towernumber(void);
+
 /* selects one of the towers in this mission */
 void lev_selecttower(int number);
+
+/* returns the color for the current tower */
+unsigned char lev_towercol_red(void);
+unsigned char lev_towercol_green(void);
+unsigned char lev_towercol_blue(void);
+
+void lev_set_towercol(unsigned char r, unsigned char g, unsigned char b);
 
 /* returns the value at this position in the level array */
 unsigned char lev_tower(int row, int column);
 
 /* returns the height of the tower */
-int lev_towerheight();
+int lev_towerrows(void);
 
 /* the name of the tower */
-char *lev_towername();
+char *lev_towername(void);
 
 /* the number of the actual tower */
-int lev_towernr();
+int lev_towernr(void);
 
 /* the time the player has to reach the top */
-int lev_towertime();
+int lev_towertime(void);
+
+void lev_set_towertime(int time);
 
 /* removes one layer of the tower (for destruction) */
 void lev_removelayer(int layer);
@@ -89,6 +101,56 @@ int lev_testuntergr(int verticalpos, int anglepos, bool look_left);
 /* used for the elevator */
 unsigned char lev_putplatform(int row, int col);
 void lev_restore(int row, int col, unsigned char bg);
+
+/* --- the following commands are for the level editor ---  */
+
+/* load and save a tower */
+bool lev_loadtower(char *fname);
+bool lev_savetower(char *fname);
+
+/* rotate row clock and counter clockwise */
+void lev_rotaterow(bool clockwise);
+
+/* insert and delete one row */
+void lev_insertrow(int position);
+void lev_deleterow(int position);
+
+/* creates a simple tower consisting of one empty row */
+void lev_new(void);
+
+/* functions to change on field on the tower */
+void lev_putspace(int row, int col);
+void lev_putrobot1(int row, int col);
+void lev_putrobot2(int row, int col);
+void lev_putrobot3(int row, int col);
+void lev_putrobot4(int row, int col);
+void lev_putrobot5(int row, int col);
+void lev_putrobot6(int row, int col);
+void lev_putrobot7(int row, int col);
+void lev_putrobot8(int row, int col);
+void lev_putstep(int row, int col);
+void lev_putvanishingstep(int row, int col);
+void lev_putslidingstep(int row, int col);
+void lev_putdoor(int row, int col);
+void lev_puttarget(int row, int col);
+void lev_putstick(int row, int col);
+void lev_putbox(int row, int col);
+void lev_putelevator(int row, int col);
+void lev_putmiddlestation(int row, int col);
+void lev_puttopstation(int row, int col);
+
+/* creates a copy of the current tower, the functions
+ * allocate the necessary RAM and the restore function
+ * frees the RAM again
+ */
+void lev_save(unsigned char *&data);
+void lev_restore(unsigned char *&data);
+
+/* check the tower for consistency. This function checks doors
+ * and elevators if something is found row and col contain the
+ * coordinates
+ */
+bool lev_is_consistent(int &row, int &col);
 
 
 #endif

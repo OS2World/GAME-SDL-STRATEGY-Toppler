@@ -14,21 +14,21 @@
 #define any_key         255
 
 
-void key_init();
-void key_done();
+void key_init(void);
+void key_done(void);
 
 /* returns bitmask with currently pressed keys */
-int key_keystat();
+int key_keystat(void);
 
 /* true, if key is pressed */
 bool key_keypressed(int key);
 
 /* returns if a key has been pushed and released (typed) but only for the keys in
  the list */
-char key_readkey();
+char key_readkey(void);
 
 /* returns a types character */
-char key_chartyped();
+char key_chartyped(void);
 
 #endif
 

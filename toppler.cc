@@ -65,7 +65,7 @@ static bool look_left;
 #define STATE_FINISHED 10
 
 
-void top_init() {
+void top_init(void) {
   anglepos = 4;
   verticalpos = 8;
   state = 0;
@@ -123,7 +123,7 @@ static void falling(int nr) {
   }
 }
 
-static void walking() {
+static void walking(void) {
 
   state = STATE_STANDING;
   substate = 0;
@@ -138,7 +138,7 @@ static void elevator(long dir) {
   ele_select(verticalpos, anglepos);
 }
 
-static void shooting() {
+static void shooting(void) {
 
   if (snb_exists()) {
     walking();
@@ -150,13 +150,13 @@ static void shooting() {
   snd_shoot();
 }
 
-static void door() {
+static void door(void) {
 
   state = STATE_DOOR;
   substate = 0;
 }
 
-static void turn() {
+static void turn(void) {
 
   state = STATE_TURNING;
   substate = 0;
@@ -180,7 +180,7 @@ static void step(int left_right) {
   jumping_howlong = 0x7;
 }
 
-static void drown() {
+static void drown(void) {
 
   state = STATE_DROWN;
   substate = 0;
@@ -189,7 +189,7 @@ static void drown() {
   snd_splash(128);
 }
 
-static void topple() {
+static void topple(void) {
 
   state = STATE_TOPPLING;
   substate = 0;
@@ -629,7 +629,7 @@ void top_aktualtoppler(int left_right, int up_down, bool space) {
   }
 }
 
-void top_testkollision() {
+void top_testkollision(void) {
   int nr;
 
   if ((state == STATE_TOPPLING) ||
@@ -689,27 +689,27 @@ void top_testkollision() {
 }
 
 
-int top_verticalpos() { return verticalpos; }
-int top_anglepos() { return anglepos; }
-bool top_visible() { return tvisible; }
-bool top_look_left() { return look_left; }
-int top_shape() { return topplershape; }
-bool top_onelevator() { return on_elevator; }
-int top_technic() { return technic; }
+int top_verticalpos(void) { return verticalpos; }
+int top_anglepos(void) { return anglepos; }
+bool top_visible(void) { return tvisible; }
+bool top_look_left(void) { return look_left; }
+int top_shape(void) { return topplershape; }
+bool top_onelevator(void) { return on_elevator; }
+int top_technic(void) { return technic; }
 
-bool top_died() { return state == STATE_DROWNED; }
-bool top_targetreached() { return state == STATE_FINISHED; }
-bool top_ended() { return ((state == STATE_DROWNED) || (state == STATE_FINISHED)); }
-bool top_dying() {
+bool top_died(void) { return state == STATE_DROWNED; }
+bool top_targetreached(void) { return state == STATE_FINISHED; }
+bool top_ended(void) { return ((state == STATE_DROWNED) || (state == STATE_FINISHED)); }
+bool top_dying(void) {
   return ((state == STATE_DROWN) ||
           (state == STATE_DROWNED) ||
           (state == STATE_FINISHED));
 }
-bool top_walking() { return state == STATE_STANDING; }
+bool top_walking(void) { return state == STATE_STANDING; }
 
-void top_drop1layer() { verticalpos -= 4; }
+void top_drop1layer(void) { verticalpos -= 4; }
 
-void top_hide() { tvisible = false; }
+void top_hide(void) { tvisible = false; }
 void top_show(int shape, int vpos, int apos) {
   tvisible = true;
   topplershape = shape;
@@ -718,7 +718,7 @@ void top_show(int shape, int vpos, int apos) {
   look_left = true;
 }
 
-void top_sidemove() {
+void top_sidemove(void) {
   if (state != STATE_STANDING) return;
   if (movetoppler( 0, 0)) return;
 

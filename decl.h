@@ -65,26 +65,35 @@
 #define fontcol         240
 #define fontcnt         16
 
+/* the IDs for the 3 different palettes */
+#define pal_towergame 0
+#define pal_menu      1
+#define pal_bonusgame 2
+
 
 /* the two special caracters in the font */
 #define fonttoppler     '#'
 #define fontpoint       '*'
 
 /* waits around 1/18 of a second */
-extern void dcl_wait();
-
-bool dcl_fileexists(char *n);
+extern void dcl_wait(void);
 
 /* opens files looking into the right directories */
-FILE *open_data_file(char *name, char *par);
-FILE *open_global_config_file(char *name, char *par);
-FILE *open_local_config_file(char *name, char *par);
-FILE *open_highscore_file(char *name, char *par);
-FILE *create_highscore_file(char *name, char *par);
+FILE *open_data_file(char *name);
+FILE *open_global_config_file(char *name);
+FILE *open_local_config_file(char *name);
+FILE *create_local_config_file(char *name);
+FILE *open_highscore_file(char *name);
+FILE *create_highscore_file(char *name);
+FILE *open_local_data_file(char *name);
+FILE *create_local_data_file(char *name);
 
 /* GAME PARAMETERS */
 extern bool fullscreen;
 extern bool nosound;
+
+void load_config(void);
+void save_config(void);
 
 /* for errorcheking */
 #define assert(cond,text) if (!(cond)) { printf(text); exit(1); }

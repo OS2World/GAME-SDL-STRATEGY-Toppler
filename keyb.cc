@@ -5,7 +5,7 @@
 static int keydown, keytyped;
 static char chartyped;
 
-void key_init() {
+void key_init(void) {
   SDL_EnableKeyRepeat(0, 0);
   SDL_EventState(SDL_MOUSEMOTION, SDL_IGNORE);
   SDL_EventState(SDL_MOUSEBUTTONUP, SDL_IGNORE);
@@ -16,7 +16,7 @@ void key_init() {
   keydown = keytyped = chartyped = 0;
 }
 
-static void handleEvents() {
+static void handleEvents(void) {
   SDL_Event e;
   int key;
 
@@ -26,14 +26,45 @@ static void handleEvents() {
       if (e.key.state == SDL_RELEASED) {
         if ((e.key.keysym.sym >= SDLK_a) && (e.key.keysym.sym <= SDLK_z))
           chartyped = e.key.keysym.sym - SDLK_a + 'A';
+        if ((e.key.keysym.sym >= SDLK_0) && (e.key.keysym.sym <= SDLK_9))
+          chartyped = e.key.keysym.sym - SDLK_0 + '0';
         if (e.key.keysym.sym == SDLK_SPACE)
           chartyped = ' ';
         if (e.key.keysym.sym == SDLK_RETURN)
           chartyped = 13;
         if (e.key.keysym.sym == SDLK_BACKSPACE)
           chartyped = 8;
+        if (e.key.keysym.sym == SDLK_UP)
+          chartyped = 1;
+        if (e.key.keysym.sym == SDLK_DOWN)
+          chartyped = 2;
+        if (e.key.keysym.sym == SDLK_LEFT)
+          chartyped = 3;
+        if (e.key.keysym.sym == SDLK_RIGHT)
+          chartyped = 4;
+        if (e.key.keysym.sym == SDLK_ESCAPE)
+          chartyped = 27;
+        if (e.key.keysym.sym == SDLK_GREATER)
+          chartyped = '>';
+        if (e.key.keysym.sym == SDLK_EXCLAIM)
+          chartyped = '!';
+        if (e.key.keysym.sym == SDLK_HASH)
+          chartyped = '#';
+        if (e.key.keysym.sym == SDLK_MINUS)
+          chartyped = '-';
+        if (e.key.keysym.sym == SDLK_PERIOD)
+          chartyped = '.';
+        if (e.key.keysym.sym == SDLK_INSERT)
+          chartyped = 5;
+        if (e.key.keysym.sym == SDLK_DELETE)
+          chartyped = 6;
+        if (e.key.keysym.sym == SDLK_PAGEUP)
+          chartyped = 7;
+        if (e.key.keysym.sym == SDLK_PAGEDOWN)
+          chartyped = 8;
+        if (e.key.keysym.sym == SDLK_HOME)
+          chartyped = 9;
       }
-
 
       switch (e.key.keysym.sym) {
         case SDLK_SPACE:
@@ -71,10 +102,10 @@ static void handleEvents() {
   }
 }
 
-void key_done() {
+void key_done(void) {
 }
 
-int key_keystat() {
+int key_keystat(void) {
   handleEvents();
   return keydown;
 }
@@ -84,7 +115,7 @@ bool key_keypressed(int key) {
   return (keytyped & key);
 }
 
-char key_readkey() {
+char key_readkey(void) {
   handleEvents();
 
   int i = keytyped;
@@ -95,7 +126,7 @@ char key_readkey() {
   return i;
 }
 
-char key_chartyped() {
+char key_chartyped(void) {
   handleEvents();
   int erg = chartyped;
   chartyped = 0;

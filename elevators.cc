@@ -32,7 +32,7 @@ static struct {
 static int active_ele;
 static int ele_dir;
 
-void ele_init() {
+void ele_init(void) {
 
   for (int t = 0; t < MAX_ELE; t++)
     elevators[t].time = -1;
@@ -77,7 +77,7 @@ void ele_activate(int dir) {
   if (dir == -1) ele_move();
 }
 
-void ele_move() {
+void ele_move(void) {
 
   assert(active_ele != -1, "work with unselected elevator, move\n");
 
@@ -92,7 +92,7 @@ void ele_move() {
   }
 }
 
-bool ele_is_atstop() {
+bool ele_is_atstop(void) {
 
   assert(active_ele != -1, "work with unselected elevator, is_at_stop\n");
 
@@ -102,7 +102,7 @@ bool ele_is_atstop() {
     return lev_is_station(elevators[active_ele].vertical, elevators[active_ele].angle);
 }
 
-void ele_deactivate() {
+void ele_deactivate(void) {
 
   assert(active_ele != -1, "deselected an inactive elevator\n");
 
@@ -124,7 +124,7 @@ void ele_deactivate() {
   elevators[ae].time = 0x7d;
 }
 
-void ele_update() {
+void ele_update(void) {
 
   for (int t = 0; t < MAX_ELE; t++) {
     if (elevators[t].time == 0) {

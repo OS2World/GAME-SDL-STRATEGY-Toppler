@@ -14,19 +14,19 @@
 void arc_init(char *name);
 
 /* closes the archive */
-void arc_done();
+void arc_done(void);
 
 /* opens one file inside the archive */
 void arc_assign(char *name);
 
 /* closes one opened file in the archive */
-void arc_closefile();
+void arc_closefile(void);
 
 /* returns the size of the currently opened file */
-long arc_filesize();
+long arc_filesize(void);
 
 /* returns true if the current file is completely read */
-bool arc_eof();
+bool arc_eof(void);
 
 /* reads up to size bytes into the buffer, returning in result
  the real number read */
@@ -35,9 +35,6 @@ void arc_read(void *buf, int size, int *result);
 /* returns the specified number of bits on the lower bits of the retuned
  value, dont use arc_read and arc_getbits on the same file */
 unsigned short arc_getbits(int anz);
-
-/* returns a SDL_RWops for the currently opened file */
-SDL_RWops *arc_getRWops();
 
 #endif
 

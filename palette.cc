@@ -10,15 +10,15 @@ typedef struct {
 
 extern SDL_Surface *display;
 
-static color pal[256];
+static color pal[256][3];
 static color crosspal[crosscnt];
 static color towercolors[brickcnt];
 static unsigned char dark[256];
 
-void pal_setpal(unsigned char nr, unsigned char r, unsigned char g, unsigned char b) {
-  pal[nr].r = r;
-  pal[nr].g = g;
-  pal[nr].b = b;
+void pal_setpal(unsigned char nr, unsigned char r, unsigned char g, unsigned char b, unsigned char p) {
+  pal[nr][p].r = r;
+  pal[nr][p].g = g;
+  pal[nr][p].b = b;
 }
 
 void pal_setcrosspal(unsigned char nr, unsigned char r, unsigned char g, unsigned char b) {
@@ -46,7 +46,8 @@ void pal_settowercolor(unsigned char r, unsigned char g, unsigned char b) {
     gw /= 256;
     bw /= 256;
 
-    pal_setpal(t+brickcol, rw, gw, bw);
+    pal_setpal(t+brickcol, rw, gw, bw, pal_towergame);
+    pal_setpal(t+brickcol, rw, gw, bw, pal_bonusgame);
 
     rw *= 8;
     gw *= 8;
@@ -58,7 +59,8 @@ void pal_settowercolor(unsigned char r, unsigned char g, unsigned char b) {
 
     bw += 30;
 
-    pal_setpal(t+shadowcol, rw, gw, bw);
+    pal_setpal(t+shadowcol, rw, gw, bw, pal_towergame);
+    pal_setpal(t+shadowcol, rw, gw, bw, pal_bonusgame);
   }
 }
 
@@ -81,10 +83,8 @@ void pal_setcrosscolors(unsigned char rk, unsigned char gk, unsigned char bk) {
       g = 255;
     if (b > 255)
       b = 255;
-
-    pal[t + crosscol].r = r;
-    pal[t + crosscol].g = g;
-    pal[t + crosscol].b = b;
+      
+    pal_setpal(t + crosscol, r, g, b, pal_towergame);  
 
     r *= 2;
     g *= 2;
@@ -95,116 +95,41 @@ void pal_setcrosscolors(unsigned char rk, unsigned char gk, unsigned char bk) {
     b /= 3;
 
     b += 30;
-
-    pal[t + brickcnt + shadowcol].r = r;
-    pal[t + brickcnt + shadowcol].g = g;
-    pal[t + brickcnt + shadowcol].b = b;
+    
+    pal_setpal(t + brickcnt + shadowcol, r, g, b, pal_towergame);
   }
 
-  pal_calcdark();
-  pal_colors();
+  pal_calcdark(pal_towergame);
+  pal_colors(pal_towergame);
 }
 
-void pal_colors()
+void pal_colors(unsigned char palette)
 {
   SDL_Color p[256];
   for (int i = 0; i < 256; i++) {
-    p[i].r = pal[i].r;
-    p[i].g = pal[i].g;
-    p[i].b = pal[i].b;
+    p[i].r = pal[i][palette].r;
+    p[i].g = pal[i][palette].g;
+    p[i].b = pal[i][palette].b;
   }
 
   SDL_SetColors(display, p, 0, 256);
 }
 
-
-void pal_black()
-{
-  SDL_Color p[256];
-
-  for (int i = 0; i < 256; i++) {
-    p[i].r = 0;
-    p[i].g = 0;
-    p[i].b = 0;
-  }
-  SDL_SetColors(display, p, 0, 256);
-}
-
-
-void pal_fade_in()
-{
-  int i;
-  SDL_Color c[256];
-
-  for (int f = 0; f < 256; f++) {
-    for (i = 0; i < 256; i++) {
-      c[i].r = (pal[i].r * f) >> 8;
-      c[i].g = (pal[i].g * f) >> 8;
-      c[i].b = (pal[i].b * f) >> 8;
-    }
-
-    SDL_SetColors(display, c, i, 256);
-  }
-}
-
-
-void pal_fade_out()
-{
-}
-
-
-void pal_darkening(int as, int ae) {
+void pal_darkening(int as, int ae, unsigned char palette) {
   SDL_Color p[256];
 
   for(int i = 0; i < 256; i++) {
     if ((i < as) || (i > ae)) {
-      p[i].r = pal[i].r >> 1;
-      p[i].g = pal[i].g >> 1;
-      p[i].b = pal[i].b >> 1;
+      p[i].r = pal[i][palette].r >> 1;
+      p[i].g = pal[i][palette].g >> 1;
+      p[i].b = pal[i][palette].b >> 1;
     } else {
-      p[i].r = pal[i].r;
-      p[i].g = pal[i].g;
-      p[i].b = pal[i].b;
+      p[i].r = pal[i][palette].r;
+      p[i].g = pal[i][palette].g;
+      p[i].b = pal[i][palette].b;
     }
   }
   SDL_SetColors(display, p, 0, 256);
-}
-
-void pal_savepal(void **p) {
-  color *q = new color [256];
-
-  *p = q;
-
-  for (int i = 0; i < 256; i++) {
-    q[i].r = pal[i].r;
-    q[i].g = pal[i].g;
-    q[i].b = pal[i].b;
-  }
-}
-
-
-void pal_restorepal(void *p) {
-  color *q = (color *)p;
-
-  for (int i = 0; i < 256; i++) {
-    pal[i].r = q[i].r;
-    pal[i].g = q[i].g;
-    pal[i].b = q[i].b;
-  }
-
-  delete [] q;
-}
-
-void pal_setpalette(SDL_Surface *s) {
-  SDL_Color q[256];
-
-  for (int i = 0; i < 256; i++) {
-    q[i].r = pal[i].r;
-    q[i].g = pal[i].g;
-    q[i].b = pal[i].b;
-  }
-
-  SDL_SetColors(s, q, 0, 256);
 }
 
 void pal_setstdpalette(SDL_Surface *s) {
@@ -219,13 +144,13 @@ void pal_setstdpalette(SDL_Surface *s) {
   SDL_SetColors(s, q, 0, 256);
 }
 
-void pal_calcdark() {
+void pal_calcdark(unsigned char p) {
   int r, g, b, m;
 
   for (int t = 0; t < 256; t++) {
-    r = pal[t].r;
-    g = pal[t].g;
-    b = pal[t].b;
+    r = pal[t][p].r;
+    g = pal[t][p].g;
+    b = pal[t][p].b;
 
     r *= 8;
     g *= 8;
@@ -239,8 +164,8 @@ void pal_calcdark() {
 
     m = 0;
     for (int z = 1; z < 256; z++)
-      if ((abs(r-pal[z].r) + abs(b-pal[z].b) + abs(g-pal[z].g)) <
-          (abs(r-pal[m].r) + abs(b-pal[m].b) + abs(g-pal[m].g)))
+      if ((abs(r-pal[z][p].r) + abs(b-pal[z][p].b) + abs(g-pal[z][p].g)) <
+          (abs(r-pal[m][p].r) + abs(b-pal[m][p].b) + abs(g-pal[m][p].g)))
         m = z;
 
     dark[t] = m;
@@ -248,17 +173,5 @@ void pal_calcdark() {
 }
 
 unsigned char pal_dark(unsigned char p) { return dark[p]; }
-
-char pal_red(unsigned char i) {
-  return pal[i].r;
-}
-
-char pal_green(unsigned char i) {
-  return pal[i].g;
-}
-
-char pal_blue(unsigned char i) {
-  return pal[i].b;
-}
 
 

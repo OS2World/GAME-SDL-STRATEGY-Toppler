@@ -63,7 +63,6 @@ static SDL_Surface *fontchars[59];  //32..90
 
 static long layerwidth[scrolllayers];
 static SDL_Surface *layerimage[scrolllayers];
-char scrollerpalette[168*3];
 
 /* this functions are so complex because the graphics are saved in a
  way that allowed easy loading into the video memory in a tricky vga
@@ -168,7 +167,8 @@ static void loadcolors(int cnt, int colstart) {
     r = arc_getbits(8);
     g = arc_getbits(8);
     b = arc_getbits(8);
-    pal_setpal(colstart + t, r, g, b);
+    pal_setpal(colstart + t, r, g, b, pal_towergame);
+    pal_setpal(colstart + t, r, g, b, pal_bonusgame);
   }
 }
 
@@ -202,7 +202,7 @@ static unsigned short loadsprites(int num, int w, int h, int bits, int colstart)
 }
 
 /* loads all the graphics */
-static void loadgraphics() {
+static void loadgraphics(void) {
 
   int res;
   unsigned char pal[192];
@@ -217,9 +217,6 @@ static void loadgraphics() {
 
     pal_setbrickpal(t, c1, c2);
   }
-
-  for (int t = 0; t < 8; t++)
-    pal_setpal(topplercol + t, pal[t * 3], pal[t * 3 + 1], pal[t * 3 + 2]);
 
   slicestart = scr_loadsprites(8, 96, 8, brickcol, false, false);
   battlementstart = scr_loadsprites(8, 144, 24, brickcol, false, false);
@@ -238,7 +235,7 @@ static void loadgraphics() {
 
   arc_read(&pal[0], envirocnt*2, &res);
   for (int t = 0; t < envirocnt; t++)
-    pal_setpal(envirocol + t, pal[2*t+1], pal[2*t], pal[2*t]);
+    pal_setpal(envirocol + t, pal[2*t+1], pal[2*t], pal[2*t], pal_towergame);
 
   step = scr_loadsprites(1, 20, 7, envirocol, false, true);
   elevatorsprite = scr_loadsprites(1, 16, 7, envirocol, false, true);
@@ -247,10 +244,10 @@ static void loadgraphics() {
   arc_closefile();
 
   arc_assign(topplerdat);
-
+  
   arc_read(pal, 8*3, &res);
   for (int t = 0; t < 8; t++)
-    pal_setpal(topplercol + t, pal[t * 3], pal[t * 3 + 1], pal[t * 3 + 2]);
+    pal_setpal(topplercol + t, pal[t * 3], pal[t * 3 + 1], pal[t * 3 + 2], pal_towergame);
 
   topplerstart = scr_loadsprites(74, 20, 20, topplercol, true, true);
 
@@ -295,7 +292,7 @@ static void loadgraphics() {
   arc_closefile();
 }
 
-static void loadfont() {
+static void loadfont(void) {
 
   unsigned char pal[fontcnt*3];
   int res;
@@ -307,8 +304,11 @@ static void loadfont() {
 
   arc_read(pal, fontcnt*3, &res);
 
-  for (int t = 0; t < fontcnt-1; t++)
-    pal_setpal(t+fontcol, pal[3*t], pal[3*t+1], pal[3*t+2]);
+  for (int t = 0; t < fontcnt-1; t++) {
+    pal_setpal(t+fontcol, pal[3*t], pal[3*t+1], pal[3*t+2], pal_towergame);
+    pal_setpal(t+fontcol, pal[3*t], pal[3*t+1], pal[3*t+2], pal_menu);
+    pal_setpal(t+fontcol, pal[3*t], pal[3*t+1], pal[3*t+2], pal_bonusgame);
+  }
 
   while (!arc_eof()) {
     s = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
@@ -324,29 +324,36 @@ static void loadfont() {
   arc_closefile();
 }
 
-static void loadscroller() {
-  FILE *in = open_data_file("layer1.tga", "rb");
+static void loadscroller(void) {
+  char scrollerpalette[168*3];
+  FILE *in = open_data_file("layer1.tga");
   layerimage[0] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
                                640, 240, 8, 0, 0, 0, 0);
-    SDL_SetColorKey(layerimage[0], SDL_SRCCOLORKEY, 0);
-    pal_setstdpalette(layerimage[0]);
+  SDL_SetColorKey(layerimage[0], SDL_SRCCOLORKEY, 0);
+  pal_setstdpalette(layerimage[0]);
+  
   fread((layerimage[0]->pixels), 500, 1, in);
   fread((layerimage[0]->pixels), 640*240, 1, in);
   fclose(in);
   
-  in = open_data_file("layer2.tga", "rb");
+  in = open_data_file("layer2.tga");
   layerimage[1] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
                                640, 240, 8, 0, 0, 0, 0);
-    SDL_SetColorKey(layerimage[1], SDL_SRCCOLORKEY, 0);
-    pal_setstdpalette(layerimage[1]);
+  
+  SDL_SetColorKey(layerimage[1], SDL_SRCCOLORKEY, 0);
+  pal_setstdpalette(layerimage[1]);
+  
   fread((layerimage[1]->pixels), 18, 1, in);
   fread(scrollerpalette, 152*3, 1, in);
+  for (int i = 0; i < 152; i++)
+    pal_setpal(16 + i, scrollerpalette[3*i+2], scrollerpalette[3*i+1], scrollerpalette[3*i], pal_bonusgame);
+  
   fread((layerimage[1]->pixels), 26, 1, in);
   
   fread((layerimage[1]->pixels), 640*240, 1, in);
   fclose(in);
   
-  in = open_data_file("layer3.tga", "rb");
+  in = open_data_file("layer3.tga");
   layerimage[2] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
                                640, 240, 8, 0, 0, 0, 0);
     SDL_SetColorKey(layerimage[2], SDL_SRCCOLORKEY, 0);
@@ -368,7 +375,7 @@ static void loadscroller() {
   
 }
 
-void scr_init() {
+void scr_init(void) {
   spr_init(600);  /* 597 is the number of sprites, just a few for savety */
   loadgraphics();
   loadfont();
@@ -379,7 +386,14 @@ void scr_init() {
   pal_setstdpalette(second);
 }
 
-void scr_done() {
+void scr_toggle_fullscreen() {
+  fullscreen = !fullscreen;
+  display = SDL_SetVideoMode(320*2, 240*2, 8,
+                             SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
+  pal_colors(pal_menu);		
+}
+
+void scr_done(void) {
   SDL_FreeSurface(second);
   spr_done();
 }
@@ -387,7 +401,7 @@ void scr_done() {
 /*Malaktionen beziehen sich immer auf inaktve Seite */
 
 
-static void cleardesk(long height) {
+static void cleardesk(void) {
   SDL_Rect r;
   r.w = 320;
   r.h = 240;
@@ -429,7 +443,7 @@ static void putbattlement(long angle, long height) {
 
   height *= 2;
 
-  upend = 120-(lev_towerheight()-height);
+  upend = 120-(lev_towerrows() * 8 - height);
 
   if (upend > 0)
     scr_blit(spr_spritedata((angle & 7) + battlementstart), 88, upend - 24);
@@ -505,17 +519,17 @@ void scr_writetext(long x, long y, char *s) {
   }
 }
 
-void scr_putbar(int x, int y, int br, int h) {
+void scr_putbar(int x, int y, int br, int h, unsigned char col = 0) {
   SDL_Rect r;
   r.w = br;
   r.h = h;
   r.x = x;
   r.y = y;
-  SDL_FillRect(second, &r, 0);
+  SDL_FillRect(second, &r, col);
 }
 
 /* exchange active and inactive page */
-void scr_swap() {
+void scr_swap(void) {
   int p = 0;
   int q = 0;
   unsigned char i = ((unsigned char *)(second->pixels))[0];
@@ -529,28 +543,6 @@ void scr_swap() {
     memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - 640], 640);
     p += 640;
   }
-/*
-  int p = 0;
-  int q = 0;
-  unsigned char i = ((unsigned char *)(second->pixels))[0];
-  for (int y = 0; y < 240; y++) {
-    for (int x = 0; x < 320; x++) {
-      ((char *)(display->pixels))[p++] = pal_blue(i);
-      ((char *)(display->pixels))[p++] = pal_green(i);
-      ((char *)(display->pixels))[p++] = pal_red(i);
-      ((char *)(display->pixels))[p++] = ((char *)(display->pixels))[p-3];
-      ((char *)(display->pixels))[p++] = ((char *)(display->pixels))[p-3];
-      ((char *)(display->pixels))[p++] = ((char *)(display->pixels))[p-3];
-      q++;
-      i = ((unsigned char *)(second->pixels))[q];
-    }
-    memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - 640*3], 640*3);
-    p += 640*3;
-  }*/
-/*
-  pal_setpalette(second);
-  SDL_BlitSurface(second, NULL, display, NULL);
-  pal_setstdpalette(second);*/
   SDL_UpdateRect(display, 0, 0, 0, 0);
 }
 
@@ -569,7 +561,7 @@ static void draw_tower(long vert, long angle, long hs, long he) {
 
   long a, h, y, an;
 
-  puttower(angle, vert, lev_towerheight());
+  puttower(angle, vert, lev_towerrows() * 8);
 
   a = -36;
   while (((a - angle) & 0x7) != 0)
@@ -589,6 +581,32 @@ static void draw_tower(long vert, long angle, long hs, long he) {
     a += 8;
   }
 }
+
+static void draw_tower_editor(long vert, long angle, long hs, long he, int state) {
+
+  long a, h, y, an;
+
+  puttower(angle, vert, lev_towerrows() * 8);
+
+  a = -36;
+  while (((a - angle) & 0x7) != 0)
+    a++;
+
+  while (a <= 36) {
+    an = ((a - angle) / 8) & 0xf;
+    y = (vert * 2) - (hs * 8) + 112;
+    for (h = hs; h <= he; h++) {
+      if (lev_is_door(h, an) &&
+          (!lev_is_targetdoor(h, an) || (state & 1))
+          && doors[a + 36].br) {
+        scr_blit(spr_spritedata(doors[a + 36].s[2]), doors[a + 36].xs, y);
+      }
+      y -= 8;
+    }
+    a += 8;
+  }
+}
+
 
 /* draws something of the environment */
 static void putcase(unsigned char w, long x, long h) {
@@ -622,6 +640,66 @@ static void putcase(unsigned char w, long x, long h) {
   case 0x82:
     scr_blit(spr_spritedata(boxst + boxstate), x + 160 - 4, h);
 
+    break;
+  }
+}
+
+static void putcase_editor(unsigned char w, long x, long h, int state) {
+  switch (w) {
+
+  case 0:
+    /* blank case */
+    break;
+
+  case 0x85:
+    scr_blit(spr_spritedata(elevatorsprite), 152 + x, h - (state % 4));
+    break;
+  case 0x0c:
+    scr_blit(spr_spritedata(elevatorsprite), 152 + x, h - 4 + abs(state - 8));
+    break;
+  case 0x08:
+    scr_blit(spr_spritedata(elevatorsprite), 152 + x, h + (state % 4));
+    break;
+
+  case 0x81:
+    scr_blit(spr_spritedata(step), 150 + x, h);
+    break;
+  case 0x91:
+    if (state & 1)
+      scr_blit(spr_spritedata(step), 150 + x, h);
+    break;
+  case 0xb1:
+    scr_blit(spr_spritedata(step), 150 + x + state % 4, h);
+    break;
+
+  case 0x80:
+    scr_blit(spr_spritedata(stick), 156 + x, h);
+    break;
+
+  case 0x82:
+    scr_blit(spr_spritedata(boxst + boxstate), x + 160 - 4, h);
+    break;
+
+  case 0x10:
+    scr_blit(spr_spritedata(ballst + 1), x + 160 - 4, h - 8);
+    break;
+  case 0x20:
+    scr_blit(spr_spritedata(ballst), x + 160 - 4 + state / 2, h - 8);
+    break;
+  case 0x30:
+    scr_blit(spr_spritedata(ballst), x + 160 - 4, h - 8);
+    break;
+  case 0x40:
+    scr_blit(spr_spritedata(robotsst), x + 160 - 4, h - 4 + abs(state - 8));
+    break;
+  case 0x50:
+    scr_blit(spr_spritedata(robotsst), x + 160 - 4, h - 8 + abs(state - 8) * 2);
+    break;
+  case 0x60:
+    scr_blit(spr_spritedata(robotsst), x + 160 - 4 + abs(state - 8), h);
+    break;
+  case 0x70:
+    scr_blit(spr_spritedata(robotsst), x + 160 - 4 + 2 * abs(state - 8), h);
     break;
   }
 }
@@ -688,6 +766,18 @@ static void putthings(long vert, long a, long angle, long hs, long he) {
   }
 }
 
+static void putthings_editor(long vert, long a, long angle, long hs, long he, int state) {
+
+  long x, y, h;
+
+  x = sintab[a + 60];
+  y = (vert * 2) - (hs * 8) + 112;
+  for (h = hs; h <= he; h++) {
+    putcase_editor(lev_tower(h, ((a - angle) / 8) & 0xf), x, y, state);
+    y -= 8;
+  }
+}
+
 /* draws everything behind the tower */
 static void draw_behind(long vert, long angle, long hs, long he)
 {
@@ -710,6 +800,26 @@ static void draw_behind(long vert, long angle, long hs, long he)
   }
 }
 
+static void draw_behind_editor(long vert, long angle, long hs, long he, int state)
+{
+  long a;
+
+  a = -60;
+  while ((a - angle) & 0x7) a++;
+
+  while (a <= -37) {
+    putthings_editor(vert, a, angle, hs, he, state);
+    a += 8;
+  }
+
+  a = 60;
+  while ((a - angle) & 0x7) a--;
+
+  while (a >= 37) {
+    putthings_editor(vert, a, angle, hs, he, state);
+    a -= 8;
+  }
+}
 
 /* draws everything in front of the tower */
 static void draw_bevore(long  vert, long angle, long hs, long he)
@@ -729,6 +839,27 @@ static void draw_bevore(long  vert, long angle, long hs, long he)
 
   while (a >= 0) {
     putthings(vert, a, angle, hs, he);
+    a -= 8;
+  }
+}
+
+static void draw_bevore_editor(long  vert, long angle, long hs, long he, int state)
+{
+  long a;
+
+  a = -36;
+  while ((a - angle) & 0x7) a++;
+
+  while (a <= -1) {
+    putthings_editor(vert, a, angle, hs, he, state);
+    a += 8;
+  }
+
+  a = 36;
+  while ((a - angle) & 0x7) a--;
+
+  while (a >= 0) {
+    putthings_editor(vert, a, angle, hs, he, state);
     a -= 8;
   }
 }
@@ -782,13 +913,13 @@ void scr_drawall(long vert,
 
   long hs, he;
 
-  cleardesk(vert);
+  cleardesk();
 
   hs = vert / 4 - 16;
   if (hs < 0) hs = 0;
 
   he = vert / 4 + 16;
-  if (he * 8 > lev_towerheight()) he = (lev_towerheight() / 8) - 1;
+  if (he > lev_towerrows()) he = lev_towerrows() - 1;
 
   sts_draw();
   draw_behind(vert, angle, hs, he);
@@ -828,6 +959,70 @@ void scr_drawall(long vert,
   putwater(vert);
 
   draw_data(time);
+
+  boxstate = (boxstate + 1) & 0xf;
+}
+
+void scr_drawedit(long vpos, long apos) {
+
+  long hs, he, t;
+  static long vert = 0, angle = 0;
+
+  if (vpos != vert) {
+    if (vpos > vert) {
+      if (vpos > vert + 0x8)
+        vert += 4;
+      else
+        vert += 1;
+    } else {
+      if (vpos < vert - 0x8)
+        vert -= 4;
+      else
+        vert -= 1;
+    }
+  }
+
+  apos &= 0x7f;
+
+  t = (apos - angle) & 0x7f;
+
+  if (t != 0) {
+    if (t < 0x3f) {
+      if (t > 0x8)
+        angle += 4;
+      else
+        angle += 1;
+    } else {
+      if (t < 0x7f-0x8)
+        angle -= 4;
+      else
+        angle -= 1;
+    }
+    angle &= 0x7f;
+  }
+
+  cleardesk();
+
+  hs = vert / 4 - 16;
+  if (hs < 0) hs = 0;
+
+  he = vert / 4 + 16;
+  if (he > lev_towerrows()) he = lev_towerrows() - 1;
+
+  draw_behind_editor(vert, angle, hs, he, boxstate);
+  draw_tower_editor(vert, angle, hs, he, boxstate);
+  draw_bevore_editor(vert, angle, hs, he, boxstate);
+
+  putbattlement(angle, vert);
+
+  putwater(vert);
+
+  if (boxstate & 1)
+    scr_putbar(160 - 8, 120 - 8, 16, 8, envirocol + boxstate);
+
+  char s[20];
+  sprintf(s, "%u", lev_towertime());
+  scr_writetext_center(5, s);
 
   boxstate = (boxstate + 1) & 0xf;
 }

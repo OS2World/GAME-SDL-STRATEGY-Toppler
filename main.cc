@@ -6,20 +6,18 @@
 #include "decl.h"
 #include "sound.h"
 #include "bonus.h"
+#include "level.h"
 
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
 
-static void printhelp() {
+static void printhelp(void) {
   printf("  -f enable fullscreen\n");
   printf("  -s silence, disable all sound\n");
 }
 
 static bool parse_arguments(int argc, char *argv[]) {
-  fullscreen = false;
-  nosound = false;
-
   for (int t = 1; t < argc; t++) {
     if (!strcmp(argv[t], "-f")) fullscreen = true;
     else if (!strcmp(argv[t], "-s")) nosound = true;
@@ -31,21 +29,7 @@ static bool parse_arguments(int argc, char *argv[]) {
   return true;
 }
 
-static void startgame() {
-
-  /* the different colors for the eight towers */
-  struct {
-    unsigned char r, g, b;
-  } tcolors[8] = {
-    { 255, 0, 0 },
-    { 150, 150, 255 },
-    { 170, 170, 170 },
-    { 163, 120, 88 },
-    { 0, 155, 155 },
-    { 255, 100, 100 },
-    { 150, 255, 150 },
-    { 255, 155, 0 }
-  };
+static void startgame(void) {
 
   unsigned char stat, tower;
   int anglepos;
@@ -58,36 +42,38 @@ static void startgame() {
   snd_init();
   stat = men_main(true);
   while (stat > 0) {
-    pts_reset();
     gam_newgame();
     tower = 0;
+    gam_loadtower(0);
+    pal_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
+    pal_calcdark(pal_towergame);
 
     do {
-      pal_settowercolor(tcolors[tower].r, tcolors[tower].g, tcolors[tower].b);
-      pal_calcdark();
+      snd_wateron();
       do {
-        gam_loadtower(tower);
-        snd_wateron();
         snd_watervolume(128);
         gam_arrival();
         gameresult = gam_towergame(anglepos, resttime);
-        if (gameresult != GAME_FINISHED)
-          snd_wateroff();
       } while ((gameresult == GAME_DIED) && pts_lifesleft());
+
       if (gameresult == GAME_FINISHED) {
         gam_pick_up(anglepos, resttime);
 
         snd_wateroff();
 
-        if (tower < 7)
-          if (!bns_game(tcolors[tower+1].r, tcolors[tower+1].g, tcolors[tower+1].b))
-            gameresult = GAME_ABBORTED;
+        if (tower < 7) {
+          tower++;
+          gam_loadtower(0);
 
-        tower++;
+          if (!bns_game())
+            gameresult = GAME_ABBORTED;
+        }
+      } else {
+        snd_wateroff();
       }
     } while (pts_lifesleft() && (tower != 8) && (gameresult != GAME_ABBORTED));
 
-    men_highscore(pts_points(), true);
+    men_highscore(pts_points());
     stat = men_main(false);
   }
   snd_done();
@@ -95,8 +81,10 @@ static void startgame() {
   arc_done();
 }
 
-
 int main(int argc, char *argv[]) {
+
+  load_config();
+
   if (parse_arguments(argc, argv)) {
     SDL_InitSubSystem(SDL_INIT_VIDEO);
     SDL_WM_SetCaption("Nebulous", NULL);
@@ -109,7 +97,8 @@ int main(int argc, char *argv[]) {
     SDL_ShowCursor(mouse);
     SDL_Quit();
   }
+  
+  save_config();
 
   return 0;
 }
-

@@ -6,7 +6,7 @@ static int lifes;
 
 #define LIFE_INCREMENT 5000
 
-void pts_reset() {
+void pts_reset(void) {
   points = 0;
   lifes = 3;
   nextlife = LIFE_INCREMENT;
@@ -23,19 +23,19 @@ void pts_add(int add) {
   }
 }
 
-unsigned int pts_points() {
+unsigned int pts_points(void) {
   return points;
 }
 
-unsigned char pts_lifes() {
+unsigned char pts_lifes(void) {
   return lifes;
 }
 
-void pts_died() {
+void pts_died(void) {
   lifes--;
 }
 
-bool pts_lifesleft() {
+bool pts_lifesleft(void) {
   return lifes != 0;
 }
 
