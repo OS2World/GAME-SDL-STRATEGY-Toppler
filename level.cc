@@ -67,6 +67,21 @@ struct _tblockdata {
     { "lift bottom",      '^', TBF_STATION|TBF_PLATFORM },
 };
 
+/* Sections in the data files; do not change the order,
+ * and always add new ones to the end, so that we keep
+ * compatibility with old towers/missions.
+ * (the loader silently ignores unrecognized sections)
+ */
+enum towersection {
+    TSS_END,
+    TSS_TOWERNAME,
+    TSS_TOWERHEIGHT,
+    TSS_TOWERTIME,
+    TSS_TOWERCOLOR,
+    TSS_TOWERDATA,
+    TSS_DEMO
+};
+
 static Uint8 * mission = NULL;
 static Uint8 towerheight;
 static Uint8 tower[256][TOWERWID];
@@ -339,9 +354,10 @@ void lev_selecttower(Uint8 number) {
   Uint32 towerstart;
 
   towernumber = number;
-  Uint16 *tmpbuf = NULL;
-  int tmpbuf_len = 0;
-  Uint32 tmp;
+  Uint8 section;
+  Uint32 section_len;
+    
+  lev_set_towerdemo(0, NULL);
 
   // find start of towerdata in mission
   {
@@ -357,67 +373,80 @@ void lev_selecttower(Uint8 number) {
     towerstart += long(mission[idxpos + 4 * number + 2]) << 16;
     towerstart += long(mission[idxpos + 4 * number + 3]) << 24;
   }
-   
-  // extract towername
-  memmove(towername, &mission[towerstart + 1], mission[towerstart]);
-  towername[mission[towerstart]] = 0;
-
-  towerstart += mission[towerstart] + 1;
-
-  // save number of rows in tower
-  towerheight = mission[towerstart++];
-  towertime = mission[towerstart] + (int(mission[towerstart + 1]) << 8);
-  towerstart += 2;
-
-  towercolor_red = mission[towerstart];
-  towercolor_green = mission[towerstart + 1];
-  towercolor_blue = mission[towerstart + 2];
-  towerstart += 3;
-
-  // save start of bitmap and bytemap
-  Uint32 bitstart = towerstart;
-  Uint32 bytestart = bitstart + 2 * towerheight;
-
-  // initialize positions inside the fields
-  Uint16 wpos = 0;
-  Uint16 bpos = 0;
-
-  // clean tower
-  lev_clear_tower();
-
-  // extract level data
-  for (Uint8 row = 0; row < towerheight; row++) {
-    for (Uint8 col = 0; col < TOWERWID; col++) {
-      if ((mission[bitstart + (bpos >> 3)] << (bpos & 7)) & 0x80)
-        tower[row][col] = mission[bytestart + wpos++];
-      else
-        tower[row][col] = 0;
-
-      bpos++;
-    }
-  }
-
-  // get tower demo
-  tmp = bytestart + wpos;
-  tmpbuf_len = mission[tmp++];
-  tmpbuf_len += long(mission[tmp++]) << 8;
     
-  if (tmpbuf_len) {
-    tmpbuf = (Uint16 *)malloc(tmpbuf_len*sizeof(Uint16));
-    Uint16 idx = 0;
-    while (idx < tmpbuf_len) {
-      Uint8 run = mission[tmp++];
-      Uint16 data = mission[tmp++];
-      data += Uint16(mission[tmp++]) << 8;
+  do {
+      section = mission[towerstart++];
+      section_len = mission[towerstart++];
+      section_len += Uint32(mission[towerstart++]) << 8;
+      section_len += Uint32(mission[towerstart++]) << 16;
+      section_len += Uint32(mission[towerstart++]) << 24;
+      switch ((towersection)section) {
+	  case TSS_TOWERNAME:
+	    memmove(towername, &mission[towerstart], section_len);
+	    towername[section_len] = 0;
+	    break;
+	  case TSS_TOWERHEIGHT:
+	    towerheight = mission[towerstart];
+	    break;
+	  case TSS_TOWERTIME:
+	    towertime = mission[towerstart] + (int(mission[towerstart + 1]) << 8);
+	    break;
+	  case TSS_TOWERCOLOR:
+	    towercolor_red = mission[towerstart];
+	    towercolor_green = mission[towerstart + 1];
+	    towercolor_blue = mission[towerstart + 2];
+	    break;
+	  case TSS_TOWERDATA:
+	  {
+	      Uint32 bitstart = towerstart;
+	      Uint32 bytestart = bitstart + 2 * towerheight;
+	      Uint16 wpos = 0;
+	      Uint16 bpos = 0;
+	      
+	      lev_clear_tower();
 
-      while (run) {
-        tmpbuf[idx++] = data;
-        run--;
+	      for (Uint8 row = 0; row < towerheight; row++) {
+		  for (Uint8 col = 0; col < TOWERWID; col++) {
+		      if ((mission[bitstart + (bpos >> 3)] << (bpos & 7)) & 0x80)
+			tower[row][col] = mission[bytestart + wpos++];
+		      else
+			tower[row][col] = 0;
+		      bpos++;
+		  }
+	      }
+	      break;
+	  }
+	  case TSS_DEMO:
+	  {
+	      // get tower demo
+	      Uint16 *tmpbuf = NULL;
+	      Uint16 tmpbuf_len = mission[towerstart];
+	      tmpbuf_len += long(mission[towerstart+1]) << 8;
+	      Uint16 ofs = 2;
+
+	      if (tmpbuf_len) {
+		  tmpbuf = (Uint16 *)malloc(tmpbuf_len*sizeof(Uint16));
+		  Uint16 idx = 0;
+		  while (idx < tmpbuf_len) {
+		      Uint8 run = mission[towerstart + ofs++];
+		      Uint16 data = mission[towerstart + ofs++];
+		      data += Uint16(mission[towerstart + ofs++]) << 8;
+
+		      while (run) {
+			  tmpbuf[idx++] = data;
+			  run--;
+		      }
+		  }
+	      }
+
+	      lev_set_towerdemo(tmpbuf_len, tmpbuf);
+	      break;
+	  }
+	  case TSS_END:
+	  default:      break;
       }
-    }
-  }
-
-  lev_set_towerdemo(tmpbuf_len, tmpbuf);
+      towerstart += section_len;
+  } while ((towersection)section != TSS_END);
 }
 
 char *
@@ -1224,12 +1253,27 @@ bool lev_mission_new(char * name, Uint8 prio) {
   return true;
 }
 
+void write_fmission_section(Uint8 section, Uint32 section_len) {
+    Uint8 tmp;
+    fwrite(&section, 1, 1, fmission);
+    
+    tmp = section_len & 0xff;
+    fwrite(&tmp, 1, 1, fmission);
+    tmp = (section_len >> 8) & 0xff;
+    fwrite(&tmp, 1, 1, fmission);
+    tmp = (section_len >> 16) & 0xff;
+    fwrite(&tmp, 1, 1, fmission);
+    tmp = (section_len >> 24) & 0xff;
+    fwrite(&tmp, 1, 1, fmission);
+}
+
 void lev_mission_addtower(char * name) {
   assert(fmission, "called mission_addtower without mission_new");
 
   Uint8 rows, col;
   Sint16 row;
   Uint8 namelen, tmp;
+  Uint32 section_len;
 
   if (!tower) return;
 
@@ -1239,21 +1283,32 @@ void lev_mission_addtower(char * name) {
   if (!lev_loadtower(name)) return;
     
   namelen = strlen(towername);
-  fwrite(&namelen, 1, 1, fmission);
+  write_fmission_section(TSS_TOWERNAME, namelen);
   fwrite(towername, 1, namelen, fmission);
 
+  write_fmission_section(TSS_TOWERHEIGHT, 1);
   fwrite(&towerheight, 1, 1, fmission);
+    
+  write_fmission_section(TSS_TOWERTIME, 2);
   tmp = towertime & 0xff;
   fwrite(&tmp, 1, 1, fmission);
   tmp = (towertime >> 8) & 0xff;
   fwrite(&tmp, 1, 1, fmission);
-   
+  
+  write_fmission_section(TSS_TOWERCOLOR, 3);
   fwrite(&towercolor_red, 1, 1, fmission);
   fwrite(&towercolor_green, 1, 1, fmission);
   fwrite(&towercolor_blue, 1, 1, fmission);
     
   rows = towerheight;
 
+  /* calculate tower data section length */
+  section_len = 2*towerheight;
+  for (row = 0; row < rows; row++)
+      for (col = 0; col < TOWERWID; col++)
+	if (tower[row][col]) section_len++;
+  write_fmission_section(TSS_TOWERDATA, section_len);
+  
   /* output bitmap */
   for (row = 0; row < rows; row++) {
 
@@ -1280,44 +1335,62 @@ void lev_mission_addtower(char * name) {
 
   /* output towerdemo */
 
-  /* output length */
-  tmp = towerdemo_len & 0xff;
-  fwrite(&tmp, 1, 1, fmission);
-  tmp = (towerdemo_len >> 8) & 0xff;
-  fwrite(&tmp, 1, 1, fmission);
-
-  /* output data using a simple runlength encoder */
-
   if (towerdemo && (towerdemo_len > 0)) {
+      Uint8 run;
+      Uint16 data;
 
-    Uint8 run;
-    Uint16 data;
-  
-    run = 1;
-    data = towerdemo[0];
+      /* calc data length */
+      run = 1;
+      data = towerdemo[0];
+      section_len = 2;
 
-    for (int idx = 1; idx < towerdemo_len; idx++) {
-      if ((data != towerdemo[idx]) || (run == 0xff)) {
-        fwrite(&run, 1, 1, fmission);
-        tmp = data & 0xff;
-        fwrite(&tmp, 1, 1, fmission);
-        tmp = (data >> 8) & 0xff;
-        fwrite(&tmp, 1, 1, fmission);
+      for (int idx = 1; idx < towerdemo_len; idx++) {
+	  if ((data != towerdemo[idx]) || (run == 0xff)) {
+	      section_len += 3;
 
-        data = towerdemo[idx];
-        run = 1;
-      } else
-        run ++;
-    }
+	      data = towerdemo[idx];
+	      run = 1;
+	  } else
+	    run ++;
+      }
+      if (run) section_len += 3;
 
-    if (run) {
-      fwrite(&run, 1, 1, fmission);
-      tmp = data & 0xff;
+      write_fmission_section(TSS_DEMO, section_len);
+
+      /* output length */
+      tmp = towerdemo_len & 0xff;
       fwrite(&tmp, 1, 1, fmission);
-      tmp = (data >> 8) & 0xff;
+      tmp = (towerdemo_len >> 8) & 0xff;
       fwrite(&tmp, 1, 1, fmission);
-    }
+
+      /* output data using a simple runlength encoder */
+      run = 1;
+      data = towerdemo[0];
+
+      for (int idx = 1; idx < towerdemo_len; idx++) {
+	  if ((data != towerdemo[idx]) || (run == 0xff)) {
+	      fwrite(&run, 1, 1, fmission);
+	      tmp = data & 0xff;
+	      fwrite(&tmp, 1, 1, fmission);
+	      tmp = (data >> 8) & 0xff;
+	      fwrite(&tmp, 1, 1, fmission);
+
+	      data = towerdemo[idx];
+	      run = 1;
+	  } else
+	    run ++;
+      }
+
+      if (run) {
+	  fwrite(&run, 1, 1, fmission);
+	  tmp = data & 0xff;
+	  fwrite(&tmp, 1, 1, fmission);
+	  tmp = (data >> 8) & 0xff;
+	  fwrite(&tmp, 1, 1, fmission);
+      }
   }
+
+  write_fmission_section(TSS_END, 0);
 }
 
 void lev_mission_finish() {

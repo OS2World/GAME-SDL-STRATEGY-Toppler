@@ -43,8 +43,11 @@ void men_init(void);
 /* the main menu */
 void men_main(void);
 
-/* highscores, after the game */
-void men_highscore(unsigned long pt);
+/* highscores, after the game
+ * pt = points, 
+ * twr = tower reached, -1 = mission finished
+ */
+void men_highscore(unsigned long pt, int twr);
 
 /* free graphics */
 void men_done(void);

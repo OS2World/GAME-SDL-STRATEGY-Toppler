@@ -87,10 +87,14 @@ struct _menusystem {
 static unsigned short menupicture, titledata;
 static unsigned char currentmission = 0;
 
-static struct {
+struct _scores {
   Uint32 points;
   char name[SCORENAMELEN+1];
-} scores[NUMHISCORES];
+  Sint16 tower; /* tower reached, -1 = mission finished */
+};
+
+static Uint8 num_scores = 0;
+static struct _scores *scores = NULL;
 
 static menubg_callback_proc menu_background_proc = NULL;
 
@@ -875,6 +879,33 @@ static char *game_options_menu_lives(void *prevmenu) {
     return buf;
 }
 
+static char *
+game_options_menu_speed(void *prevmenu)
+{
+    // Changing game_speed during a game has no effect until a
+    // a new game is started.
+    static char buf[50];
+    if (prevmenu) {
+	struct _menusystem *tms = (struct _menusystem *)prevmenu;
+	switch (key_sdlkey2conv(tms->key, false)) {
+	    case right_key: 
+	        game_speed = game_speed + 1;
+	        if (game_speed > MAX_GAME_SPEED) game_speed = MAX_GAME_SPEED;
+	        break;
+	    case left_key:  
+	        game_speed = game_speed - 1;
+	        if (game_speed < 0) game_speed = 0;
+	        break;
+	    case fire_key:
+	        game_speed = (game_speed + 1) % (MAX_GAME_SPEED+1);
+	        break;
+	    default: return NULL;
+	}
+    }
+    sprintf(buf, "Game Speed: %i", game_speed);
+    return buf;
+}
+
 static char *men_game_options_menu(void *prevmenu) {
     static char s[20] = "Game Options";
     if (prevmenu) {
@@ -884,6 +915,8 @@ static char *men_game_options_menu(void *prevmenu) {
 	ms = add_menu_option(ms, NULL, game_options_menu_lives, SDLK_UNKNOWN, 
 			     (menuoptflags)((int)MOF_PASSKEYS|(int)MOF_LEFT));
 	ms = add_menu_option(ms, NULL, game_options_menu_statustop);
+	ms = add_menu_option(ms, NULL, game_options_menu_speed, SDLK_UNKNOWN,
+			     (menuoptflags)((int)MOF_PASSKEYS|(int)MOF_LEFT));
 	ms = add_menu_option(ms, NULL, NULL);
 	ms = add_menu_option(ms, "Back", NULL);
 	
@@ -1000,10 +1033,19 @@ static char *
 men_waves_menu(void *ms)
 {
   if (ms) {
-    switch(waves_type) {
-    case waves_nonreflecting: waves_type = waves_simple; break;
-    case waves_simple: waves_type = waves_expensive; break;
-    case waves_expensive: waves_type = waves_nonreflecting; break;
+    struct _menusystem *tms = (struct _menusystem *)ms;
+    switch (key_sdlkey2conv(tms->key, false)) {
+	case fire_key: 
+	    waves_type = (waves_type + 1) % num_waves; break;
+	case right_key:
+	    waves_type = waves_type + 1;
+	    if (waves_type >= num_waves) waves_type = (num_waves - 1);
+	    break;
+	case left_key:
+	    waves_type = waves_type - 1;
+	    if (waves_type < 0) waves_type = 0;
+	    break;
+	default: return NULL;
     }
   }
   switch(waves_type) {
@@ -1049,7 +1091,7 @@ men_options_graphic(void *mainmenu) {
 
     ms = add_menu_option(ms, NULL, men_options_windowed);
     ms = add_menu_option(ms, NULL, men_alpha_options);
-    ms = add_menu_option(ms, NULL, men_waves_menu);
+    ms = add_menu_option(ms, NULL, men_waves_menu, SDLK_UNKNOWN, MOF_PASSKEYS);
 
     ms = add_menu_option(ms, NULL, NULL);
     ms = add_menu_option(ms, "Back", NULL);
@@ -1086,9 +1128,11 @@ men_options(void *mainmenu) {
 }
   
 static void emptyscoretable(void) {
-  for (int t = 0; t < NUMHISCORES; t++) {
-    scores[t].points = 0;
-    scores[t].name[0] = 0;
+  if (scores && num_scores) {
+      for (int t = 0; t < num_scores; t++) {
+	  scores[t].points = 0;
+	  scores[t].name[0] = 0;
+      }
   }
 }
 
@@ -1100,12 +1144,16 @@ static void savescores(void) {
   FILE *f = create_highscore_file("toppler.hsc");
 #endif
 
+  assert(!(!scores || !num_scores), "Savescores without scores"); 
+   
   if (f) {
     unsigned char len;
     char mname[30];
+    Uint8 nscores;
 
     while (!feof(f)) {
 
+      fread(&nscores, 1, 1, f);
       if ((fread(&len, 1, 1, f) == 1) &&
           (fread(mname, 1, len, f) == len)) {
         mname[len] = 0;
@@ -1115,47 +1163,71 @@ static void savescores(void) {
           // on the fly from reading to writing
           fseek(f, ftell(f), SEEK_SET);
 
-          fwrite(scores, sizeof(scores), 1, f);
+	  assert(!(nscores != num_scores || !scores || !num_scores), "Savescores error");
+	  fwrite(scores, sizeof(struct _scores)*num_scores, 1, f);
           fclose(f);
           return;
         }
       } else
         break;
 
-      fseek(f, ftell(f) + sizeof(scores), SEEK_SET);
+      fseek(f, ftell(f) + sizeof(struct _scores)*num_scores, SEEK_SET);
     }
 
     unsigned char tmp = strlen(lev_missionname(currentmission));
 
+    if (!scores) {
+	num_scores = NUMHISCORES;
+	scores = (struct _scores *)malloc(sizeof(struct _scores)*num_scores);
+    }
+
+    fwrite(&num_scores, 1, 1, f);
     fwrite(&tmp, 1, 1, f);
     fwrite(lev_missionname(currentmission), 1, tmp, f);
-    fwrite(scores, sizeof(scores), 1, f);
+    fwrite(scores, sizeof(struct _scores)*num_scores, 1, f);
     fclose(f);
   }
 }
 
 static void getscores(void) {
-
 #ifdef USE_LOCKING
   FILE *f = open_highscore_file(SCOREFILE);
 #else
   FILE *f = open_highscore_file("toppler.hsc");
 #endif
+    
+  bool foundit = false;
 
+  if (scores && num_scores) {
+      free(scores);
+      scores = NULL;
+      num_scores = 0;
+  }
+    
   if (f) {
 
     unsigned char len;
     char mname[30];
+    Uint8 nscores;
 
     while (true) {
 
+      fread(&nscores, 1, 1, f);
       if ((fread(&len, 1, 1, f) == 1) &&
-          (fread(mname, 1, len, f) == len) &&
-          (fread(scores, 1, sizeof(scores), f) == sizeof(scores))) {
+          (fread(mname, 1, len, f) == len)
+	  /*&&
+          (fread(scores, 1, sizeof(scores), f) == sizeof(scores))*/) {
         mname[len] = 0;
         if (strcasecmp(mname, lev_missionname(currentmission)) == 0) {
+	  num_scores = nscores;
+	  scores = (struct _scores *)malloc(sizeof(struct _scores)*num_scores);
+	  emptyscoretable();
+	  fread(scores, 1, sizeof(struct _scores)*num_scores, f);
+	  foundit = true;
           break;
-        }
+        } else {
+	    fseek(f, ftell(f) + sizeof(struct _scores)*nscores, SEEK_SET);
+	}
       } else {
         emptyscoretable();
         break;
@@ -1164,9 +1236,12 @@ static void getscores(void) {
     }
 
     fclose(f);
-
-  } else {
-    emptyscoretable();
+  }
+    
+  if (!foundit) {
+      num_scores = NUMHISCORES;
+      scores = (struct _scores *)malloc(sizeof(struct _scores)*num_scores);    
+      emptyscoretable();
   }
 }
 
@@ -1183,16 +1258,16 @@ static int hiscores_maxlen = 0;
 void
 get_hiscores_string(int p, char **pos, char **points, char **name)
 {
-  if ((p < 0) || (p >= NUMHISCORES))
+  if (!scores || (p < 0) || (p > num_scores))
     *pos = * points = *name = "";
   static char buf1[SCORENAMELEN + 5];
   static char buf2[SCORENAMELEN + 5];
   static char buf3[SCORENAMELEN + 5];
   buf1[0] = buf2[0] = buf3[0] = '\0';
   sprintf(buf1, "%i.", p + 1);
-  sprintf(buf2, "%i", scores[p].points);
-  sprintf(buf3, "%s", scores[p].name);
-
+  sprintf(buf2, "%i", scores ? scores[p].points : 0);
+  sprintf(buf3, "%s", scores ? scores[p].name : "");
+    
   *pos = buf1;
   *points = buf2;
   *name = buf3;
@@ -1201,7 +1276,7 @@ get_hiscores_string(int p, char **pos, char **points, char **name)
 void
 calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
 {
-  for (int x = 0; x < NUMHISCORES; x++) {
+  for (int x = 0; x < num_scores; x++) {
     char *a, *b, *c;
     int clen;
 
@@ -1211,11 +1286,11 @@ calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
     if (clen > *max_pos) *max_pos = clen;
 
     clen = scr_textlength(b);
-    if (clen > *max_points) *max_points = clen;
+    if (clen < 64) clen = 64; 
+    else if (clen > *max_points) *max_points = clen;
 
     clen = scr_textlength(c);
     if (clen > *max_name) *max_name = clen;
-
   }
 }
 
@@ -1223,6 +1298,7 @@ static char *
 men_hiscores_background_proc(void *ms)
 {
   static int blink_r = 120, blink_g = 200, blink_b = 40;
+  static int next_page = 0;
 
   if (ms) {
 
@@ -1239,7 +1315,25 @@ men_hiscores_background_proc(void *ms)
       if (hiscores_timer < 100) {
         hiscores_timer++;
         break;
-      } else hiscores_state = 2;
+      } else {
+	  bool filled_page = false;
+	  bool firstpage = (hiscores_pager == 0);
+	  int pager = (hiscores_pager + 1) % (num_scores / HISCORES_PER_PAGE);
+	  for (int tmp = 0; tmp < HISCORES_PER_PAGE; tmp++) {
+	      int cs = tmp + (pager * HISCORES_PER_PAGE);
+	      if (scores[cs].points || strlen(scores[cs].name)) {
+		  filled_page = true;
+		  break;
+	      }
+	  }
+	  if (!filled_page && firstpage) {
+	      hiscores_timer = 0;
+	      break;
+	  } else {
+	      hiscores_state = 2;
+	      next_page = pager;
+	  }
+      }
     case 2: /* move the scores out */
       if (hiscores_xpos > -(hiscores_maxlen + 40)) {
         hiscores_timer = 0;
@@ -1248,7 +1342,7 @@ men_hiscores_background_proc(void *ms)
       } else {
         hiscores_state = 0;
         hiscores_xpos = SCREENWID;
-        hiscores_pager = (hiscores_pager + 1) % (NUMHISCORES / HISCORES_PER_PAGE);
+	hiscores_pager = next_page;
       }
     default: break;
     }
@@ -1281,7 +1375,7 @@ static void show_scores(bool back = true, int mark = -1) {
   getscores();
 
   hiscores_timer = 0;
-  if ((mark >= 0) && (mark < NUMHISCORES))
+  if ((mark >= 0) && (mark < num_scores))
     hiscores_pager = (mark / HISCORES_PER_PAGE);
   else
     hiscores_pager = 0;
@@ -1350,7 +1444,8 @@ main_game_loop()
     }
   } while (pts_lifesleft() && (tower < lev_towercount()) && (gameresult != GAME_ABORTED));
 
-  if (gameresult != GAME_ABORTED) men_highscore(pts_points());
+  if (gameresult != GAME_ABORTED)
+      men_highscore(pts_points(), (tower >= lev_towercount()) ? tower : -1);
 }
 
 #ifdef HUNT_THE_FISH
@@ -1377,9 +1472,11 @@ men_main_startgame_proc(void *ms)
     int missioncount = lev_missionnumber();
     switch (key_sdlkey2conv(tms->key, false)) {
     case fire_key:
+      dcl_update_speed(game_speed);
       snd_stoptitle();
       main_game_loop();
       snd_playtitle();
+      dcl_update_speed(MENU_DCLSPEED);
       break;
     case right_key: currentmission = (currentmission + 1) % missioncount; break;
     case left_key: currentmission = (currentmission + missioncount - 1) % missioncount; break;
@@ -1444,6 +1541,7 @@ men_main_timer_proc(void *ms)
 	lev_selecttower(demos[rand() % num_demos]);
 	lev_get_towerdemo(demolen, demobuf);
 
+	dcl_update_speed(game_speed);
 	snd_stoptitle();
 	gam_newgame();
 	snd_wateron();
@@ -1454,6 +1552,7 @@ men_main_timer_proc(void *ms)
 	(void)gam_towergame(anglepos, resttime, demolen, &demobuf);
 	snd_stoptgame();
 	snd_wateroff();
+	dcl_update_speed(MENU_DCLSPEED);
 
 	snd_playtitle();
     }
@@ -1516,6 +1615,7 @@ men_game_leavegame(void *ms)
 bool men_game() {
   struct _menusystem *ms;
   bool do_quit;
+  int  speed = dcl_update_speed(MENU_DCLSPEED);
     
   ms = new_menu_system(NULL, NULL, 0, spr_spritedata(titledata)->h + 30);
 
@@ -1533,6 +1633,8 @@ bool men_game() {
   do_quit = ms->mstate != 0;
 
   free_menu_system(ms);
+
+  dcl_update_speed(speed);
 
   return do_quit;
 }
@@ -1699,15 +1801,14 @@ congrats_background_proc(void)
     scr_writetext_center(210, "highest score");
   } else {
     char buf[40];
-    sprintf(buf, "%i best players", NUMHISCORES);
+    sprintf(buf, "%i best players", num_scores);
     scr_writetext_center(170, "You are one of the");
     scr_writetext_center(210, buf);
   }
   scr_writetext_center(270, "Please enter your name");
 }
   
-void men_highscore(unsigned long pt) {
-
+void men_highscore(unsigned long pt, int twr) {
 #ifdef USE_LOCKING
   int lockfd;
 
@@ -1727,15 +1828,15 @@ void men_highscore(unsigned long pt) {
 
   getscores();
 
-  int t = NUMHISCORES;
-
+  int t = num_scores;
+    
   while ((t > 0) && (pt > scores[t-1].points)) {
-    if (t < NUMHISCORES)
+    if (t < num_scores)
       scores[t] = scores[t-1];
     t--;
   }
 
-  if (t < NUMHISCORES) {
+  if (t < num_scores) {
     congrats_placement = t;
     set_men_bgproc(congrats_background_proc);
 
@@ -1750,6 +1851,7 @@ void men_highscore(unsigned long pt) {
     while (!men_input(scores[t].name, SCORENAMELEN)) ;
 
     scores[t].points = pt;
+    scores[t].tower = twr;
 
     savescores();
 #endif /* GAME_DEBUG_KEYS */
@@ -1760,6 +1862,12 @@ void men_highscore(unsigned long pt) {
 #endif
 
   show_scores(false, t);
+    
+  if (scores && num_scores) {
+      free(scores);
+      scores = NULL;
+      num_scores = 0;
+  }
 }
 
 void men_done(void) {

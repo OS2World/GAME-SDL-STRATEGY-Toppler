@@ -759,6 +759,7 @@ void le_edit(void) {
           Uint8 dummy1;
           Uint16 dummy2;
 	  int dummy3 = 0;
+	  int speed = dcl_update_speed(game_speed);
 	  Uint16 *dummybuf = NULL;
           unsigned char *p;
           lev_save(p);
@@ -771,6 +772,7 @@ void le_edit(void) {
           lev_restore(p);
           key_readkey();
           set_men_bgproc(editor_background_proc);
+	  dcl_update_speed(speed);
         }
         break;
       case EDACT_SETTOWERCOLOR:

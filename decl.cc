@@ -41,7 +41,7 @@ bool use_alpha_sprites = false;
 bool use_alpha_layers = false;
 bool use_alpha_font = false;
 bool use_alpha_darkening = false;
-char waves_type = waves_nonreflecting;
+int  waves_type = waves_nonreflecting;
 bool status_top = true;  /* is status line top or bottom of screen? */
 int  editor_towerpagesize = -1;
 int  editor_towerstarthei = -5;
@@ -50,6 +50,10 @@ int  start_lives = 3;
 bool use_unicode_input = true;
 char editor_towername[TOWERNAMELEN+1] = "";
 int  debug_level = 0;
+int  game_speed = DEFAULT_GAME_SPEED;
+
+/* Not read from config file */
+int  curr_scr_update_speed = MENU_DCLSPEED;
 
 typedef enum {
     CT_BOOL,
@@ -90,6 +94,7 @@ static const struct _config_data config_data[] = {
     CNF_CHAR( "password",            &curr_password, PASSWORD_LEN ),
     CNF_INT(  "start_lives",         &start_lives ),
     CNF_BOOL( "use_unicode_input",   &use_unicode_input),
+    CNF_INT(  "game_speed",          &game_speed),
 };
 
 bool str2bool(char *s) {
@@ -100,10 +105,16 @@ bool str2bool(char *s) {
     return false;
 }
 
+int dcl_update_speed(int spd) {
+    int tmp = curr_scr_update_speed;
+    curr_scr_update_speed = spd;
+    return tmp;
+}
+
 void dcl_wait(void) {
   if (!key_keypressed(quit_action)) {
       static Uint32 last;
-      while ((SDL_GetTicks() - last) < 55*1 ) SDL_Delay(2);
+      while ((SDL_GetTicks() - last) < (Uint32)(55-(curr_scr_update_speed*5)) ) SDL_Delay(2);
       last = SDL_GetTicks();
   }
 }
@@ -397,6 +408,9 @@ void load_config(void) {
     
   if (start_lives < 1) start_lives = 1;
   else if (start_lives > 3) start_lives = 3;
+    
+  if (game_speed < 0) game_speed = 0;
+  else if (game_speed > MAX_GAME_SPEED) game_speed = MAX_GAME_SPEED;
 }
 
 void save_config(void) {

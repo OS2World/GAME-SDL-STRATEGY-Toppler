@@ -1,5 +1,13 @@
 pasi:
 
+- sections in mission files, so from now on it should be
+  possible to keep missions backward compatible.
+  (text-format towers are still without this)
+- dynamically allocated highscore list.
+- highscore list also saves the tower reached.
+  (-1 means the player played the mission through)
+- highscore list doesn't show the pages with all scores
+  0 and no names.
 - bugfix: toggling alpha options doesn't change
   the star positions now.
 - bugfix: the level editor key help showed the title
@@ -32,6 +40,7 @@ me:
   enlish names
 - small updates to documentation
 - h and F1 activate helpscreen in leveleditor
+- one more type of water
 
 Version 0.98.2
 

@@ -189,7 +189,8 @@ FILE *create_local_data_file(char *name);
 enum {
   waves_nonreflecting,
   waves_simple,
-  waves_expensive
+  waves_expensive,
+  num_waves
 };
 
 /* GAME PARAMETERS */
@@ -201,7 +202,7 @@ extern bool use_alpha_sprites;
 extern bool use_alpha_layers;
 extern bool use_alpha_font;
 extern bool use_alpha_darkening;
-extern char waves_type;
+extern int  waves_type;
 extern bool status_top;
 extern int  editor_towerpagesize;
 extern int  editor_towerstarthei;
@@ -209,9 +210,16 @@ extern int  start_lives;
 extern char curr_password[PASSWORD_LEN+1];
 extern bool use_unicode_input;
 extern int  debug_level;
+extern int  game_speed;
 
 /* Is the TT window active? */
 extern bool tt_has_focus;
+
+#define MENU_DCLSPEED 4
+#define DEFAULT_GAME_SPEED 0
+#define MAX_GAME_SPEED 3  /* from 0 to this; bigger == faster */
+/* set dcl_wait() delay, and return the previous delay */
+int dcl_update_speed(int spd);
 
 void load_config(void);
 void save_config(void);
