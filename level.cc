@@ -466,7 +466,9 @@ void lev_selecttower(Uint8 number) {
       }
     case TSS_ROBOT:
       towerrobot = mission[towerstart];
+#ifndef CREATOR
       towerrobot %= scr_numrobots();
+#endif
       break;
     case TSS_END:
     default:      break;
@@ -870,7 +872,11 @@ bool lev_loadtower(const char *fname) {
       {
         int i;
         sscanf(line, "%u\n", &i);
+#ifdef CREATOR
+        towerrobot = i & 0xFF;
+#else
         towerrobot = (i & 0xFF) % scr_numrobots();
+#endif
       }
     }
   }
