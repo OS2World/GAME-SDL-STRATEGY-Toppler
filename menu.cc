@@ -675,7 +675,14 @@ main_game_loop()
   int gameresult;
   Uint16 *tmpbuf = NULL;
 
-  lev_loadmission(currentmission);
+  if (!lev_loadmission(currentmission)) {
+    if (!men_yn("This mission contains\n"
+                "unknown building blocks.\n"
+                "You probably need a new\n"
+                "version of Tower Toppler.\n"
+                "Do you want to continue?", false, men_main_background_proc))
+      return;
+  }
 
   tower = lev_tower_passwd_entry(config.curr_password());
 
@@ -793,14 +800,15 @@ men_main_timer_proc(_menusystem *ms)
 
     for (int tmpm = 0; (tmpm < lev_missionnumber()) && (num_demos == 0); tmpm++) {
       Uint16 tmiss = (miss + tmpm) % lev_missionnumber();
-      lev_loadmission(tmiss);
 
-      num_towers = lev_towercount();
+      if (lev_loadmission(tmiss)) {
+        num_towers = lev_towercount();
 
-      for (Uint8 idx = 0; (idx < num_towers) && (num_demos < 256); idx++) {
-        lev_selecttower(idx);
-        lev_get_towerdemo(demolen, demobuf);
-        if (demolen) demos[num_demos++] = idx;
+        for (Uint8 idx = 0; (idx < num_towers) && (num_demos < 256); idx++) {
+          lev_selecttower(idx);
+          lev_get_towerdemo(demolen, demobuf);
+          if (demolen) demos[num_demos++] = idx;
+        }
       }
     }
 

@@ -98,7 +98,7 @@ bool lev_show_passwd(int levnum);
 int lev_tower_passwd_entry(const char *passwd);
 
 /* loads a mission from the file with the given name */
-void lev_loadmission(Uint16 num);
+bool lev_loadmission(Uint16 num);
 
 /* free all the memory allocated by the mission and the mission list */
 void lev_done();

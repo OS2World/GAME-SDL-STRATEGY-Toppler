@@ -333,7 +333,7 @@ const char * lev_missionname(Uint16 num) {
   return m->name;
 }
 
-void lev_loadmission(Uint16 num) {
+bool lev_loadmission(Uint16 num) {
 
   mission_node *m = missions;
   while (num) {
@@ -355,6 +355,16 @@ void lev_loadmission(Uint16 num) {
   fread(mission, fsize, 1, in);
 
   fclose(in);
+
+  for (int t = 0; t < lev_towercount(); t++) {
+    lev_selecttower(t);
+    for (int r = 0; r < towerheight; r++)
+      for (int c = 0; c < TOWERWID; c++)
+        if (tower[r][c] >= NUM_TBLOCKS)
+          return false;
+  }
+
+  return true;
 }
 
 Uint8 lev_towercount(void) {

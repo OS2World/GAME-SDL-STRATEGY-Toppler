@@ -98,17 +98,14 @@ free_menu_system(_menusystem *ms)
   delete ms;
 }
 
-static char *
-men_yn_background_proc(_menusystem *ms)
+static void draw_background(_menusystem *ms)
 {
-  while (ms->parent) ms = ms->parent;
+  while (!ms->mproc && ms->parent) ms = ms->parent;
 
   if (ms->mproc)
     (*ms->mproc)(ms);
   else if (menu_background_proc)
     (*menu_background_proc) ();
-
-  return "";
 }
 
 
@@ -135,13 +132,37 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
       ms->hilited = ms->numoptions - 1;
   }
 
-  if (ms->mproc) {
-    (*ms->mproc) (ms);
-    //    menu_background_proc = NULL;
-  } else men_yn_background_proc(ms);
+  draw_background(ms);
 
-  if (has_title) scr_writetext_center(ms->ystart, ms->title);
-  titlehei = has_title ? 2 : 0;
+  titlehei = 0;
+
+  if (has_title) {
+    int pos = 0;
+    int start = 0;
+    int len = strlen(ms->title);
+
+    while (pos <= len) {
+
+      if ((ms->title[pos] == '\n') || (ms->title[pos] == 0)) {
+
+        bool end = ms->title[pos] == 0;
+
+        ms->title[pos] = 0;
+        scr_writetext_center(ms->ystart + titlehei * FONTHEI, ms->title + start);
+        titlehei ++;
+
+        if (!end)
+          ms->title[pos] = '\n';
+
+        start = pos + 1;
+      }
+      pos++;
+    }
+
+    titlehei++;
+  }
+
+
 
   /* TODO: Calculate offs from ms->hilited.
    * TODO: Put slider if more options than fits in screen.
@@ -525,8 +546,8 @@ men_yn_option_no(_menusystem *ms)
   } else return "No";
 }
 
-unsigned char men_yn(char *s, bool defchoice) {
-  _menusystem *ms = new_menu_system(s, NULL, 0, SCREENHEI / 5);
+unsigned char men_yn(char *s, bool defchoice, menuopt_callback_proc pr) {
+  _menusystem *ms = new_menu_system(s, pr, 0, SCREENHEI / 5);
 
   bool doquit = false;
 

@@ -8,7 +8,7 @@
 /* This module defines a menu system that has the following features
 */
 
-#define MENUTITLELEN  ((SCREENWID / FONTMINWID) + 1)
+#define MENUTITLELEN  1000
 #define MENUOPTIONLEN MENUTITLELEN
 
 /* Menu option flags */
@@ -83,7 +83,7 @@ bool men_input(char *origs, int max_len, int xpos = -1,
 
 /* asks a yes/no question; return 0 if "no",
    1 if "yes" */
-unsigned char men_yn(char *s, bool defchoice);
+unsigned char men_yn(char *s, bool defchoice, menuopt_callback_proc pr = 0);
 
 /* shows string s, waits a certain time, (-1 = indefinitely),
    and if fire = 1 -> "press fire", if fire = 2 -> "press space" */
