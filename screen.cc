@@ -440,7 +440,6 @@ static void loadscroller(void) {
 
   Uint8 layers;
   Uint8 towerpos;
-  unsigned char c;
   Uint8 pal[3*256];
 
   layers = arc_getbyte();

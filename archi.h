@@ -52,6 +52,8 @@ void arc_read(void *buf, Uint32 size, Uint32 *result);
 
 /* read one byte from currently opened file */
 Uint8 arc_getbyte(void);
+
+/* read one word from currently opened file this read is endian save */
 Uint16 arc_getword(void);
 
 #endif

@@ -149,60 +149,6 @@
 #define titledat        "titles.dat"
 #define scrollerdat     "scroller.dat"
 
-/* the start number and the number of colors for the different objects */
-
-/* bricks and battlement */
-#define brickcol        0
-#define brickcnt        16
-
-/* the platforms, elevator, */
-#define envirocol       (brickcol + brickcnt)            // == 16
-#define envirocnt       16
-
-/* thr animal */
-#define topplercol      (envirocol + envirocnt)          // == 32
-#define topplercnt      8
-
-/* the different robots */
-#define robotscol       (topplercol + topplercnt)        // == 40
-#define robotscnt       64
-
-/* the 2 different balls */
-#define ballcol         (robotscol + robotscnt)          // == 104
-#define ballcnt         32
-
-/* the flashing boxes */
-#define boxcol          (ballcol + ballcnt)              // == 136
-#define boxcnt          16
-
-/* the little snowball */
-#define snowballcol    (boxcol + boxcnt)                // == 152
-#define snowballcnt        8
-
-/* the stars in background */
-#define starcol         (snowballcol + snowballcnt)     // == 160
-#define starcnt         8
-
-/* the submarine */
-#define subcol          (starcol + starcnt)              // == 168
-#define subcnt          24
-
-/* the turning cross that crosses the screen */
-#define crosscol        (subcol + subcnt)                // == 192
-#define crosscnt        16
-
-/* used to calc dark colors for the water reflections */
-#define shadowcol       (crosscol + crosscnt)            // == 208
-
-/* the font */
-#define fontcol         240
-#define fontcnt         16
-
-/* the IDs for the 3 different palettes */
-#define pal_towergame 0
-#define pal_menu      1
-#define pal_bonusgame 2
-
 /* the two special characters in the font */
 #define fonttoppler     '\x01'
 #define fontpoint       '\x02'
@@ -235,7 +181,6 @@ void save_config(void);
 
 /* for errorcheking */
 #define assert(cond,text) if (!(cond)) { printf("asserion failure: "text"\n"); exit(1); }
-
 
 #define CONFIGDIR "/etc"
 #define HISCOREDIR "/var/games/toppler"

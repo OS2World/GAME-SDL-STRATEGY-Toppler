@@ -1029,13 +1029,13 @@ lev_problem lev_is_consistent(int &row, int &col) {
       /* check for exit, and that it's reachable */
       if (tower[r][c] == 0xc3) {
         int d = r - 1;
-	
-	if (d < 0) {
-	    row = 0;
-	    col = c;
-	    return TPROB_UNREACHABLEEXIT;
-	}
-	
+
+        if (d < 0) {
+          row = 0;
+          col = c;
+          return TPROB_UNREACHABLEEXIT;
+        }
+
         while ((d >= 0) && (tower[d][c] == 0xc3))  d--;
         if (d >= 0) {
           if ((tower[d][c] != 0x80) && (tower[d][c] != 0x81) &&

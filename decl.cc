@@ -57,7 +57,6 @@ static bool dcl_fileexists(char *n) {
     return false;
 }
 
-
 char * homedir()
 {
 
@@ -322,9 +321,9 @@ void save_config(void) {
   if (out) {
     fprintf(out, "fullscreen: %i\n", (fullscreen)?(1):(0));
     fprintf(out, "scale2x: %i\n", (doublescale)?(1):(0));
-     fprintf(out, "nosound: %i\n", (nosound)?(1):(0));
-     fprintf(out, "editor_towername: %s\n", editor_towername);
-  
+    fprintf(out, "nosound: %i\n", (nosound)?(1):(0));
+    fprintf(out, "editor_towername: %s\n", editor_towername);
+
     fclose(out);
   }
 }

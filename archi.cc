@@ -60,9 +60,10 @@ void arc_init(char *name) {
   fread(&filecount, 1, 1, f);
     
   files = (fileindex *)malloc(filecount * sizeof(fileindex));
-  assert(files, "Failed to alloc memory\n");
+  assert(files, "Failed to alloc memory for archive index\n");
 
   for (Uint8 file = 0; file < filecount; file++) {
+
     for (Uint8 strpos = 0; strpos < FNAMELEN; strpos++)
       fread(&files[file].name[strpos], 1, 1, f);
 
@@ -125,7 +126,7 @@ void arc_assign(char *name) {
     if (strncmp(name, files[i].name, FNAMELEN) == 0) {
 
       buffer = new Uint8[files[i].size];
-      Uint8 * b = new Uint8[files[i].compress];
+      Uint8 *b = new Uint8[files[i].compress];
 
       unsigned long erg;
 

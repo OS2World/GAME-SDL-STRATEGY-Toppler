@@ -32,52 +32,55 @@
 #include <string.h>
 
 /* Editor key actions.
-   If you add here, change _ed_key_actions[] in leveledit.cc */
-#define EDACT_QUIT      0
-#define EDACT_MOVEUP    1
-#define EDACT_MOVEDOWN  2
-#define EDACT_MOVELEFT  3
-#define EDACT_MOVERIGHT 4
-#define EDACT_INSROW    5
-#define EDACT_DELROW    6
-#define EDACT_ROT180    7
-#define EDACT_PUTSPACE  8
-#define EDACT_PUTSTEP   9
-#define EDACT_PUTVANISHER 10
-#define EDACT_PUTSLIDER   11
-#define EDACT_PUTDOOR     12
-#define EDACT_PUTGOAL     13
-#define EDACT_CHECKTOWER  14
-#define EDACT_PUTROBOT1   15
-#define EDACT_PUTROBOT2   16
-#define EDACT_PUTROBOT3   17
-#define EDACT_PUTROBOT4   18
-#define EDACT_PUTROBOT5   19
-#define EDACT_PUTROBOT6   20
-#define EDACT_PUTROBOT7   21
-#define EDACT_PUTLIFT     22
-#define EDACT_PUTLIFTMID  23
-#define EDACT_PUTLIFTTOP  24
-#define EDACT_PUTSTICK    25
-#define EDACT_PUTBOX      26
-#define EDACT_LOADTOWER   27
-#define EDACT_SAVETOWER   28
-#define EDACT_TESTTOWER   29
-#define EDACT_SETTOWERCOLOR 30
-#define EDACT_INCTIME       31
-#define EDACT_DECTIME       32
-#define EDACT_CREATEMISSION 33
-#define EDACT_MOVEPAGEUP    34
-#define EDACT_MOVEPAGEDOWN  35
-#define EDACT_GOTOSTART     36
-#define EDACT_SHOWKEYHELP   37
-#define EDACT_NAMETOWER     38
-#define EDACT_SETTIME       39
+ If you add here, change _ed_key_actions[] in leveledit.cc */
 
-#define NUMEDITORACTIONS    40
+typedef enum {
+  EDACT_QUIT,
+  EDACT_MOVEUP,
+  EDACT_MOVEDOWN,
+  EDACT_MOVELEFT,
+  EDACT_MOVERIGHT,
+  EDACT_INSROW,
+  EDACT_DELROW,
+  EDACT_ROT180,
+  EDACT_PUTSPACE,
+  EDACT_PUTSTEP,
+  EDACT_PUTVANISHER,
+  EDACT_PUTSLIDER,
+  EDACT_PUTDOOR,
+  EDACT_PUTGOAL,
+  EDACT_CHECKTOWER,
+  EDACT_PUTROBOT1,
+  EDACT_PUTROBOT2,
+  EDACT_PUTROBOT3,
+  EDACT_PUTROBOT4,
+  EDACT_PUTROBOT5,
+  EDACT_PUTROBOT6,
+  EDACT_PUTROBOT7,
+  EDACT_PUTLIFT,
+  EDACT_PUTLIFTMID,
+  EDACT_PUTLIFTTOP,
+  EDACT_PUTSTICK,
+  EDACT_PUTBOX,
+  EDACT_LOADTOWER,
+  EDACT_SAVETOWER,
+  EDACT_TESTTOWER,
+  EDACT_SETTOWERCOLOR,
+  EDACT_INCTIME,
+  EDACT_DECTIME,
+  EDACT_CREATEMISSION,
+  EDACT_MOVEPAGEUP,
+  EDACT_MOVEPAGEDOWN,
+  EDACT_GOTOSTART,
+  EDACT_SHOWKEYHELP,
+  EDACT_NAMETOWER,
+  EDACT_SETTIME,
+  
+  NUMEDITORACTIONS    
+} key_actions;
 
 struct _ed_key {
-   int action;
+   key_actions action;
    SDLKey key;
 };
 
@@ -190,20 +193,20 @@ static bool edit_towercolor(int row, int col) {
       scr_color_ramp(&abg_r, &abg_g, &abg_b);
       tmpcol = newc[tmp];
       z = ((SCREENHEI * 2) / 3) + tmp * (FONTHEI + 2);
-       
+
       if (tmp == activecol) {
-	  scr_putbar((SCREENWID / 2) - (128 + 8), z, 8, FONTHEI, abg_r, abg_g, abg_b, 255);
-	  scr_putbar((SCREENWID / 2) + 128 - 1, z, 8, FONTHEI, abg_r, abg_g, abg_b, 255);
+        scr_putbar((SCREENWID / 2) - (128 + 8), z, 8, FONTHEI, abg_r, abg_g, abg_b, 255);
+        scr_putbar((SCREENWID / 2) + 128 - 1, z, 8, FONTHEI, abg_r, abg_g, abg_b, 255);
       } else {
-	  scr_putbar((SCREENWID / 2) - (128 + 8), z, 8, FONTHEI, 66, 66, 66, 255);
-	  scr_putbar((SCREENWID / 2) + 128 - 1, z, 8, FONTHEI, 66, 66, 66, 255);
+        scr_putbar((SCREENWID / 2) - (128 + 8), z, 8, FONTHEI, 66, 66, 66, 255);
+        scr_putbar((SCREENWID / 2) + 128 - 1, z, 8, FONTHEI, 66, 66, 66, 255);
       }
       scr_putbar((SCREENWID / 2) - 128 + tmpcol, z, 255 - tmpcol, FONTHEI, 0,0,0, 255);
       switch (tmp) {
-	  default:
-	  case 0: scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, tmpcol / 3 + 64, 0, 0, 255); break;
-	  case 1: scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, 0, tmpcol / 3 + 64, 0, 255); break;
-	  case 2: scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, 0, 0, tmpcol / 3 + 64, 255); break;
+      default:
+      case 0: scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, tmpcol / 3 + 64, 0, 0, 255); break;
+      case 1: scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, 0, tmpcol / 3 + 64, 0, 255); break;
+      case 2: scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, 0, 0, tmpcol / 3 + 64, 255); break;
       }
       cbuf[0] = '\0';
       sprintf(cbuf, "%5s  %.3d", colorname[tmp], tmpcol);
@@ -261,36 +264,36 @@ static bool edit_towercolor(int row, int col) {
 }
 
 static void edit_checktower(int &row, int &col) {
-   int r, c, pr;
-   r = row;
-   c = -col;
-   
-   static char *problemstr[NUM_TPROBLEMS] = {
-      "No problems found",
-      "No starting step",
-      "Start is blocked",
-      "Unknown block",
-      "No elevator stop",
-      "Elevator is blocked",
-      "No opposing doorway",
-      "Broken doorway",
-      "No exit",
-      "Exit is unreachable",
-      "Not enough time",
-      "Tower is too short",
-      "Tower has no name"
-   };
+  int r, c, pr;
+  r = row;
+  c = -col;
 
-   pr = lev_is_consistent(r, c);
-   if ((r >= lev_towerrows()) && (lev_towerrows() > 0)) r = lev_towerrows() - 1;
-   bg_row = r;
-   bg_col = -c;
+  static char *problemstr[NUM_TPROBLEMS] = {
+    "No problems found",
+    "No starting step",
+    "Start is blocked",
+    "Unknown block",
+    "No elevator stop",
+    "Elevator is blocked",
+    "No opposing doorway",
+    "Broken doorway",
+    "No exit",
+    "Exit is unreachable",
+    "Not enough time",
+    "Tower is too short",
+    "Tower has no name"
+  };
 
-   bg_text = "Tower Check:";
-   men_info(problemstr[pr % NUM_TPROBLEMS], 50, 2);
-   row = bg_row;
-   col = bg_col;
-   bg_text = NULL;
+  pr = lev_is_consistent(r, c);
+  if ((r >= lev_towerrows()) && (lev_towerrows() > 0)) r = lev_towerrows() - 1;
+  bg_row = r;
+  bg_col = -c;
+
+  bg_text = "Tower Check:";
+  men_info(problemstr[pr % NUM_TPROBLEMS], 50, 2);
+  row = bg_row;
+  col = bg_col;
+  bg_text = NULL;
 }
 
 static void createMission(void) {

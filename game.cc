@@ -33,11 +33,13 @@
 
 #include <string.h>
 
-#define STATE_PLAYING 0
-#define STATE_ABORTED 1
-#define STATE_DIED 2
-#define STATE_TIMEOUT 3
-#define STATE_FINISHED 4
+typedef enum {
+  STATE_PLAYING,
+  STATE_ABORTED,
+  STATE_DIED,
+  STATE_TIMEOUT,
+  STATE_FINISHED
+} gam_states;
 
 void gam_init(void) {
   scr_init();
@@ -362,7 +364,7 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
 }
 
 /* update the time */
-static void akt_time(int &time, int &timecount, Uint8 &state) {
+static void akt_time(int &time, int &timecount, gam_states &state) {
   if (timecount >= 0) {
     timecount++;
     if (timecount == 5) {
@@ -407,7 +409,7 @@ static void get_keys(Sint8 &left_right, Sint8 &up_down, bool &space) {
     space = false;
 }
 
-static void escape(Uint8 &state, int &tower_position, int &tower_anglepos, int time) {
+static void escape(gam_states &state, int &tower_position, int &tower_anglepos, int time) {
 
   snd_wateroff();
 
@@ -443,7 +445,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
   Sint8 left_right, up_down;
   bool space;
 
-  Uint8 state = STATE_PLAYING;
+  gam_states state = STATE_PLAYING;
 
   /* the maximal reached height for this tower */
   int reached_height;

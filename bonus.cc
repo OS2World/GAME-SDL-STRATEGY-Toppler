@@ -230,8 +230,6 @@ bool bns_game(void) {
       }
     }
 
-//    scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 255);
-
     if (time < 300)
       towerpos = -(4*time);
     else
@@ -241,13 +239,14 @@ bool bns_game(void) {
 
     if (torpedox != -1)
       scr_draw_torpedo(torpedoy, torpedox);
+
     scr_draw_submarine(subposy - 20, subposx, time % 9);
 
     for (b = 0; b <= fishcnt; b++) {
       if (fish[b].x >= -SPR_FISHWID)
         scr_draw_fish(fish[b].y, fish[b].x, fish[b].state);
-
     }
+
     scr_draw_bonus2(xpos, towerpos);
 
     scr_swap();

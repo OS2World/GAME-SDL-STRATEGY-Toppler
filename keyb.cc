@@ -56,13 +56,13 @@ struct _ttkeyconv {
 };
 
 void key_redefine(Uint16 code, SDLKey key) {
-    int i;
-    
-    for (i = SIZE(ttkeyconv) - 1; i >= 0; i--)
-	if (ttkeyconv[i].outval == code) {
-	    ttkeyconv[i].key = key;
-	    break;
-	}
+  int i;
+
+  for (i = SIZE(ttkeyconv) - 1; i >= 0; i--)
+    if (ttkeyconv[i].outval == code) {
+      ttkeyconv[i].key = key;
+      break;
+    }
 }
 
 void key_init(void) {
@@ -87,87 +87,87 @@ static void handleEvents(void) {
     mouse_moved = false;
     mouse_button = 0;
     if (e.type == SDL_MOUSEMOTION) {
-	mouse_x = e.motion.x;
-	mouse_y = e.motion.y;
-	mouse_moved = true;
+      mouse_x = e.motion.x;
+      mouse_y = e.motion.y;
+      mouse_moved = true;
     } else
-    if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
-	mouse_x = e.button.x;
-	mouse_y = e.button.y;
-	mouse_button = e.button.button;
-    } else
-    if (e.type == SDL_QUIT) {
-	keydown |= quit_action;
-	keytyped |= quit_action;
-	received_kill = true;
-	fprintf(stderr, "Wheee!!\n");
-    } else
-    if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP)) {
-      if (e.key.state == SDL_RELEASED) {
-	numkeydown--;
-        if ((e.key.keysym.sym >= SDLK_a) && (e.key.keysym.sym <= SDLK_z)) {
-          if (e.key.keysym.mod & (KMOD_LSHIFT | KMOD_RSHIFT))
-            chartyped = e.key.keysym.sym - SDLK_a + 'A';
-          else
-            chartyped = e.key.keysym.sym - SDLK_a + 'a';
-        }
-        if ((e.key.keysym.sym >= SDLK_0) && (e.key.keysym.sym <= SDLK_9))
-          chartyped = e.key.keysym.sym - SDLK_0 + '0';
-        if (e.key.keysym.sym == SDLK_SPACE)
-          chartyped = ' ';
-        if (e.key.keysym.sym == SDLK_RETURN)
-          chartyped = 13;
-        if (e.key.keysym.sym == SDLK_BACKSPACE)
-          chartyped = 8;
-        if (e.key.keysym.sym == SDLK_UP)
-          chartyped = 1;
-        if (e.key.keysym.sym == SDLK_DOWN)
-          chartyped = 2;
-        if (e.key.keysym.sym == SDLK_LEFT)
-          chartyped = 3;
-        if (e.key.keysym.sym == SDLK_RIGHT)
-          chartyped = 4;
-        if (e.key.keysym.sym == SDLK_ESCAPE)
-          chartyped = 27;
-        if (e.key.keysym.sym == SDLK_GREATER)
-          chartyped = '>';
-        if (e.key.keysym.sym == SDLK_EXCLAIM)
-          chartyped = '!';
-        if (e.key.keysym.sym == SDLK_HASH)
-          chartyped = '#';
-        if (e.key.keysym.sym == SDLK_MINUS)
-          chartyped = '-';
-        if (e.key.keysym.sym == SDLK_PERIOD)
-          chartyped = '.';
-        if (e.key.keysym.sym == SDLK_INSERT)
-          chartyped = 5;
-        if (e.key.keysym.sym == SDLK_DELETE)
-          chartyped = 6;
-        if (e.key.keysym.sym == SDLK_PAGEUP)
-          chartyped = 7;
-        if (e.key.keysym.sym == SDLK_PAGEDOWN)
-          chartyped = 8;
-        if (e.key.keysym.sym == SDLK_HOME)
-          chartyped = 9;
-      }
+      if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
+        mouse_x = e.button.x;
+        mouse_y = e.button.y;
+        mouse_button = e.button.button;
+      } else
+        if (e.type == SDL_QUIT) {
+          keydown |= quit_action;
+          keytyped |= quit_action;
+          received_kill = true;
+          fprintf(stderr, "Wheee!!\n");
+        } else
+          if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP)) {
+            if (e.key.state == SDL_RELEASED) {
+              numkeydown--;
+              if ((e.key.keysym.sym >= SDLK_a) && (e.key.keysym.sym <= SDLK_z)) {
+                if (e.key.keysym.mod & (KMOD_LSHIFT | KMOD_RSHIFT))
+                  chartyped = e.key.keysym.sym - SDLK_a + 'A';
+                else
+                  chartyped = e.key.keysym.sym - SDLK_a + 'a';
+              }
+              if ((e.key.keysym.sym >= SDLK_0) && (e.key.keysym.sym <= SDLK_9))
+                chartyped = e.key.keysym.sym - SDLK_0 + '0';
+              if (e.key.keysym.sym == SDLK_SPACE)
+                chartyped = ' ';
+              if (e.key.keysym.sym == SDLK_RETURN)
+                chartyped = 13;
+              if (e.key.keysym.sym == SDLK_BACKSPACE)
+                chartyped = 8;
+              if (e.key.keysym.sym == SDLK_UP)
+                chartyped = 1;
+              if (e.key.keysym.sym == SDLK_DOWN)
+                chartyped = 2;
+              if (e.key.keysym.sym == SDLK_LEFT)
+                chartyped = 3;
+              if (e.key.keysym.sym == SDLK_RIGHT)
+                chartyped = 4;
+              if (e.key.keysym.sym == SDLK_ESCAPE)
+                chartyped = 27;
+              if (e.key.keysym.sym == SDLK_GREATER)
+                chartyped = '>';
+              if (e.key.keysym.sym == SDLK_EXCLAIM)
+                chartyped = '!';
+              if (e.key.keysym.sym == SDLK_HASH)
+                chartyped = '#';
+              if (e.key.keysym.sym == SDLK_MINUS)
+                chartyped = '-';
+              if (e.key.keysym.sym == SDLK_PERIOD)
+                chartyped = '.';
+              if (e.key.keysym.sym == SDLK_INSERT)
+                chartyped = 5;
+              if (e.key.keysym.sym == SDLK_DELETE)
+                chartyped = 6;
+              if (e.key.keysym.sym == SDLK_PAGEUP)
+                chartyped = 7;
+              if (e.key.keysym.sym == SDLK_PAGEDOWN)
+                chartyped = 8;
+              if (e.key.keysym.sym == SDLK_HOME)
+                chartyped = 9;
+            }
 
-      for (tmpk = 0; tmpk < SIZE(ttkeyconv); tmpk++)
-        if (ttkeyconv[tmpk].key == e.key.keysym.sym) {
-          key = ttkeyconv[tmpk].outval;
-          break;
-        }
+            for (tmpk = 0; tmpk < SIZE(ttkeyconv); tmpk++)
+              if (ttkeyconv[tmpk].key == e.key.keysym.sym) {
+                key = ttkeyconv[tmpk].outval;
+                break;
+              }
 
-      if (e.key.state == SDL_PRESSED) {
-        keydown |= key;
-        keytyped |= key;
-	
-	sdlkeytyped = e.key.keysym.sym;
-	numkeydown++;
-      } else {
-        keydown &= ~key;
-	sdlkeytyped = SDLK_UNKNOWN;
-      }
-    }
+            if (e.key.state == SDL_PRESSED) {
+              keydown |= key;
+              keytyped |= key;
+
+              sdlkeytyped = e.key.keysym.sym;
+              numkeydown++;
+            } else {
+              keydown &= ~key;
+              sdlkeytyped = SDLK_UNKNOWN;
+            }
+          }
   }
 }
 
@@ -186,46 +186,46 @@ bool key_keypressed(Uint16 key) {
 }
 
 SDLKey key_sdlkey(void) {
-    handleEvents();
-    SDLKey tmp = sdlkeytyped;
-    sdlkeytyped = SDLK_UNKNOWN;
-    keytyped = 0;
-    chartyped = 0;
-    return tmp;
+  handleEvents();
+  SDLKey tmp = sdlkeytyped;
+  sdlkeytyped = SDLK_UNKNOWN;
+  keytyped = 0;
+  chartyped = 0;
+  return tmp;
 }
 
 SDLKey key_conv2sdlkey(Uint16 k, bool game) {
-    register int i;
+  register int i;
 
-    if (game) {
-	for (i = SIZE(ttkeyconv) - 1; i >= 0; i--)
-	  if (ttkeyconv[i].outval == k)
-	    return ttkeyconv[i].key;
-    } else {
-	for (i = 0; i < SIZE(ttkeyconv); i++)
-	  if (ttkeyconv[i].outval == k)
-	    return ttkeyconv[i].key;
-    }
+  if (game) {
+    for (i = SIZE(ttkeyconv) - 1; i >= 0; i--)
+      if (ttkeyconv[i].outval == k)
+        return ttkeyconv[i].key;
+  } else {
+    for (i = 0; i < SIZE(ttkeyconv); i++)
+      if (ttkeyconv[i].outval == k)
+        return ttkeyconv[i].key;
+  }
 
-    return SDLK_UNKNOWN;
+  return SDLK_UNKNOWN;
 }
 
 Uint16 key_sdlkey2conv(SDLKey k, bool game) {
-    register int i;
-    
-    if (k != SDLK_UNKNOWN) {
-	if (game) {
-	    for (i = SIZE(ttkeyconv) - 1; i >= 0; i--)
-	      if (ttkeyconv[i].key == k)
-		return ttkeyconv[i].outval;
-	} else {
-	    for (i = 0; i < SIZE(ttkeyconv); i++)
-	      if (ttkeyconv[i].key == k)
-		return ttkeyconv[i].outval;
-	}
-    }
+  register int i;
 
-    return no_key;
+  if (k != SDLK_UNKNOWN) {
+    if (game) {
+      for (i = SIZE(ttkeyconv) - 1; i >= 0; i--)
+        if (ttkeyconv[i].key == k)
+          return ttkeyconv[i].outval;
+    } else {
+      for (i = 0; i < SIZE(ttkeyconv); i++)
+        if (ttkeyconv[i].key == k)
+          return ttkeyconv[i].outval;
+    }
+  }
+
+  return no_key;
 }
 
 Uint16 key_readkey(void) {
@@ -248,33 +248,33 @@ char key_chartyped(void) {
 }
 
 void key_wait_for_none(keyb_wait_proc bg) {
-    do {
-	handleEvents();
-	if (bg) (*bg)();
-    } while (numkeydown && !received_kill);
-    keytyped = 0;
-    chartyped = 0;
-    sdlkeytyped = SDLK_UNKNOWN;
+  do {
+    handleEvents();
+    if (bg) (*bg)();
+  } while (numkeydown && !received_kill);
+  keytyped = 0;
+  chartyped = 0;
+  sdlkeytyped = SDLK_UNKNOWN;
 }
 
 bool key_mouse(Uint16 *x, Uint16 *y, Uint16 *bttn) {
-    bool tmp = mouse_moved;
-    handleEvents();
-    switch (mouse_button) {
-	default: *bttn = 0; break;
-	case 1: *bttn = mousebttn1; break;
-	case 2: *bttn = mousebttn2; break;
-	case 3: *bttn = mousebttn3; break;
-	case 4: *bttn = mousebttn4; break;
-	case 5: *bttn = mousebttn5; break;
-    }
-    mouse_moved = false;
-    mouse_button = 0;
-    if (tmp) {
-	*x = mouse_x;
-	*y = mouse_y;
-    } else {
-	*x = *y = 0;
-    }
-    return tmp;
+  bool tmp = mouse_moved;
+  handleEvents();
+  switch (mouse_button) {
+  default: *bttn = 0; break;
+  case 1: *bttn = mousebttn1; break;
+  case 2: *bttn = mousebttn2; break;
+  case 3: *bttn = mousebttn3; break;
+  case 4: *bttn = mousebttn4; break;
+  case 5: *bttn = mousebttn5; break;
+  }
+  mouse_moved = false;
+  mouse_button = 0;
+  if (tmp) {
+    *x = mouse_x;
+    *y = mouse_y;
+  } else {
+    *x = *y = 0;
+  }
+  return tmp;
 }
