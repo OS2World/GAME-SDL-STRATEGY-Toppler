@@ -574,8 +574,8 @@ men_options_windowed(void *ms)
     scr_reinit();
     SDL_ShowCursor(fullscreen ? 0 : 1);
   }
-  if (fullscreen) return "Windowed";
-  else return "Fullscreen";
+  if (fullscreen) return "Fullscreen \x04";
+  else return "Fullscreen \x03";
 }
 
 static char *
@@ -592,8 +592,8 @@ men_options_sounds(void *ms)
       nosound = true;
     }
   }
-  if (nosound) return "Sounds \x04";
-  else return "Sounds \x03";
+  if (nosound) return "Sounds \x03";
+  else return "Sounds \x04";
 }
 
 static void
@@ -613,8 +613,8 @@ men_alpha_font(void *ms)
     use_alpha_font = !use_alpha_font;
     reload_graphics();
   }
-  if (use_alpha_font) return "Font alpha  On";
-  else return "Font alpha Off";
+  if (use_alpha_font) return "Font alpha  \x04";
+  else return "Font alpha \x03";
 }
 
 static char *
@@ -624,8 +624,8 @@ men_alpha_sprites(void *ms)
     use_alpha_sprites = !use_alpha_sprites;
     reload_graphics();
   }
-  if (use_alpha_sprites) return "Sprites alpha  On";
-  else return "Sprites alpha Off";
+  if (use_alpha_sprites) return "Sprites alpha  \x04";
+  else return "Sprites alpha \x03";
 }
 
 static char *
@@ -635,8 +635,8 @@ men_alpha_layer(void *ms)
     use_alpha_layers = !use_alpha_layers;
     reload_graphics();
   }
-  if (use_alpha_layers) return "Scroller alpha  On";
-  else return "Scroller alpha Off";
+  if (use_alpha_layers) return "Scroller alpha  \x04";
+  else return "Scroller alpha \x03";
 }
 
 static char *
@@ -645,8 +645,8 @@ men_alpha_menu(void *ms)
   if (ms) {
     use_alpha_darkening = !use_alpha_darkening;
   }
-  if (use_alpha_darkening) return "Shadowing  On";
-  else return "Shadowing Off";
+  if (use_alpha_darkening) return "Shadowing  \x04";
+  else return "Shadowing \x03";
 }
 
 static char *

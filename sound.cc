@@ -63,7 +63,7 @@ void snd_init(void) {
 
   nosoundinit = false;
 
-  if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
+  if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
     printf("could not open audio, muting\n");
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
     nosoundinit = true;
