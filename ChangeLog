@@ -1,0 +1,75 @@
+03.08.2001 Version 0.71
+
+- moved score table into home directory
+- fixed bug in highscore table
+- fixed bug in sample sound volume control that made other
+  samples get volume changed
+- pause and abbort in bonus game possible
+- draw tower in bonusgame
+- move submarine to tower at the end of the bonusgame
+- save palette in bonusgame
+- volume change in ball bouncing doubled
+- fixed bug in pushing toppler aside when elevator falls down removed
+
+31.07.2001 Version 0.70
+
+- add bonuslevel (but it uses ugly graphics)
+- add autoconf and automake support (I am a novice, so don't
+  expect too much)
+- push animal aside when the elevator comes down and the
+  toppler is standing in the way
+
+26.07.2001 Version 0.63
+
+- bugfix, buggy bonuslevel deactivated
+
+25.07.2001 Version 0.62
+
+- renamed *.c to *.cc
+- added bonuslevel (with really poor graphics)
+- add more sound effects
+- made ball bouncing volume dependend on angle difference
+- made water sound start on arrival and end on pick up
+  and stop water in pause and when ESC
+- made the last bubbles diappear when drowned, shortened delay
+- added lots of #includes to make toppler compile onf RedHat (tanks to
+  Jean-Sébastien Lebacq)
+- updated README with command line parameters
+- optimized scaling function a bit
+- change includes for SDL headers to be in subdirectors
+- fill the gaps at the screen side with water
+
+18.07.2001 Version 0.61
+
+- fixed a nasty bug in drawing of highscores that made the game
+  crash in many different points
+- Hide mousecursor in window
+- Add fullscreen option (Handle with care)
+
+15.07.2001 Version 0.60
+
+- set windowtitle to "Nebulous"
+- made the elevator platform not get big when you get thrown off the
+  elevator and when the elevator drops down
+- bug when leaving the elevator at the bottom station it
+  dropped further down
+- added plashing waves sound
+- added foot tapping
+- added more sounds
+- added a Makefile
+
+08.07.2001 Version 0.52
+
+- removed some unused functions
+- more translations
+
+01.07.2001 Version 0.51
+
+- major code cleanup
+- translate comments and functionname to english
+- some little bug fixed
+
+
+25.06.2001 Version 0.50
+
+- initial release
