@@ -120,7 +120,9 @@ static void handleEvents(void) {
 
         if ((e.key.keysym.unicode & 0xff80) == 0) {
           chartyped = e.key.keysym.unicode & 0x7f;
-        }
+        } else
+          chartyped = 0;
+
         sdlkeytyped = e.key.keysym.sym;
 
         keydown = (ttkey)(keydown | key);

@@ -92,6 +92,7 @@ typedef enum {
 struct _ed_key {
    key_actions action;
    SDLKey key;
+   char   character;
    Uint16 mod; /* KMOD_NONE|KMOD_SHIFT|KMOD_CTRL|KMOD_ALT */
 };
 
@@ -117,7 +118,7 @@ const char *_ed_key_actions[NUMEDITORACTIONS] = {
 const struct _ed_key _ed_keys[] = {
    {EDACT_QUIT,          SDLK_ESCAPE},
    {EDACT_SHOWKEYHELP,   SDLK_F1},
-   {EDACT_SHOWKEYHELP,   SDLK_h},
+   {EDACT_SHOWKEYHELP,   SDLK_h,     'h'},
    {EDACT_MOVEUP,        SDLK_UP},
    {EDACT_MOVEDOWN,      SDLK_DOWN},
    {EDACT_MOVELEFT,      SDLK_LEFT},
@@ -126,41 +127,41 @@ const struct _ed_key _ed_keys[] = {
    {EDACT_MOVEPAGEDOWN,  SDLK_PAGEDOWN},
    {EDACT_GOTOSTART,     SDLK_HOME},
    {EDACT_GOTOEND,       SDLK_END},
-   {EDACT_ROT180,        SDLK_y},
+   {EDACT_ROT180,        SDLK_y,     'y'},
    {EDACT_INSROW,        SDLK_INSERT},
    {EDACT_DELROW,        SDLK_DELETE},
-   {EDACT_CUTROW,        SDLK_MINUS},
-   {EDACT_PASTEROW,      SDLK_PLUS},
-   {EDACT_PUTSPACE,      SDLK_SPACE},
-   {EDACT_PUTSTEP,       SDLK_w},
-   {EDACT_PUTVANISHER,   SDLK_s},
-   {EDACT_PUTSLIDERLEFT, SDLK_x},
-   {EDACT_PUTSLIDERRIGHT,SDLK_x, KMOD_SHIFT},
-   {EDACT_PUTDOOR,       SDLK_i},
-   {EDACT_PUTGOAL,       SDLK_k},
-   {EDACT_PUTROBOT1,     SDLK_1},
-   {EDACT_PUTROBOT2,     SDLK_2},
-   {EDACT_PUTROBOT3,     SDLK_3},
-   {EDACT_PUTROBOT4,     SDLK_4},
-   {EDACT_PUTROBOT5,     SDLK_5},
-   {EDACT_PUTROBOT6,     SDLK_6},
-   {EDACT_PUTROBOT7,     SDLK_7},
-   {EDACT_TOGGLEROBOT,   SDLK_8},
-   {EDACT_PUTLIFT,       SDLK_c},
-   {EDACT_PUTLIFTMID,    SDLK_d},
-   {EDACT_PUTLIFTTOP,    SDLK_e},
-   {EDACT_PUTSTICK,      SDLK_q},
-   {EDACT_PUTBOX,        SDLK_a},
-   {EDACT_CHECKTOWER,    SDLK_z},
-   {EDACT_LOADTOWER,     SDLK_l},
-   {EDACT_SAVETOWER,     SDLK_o},
-   {EDACT_TESTTOWER,     SDLK_p},
-   {EDACT_SETTOWERCOLOR, SDLK_v},
-   {EDACT_SETTIME,       SDLK_b},
-   {EDACT_INCTIME,       SDLK_n},
-   {EDACT_DECTIME,       SDLK_n, KMOD_SHIFT},
-   {EDACT_CREATEMISSION, SDLK_m},
-   {EDACT_NAMETOWER,     SDLK_t},
+   {EDACT_CUTROW,        SDLK_MINUS, '-'},
+   {EDACT_PASTEROW,      SDLK_PLUS,  '+'},
+   {EDACT_PUTSPACE,      SDLK_SPACE, ' '},
+   {EDACT_PUTSTEP,       SDLK_w,     'w'},
+   {EDACT_PUTVANISHER,   SDLK_s,     's'},
+   {EDACT_PUTSLIDERLEFT, SDLK_x,     'x'},
+   {EDACT_PUTSLIDERRIGHT,SDLK_x,     'X', KMOD_SHIFT},
+   {EDACT_PUTDOOR,       SDLK_i,     'i'},
+   {EDACT_PUTGOAL,       SDLK_k,     'k'},
+   {EDACT_PUTROBOT1,     SDLK_1,     '1'},
+   {EDACT_PUTROBOT2,     SDLK_2,     '2'},
+   {EDACT_PUTROBOT3,     SDLK_3,     '3'},
+   {EDACT_PUTROBOT4,     SDLK_4,     '4'},
+   {EDACT_PUTROBOT5,     SDLK_5,     '5'},
+   {EDACT_PUTROBOT6,     SDLK_6,     '6'},
+   {EDACT_PUTROBOT7,     SDLK_7,     '7'},
+   {EDACT_TOGGLEROBOT,   SDLK_8,     '8'},
+   {EDACT_PUTLIFT,       SDLK_c,     'c'},
+   {EDACT_PUTLIFTMID,    SDLK_d,     'd'},
+   {EDACT_PUTLIFTTOP,    SDLK_e,     'e'},
+   {EDACT_PUTSTICK,      SDLK_q,     'q'},
+   {EDACT_PUTBOX,        SDLK_a,     'a'},
+   {EDACT_CHECKTOWER,    SDLK_z,     'z'},
+   {EDACT_LOADTOWER,     SDLK_l,     'l'},
+   {EDACT_SAVETOWER,     SDLK_o,     'o'},
+   {EDACT_TESTTOWER,     SDLK_p,     'p'},
+   {EDACT_SETTOWERCOLOR, SDLK_v,     'v'},
+   {EDACT_SETTIME,       SDLK_b,     'b'},
+   {EDACT_INCTIME,       SDLK_n,     'n'},
+   {EDACT_DECTIME,       SDLK_n,     'N', KMOD_SHIFT},
+   {EDACT_CREATEMISSION, SDLK_m,     'm'},
+   {EDACT_NAMETOWER,     SDLK_t,     't'},
    {EDACT_REC_DEMO,      SDLK_F10},
    {EDACT_PLAY_DEMO,     SDLK_F11},
    {EDACT_ADJHEIGHT,     SDLK_F8}
@@ -485,6 +486,7 @@ void le_edit(void) {
   bool ende = false;
   bool changed = false;
   SDLKey inp = SDLK_UNKNOWN;
+  char inp_char;
   Uint16 keymod;
   int row = 0, col = 0;
   int tstep = 0;
@@ -540,25 +542,30 @@ void le_edit(void) {
     dcl_wait();
 
     inp = key_sdlkey();
+    inp_char = key_chartyped();
     keymod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS|KMOD_MODE));
     if (keymod & KMOD_SHIFT) keymod |= KMOD_SHIFT;
     if (keymod & KMOD_CTRL) keymod |= KMOD_CTRL;
     if (keymod & KMOD_ALT) keymod |= KMOD_ALT;
     if (keymod & KMOD_META) keymod |= KMOD_META;
 
-    if (inp != SDLK_UNKNOWN) {
-      int k, action = -1;
+    int k, action = -1;
 
-      (void)key_sdlkey();
+    if (inp_char != 0)
+      for (k = 0; k < SIZE(_ed_keys); k++)
+        if (_ed_keys[k].character == inp_char && _ed_keys[k].mod == keymod) {
+          action = _ed_keys[k].action;
+          break;
+        }
 
+    if ((inp != SDLK_UNKNOWN) && (action == -1))
       for (k = 0; k < SIZE(_ed_keys); k++)
         if (_ed_keys[k].key == inp && _ed_keys[k].mod == keymod) {
           action = _ed_keys[k].action;
           break;
         }
 
-      if (inp)
-	  debugprintf(4, "key=%i, mod=%i, action=%i\n", inp, keymod, action);
+    if (action != -1) {
 
       switch (action) {
       case EDACT_QUIT:

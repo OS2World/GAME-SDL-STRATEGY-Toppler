@@ -56,7 +56,6 @@ void dcl_wait(void) {
   }
 
   wait_overflow = false;
-  printf("%i\n", last);
   while ((SDL_GetTicks() - last) < (Uint32)(55-(curr_scr_update_speed*5)) ) SDL_Delay(2);
   last = SDL_GetTicks();
 }

@@ -1491,79 +1491,79 @@ bool men_input(char *origs, int max_len, int xpos, int ypos, const char *allowed
   bool ende = false;
 
   if ((strlen(origs) >= 256)) return true;
-    
+
   if (copy_origs) {
-      strcpy(s, origs);
-      copy_origs = false;
-      pos = strlen(origs);
+    strcpy(s, origs);
+    copy_origs = false;
+    pos = strlen(origs);
   }
-   
+
   (void)key_readkey();
 
-    if (menu_background_proc) (*menu_background_proc) ();
+  if (menu_background_proc) (*menu_background_proc) ();
 
-    draw_input_box(xpos,ypos, max_len, pos, s);
-    scr_swap();
-    dcl_wait();
+  draw_input_box(xpos,ypos, max_len, pos, s);
+  scr_swap();
+  dcl_wait();
 
-    key_keydatas(sdlinp, inptt, inpc);
+  key_keydatas(sdlinp, inptt, inpc);
 
-    switch (sdlinp) {
-	case SDLK_RIGHT: if ((unsigned)pos < strlen(s)) pos++; break;
-	case SDLK_LEFT: if (pos > 0) pos--; break;
-	case SDLK_ESCAPE:if (strlen(s)) {
-	    s[0] = '\0';
-	    pos = 0;
-	    restore_origs = false;
-	} else {
-	    restore_origs = true;
-	    ende = true;
-	}
-	break;
-	case SDLK_RETURN: restore_origs = false; copy_origs = true; ende = true;
-	break;
-	case SDLK_DELETE:
-	if (strlen(s) >= (unsigned)pos) {
-	    for (ztmp = pos; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
-	    s[ztmp] = '\0';
-	}
-	break;
-	case SDLK_BACKSPACE:
-	if (pos > 0) {
-	    if (pos <= max_len) {
-		for (ztmp = pos-1; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
-		s[ztmp] = '\0';
-	    }
-	    pos--;
-	}
-	break;
-	default:
-	if (pos >= max_len || (inpc < ' ')) break;
-	if (allowed) {
-	  if (!strchr(allowed, inpc)) {
-	      if (strchr(allowed, toupper(inpc))) inpc = toupper(inpc);
-	      else
-	      if (strchr(allowed, tolower(inpc))) inpc = tolower(inpc);
-	      else break;
-	  }
-	} else {
-	  if (inpc < ' ' || inpc > 'z') break;
-	}
-	if ((strlen(s) >= (unsigned)pos) &&
-	  (strlen(s) < (unsigned)max_len)) {
-	    for (ztmp = max_len-1; ztmp >= pos; ztmp--) s[ztmp+1] = s[ztmp];
-	    s[pos] = inpc;
-	    s[max_len] = '\0';
-	    pos++;
-	}
-	break;
-    }
-  if (ende) {
-      if (!restore_origs) strcpy(origs, s);
-      s[0] = 0;
-      copy_origs = true;
+  switch (sdlinp) {
+  case SDLK_RIGHT: if ((unsigned)pos < strlen(s)) pos++; break;
+  case SDLK_LEFT: if (pos > 0) pos--; break;
+  case SDLK_ESCAPE:if (strlen(s)) {
+    s[0] = '\0';
+    pos = 0;
+    restore_origs = false;
   } else {
-      copy_origs = false;
+    restore_origs = true;
+    ende = true;
+  }
+  break;
+  case SDLK_RETURN: restore_origs = false; copy_origs = true; ende = true;
+  break;
+  case SDLK_DELETE:
+    if (strlen(s) >= (unsigned)pos) {
+      for (ztmp = pos; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
+      s[ztmp] = '\0';
+    }
+    break;
+  case SDLK_BACKSPACE:
+    if (pos > 0) {
+      if (pos <= max_len) {
+        for (ztmp = pos-1; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
+        s[ztmp] = '\0';
+      }
+      pos--;
+    }
+    break;
+  default:
+    if (pos >= max_len || (inpc < ' ')) break;
+    if (allowed) {
+      if (!strchr(allowed, inpc)) {
+        if (strchr(allowed, toupper(inpc))) inpc = toupper(inpc);
+        else
+          if (strchr(allowed, tolower(inpc))) inpc = tolower(inpc);
+          else break;
+      }
+    } else {
+      if (inpc < ' ' || inpc > 'z') break;
+    }
+    if ((strlen(s) >= (unsigned)pos) &&
+        (strlen(s) < (unsigned)max_len)) {
+      for (ztmp = max_len-1; ztmp >= pos; ztmp--) s[ztmp+1] = s[ztmp];
+      s[pos] = inpc;
+      s[max_len] = '\0';
+      pos++;
+    }
+    break;
+  }
+  if (ende) {
+    if (!restore_origs) strcpy(origs, s);
+    s[0] = 0;
+    copy_origs = true;
+  } else {
+    copy_origs = false;
   }
   return ende;
 }
