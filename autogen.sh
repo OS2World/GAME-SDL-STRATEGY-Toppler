@@ -3,8 +3,9 @@
 echo "$0: running autopoint ..."
 autopoint || exit 1
 
-echo "$0: running post-treatments for autopoint ..."
+echo "$0: running some preparations ..."
 (
+	version="`cat VERSION`"
 	extra_dist="`cd m4/ && ls -1 *.m4 | tr '\n' ' '`"
 	linguas="`cd po/ && ls -1 *.po | cut -d. -f1`"
 	all_linguas="`echo -n "$linguas" | tr '\n' ' '`"
@@ -20,7 +21,10 @@ echo "$0: running post-treatments for autopoint ..."
 
 	echo "Updating configure.ac (backup is in configure.ac~)"
 	cp configure.ac configure.ac~
-	sed 's/\(ALL_LINGUAS="\)[^"]*/\1'"$all_linguas"'/' <configure.ac~ >configure.ac
+	sed \
+		-e 's/\(ALL_LINGUAS="\)[^"]*/\1'"$all_linguas"'/' \
+		-e 's/\(AC_INIT([^,]*,\)[^,]*\([,)].*\)/\1'"[$version]"'\2/' \
+		<configure.ac~ >configure.ac
 )
 
 echo "$0: running aclocal ..."
@@ -33,7 +37,7 @@ echo "$0: running autoheader ..."
 autoheader || exit 1
 
 echo "$0: running automake ..."
-automake --gnu --add-missing || exit 1
+automake --add-missing || exit 1
 
 echo "$0: running configure ..."
 ./configure $@ || exit 1

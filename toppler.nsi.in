@@ -1,14 +1,117 @@
-Name "@FULLNAME@"
+!define NAME "@FULLNAME@"
+!define PACKAGE "@PACKAGE@"
+!define VERSION "@VERSION@"
+!define URL "@URL@"
+!define FLATDIR "@PACKAGE@-@VERSION@-@target@-flat"
+!define OUTFILE "${FLATDIR}.exe"
+!define MAINPROG "${PACKAGE}.exe"
+!define SMDIR "$SMPROGRAMS\${NAME}"
+!define UNINSTPROG "uninstall.exe"
+!define LICENSE "COPYING.txt"
 
-InstallDir $PROGRAMFILES\Toppler
-OutFile "@PACKAGE@-@VERSION@-@target@-flat.exe"
+Name "${NAME}"
+OutFile "${OUTFILE}"
+InstallDir "$PROGRAMFILES\${PACKAGE}"
+InstallDirRegKey HKLM "Software\${PACKAGE}" "Install_Dir"
 
+Page license
+Page components
 Page directory
 Page instfiles
+UninstPage uninstConfirm
+UninstPage instfiles
 
-Section ""
+LicenseData "${FLATDIR}\${LICENSE}"
 
-  SetOutPath $INSTDIR
-  File @PACKAGE@.exe
+InstType "Full"
+InstType "Minimal"
 
+Section "-Install Uninstaller"
+  SetOutPath "$INSTDIR"
+
+  WriteUninstaller "$INSTDIR\${UNINSTPROG}"
+  WriteRegStr HKLM \
+              "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" \
+              "DisplayName" "${NAME}"
+  WriteRegStr HKLM \
+              "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}" \
+              "UninstallString" '"$INSTDIR\${UNINSTPROG}"'
 SectionEnd
+
+Section "!${NAME} - ${VERSION}"
+  SectionIn 1 2
+  SetOutPath "$INSTDIR"
+
+  File "${FLATDIR}\${MAINPROG}"
+  File "${FLATDIR}\*.dll"
+  File "${FLATDIR}\*.ttm"
+  File "${FLATDIR}\*.dat"
+  File "${FLATDIR}\*.hsc"
+SectionEnd
+
+Section "Documentation"
+  SectionIn 1
+  SetOutPath "$INSTDIR"
+
+  File "${FLATDIR}\*.txt"
+SectionEnd
+
+Section "Start Menu Entry"
+  SectionIn 1
+  SetOutPath "$INSTDIR"
+
+  CreateDirectory "${SMDIR}"
+  CreateShortCut "${SMDIR}\${NAME}.lnk" "$INSTDIR\${MAINPROG}"
+  WriteINIStr "${SMDIR}\Homepage.url" "InternetShortcut" "URL" "${URL}"
+  IfFileExists $INSTDIR\README.txt 0 NoText
+    CreateShortCut "${SMDIR}\Read Me.lnk" "$INSTDIR\README.txt"
+  NoText:
+  CreateShortCut "${SMDIR}\Uninstall.lnk" "$INSTDIR\${UNINSTPROG}"
+SectionEnd
+
+Section "Desktop Entry"
+  SectionIn 1
+  SetOutPath "$INSTDIR"
+
+  CreateShortCut "$DESKTOP\${NAME}.lnk" "$INSTDIR\${MAINPROG}"
+SectionEnd
+
+UninstallText "This will uninstall ${NAME} from your system:"
+
+Section "Uninstall"
+  DeleteRegKey HKLM \
+               "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}"
+
+  Delete "$DESKTOP\${NAME}.lnk"
+
+  Delete "${SMDIR}\${NAME}.lnk"
+  Delete "${SMDIR}\Homepage.url"
+  Delete "${SMDIR}\Read Me.lnk"
+  Delete "${SMDIR}\Uninstall.lnk"
+  RMDir "${SMDIR}"
+
+  Delete $INSTDIR\${UNINSTPROG}
+  Delete $INSTDIR\${MAINPROG}
+  Delete $INSTDIR\*.dll
+  Delete $INSTDIR\*.ttm
+  Delete $INSTDIR\*.dat
+  Delete $INSTDIR\*.txt
+  Delete $INSTDIR\.${PACKAGE}.rc
+  Delete $INSTDIR\${PACKAGE}.hsc
+  RMDir $INSTDIR
+SectionEnd
+
+Function .onInstSuccess
+  SetOutPath "$INSTDIR"
+
+  IfFileExists "$INSTDIR\README.txt" 0 NoReadme
+  MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON1 \
+             "Setup has completed. View readme file now?" IDNO NoReadme
+    ExecShell open "$INSTDIR\README.txt"
+  NoReadme:
+
+  MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON1 \
+             "Run ${NAME} now?" IDNO NoRun
+    Exec '"$INSTDIR\${MAINPROG}"'
+  NoRun:
+FunctionEnd

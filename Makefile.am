@@ -1,6 +1,6 @@
 include $(top_srcdir)/Makefile.tools
 
-AM_CPPFLAGS = @CPPFLAGS@ -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(scoredir)\" -DLOCALEDIR=\"$(datadir)\"
+AM_CXXFLAGS = -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(pkglocalstatedir)\" -DLOCALEDIR=\"$(datadir)\"
 SUBDIRS = po m4
 ACLOCAL_AMFLAGS = -I m4
 
@@ -31,34 +31,25 @@ toppler_SOURCES =                  \
   toppler.cc       toppler.h       \
   txtsys.cc        txtsys.h
 
-pkgdoc_DATA = AUTHORS COPYING ChangeLog NEWS README
-
-pkgdata_DATA = \
+dist_pixmaps_DATA = $(PACKAGE).xpm
+applications_DATA = $(PACKAGE).desktop
+dist_man_MANS = toppler.6
+dist_pkgdoc_DATA = AUTHORS COPYING ChangeLog NEWS README
+dist_pkgdata_DATA = \
   toppler.dat \
-  m1.ttm m2.ttm ball1.ttm ball2.ttm ball3.ttm abc.ttm pasi2.ttm \
-  toppler.xpm
+  m1.ttm m2.ttm ball1.ttm ball2.ttm ball3.ttm abc.ttm pasi2.ttm
 
-man_MANS = toppler.6
-
-CONFIG_CLEAN_FILES = toppler.spec toppler.nsi toppler.desktop
+dist_pkglocalstate_DATA = $(PACKAGE).hsc
 
 EXTRA_DIST = \
   config.rpath mkinstalldirs Makefile.tools \
-  $(pkgdoc_DATA) $(pkgdata_DATA) $(man_MANS) \
   $(PACKAGE).spec \
-  debian/changelog debian/control debian/copyright debian/menu debian/rules \
-  VERSION toppler.xpm levelnames.txt
+  VERSION levelnames.txt
 
-scoredir = $(localstatedir)/@PACKAGE@
-scorefile = $(scoredir)/@PACKAGE@.hsc
+install-exec-hook:
+	-chgrp games $(DESTDIR)$(bindir)/toppler
+	-chmod 2755 $(DESTDIR)$(bindir)/toppler
 
-install_exec_local:
-	-(chgrp games $(DESTDIR)$(bindir)/toppler; chmod g+s $(DESTDIR)$(bindir)/toppler)
-	$(INSTALL) -d -g games -m 664 $(DESTDIR)$(scoredir)
-	touch $(DESTDIR)$(scorefile)
-	-(chgrp games $(DESTDIR)$(scorefile); chmod g+rw $(DESTDIR)$(scorefile))
-	-(chgrp games $(DESTDIR)$(scoredir); chmod g+rw $(DESTDIR)$(scoredir))
-
-uninstall_local:
-	rm $(scoredir)/@PACKAGE@.hsc
-	rmdir $(scoredir)
+install-data-hook:
+	-chgrp games $(DESTDIR)$(pkglocalstatedir)/$(PACKAGE).hsc
+	-chmod 0664 $(DESTDIR)$(pkglocalstatedir)/$(PACKAGE).hsc

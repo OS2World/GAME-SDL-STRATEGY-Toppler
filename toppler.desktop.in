@@ -2,8 +2,8 @@
 Encoding=UTF-8
 Categories=Application;Game;X-Red-Hat-Extra
 X-Desktop-File-Install-Version=0.2
-Name=Toppler
-Icon=@prefix@/@PACKAGE@/toppler.xpm
-Exec=toppler
+Name=@FULLNAME@
+Icon=@prefix@/pixmaps/@PACKAGE@.xpm
+Exec=@prefix@/bin/toppler
 Terminal=0
 Type=Application

@@ -1,12 +1,13 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
+
 AC_PREREQ(2.13)
-AC_INIT
+AC_INIT([toppler],[1.1.1])
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE([toppler],[`cd "$srcdir" && cat VERSION`])
+AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([toppler.cc])
-AC_CONFIG_HEADER([config.h])
+AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 
 # To be removed in the future
@@ -19,13 +20,10 @@ AC_DEFINE_UNQUOTED(SYSTEM,SYS_LINUX,System)
 # General information.
 AC_SUBST(FULLNAME,"Tower Toppler")
 AC_SUBST(URL,"http://toppler.sourceforge.net/")
-AC_SUBST(DESCRIPTION,"Reimplementation of the old game (aka Nebulous). In the game you have to climb a tower with lots of strange inhabitants that try to push you down. Your only defence is a snowball you can throw and your skill to avoid these beings.")
 AC_DEFINE_UNQUOTED([FULLNAME],["$FULLNAME"],[Define to the full name of this package.])
 AC_DEFINE_UNQUOTED([URL],["$URL"],[Define to the URL of this package's homepage.])
-AC_DEFINE_UNQUOTED([DESCRIPTION],["$DESCRIPTION"],[Define to the description of this package.])
 
 # Compiler options.
-CPPFLAGS="-Wall"
 
 # Additional variables.
 AC_SUBST(DLL_FILES,"")
@@ -78,5 +76,5 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit memmove memset mkdir setlocale strcasecmp strchr strstr])
 
 # Output.
-AC_CONFIG_FILES([Makefile toppler.spec toppler.nsi toppler.desktop po/Makefile.in m4/Makefile debian/control debian/copyright debian/menu])
+AC_CONFIG_FILES([Makefile toppler.spec toppler.nsi toppler.desktop po/Makefile.in m4/Makefile])
 AC_OUTPUT

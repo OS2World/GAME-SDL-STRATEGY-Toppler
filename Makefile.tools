@@ -2,7 +2,7 @@
 #  Makefile Tools - some useful scripts to distribute your software
 #  ================================================================
 #
-#  Version: 0.9.2
+#  Version: 0.9.3
 #
 #
 #  Usage: add to each "Makefile.am" the following line:
@@ -38,8 +38,11 @@
 distname = $(PACKAGE)-$(VERSION)
 disttargetname = $(distname)-$(target_triplet)
 
-docdir = @docdir@
+docdir = $(datadir)/doc
+pixmapsdir = $(datadir)/pixmaps
+applicationsdir = $(datadir)/applications
 pkgdocdir = $(docdir)/$(PACKAGE)
+pkglocalstatedir = $(localstatedir)/$(PACKAGE)
 
 dllfiles = @DLL_FILES@
 cygwin_dllfiles = @DLL_FILES_CYGWIN@
@@ -74,7 +77,6 @@ INCLUDES = -I$(top_srcdir)/src -DPKGDATADIR=\"$(pkgdatadir)/\"
 #  additional commands and options
 #
 
-BZIP2_ENV = -9
 ENSCRIPT = enscript --landscape --columns=2 --font=Courier8 --color --highlight
 PS2PDF = ps2pdf
 NSIS = makensis
@@ -161,13 +163,24 @@ dist-flatdir:
 		libdir= \
 		infodir= \
 		mandir= \
+		man1dir= \
+		man2dir= \
+		man3dir= \
+		man4dir= \
+		man5dir= \
+		man6dir= \
+		man7dir= \
+		man8dir= \
 		includedir= \
 		oldincludedir= \
 		pkgdatadir= \
 		pkglibdir= \
 		pkgincludedir= \
 		docdir= \
+		pixmapsdir= \
+		applicationsdir= \
 		pkgdocdir= \
+		pkglocalstatedir= \
 		install-strip
 	@cd "$(distflatdir)" \
 		&& case "$(target_os)" in \
@@ -193,9 +206,12 @@ dist-flatdir:
 
 dist-flat: dist-flatdir
 	-chmod -R a+r "$(distflatdir)"
-	GZIP=$(GZIP_ENV) $(AMTAR) chovvzf "$(distflatdir).tar.gz" "$(distflatdir)"
-	-BZIP2=$(BZIP2_ENV) $(AMTAR) chovvjf "$(distflatdir).tar.bz2" "$(distflatdir)"
-	-$(ZIP) "$(distflatdir).zip" "$(distflatdir)"
+	$(AMTAR) chof - $(distflatdir) | GZIP=$(GZIP_ENV) gzip -c >$(distflatdir).tar.gz
+	-$(AMTAR) chof - $(distflatdir) | bzip2 -9 -c >$(distflatdir).tar.bz2
+	-$(AMTAR) chof - $(distflatdir) | compress -c >$(distflatdir).tar.Z
+	-shar $(distflatdir) | GZIP=$(GZIP_ENV) gzip -c >$(distflatdir).shar.gz
+	-rm -f $(distflatdir).zip
+	-zip -rq $(distflatdir).zip $(distflatdir)
 	-cd "$(distflatdir)" \
 		&& $(NSIS) "$(abs_top_srcdir)/$(nsisscript)"
 	-rm -rf "$(distflatdir)"
@@ -214,7 +230,7 @@ dist-rpm: dist-gzip
 #
 
 dist-deb: distdir
-	cd "$(distdir)" && $(DPKG_BUILDPACKAGE)
+	-cd "$(distdir)" && $(DPKG_BUILDPACKAGE)
 	$(am__remove_distdir)
 
 
@@ -236,11 +252,17 @@ dist-src: distdir
 #  all dists useful for linux environments
 #
 
-dist-linux: dist-flat dist-rpm dist-deb
+dist-linux:
+	$(MAKE) dist-src
+	$(MAKE) dist-flat
+	-$(MAKE) dist-rpm
+	-$(MAKE) dist-deb
 
 
 #
 #  all dists useful for win32 environments
 #
 
-dist-win32: dist-flat
+dist-win32:
+	$(MAKE) dist-src
+	$(MAKE) dist-flat
