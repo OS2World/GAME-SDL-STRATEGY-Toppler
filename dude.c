@@ -11,18 +11,13 @@ Uint8 get_alpha(SDL_Surface *s, int x, int y) {
   return s->format->palette->colors[((Uint8*)s->pixels)[y*s->pitch+x]].r;
 }
 
-void getpixel(Uint16 s, Uint16 z, Uint8 fx, Uint8 fy, Uint16 x, Uint16 y,
+void getpixel(Uint16 z, Uint8 fx, Uint16 x, Uint16 y,
               FILE *out, SDL_Surface *col, SDL_Surface *msk)
 {
   if (fx)
-    x = s + 36 - x;
-  else
-    x = s + x;
+    x = 39 - x;
 
-  if (fy)
-    y = z + 39 - y;
-  else
-    y = z + y;
+  y = z + y;
 
   Uint8 c;
 
@@ -34,13 +29,13 @@ void getpixel(Uint16 s, Uint16 z, Uint8 fx, Uint8 fy, Uint16 x, Uint16 y,
 
 }
 
-void get(Uint16 s, Uint16 z, Uint8 fx, Uint8 fy, FILE *out, SDL_Surface *col, SDL_Surface *msk)
+void get(Uint16 z, Uint8 fx, FILE *out, SDL_Surface *col, SDL_Surface *msk)
 {
   unsigned short x, y;
 
   for (y = 0; y < 40; y++)
     for (x = 0; x < 40; x++) {
-      getpixel(s, z, fx, fy, x, y, out, col, msk);
+      getpixel(z, fx, x, y, out, col, msk);
     }
 }
 
@@ -68,87 +63,87 @@ main(int argc, char *argv[])
 
   write_palette(outp, colors);
 
-  get(2+38*0, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*1, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*2, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*3, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*4, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*5, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*6, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*7, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*8, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*9, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*10, 2+42*0, 0, 0, outp, colors, mask);
-  get(2+38*11, 2+42*0, 0, 0, outp, colors, mask);
+  get( 0 * 40, 0, outp, colors, mask);
+  get( 1 * 40, 0, outp, colors, mask);
+  get( 2 * 40, 0, outp, colors, mask);
+  get( 3 * 40, 0, outp, colors, mask);
+  get( 4 * 40, 0, outp, colors, mask);
+  get( 5 * 40, 0, outp, colors, mask);
+  get( 6 * 40, 0, outp, colors, mask);
+  get( 7 * 40, 0, outp, colors, mask);
+  get( 8 * 40, 0, outp, colors, mask);
+  get( 9 * 40, 0, outp, colors, mask);
+  get(10 * 40, 0, outp, colors, mask);
+  get(11 * 40, 0, outp, colors, mask);
 
-  get(2+38*0, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*1, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*2, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*3, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*4, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*5, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*6, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*7, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*8, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*9, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*10, 2+42*1, 0, 0, outp, colors, mask);
-  get(2+38*11, 2+42*1, 0, 0, outp, colors, mask);
+  get(12 * 40, 0, outp, colors, mask);
+  get(13 * 40, 0, outp, colors, mask);
+  get(14 * 40, 0, outp, colors, mask);
+  get(15 * 40, 0, outp, colors, mask);
+  get(16 * 40, 0, outp, colors, mask);
+  get(17 * 40, 0, outp, colors, mask);
+  get(18 * 40, 0, outp, colors, mask);
+  get(19 * 40, 0, outp, colors, mask);
+  get(20 * 40, 0, outp, colors, mask);
+  get(21 * 40, 0, outp, colors, mask);
+  get(22 * 40, 0, outp, colors, mask);
+  get(23 * 40, 0, outp, colors, mask);
 
-  get(2+38*0, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*1, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*2, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*3, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*4, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*5, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*6, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*7, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*8, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*9, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*10, 2+42*2, 0, 0, outp, colors, mask);
-  get(2+38*11, 2+42*2, 0, 0, outp, colors, mask);
+  get(24 * 40, 0, outp, colors, mask);
+  get(25 * 40, 0, outp, colors, mask);
+  get(26 * 40, 0, outp, colors, mask);
+  get(27 * 40, 0, outp, colors, mask);
+  get(28 * 40, 0, outp, colors, mask);
+  get(29 * 40, 0, outp, colors, mask);
+  get(30 * 40, 0, outp, colors, mask);
+  get(31 * 40, 0, outp, colors, mask);
+  get(32 * 40, 0, outp, colors, mask);
+  get(33 * 40, 0, outp, colors, mask);
+  get(34 * 40, 0, outp, colors, mask);
+  get(35 * 40, 0, outp, colors, mask);
 
-  get(2+38*0, 2+42*3, 0, 0, outp, colors, mask);
+  get(36 * 40, 0, outp, colors, mask);
 
-  get(2+38*0, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*1, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*2, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*3, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*4, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*5, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*6, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*7, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*8, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*9, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*10, 2+42*0, 1, 0, outp, colors, mask);
-  get(2+38*11, 2+42*0, 1, 0, outp, colors, mask);
+  get( 0 * 40, 1, outp, colors, mask);
+  get( 1 * 40, 1, outp, colors, mask);
+  get( 2 * 40, 1, outp, colors, mask);
+  get( 3 * 40, 1, outp, colors, mask);
+  get( 4 * 40, 1, outp, colors, mask);
+  get( 5 * 40, 1, outp, colors, mask);
+  get( 6 * 40, 1, outp, colors, mask);
+  get( 7 * 40, 1, outp, colors, mask);
+  get( 8 * 40, 1, outp, colors, mask);
+  get( 9 * 40, 1, outp, colors, mask);
+  get(10 * 40, 1, outp, colors, mask);
+  get(11 * 40, 1, outp, colors, mask);
 
-  get(2+38*0, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*1, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*2, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*3, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*4, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*5, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*6, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*7, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*8, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*9, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*10, 2+42*1, 1, 0, outp, colors, mask);
-  get(2+38*11, 2+42*1, 1, 0, outp, colors, mask);
+  get(12 * 40, 1, outp, colors, mask);
+  get(13 * 40, 1, outp, colors, mask);
+  get(14 * 40, 1, outp, colors, mask);
+  get(15 * 40, 1, outp, colors, mask);
+  get(16 * 40, 1, outp, colors, mask);
+  get(17 * 40, 1, outp, colors, mask);
+  get(18 * 40, 1, outp, colors, mask);
+  get(19 * 40, 1, outp, colors, mask);
+  get(20 * 40, 1, outp, colors, mask);
+  get(21 * 40, 1, outp, colors, mask);
+  get(22 * 40, 1, outp, colors, mask);
+  get(23 * 40, 1, outp, colors, mask);
 
-  get(2+38*0, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*1, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*2, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*3, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*4, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*5, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*6, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*7, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*8, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*9, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*10, 2+42*2, 1, 0, outp, colors, mask);
-  get(2+38*11, 2+42*2, 1, 0, outp, colors, mask);
+  get(24 * 40, 1, outp, colors, mask);
+  get(25 * 40, 1, outp, colors, mask);
+  get(26 * 40, 1, outp, colors, mask);
+  get(27 * 40, 1, outp, colors, mask);
+  get(28 * 40, 1, outp, colors, mask);
+  get(29 * 40, 1, outp, colors, mask);
+  get(30 * 40, 1, outp, colors, mask);
+  get(31 * 40, 1, outp, colors, mask);
+  get(32 * 40, 1, outp, colors, mask);
+  get(33 * 40, 1, outp, colors, mask);
+  get(34 * 40, 1, outp, colors, mask);
+  get(35 * 40, 1, outp, colors, mask);
 
-  get(2+38*0, 2+42*3, 1, 0, outp, colors, mask);
+  get(36 * 40, 1, outp, colors, mask);
 
   fclose(outp);
 }
