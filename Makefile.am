@@ -1,6 +1,6 @@
 CPPFLAGS = @CPPFLAGS@ -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(scoredir)\" -DLOCALEDIR=\"$(datadir)\"
 
-noinst_PROGRAMS = toppler
+bin_PROGRAMS = toppler
 
 toppler_SOURCES =                  \
   archi.cc         archi.h         \
