@@ -104,6 +104,9 @@ archive::archive(FILE *stream) {
 }
 
 archive::~archive() {
+  for (int i = 0; i < filecount; i++)
+    delete [] files[i].name;
+
   delete [] files;
   fclose(f);
 }
