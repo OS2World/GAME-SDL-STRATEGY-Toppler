@@ -5,13 +5,11 @@
 .SH NAME
 toppler - clone of the old "Nebulous" game
 .SH SYNOPSIS
-.B toppler [-f] [-s]
+.B toppler [-f] [-h] [-s]
 .SH DESCRIPTION
 This manual page documents briefly the
 .B toppler
 command.
-This manual page was adapted from the README for the Debian GNU/Linux
-distribution because the original program does not have a manual page.
 .br
 The goal of the game is to reach the target door of each of the 8
 towers in currently 2 missions with this little green animal. This
@@ -44,12 +42,15 @@ standing still or make the animal jump if you are walking.
 .SH OPTIONS
 The program understands the following command line options.
 .TP
-.Op -f
+.B \-f
 starts the game in fullscreen mode.  But be careful! If the game
-crashes it doesn't restore the original resolution, it stays in 660x480
+crashes it doesn't restore the original resolution, it stays in 640x480
 pixel mode.
 .TP
-.Op -s
+.B \-h
+Display this help and exit.
+.TP
+.B \-s
 makes the game silent.  If you don't have a soundcard or for another
 reason get an "can't open audio" error try this option.
 .SH AUTHOR
