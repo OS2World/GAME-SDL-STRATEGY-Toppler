@@ -176,8 +176,8 @@ int main() {
   get(colors, mask, '&');
   get(colors, mask, '\'');
   get(colors, mask, '"');
-  get(colors, mask, '#');
-  get(colors, mask, '\\');
+  get(colors, mask, '\x01'); /* fonttoppler */
+  get(colors, mask, '\x02'); /* fontpoint */
 
   fclose(outp);
 }

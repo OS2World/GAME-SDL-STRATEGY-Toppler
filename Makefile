@@ -5,24 +5,28 @@ CFLAGS = -lz -lSDL -lSDL_image -lm -lpng -I/usr/include/SDL -I/usr/include/libpn
 
 POVRAY = povray
 
+TARGETDIR = ../toppler
+
+TOPPLERDAT = toppler.dat
+
 DATFILES = cross.dat font.dat graphics.dat menu.dat scroller.dat \
 	   sprites.dat titles.dat dude.dat
 
 CLEANRULES = cross.clean font.clean graphics.clean menu.clean \
 	     scroller.clean sprites.clean titles.clean dude.clean
-	   
+
 #---------------------------------------------------------------------------------------#
 # global make, this creates the final data file packing all things togethers using zlib #
 #---------------------------------------------------------------------------------------#
-toppler.dat: crearc $(DATFILES)
-	./crearc toppler.dat $(DATFILES)
-	cp toppler.dat ../toppler_highres
+$(TOPPLERDAT): crearc $(DATFILES)
+	./crearc $(TOPPLERDAT) $(DATFILES)
+	cp $(TOPPLERDAT) $(TARGETDIR)
 
 crearc: crearc.c
 	$(GCC) $(CFLAGS) crearc.c -o crearc
 
 clean: $(CLEANRULES)
-	rm -f toppler.dat crearc colorreduction assembler
+	rm -f $(TOPPLERDAT) crearc colorreduction assembler
 
 #-------------------------------------------------------#
 # rules to create the data files necesary for the cross #
@@ -45,7 +49,7 @@ cross_colors_rgb.png: assembler cross_pov/cross000.png
 	mv cross_rgb_mask.png cross_mask_rgb.png
 
 cross_pov/cross000.png: cross_pov/cross.pov cross_pov/cross.ini
-	sh -c "cd cross_pov; $(POVRAY) cross.ini"
+	( cd cross_pov && $(POVRAY) cross.ini )
 
 cross.clean:
 	rm -f cross.dat cross cross_colors_rgb.png cross_colors.png cross_mask_rgb.png cross_mask.png
@@ -97,7 +101,7 @@ menu_rgb.png: menu_pov/menu.pov menu_pov/turm1.inc menu_pov/turm2.inc \
               menu_pov/turm3.inc menu_pov/turm4.inc \
               menu_pov/turm5.inc menu_pov/turm6.inc \
               menu_pov/turm7.inc menu_pov/turm8.inc
-	sh -c "cd menu_pov; $(POVRAY) menu.ini; mv menu_rgb.png .."
+	( cd menu_pov && $(POVRAY) menu.ini && mv menu_rgb.png .. )
 
 menu.clean:
 	rm -f menu.dat menu
@@ -146,7 +150,7 @@ sprites.dat: sprites sprites_robots_colors.png sprites_robots_mask.png \
              sprites_balls_colors.png sprites_balls_mask.png \
              sprites_box_colors.png sprites_box_mask.png \
              sprites_snowball_colors.png sprites_snowball_mask.png \
-             sprites_star.png sprites_bonus.png
+             sprites_torpedo_colors.png sprites_torpedo_mask.png
 	./sprites
 
 sprites: sprites.c
@@ -183,13 +187,13 @@ sprites_balls_rgb_colors.png: assembler sprites_pov/balls/obj0.png
 	./assembler hm sprites_balls_rgb sprites_pov/balls/obj*.png
 
 sprites_pov/box/obj00.png: sprites_pov/box/obj.pov sprites_pov/box/obj.ini
-	sh -c "cd sprites_pov/box; $(POVRAY) obj.ini"
+	( cd sprites_pov/box && $(POVRAY) obj.ini )
 
 sprites_pov/balls/obj0.png: sprites_pov/balls/obj.pov sprites_pov/balls/obj.ini
-	sh -c "cd sprites_pov/balls; $(POVRAY) obj.ini"
+	( cd sprites_pov/balls && $(POVRAY) obj.ini )
 
 sprites_pov/snowball/obj0.png: sprites_pov/snowball/obj.pov sprites_pov/snowball/obj.ini
-	sh -c "cd sprites_pov/snowball; $(POVRAY) obj.ini"
+	( cd sprites_pov/snowball && $(POVRAY) obj.ini )
 
 sprites_robots_colors_rgb.png: assembler sprites_pov/robot0_rgb_colors.png \
                                sprites_pov/robot1_rgb_colors.png \
@@ -207,49 +211,49 @@ sprites_pov/robot0_rgb_colors.png: sprites_pov/robot0/obj00.png assembler
 	./assembler hm sprites_pov/robot0_rgb sprites_pov/robot0/*.png
 
 sprites_pov/robot0/obj00.png: sprites_pov/robot0/obj.pov sprites_pov/robot0/obj.ini sprites_pov/environment.pov
-	sh -c "cd sprites_pov/robot0; $(POVRAY) obj.ini"
+	( sh -c "cd sprites_pov/robot0 && $(POVRAY) obj.ini )
 
 sprites_pov/robot1_rgb_colors.png: sprites_pov/robot1/obj00.png assembler
 	./assembler hm sprites_pov/robot1_rgb sprites_pov/robot1/*.png
 
 sprites_pov/robot1/obj00.png: sprites_pov/robot1/obj.pov sprites_pov/robot1/obj.ini sprites_pov/environment.pov
-	sh -c "cd sprites_pov/robot1; $(POVRAY) obj.ini"
+	( sh -c "cd sprites_pov/robot1 && $(POVRAY) obj.ini )
 
 sprites_pov/robot2_rgb_colors.png: sprites_pov/robot2/obj00.png assembler
 	./assembler hm sprites_pov/robot2_rgb sprites_pov/robot2/*.png
 
 sprites_pov/robot2/obj00.png: sprites_pov/robot2/obj.pov sprites_pov/robot2/obj.ini sprites_pov/environment.pov
-	sh -c "cd sprites_pov/robot2; $(POVRAY) obj.ini"
+	( sh -c "cd sprites_pov/robot2 && $(POVRAY) obj.ini )
 
 sprites_pov/robot3_rgb_colors.png: sprites_pov/robot3/obj00.png assembler
 	./assembler hm sprites_pov/robot3_rgb sprites_pov/robot3/*.png
 
 sprites_pov/robot3/obj00.png: sprites_pov/robot3/obj.pov sprites_pov/robot3/obj.ini sprites_pov/environment.pov
-	sh -c "cd sprites_pov/robot3; $(POVRAY) obj.ini"
+	( sh -c "cd sprites_pov/robot3 && $(POVRAY) obj.ini )
 
 sprites_pov/robot4_rgb_colors.png: sprites_pov/robot4/obj00.png assembler
 	./assembler hm sprites_pov/robot4_rgb sprites_pov/robot4/*.png
 
 sprites_pov/robot4/obj00.png: sprites_pov/robot4/obj.pov sprites_pov/robot4/obj.ini sprites_pov/environment.pov
-	sh -c "cd sprites_pov/robot4; $(POVRAY) obj.ini"
+	( sh -c "cd sprites_pov/robot4 && $(POVRAY) obj.ini )
 
 sprites_pov/robot5_rgb_colors.png: sprites_pov/robot5/obj00.png assembler
 	./assembler hm sprites_pov/robot5_rgb sprites_pov/robot5/*.png
 
 sprites_pov/robot5/obj00.png: sprites_pov/robot5/obj.pov sprites_pov/robot5/obj.ini sprites_pov/environment.pov
-	sh -c "cd sprites_pov/robot5; $(POVRAY) obj.ini"
+	( sh -c "cd sprites_pov/robot5 && $(POVRAY) obj.ini )
 
 sprites_pov/robot6_rgb_colors.png: sprites_pov/robot6/obj00.png assembler
 	./assembler hm sprites_pov/robot6_rgb sprites_pov/robot6/*.png
 
 sprites_pov/robot6/obj00.png: sprites_pov/robot6/obj.pov sprites_pov/robot6/obj.ini sprites_pov/environment.pov
-	sh -c "cd sprites_pov/robot6; $(POVRAY) obj.ini"
+	( sh -c "cd sprites_pov/robot6 && $(POVRAY) obj.ini )
 
 sprites_pov/robot7_rgb_colors.png: sprites_pov/robot7/obj00.png assembler
 	./assembler hm sprites_pov/robot7_rgb sprites_pov/robot7/*.png
 
 sprites_pov/robot7/obj00.png: sprites_pov/robot0/obj.pov sprites_pov/robot7/obj.ini sprites_pov/environment.pov
-	sh -c "cd sprites_pov/robot7; $(POVRAY) obj.ini"
+	( sh -c "cd sprites_pov/robot7 && $(POVRAY) obj.ini )
 
 sprites.clean:
 	rm -f sprites sprites.dat
