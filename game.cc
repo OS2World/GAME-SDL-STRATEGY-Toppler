@@ -434,7 +434,7 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
            top_anglepos(), tower_anglepos);
 }
 
-int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
+gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
 
   static Uint8 door3[6] = {
     0x17, 0x18, 0x18, 0x19, 0x19, 0xb
@@ -457,7 +457,7 @@ int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
 
   /* time left for the player to reach the tower */
   int time = lev_towertime();
-  
+
   set_men_bgproc(game_background_proc);
 
   top_init();
@@ -475,10 +475,10 @@ int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
     bg_tower_pos = tower_position;
     bg_tower_angle = tower_angle;
     bg_time = time;
-    
+
     if (key_keypressed(quit_action)) {
-	state = STATE_ABORTED;
-	break;
+      state = STATE_ABORTED;
+      break;
     }
 
     if (key_keypressed(break_key))
@@ -547,23 +547,23 @@ int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
 
   switch (state) {
 
-    case STATE_TIMEOUT:
-      timeout(tower_position, tower_angle);
-      pts_died();
-      return GAME_DIED;
+  case STATE_TIMEOUT:
+    timeout(tower_position, tower_angle);
+    pts_died();
+    return GAME_DIED;
 
-    case STATE_ABORTED:
-      return GAME_ABORTED;
+  case STATE_ABORTED:
+    return GAME_ABORTED;
 
-    case STATE_FINISHED:
-      return GAME_FINISHED;
+  case STATE_FINISHED:
+    return GAME_FINISHED;
 
-    case STATE_DIED:
-      pts_died();
-      return GAME_DIED;
+  case STATE_DIED:
+    pts_died();
+    return GAME_DIED;
 
-    default:
-      return GAME_FINISHED;
+  default:
+    return GAME_FINISHED;
   }
 }
 

@@ -37,9 +37,9 @@ static struct {
 
   /* what kind of robot it is, an under classifikation
    and what kind it will be after the appearing animation */
-  int kind;
+  rob_kinds kind;
   long subKind;
-  int futureKind;
+  rob_kinds futureKind;
 
   /* a timer for the animations of the robots */
   long time;
@@ -203,7 +203,7 @@ static void moverobothorizontal(int t) {
 
 /******* PUBLIC FUNCTIONS *********/
 
-int rob_kind(int nr) { return object[nr].kind; }
+rob_kinds rob_kind(int nr) { return object[nr].kind; }
 int rob_time(int nr) { return object[nr].time; }
 int rob_angle(int nr) { return object[nr].anglepos; }
 int rob_vertical(int nr) { return object[nr].verticalpos; }
@@ -598,7 +598,6 @@ int rob_gothit(int nr) {
     return 100;
   } else
     return 0;
-
 }
 
 void rob_disappearall(void) {
@@ -609,6 +608,5 @@ void rob_disappearall(void) {
       object[t].time = 0;
     }
   }
-
 }
 

@@ -52,8 +52,8 @@ void men_done(void);
 
 /* input line */
 void men_input(char *s, int max_len, int xpos = -1,
-	       int ypos = (SCREENHEI  * 2) / 3,
-	       const char *allowed = NULL);
+               int ypos = (SCREENHEI  * 2) / 3,
+               const char *allowed = NULL);
 
 /* asks a yes/no question; return 0 if "no",
    1 if "yes" */

@@ -49,7 +49,6 @@ void scr_setcrosscolor(Uint8 red, Uint8 green, Uint8 blue);
 /* all paint routines paint onto an invisible surface, to show this surface
  call swap */
 
-
 /* writes some text onto the screen */
 void scr_writetext(long x, long y, const char *s);
 

@@ -22,10 +22,11 @@
 #include <SDL_types.h>
 
 /* return values of towergame */
-#define GAME_FINISHED 0
-#define GAME_DIED     1
-#define GAME_ABORTED 2
-
+typedef enum {
+  GAME_FINISHED,    // the tower has been finished successfully
+  GAME_DIED,        //  the toppler died
+  GAME_ABORTED      // the game was abborted (ESC)
+} gam_result;
 
 /* load data */
 void gam_init(void);
@@ -42,13 +43,8 @@ void gam_loadtower(Uint8 tow);
 /* leave toppler at the base of the tower */
 void gam_arrival(void);
 
-
-/* plays the towergame
- returns either
- GAME_FINISHED if the tower has been finished successfully
- GAME_DIED     if the toppler died
- GAME_ABBORTED if the game was abborted (ESC)*/
-int gam_towergame(Uint8 &anglepos, Uint16 &resttime);
+/* plays the towergame */
+gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime);
 
 /* pick up the toppler at the base of the tower */
 void gam_pick_up(Uint8 anglepos, Uint16 time);

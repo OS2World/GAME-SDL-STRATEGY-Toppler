@@ -24,24 +24,23 @@
 #include <SDL_types.h>
 #include <SDL_keyboard.h>
 
-#define no_key          0
-#define up_key          1
-#define down_key        2
-#define left_key        4
-#define right_key       8
-#define fire_key        16
-#define break_key       32
-#define pause_key       64
-#define quit_action     128  /* Not a key, but received on kill */
-#define mousebttn1      256
-#define mousebttn2      512
-#define mousebttn3      1024
-#define mousebttn4      2048
-#define mousebttn5      4096
-#define any_key         8191
+#define no_key          0x0000
+#define up_key          0x0001
+#define down_key        0x0002
+#define left_key        0x0004
+#define right_key       0x0008
+#define fire_key        0x0010
+#define break_key       0x0020
+#define pause_key       0x0040
+#define quit_action     0x0080  /* Not a key, but received on kill */
+#define mousebttn1      0x0100
+#define mousebttn2      0x0200
+#define mousebttn3      0x0400
+#define mousebttn4      0x0800
+#define mousebttn5      0x1000
+#define any_key         0x1FFF
 
 typedef void FDECL((*keyb_wait_proc), (void));
-
 
 void key_init(void);
 void key_done(void);
@@ -77,7 +76,6 @@ bool key_mouse(Uint16 *x, Uint16 *y, Uint16 *bttn);
 
 /* redefine a key, so that it returns code  */
 void key_redefine(Uint16 code, SDLKey key);
-
 
 #endif
 

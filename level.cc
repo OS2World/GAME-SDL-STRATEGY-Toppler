@@ -864,7 +864,7 @@ void lev_restore(unsigned char *&data) {
   delete [] data;
 }
 
-int lev_is_consistent(int &row, int &col) {
+lev_problem lev_is_consistent(int &row, int &col) {
 
   int y;
   bool has_exit = false;

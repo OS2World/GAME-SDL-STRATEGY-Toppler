@@ -21,25 +21,28 @@
 
 #include <SDL_types.h>
 
-/* handles one mission with 8 towers and the necessary manipulations
+/* handles one mission with towers and the necessary manipulations
  on the towerlayout when the game is going on */
 
 /* lev_is_consistent() returns one of these.
-   If you add to these, also add to problemstr[] in leveledit.cc */
-#define TPROB_NONE            0 /* no problems found */
-#define TPROB_NOSTARTSTEP     1 /* no starting step */
-#define TPROB_STARTBLOCKED    2 /* starting position is blocked */
-#define TPROB_UNDEFBLOCK      3 /* unknown block */
-#define TPROB_NOELEVATORSTOP  4 /* elevator doesn't have stopping station(s) */
-#define TPROB_ELEVATORBLOCKED 5 /* elevator is blocked */
-#define TPROB_NOOTHERDOOR     6 /* door doesn't have opposing end */
-#define TPROB_BROKENDOOR      7 /* door is not whole */
-#define TPROB_NOEXIT          8 /* no exit doorway */
-#define TPROB_UNREACHABLEEXIT 9 /* exit is unreachable */
-#define TPROB_SHORTTIME      10 /* there's not enough time */
-#define TPROB_SHORTTOWER     11 /* the tower is too short */
-#define TPROB_NONAME         12 /* the tower has no name */
-#define NUM_TPROBLEMS        13
+ * If you add to these, also add to problemstr[] in leveledit.cc */
+
+typedef enum {
+  TPROB_NONE,            // no problems found
+  TPROB_NOSTARTSTEP,     // no starting step
+  TPROB_STARTBLOCKED,    // starting position is blocked
+  TPROB_UNDEFBLOCK,      // unknown block
+  TPROB_NOELEVATORSTOP,  // elevator doesn't have stopping station(s)
+  TPROB_ELEVATORBLOCKED, // elevator is blocked
+  TPROB_NOOTHERDOOR,     // door doesn't have opposing end
+  TPROB_BROKENDOOR,      // door is not whole
+  TPROB_NOEXIT,          // no exit doorway
+  TPROB_UNREACHABLEEXIT, // exit is unreachable
+  TPROB_SHORTTIME,       // there's not enough time
+  TPROB_SHORTTOWER,      // the tower is too short
+  TPROB_NONAME,          // the tower has no name
+  NUM_TPROBLEMS,        
+} lev_problem;
 
 /* tries to find all missions installed on this system
  * returns the number of missions found
@@ -201,7 +204,7 @@ void lev_restore(unsigned char *&data);
  * and elevators if something is found row and col contain the
  * coordinates, and the return value is one of TPROB_xxx
  */
-int lev_is_consistent(int &row, int &col);
+lev_problem lev_is_consistent(int &row, int &col);
 
 /* mission creation: first call mission_new, then for each tower mission_addtower
  * finally to complete mission_finish, never use another calling order or you may

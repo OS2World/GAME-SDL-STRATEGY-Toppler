@@ -31,6 +31,59 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Editor key actions.
+   If you add here, change _ed_key_actions[] in leveledit.cc */
+#define EDACT_QUIT      0
+#define EDACT_MOVEUP    1
+#define EDACT_MOVEDOWN  2
+#define EDACT_MOVELEFT  3
+#define EDACT_MOVERIGHT 4
+#define EDACT_INSROW    5
+#define EDACT_DELROW    6
+#define EDACT_ROT180    7
+#define EDACT_PUTSPACE  8
+#define EDACT_PUTSTEP   9
+#define EDACT_PUTVANISHER 10
+#define EDACT_PUTSLIDER   11
+#define EDACT_PUTDOOR     12
+#define EDACT_PUTGOAL     13
+#define EDACT_CHECKTOWER  14
+#define EDACT_PUTROBOT1   15
+#define EDACT_PUTROBOT2   16
+#define EDACT_PUTROBOT3   17
+#define EDACT_PUTROBOT4   18
+#define EDACT_PUTROBOT5   19
+#define EDACT_PUTROBOT6   20
+#define EDACT_PUTROBOT7   21
+#define EDACT_PUTLIFT     22
+#define EDACT_PUTLIFTMID  23
+#define EDACT_PUTLIFTTOP  24
+#define EDACT_PUTSTICK    25
+#define EDACT_PUTBOX      26
+#define EDACT_LOADTOWER   27
+#define EDACT_SAVETOWER   28
+#define EDACT_TESTTOWER   29
+#define EDACT_SETTOWERCOLOR 30
+#define EDACT_INCTIME       31
+#define EDACT_DECTIME       32
+#define EDACT_CREATEMISSION 33
+#define EDACT_MOVEPAGEUP    34
+#define EDACT_MOVEPAGEDOWN  35
+#define EDACT_GOTOSTART     36
+#define EDACT_SHOWKEYHELP   37
+#define EDACT_NAMETOWER     38
+#define EDACT_SETTIME       39
+
+#define NUMEDITORACTIONS    40
+
+struct _ed_key {
+   int action;
+   SDLKey key;
+};
+
+#define TOWERPAGESIZE 5 /* pageup/pagedown moving */
+#define TOWERSTARTHEI 4 /* tower starting height */
+
 const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Quit",          "Move up",        "Move down",       "Move left",
    "Move right",    "Insert Row",     "Delete Row",      "Rotate 180",
@@ -380,7 +433,7 @@ void le_edit(void) {
   inp = SDLK_UNKNOWN;
 
   set_men_bgproc(editor_background_proc);
-    
+
   lev_set_towertime(100 + (rand() % 10) * 50);
 
   lev_set_towercol(rand() % 256,rand() % 256,rand() % 256);
@@ -391,9 +444,9 @@ void le_edit(void) {
   lev_set_towername("");
 
   while (!ende) {
-      
+
     if (key_keypressed(quit_action)) break;
-    
+
     bg_row = row;
     bg_col = col;
 
@@ -534,9 +587,9 @@ void le_edit(void) {
         if (changed)
           if (!really_load(row, col))
             break;
-	bg_text = "Load Tower:";
+        bg_text = "Load Tower:";
         men_input(editor_towername, TOWERNAMELEN);
-	bg_text = NULL;
+        bg_text = NULL;
         lev_loadtower(editor_towername);
         scr_settowercolor(lev_towercol_red(),
                           lev_towercol_green(),
@@ -544,9 +597,9 @@ void le_edit(void) {
         changed = false;
         break;
       case EDACT_SAVETOWER:
-	bg_text = "Save Tower:";
+        bg_text = "Save Tower:";
         men_input(editor_towername, TOWERNAMELEN);
-	bg_text = NULL;
+        bg_text = NULL;
         lev_savetower(editor_towername);
         changed = false;
         break;
@@ -584,34 +637,34 @@ void le_edit(void) {
         break;
       case EDACT_SETTIME:
         {
-	    char buf[16];
-	    int l, p = 0, ml;
-	    
-	    l = lev_towertime();
+          char buf[16];
+          int l, p = 0, ml;
 
-	    while ((l > 0) && (p < 15)) {
-		buf[p] = '0' + (l % 10);
-		p++;
-		l = l / 10;
-	    }
-	    buf[p] = '\0';
-	    ml = 0;
-	    p = (p / 2) + 1;
-	    while (p > 0) {
-		char tmp = buf[p];
-		buf[p] = buf[ml];
-		buf[ml] = tmp;
-		p--;
-		ml++;
-	    }
+          l = lev_towertime();
 
-	    bg_text = "Enter Tower Time:";
-	    men_input((char *)buf, 15, -1, -1, "0123456789");
-	    bg_text = NULL;
-	    
-	    lev_set_towertime(atoi(buf));
-	}
-	break;
+          while ((l > 0) && (p < 15)) {
+            buf[p] = '0' + (l % 10);
+            p++;
+            l = l / 10;
+          }
+          buf[p] = '\0';
+          ml = 0;
+          p = (p / 2) + 1;
+          while (p > 0) {
+            char tmp = buf[p];
+            buf[p] = buf[ml];
+            buf[ml] = tmp;
+            p--;
+            ml++;
+          }
+
+          bg_text = "Enter Tower Time:";
+          men_input((char *)buf, 15, -1, -1, "0123456789");
+          bg_text = NULL;
+
+          lev_set_towertime(atoi(buf));
+        }
+        break;
       case EDACT_CREATEMISSION:
         createMission();
         break;
@@ -632,11 +685,11 @@ void le_edit(void) {
         row = 1;
         break;
       case EDACT_NAMETOWER:
-	bg_text = "Name the Tower:";
-	men_input(lev_towername(), TOWERNAMELEN);
-	bg_text = NULL;
-	changed = true;
-	break;
+        bg_text = "Name the Tower:";
+        men_input(lev_towername(), TOWERNAMELEN);
+        bg_text = NULL;
+        changed = true;
+        break;
       case EDACT_SHOWKEYHELP: le_showkeyhelp(row, col); break;
       default: break;
       }
