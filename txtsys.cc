@@ -38,7 +38,7 @@ void textsystem::addline(char *line)
 {
   int olen;
 
-  char **tmp = new (char *)[numlines+1];
+  char **tmp = new char *[numlines+1];
   if (!tmp) return;
 
   if (lines) {

@@ -19,7 +19,9 @@ me:
 - create class for configuration
 - cleanup in keyb, switch on key repeate
 - speed indicator in tower game
-- readme update (options menu, speed indicator)
+- readme update (options menu, speed indicator, fileformats)
+- use old highscore fileformat with fixed number of entries, because
+  new code results in crashes with old fileformat
 
 Version 0.98.3 20.Dec.2002
 

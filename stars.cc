@@ -40,7 +40,7 @@ static _star *stars = (_star *)0;
 void sts_draw(void)
 {
   for (int t = 0; t < num_stars; t++)
-    scr_blit(spr_spritedata((long)star_spr_nr + stars[t].size - (stars[t].state != 0)), stars[t].x, stars[t].y);
+    scr_blit(objectsprites.data((long)star_spr_nr + stars[t].size - (stars[t].state != 0)), stars[t].x, stars[t].y);
 }
 
 void sts_init(int sn, int nstar) {

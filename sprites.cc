@@ -21,6 +21,7 @@
 #include "decl.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 static Uint16 maxsprite = 0;
 static SDL_Surface **sarray = NULL;
@@ -74,4 +75,47 @@ SDL_Surface *spr_spritedata(Uint16 nr) {
   else
     return NULL;
 }
+
+spritecontainer::~spritecontainer(void) {
+  freedata();
+}
+
+void spritecontainer::freedata(void) {
+  for (int i = 0; i < usage; i++)
+    SDL_FreeSurface(array[i]);
+
+  delete [] array;
+
+  array = 0;
+  usage = 0;
+  size = 0;
+}
+
+Uint16 spritecontainer::save(SDL_Surface *s) {
+  if (usage == size) {
+    SDL_Surface **array2 = new SDL_Surface*[size + 200];
+
+    assert(array2, "could not alloc memory for sprite array");
+
+    if (usage)
+      memcpy(array2, array, usage * sizeof(SDL_Surface*));
+
+    if (array)
+      delete [] array;
+
+    array = array2;
+
+    size += 200;
+  }
+
+  Uint16 erg = usage;
+  array[usage++] = s;
+
+  return erg;
+}
+
+spritecontainer fontsprites;
+spritecontainer layersprites;
+spritecontainer objectsprites;
+spritecontainer restsprites;
 

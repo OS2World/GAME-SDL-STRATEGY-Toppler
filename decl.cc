@@ -251,7 +251,7 @@ FILE *create_highscore_file(const char *name) {
 #else
 
   fclose(fopen(name, "a+"));
-  return fopen(name, "r+");
+  return fopen(name, "r+b");
 
 #endif
 }

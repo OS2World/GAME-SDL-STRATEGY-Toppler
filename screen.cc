@@ -131,7 +131,7 @@ scr_savedisplaybmp(char *fname)
   SDL_SaveBMP(display, fname);
 }
 
-unsigned short scr_loadsprites(file * fi, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha, bool screenformat) {
+Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha) {
   Uint16 erg = 0;
   Uint8 b, a;
   SDL_Surface *z;
@@ -189,23 +189,21 @@ unsigned short scr_loadsprites(file * fi, int num, int w, int h, bool sprite, co
         }
       }
 
-    if (screenformat) {
-      SDL_Surface * z2 = SDL_DisplayFormatAlpha(z);
-      SDL_FreeSurface(z);
-      z = z2;
-    }
+    SDL_Surface * z2 = SDL_DisplayFormatAlpha(z);
+    SDL_FreeSurface(z);
+    z = z2;
 
     if (t == 0)
-      erg = spr_savesprite(z);
+      erg = spr->save(z);
     else
-      spr_savesprite(z);
+      spr->save(z);
   }
 
   return erg;
 }
 
 
-static unsigned short scr_gensprites(int num, int w, int h, bool sprite, bool use_alpha, bool screenformat) {
+static Uint16 scr_gensprites(spritecontainer *spr, int num, int w, int h, bool sprite, bool use_alpha, bool screenformat) {
   Uint16 erg = 0;
   SDL_Surface *z;
 
@@ -225,15 +223,15 @@ static unsigned short scr_gensprites(int num, int w, int h, bool sprite, bool us
     }
 
     if (t == 0)
-      erg = spr_savesprite(z);
+      erg = spr->save(z);
     else
-      spr_savesprite(z);
+      spr->save(z);
   }
 
   return erg;
 }
 
-static void scr_regensprites(Uint8 *data, SDL_Surface *target, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha, bool screenformat) {
+static void scr_regensprites(Uint8 *data, SDL_Surface * const target, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha, bool screenformat) {
   Uint8 a, b;
   Uint32 datapos = 0;
   SDL_Surface * z;
@@ -314,63 +312,66 @@ void scr_read_palette(file * fi, Uint8 *pal) {
 
 
 /* loads all the graphics */
-static void loadgraphics(void) {
+static void loadgraphics(Uint8 what) {
 
   unsigned char pal[3*256];
   int t;
   file * fi;
 
-  fi = dataarchive.assign(grafdat);
+  if (what == 0xff) {
 
-  fi->read(towerpal, 2*256);
-
-  slicedata = (Uint8*)malloc(SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
-  fi->read(slicedata, SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
-
-  battlementdata = (Uint8*)malloc(SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
-  fi->read(battlementdata, SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
-
-  slicestart = scr_gensprites(SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false, false, true);
-  battlementstart = scr_gensprites(SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false, false, true);
-
-  for (t = -36; t < 37; t++) {
-
-    doors[t+36].xstart = fi->getword();
-    doors[t+36].width = fi->getword();
-
-    for (int et = 0; et < 3; et++)
-      if (doors[t+36].width != 0) {
-        doors[t+36].s[et] = scr_gensprites(1, doors[t+36].width, 16, false, false, true);
-        doors[t+36].data[et] = (Uint8*)malloc(doors[t+36].width*16);
-        fi->read(doors[t+36].data[et], doors[t+36].width*16);
-      } else {
-        doors[t+36].s[et] = 0;
-        doors[t+36].data[et] = NULL;
-      }
+    fi = dataarchive.assign(grafdat);
+  
+    fi->read(towerpal, 2*256);
+  
+    slicedata = (Uint8*)malloc(SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
+    fi->read(slicedata, SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
+  
+    battlementdata = (Uint8*)malloc(SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
+    fi->read(battlementdata, SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
+  
+    slicestart = scr_gensprites(&restsprites, SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false, false, true);
+    battlementstart = scr_gensprites(&restsprites, SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false, false, true);
+  
+    for (t = -36; t < 37; t++) {
+  
+      doors[t+36].xstart = fi->getword();
+      doors[t+36].width = fi->getword();
+  
+      for (int et = 0; et < 3; et++)
+        if (doors[t+36].width != 0) {
+          doors[t+36].s[et] = scr_gensprites(&restsprites, 1, doors[t+36].width, 16, false, false, true);
+          doors[t+36].data[et] = (Uint8*)malloc(doors[t+36].width*16);
+          fi->read(doors[t+36].data[et], doors[t+36].width*16);
+        } else {
+          doors[t+36].s[et] = 0;
+          doors[t+36].data[et] = NULL;
+        }
+    }
+  
+    for (t = 0; t < 256; t++) {
+      unsigned char c1, c2;
+  
+      c1 = fi->getbyte();
+      c2 = fi->getbyte();
+  
+      pal[3*t] = c1;
+      pal[3*t+1] = c2;
+      pal[3*t+2] = c2;
+    }
+  
+    step = scr_loadsprites(&restsprites, fi, SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal, false);
+    elevatorsprite = scr_loadsprites(&restsprites, fi, SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal, false);
+    stick = scr_loadsprites(&restsprites, fi, 1, SPR_STICKWID, SPR_STICKHEI, false, pal, false);
+  
+    delete fi;
   }
-
-  for (t = 0; t < 256; t++) {
-    unsigned char c1, c2;
-
-    c1 = fi->getbyte();
-    c2 = fi->getbyte();
-
-    pal[3*t] = c1;
-    pal[3*t+1] = c2;
-    pal[3*t+2] = c2;
-  }
-
-  step = scr_loadsprites(fi, SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal, false, true);
-  elevatorsprite = scr_loadsprites(fi, SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal, false, true);
-  stick = scr_loadsprites(fi, 1, SPR_STICKWID, SPR_STICKHEI, false, pal, false, true);
-
-  delete fi;
 
   fi = dataarchive.assign(topplerdat);
   
   scr_read_palette(fi, pal);
 
-  topplerstart = scr_loadsprites(fi, 74, SPR_HEROWID, SPR_HEROHEI, true, pal, config.use_alpha_sprites(), true);
+  topplerstart = scr_loadsprites(&objectsprites, fi, 74, SPR_HEROWID, SPR_HEROHEI, true, pal, config.use_alpha_sprites());
 
   delete fi;
   fi = dataarchive.assign(spritedat);
@@ -383,30 +384,30 @@ static void loadgraphics(void) {
 
   for (t = 0; t < 8; t++) {
     robots[t].count = fi->getbyte();
-    robots[t].start = scr_loadsprites(fi, robots[t].count, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites(), true);
+    robots[t].start = scr_loadsprites(&objectsprites, fi, robots[t].count, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites());
   }
 
   scr_read_palette(fi, pal);
-  ballst = scr_loadsprites(fi, 2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites(), true);
+  ballst = scr_loadsprites(&objectsprites, fi, 2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites());
 
   scr_read_palette(fi, pal);
-  boxst = scr_loadsprites(fi, 16, SPR_BOXWID, SPR_BOXHEI, true, pal, config.use_alpha_sprites(), true);
+  boxst = scr_loadsprites(&objectsprites, fi, 16, SPR_BOXWID, SPR_BOXHEI, true, pal, config.use_alpha_sprites());
 
   scr_read_palette(fi, pal);
-  snowballst = scr_loadsprites(fi, 1, SPR_AMMOWID, SPR_AMMOHEI, true, pal, config.use_alpha_sprites(), true);
+  snowballst = scr_loadsprites(&objectsprites, fi, 1, SPR_AMMOWID, SPR_AMMOHEI, true, pal, config.use_alpha_sprites());
 
   scr_read_palette(fi, pal);
-  starst = scr_loadsprites(fi, 16, SPR_STARWID, SPR_STARHEI, true, pal, config.use_alpha_sprites(), true);
+  starst = scr_loadsprites(&objectsprites, fi, 16, SPR_STARWID, SPR_STARHEI, true, pal, config.use_alpha_sprites());
   sts_init(starst + 9, NUM_STARS);
 
   scr_read_palette(fi, pal);
-  fishst = scr_loadsprites(fi, 32*2, SPR_FISHWID, SPR_FISHHEI, true, pal, config.use_alpha_sprites(), true);
+  fishst = scr_loadsprites(&objectsprites, fi, 32*2, SPR_FISHWID, SPR_FISHHEI, true, pal, config.use_alpha_sprites());
 
   scr_read_palette(fi, pal);
-  subst = scr_loadsprites(fi, 31, SPR_SUBMWID, SPR_SUBMHEI, true, pal, config.use_alpha_sprites(), true);
+  subst = scr_loadsprites(&objectsprites, fi, 31, SPR_SUBMWID, SPR_SUBMHEI, true, pal, config.use_alpha_sprites());
 
   scr_read_palette(fi, pal);
-  torb = scr_loadsprites(fi, 1, SPR_TORPWID, SPR_TORPHEI, true, pal, config.use_alpha_sprites(), true);
+  torb = scr_loadsprites(&objectsprites, fi, 1, SPR_TORPWID, SPR_TORPHEI, true, pal, config.use_alpha_sprites());
 
   delete fi;
   fi = dataarchive.assign(crossdat);
@@ -422,7 +423,7 @@ static void loadgraphics(void) {
   crossdata = (Uint8*)malloc(120*SPR_CROSSWID*SPR_CROSSHEI*2);
   fi->read(crossdata, 120*SPR_CROSSWID*SPR_CROSSHEI*2);
 
-  crossst = scr_gensprites(120, SPR_CROSSWID, SPR_CROSSHEI, true, config.use_alpha_sprites(), false);
+  crossst = scr_gensprites(&objectsprites, 120, SPR_CROSSWID, SPR_CROSSHEI, true, config.use_alpha_sprites(), false);
 
   delete fi;
 }
@@ -452,15 +453,15 @@ void scr_settowercolor(Uint8 r, Uint8 g, Uint8 b) {
   }
 
   for (t = 0; t < SPR_SLICESPRITES; t++)
-    scr_regensprites(slicedata + t*SPR_SLICEWID*SPR_SLICEHEI, spr_spritedata(slicestart + t), 1, SPR_SLICEWID, SPR_SLICEHEI, false, pal, false, true);
+    scr_regensprites(slicedata + t*SPR_SLICEWID*SPR_SLICEHEI, restsprites.data(slicestart + t), 1, SPR_SLICEWID, SPR_SLICEHEI, false, pal, false, true);
 
   for (t = 0; t < SPR_BATTLFRAMES; t++)
-    scr_regensprites(battlementdata + t*SPR_BATTLWID*SPR_BATTLHEI, spr_spritedata(battlementstart + t), 1, SPR_BATTLWID, SPR_BATTLHEI, false, pal, false, true);
+    scr_regensprites(battlementdata + t*SPR_BATTLWID*SPR_BATTLHEI, restsprites.data(battlementstart + t), 1, SPR_BATTLWID, SPR_BATTLHEI, false, pal, false, true);
 
   for (t = -36; t < 37; t++)
     for (int et = 0; et < 3; et++)
       if (doors[t+36].width != 0)
-        scr_regensprites(doors[t+36].data[et], spr_spritedata(doors[t+36].s[et]), 1, doors[t+36].width, SPR_SLICEHEI, false, pal, false, true);
+        scr_regensprites(doors[t+36].data[et], restsprites.data(doors[t+36].s[et]), 1, doors[t+36].width, SPR_SLICEHEI, false, pal, false, true);
 
   last_towercol_r = r;
   last_towercol_g = g;
@@ -498,7 +499,7 @@ void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
 
   for (t = 0; t < 120; t++) {
     scr_regensprites(crossdata + t*SPR_CROSSWID*SPR_CROSSHEI*2,
-                     spr_spritedata(crossst+t),
+                     objectsprites.data(crossst+t),
                      1, SPR_CROSSWID, SPR_CROSSHEI, true, pal, config.use_alpha_sprites(), false);
   }
 }
@@ -521,7 +522,7 @@ static void loadfont(void) {
     if (!c || (c >= MAXCHARNUM)) break;
 
     fontchars[c].width = fi->getbyte();
-    fontchars[c].s = scr_loadsprites(fi, 1, fontchars[c].width, fontheight, true, pal, config.use_alpha_font(), true);
+    fontchars[c].s = scr_loadsprites(&fontsprites, fi, 1, fontchars[c].width, fontheight, true, pal, config.use_alpha_font());
   }
 
   delete fi;
@@ -559,47 +560,57 @@ static void loadscroller(void) {
 
     scr_read_palette(fi, pal);
 
-    scroll_layers[l].image = scr_loadsprites(fi, 1, scroll_layers[l].width, 480, l != 0, pal, config.use_alpha_layers(), true);
+    scroll_layers[l].image = scr_loadsprites(&layersprites, fi, 1, scroll_layers[l].width, 480, l != 0, pal, config.use_alpha_layers());
   }
 
   delete fi;
 }
 
-static void load_sprites(void) {
-  loadgraphics();
-  loadfont();
-  loadscroller();
+static void load_sprites(Uint8 what) {
+  if ((what == 0xff) || (what & RL_OBJECTS))
+    loadgraphics(what);
+
+  if (what & RL_FONT)
+    loadfont();
+
+  if (what & RL_SCROLLER)
+    loadscroller();
 }
 
-static void free_memory(void) {
+static void free_memory(Uint8 what) {
   int t;
 
+  if (what == 0xff) {
+    free(slicedata);
+    free(battlementdata);
+  }
 
-  free(slicedata);
-  free(battlementdata);
-  free(crossdata);
+  if (what & RL_OBJECTS) {
+    free(crossdata);
+    delete [] robots;
+  }
 
-  delete [] robots;
-  delete [] scroll_layers;
+  if (what & RL_SCROLLER)
+    delete [] scroll_layers;
 
-  for (t = -36; t < 37; t++)
-    for (int et = 0; et < 3; et++)
-      if (doors[t+36].data[et])
-        free(doors[t+36].data[et]);
+  if (what == 0xff)
+    for (t = -36; t < 37; t++)
+      for (int et = 0; et < 3; et++)
+        if (doors[t+36].data[et])
+          free(doors[t+36].data[et]);
 }
 
-void scr_reload_sprites() {
-  free_memory();
-  load_sprites();
+void scr_reload_sprites(Uint8 what) {
+  free_memory(what);
+  load_sprites(what);
   resettowercolor();
 }
 
 void scr_init(void) {
-  spr_init(1000);
 
   display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (config.fullscreen()) ? (SDL_FULLSCREEN) : (0));
 
-  load_sprites();
+  load_sprites(0xff);
 
   /* initialize sinus table */
   for (int i = 0; i < TOWER_ANGLES; i++)
@@ -619,8 +630,7 @@ void scr_reinit() {
 }
 
 void scr_done(void) {
-  spr_done();
-  free_memory();
+  free_memory(0xff);
   sts_done();
 }
 
@@ -682,7 +692,7 @@ static void puttower(long angle, long height, long towerheight, int shift = 0) {
 
     /* if we are over the bottom of the screen, draw the slice */
     if (ypos < SCREENHEI)
-      scr_blit(spr_spritedata(slicestart + (angle % SPR_SLICEANGLES)), (SCREENWID / 2) - (SPR_SLICEWID / 2) + shift, ypos);
+      scr_blit(restsprites.data(slicestart + (angle % SPR_SLICEANGLES)), (SCREENWID / 2) - (SPR_SLICEWID / 2) + shift, ypos);
 
     slice++;
     angle = (angle + (SPR_SLICEANGLES / 2)) % TOWER_ANGLES;
@@ -697,7 +707,7 @@ static void putbattlement(long angle, long height) {
 
   /* if it's below the top of the screen, then blit the battlement */
   if (upend > 0)
-    scr_blit(spr_spritedata((angle % SPR_BATTLFRAMES) + battlementstart),
+    scr_blit(restsprites.data((angle % SPR_BATTLFRAMES) + battlementstart),
              (SCREENWID / 2) - (SPR_BATTLWID / 2), upend - SPR_BATTLHEI);
 }
 
@@ -818,7 +828,7 @@ int scr_textlength(const char *s, int chars) {
       len += FONTMINWID;
     } else {
       c = s[pos];
-      if (fontchars[c].s != 0)
+      if (fontchars[c].width != 0)
         len += fontchars[c].width + 3;
     }
     pos++;
@@ -896,7 +906,7 @@ void scr_setclipping(int x, int y, int w, int h) {
   }
 }
 
-void scr_blit(SDL_Surface *s, int x, int y) {
+void scr_blit(SDL_Surface * s, int x, int y) {
   SDL_Rect r;
   r.w = s->w;
   r.h = s->h;
@@ -930,11 +940,11 @@ static void draw_tower(long vert, long angle) {
 
       if (lev_is_door(slice, col)) {
         if (lev_is_door_upperend(slice, col))
-          scr_blit(spr_spritedata(doors[a].s[2]), (SCREENWID / 2) + doors[a].xstart, ypos);
+          scr_blit(restsprites.data(doors[a].s[2]), (SCREENWID / 2) + doors[a].xstart, ypos);
         else if (lev_is_door_upperend(slice - 1, col))
-          scr_blit(spr_spritedata(doors[a].s[1]), (SCREENWID / 2) + doors[a].xstart, ypos);
+          scr_blit(restsprites.data(doors[a].s[1]), (SCREENWID / 2) + doors[a].xstart, ypos);
         else
-          scr_blit(spr_spritedata(doors[a].s[0]), (SCREENWID / 2) + doors[a].xstart, ypos);
+          scr_blit(restsprites.data(doors[a].s[0]), (SCREENWID / 2) + doors[a].xstart, ypos);
       }
     }
 
@@ -970,11 +980,11 @@ static void draw_tower_editor(long vert, long angle, int state) {
         if (lev_is_targetdoor(slice, col) && (state & 1)) continue;
 
         if (lev_is_door_upperend(slice, col))
-          scr_blit(spr_spritedata(doors[a].s[2]), (SCREENWID / 2) + doors[a].xstart, ypos);
+          scr_blit(restsprites.data(doors[a].s[2]), (SCREENWID / 2) + doors[a].xstart, ypos);
         else if (lev_is_door_upperend(slice - 1, col))
-          scr_blit(spr_spritedata(doors[a].s[1]), (SCREENWID / 2) + doors[a].xstart, ypos);
+          scr_blit(restsprites.data(doors[a].s[1]), (SCREENWID / 2) + doors[a].xstart, ypos);
         else
-          scr_blit(spr_spritedata(doors[a].s[0]), (SCREENWID / 2) + doors[a].xstart, ypos);
+          scr_blit(restsprites.data(doors[a].s[0]), (SCREENWID / 2) + doors[a].xstart, ypos);
       }
     }
 
@@ -996,7 +1006,7 @@ static void putcase(unsigned char w, long x, long h) {
   case TB_ELEV_BOTTOM:
   case TB_ELEV_TOP:
   case TB_ELEV_MIDDLE:
-    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h);
+    scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h);
 
     break;
 
@@ -1004,19 +1014,19 @@ static void putcase(unsigned char w, long x, long h) {
   case TB_STEP_VANISHER:
   case TB_STEP_LSLIDER:
   case TB_STEP_RSLIDER:
-    scr_blit(spr_spritedata((angle % SPR_STEPFRAMES) + step), x - (SPR_STEPWID / 2), h);
+    scr_blit(restsprites.data((angle % SPR_STEPFRAMES) + step), x - (SPR_STEPWID / 2), h);
 
     break;
 
   case TB_STICK:
   case TB_STICK_BOTTOM:
   case TB_STICK_MIDDLE:
-    scr_blit(spr_spritedata(stick), x - (SPR_STICKWID / 2), h);
+    scr_blit(restsprites.data(stick), x - (SPR_STICKWID / 2), h);
 
     break;
 
   case TB_BOX:
-    scr_blit(spr_spritedata(boxst + boxstate), x - (SPR_BOXWID / 2), h);
+    scr_blit(objectsprites.data(boxst + boxstate), x - (SPR_BOXWID / 2), h);
 
     break;
   }
@@ -1031,16 +1041,16 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     break;
 
   case TB_ELEV_BOTTOM:
-    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - (state % 4));
+    scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - (state % 4));
     break;
   case TB_STATION_MIDDLE:
-    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - SPR_SLICEHEI/2 + abs(state - 8));
+    scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - SPR_SLICEHEI/2 + abs(state - 8));
     break;
   case TB_STATION_TOP:
-    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h + (state % 4));
+    scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h + (state % 4));
     break;
   case TB_STEP:
-    scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
+    scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
     break;
   case TB_STEP_VANISHER:
     if (config.use_alpha_sprites()) {
@@ -1050,54 +1060,54 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
       r.h = SPR_STEPHEI;
       r.x = 0;
       r.y = 0;
-      SDL_BlitSurface(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), NULL, s, &r);
+      SDL_BlitSurface(restsprites.data(((angle % SPR_STEPFRAMES) + step)), NULL, s, &r);
       SDL_SetAlpha(s, SDL_SRCALPHA, 96);
       scr_blit(s, x - (SPR_STEPWID / 2), h);
       SDL_FreeSurface(s);
     } else {
       if (state & 1)
-        scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
+        scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
     }
     break;
   case TB_STEP_LSLIDER:
-    scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) + state % 4, h);
+    scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) + state % 4, h);
     break;
 
   case TB_STEP_RSLIDER:
-    scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) - state % 4, h);
+    scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) - state % 4, h);
     break;
 
   case TB_STICK:
-    scr_blit(spr_spritedata(stick), x - (SPR_STICKWID / 2), h);
+    scr_blit(restsprites.data(stick), x - (SPR_STICKWID / 2), h);
     break;
 
   case TB_BOX:
-    scr_blit(spr_spritedata(boxst + boxstate), x - (SPR_BOXWID / 2), h);
+    scr_blit(objectsprites.data(boxst + boxstate), x - (SPR_BOXWID / 2), h);
     break;
 
   case TB_ROBOT1:
-    scr_blit(spr_spritedata(ballst + 1), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
+    scr_blit(objectsprites.data(ballst + 1), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
     break;
   case TB_ROBOT2:
-    scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2) + state / 2, h - SPR_ROBOTHEI/2);
+    scr_blit(objectsprites.data(ballst), x - (SPR_ROBOTWID / 2) + state / 2, h - SPR_ROBOTHEI/2);
     break;
   case TB_ROBOT3:
-    scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
+    scr_blit(objectsprites.data(ballst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
     break;
   case TB_ROBOT4:
-    scr_blit(spr_spritedata(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
+    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
              x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
     break;
   case TB_ROBOT5:
-    scr_blit(spr_spritedata(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
+    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
              x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
     break;
   case TB_ROBOT6:
-    scr_blit(spr_spritedata(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
+    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
              x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
     break;
   case TB_ROBOT7:
-    scr_blit(spr_spritedata(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
+    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
              x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
     break;
   }
@@ -1140,7 +1150,7 @@ static void putrobot(int t, int m, long x, long h)
       break;
   }
 
-  scr_blit(spr_spritedata(nr), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI);
+  scr_blit(objectsprites.data(nr), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI);
 }
 
 void scr_writetext(long x, long y, const char *s, int maxchars) {
@@ -1154,8 +1164,8 @@ void scr_writetext(long x, long y, const char *s, int maxchars) {
     }
 
     c = s[t];
-    if (fontchars[c].s != 0) {
-      scr_blit(spr_spritedata(fontchars[c].s), x, y);
+    if (fontchars[c].width != 0) {
+      scr_blit(fontsprites.data(fontchars[c].s), x, y);
       x += fontchars[c].width + 3;
     }
     t++;
@@ -1203,8 +1213,8 @@ void scr_writeformattext(long x, long y, const char *s) {
       break;
     default:
       c = s[t];
-      if (fontchars[c].s != 0) {
-        scr_blit(spr_spritedata(fontchars[c].s), x, y);
+      if (fontchars[c].width != 0) {
+        scr_blit(fontsprites.data(fontchars[c].s), x, y);
         x += fontchars[c].width + 3;
       }
       t++;
@@ -1247,7 +1257,7 @@ long scr_formattextlength(long x, long y, const char *s) {
       break;
     default:
       c = s[t];
-      if (fontchars[c].s != 0) {
+      if (fontchars[c].width != 0) {
         x += fontchars[c].width + 3;
       }
       t++;
@@ -1382,7 +1392,7 @@ static void putcross(long vert)
       i = (rob_angle(t) - 60) * 5;
       y = (vert - rob_vertical(t)) * 4 + (SCREENHEI / 2) - SPR_CROSSHEI;
       if (y > -SPR_CROSSHEI && y < SCREENHEI)
-        scr_blit(spr_spritedata(crossst + labs(rob_time(t)) % 120), i + (SCREENWID - SPR_CROSSWID) / 2, y);
+        scr_blit(objectsprites.data(crossst + labs(rob_time(t)) % 120), i + (SCREENWID - SPR_CROSSWID) / 2, y);
       return;
     }
   }
@@ -1437,23 +1447,23 @@ void scr_drawall(long vert,
   draw_before(vert * 4, angle);
 
   if (snb_exists())
-    scr_blit(spr_spritedata(snowballst),
+    scr_blit(objectsprites.data(snowballst),
              sintab[(snb_anglepos() + angle) % TOWER_ANGLES] + (SCREENWID / 2) - (SPR_HEROWID - SPR_AMMOWID),
              ((vert - snb_verticalpos()) * 4) + (SCREENHEI / 2) - SPR_AMMOHEI);
 
   if (top_visible()) {
-      scr_blit(spr_spritedata(topplerstart + top_shape() +
+      scr_blit(objectsprites.data(topplerstart + top_shape() +
                               ((top_look_left()) ?  mirror : 0)),
                (SCREENWID / 2) - (SPR_HEROWID / 2),
                (vert - top_verticalpos()) * 4 + (SCREENHEI / 2) - SPR_HEROHEI);
 
     if (top_onelevator())
-      scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), (SCREENWID / 2) - (SPR_ELEVAWID / 2),
+      scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), (SCREENWID / 2) - (SPR_ELEVAWID / 2),
                vert - top_verticalpos() + (SCREENHEI / 2));
   }
 
   if (svisible) {
-    scr_blit(spr_spritedata(subst + subshape),
+    scr_blit(objectsprites.data(subst + subshape),
              (SCREENWID / 2) - 70,
              (SCREENHEI / 2) + 12 - substart + 16);
 
@@ -1537,9 +1547,9 @@ void scr_drawedit(long vpos, long apos, bool showtime) {
 
 static void put_scrollerlayer(long horiz, int layer) {
   horiz %= scroll_layers[layer].width;
-  scr_blit(spr_spritedata(scroll_layers[layer].image), -horiz, 0);
+  scr_blit(layersprites.data(scroll_layers[layer].image), -horiz, 0);
   if (horiz + SCREENWID > scroll_layers[layer].width)
-    scr_blit(spr_spritedata(scroll_layers[layer].image),
+    scr_blit(layersprites.data(scroll_layers[layer].image),
              scroll_layers[layer].width - horiz, 0);
 }
 
@@ -1568,13 +1578,13 @@ void scr_draw_bonus2(long horiz, long towerpos) {
 }
 
 void scr_draw_submarine(long vert, long x, long number) {
-  scr_blit(spr_spritedata(subst+number), x, vert);
+  scr_blit(objectsprites.data(subst+number), x, vert);
 }
 
 void scr_draw_fish(long vert, long x, long number) {
-  scr_blit(spr_spritedata(fishst+number), x, vert);
+  scr_blit(objectsprites.data(fishst+number), x, vert);
 }
 
 void scr_draw_torpedo(long vert, long x) {
-  scr_blit(spr_spritedata(torb), x, vert);
+  scr_blit(objectsprites.data(torb), x, vert);
 }

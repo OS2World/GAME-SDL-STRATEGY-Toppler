@@ -68,10 +68,10 @@ public:
   void curr_password(char pwd[PASSWORD_LEN+1]);
 
   int  debug_level() const { return i_debug_level; }
-  void debug_level(int l) { need_save = true; }
+  void debug_level(int l) { need_save = true; i_debug_level = l; }
 
   int  game_speed() const { return i_game_speed; }
-  void game_speed(int spd) { need_save = true; }
+  void game_speed(int spd) { need_save = true; i_game_speed = spd; }
 
 private:
 

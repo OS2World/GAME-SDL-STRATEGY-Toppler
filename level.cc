@@ -304,6 +304,8 @@ void lev_done() {
     delete missions;
     missions = m;
   }
+
+  if (towerdemo) delete [] towerdemo;
 }
 
 
@@ -1288,6 +1290,7 @@ void lev_mission_addtower(char * name) {
   Sint16 row;
   Uint8 namelen, tmp;
   Uint32 section_len;
+  int idx;
 
   if (!tower) return;
 
@@ -1384,7 +1387,7 @@ void lev_mission_addtower(char * name) {
     run = 1;
     data = towerdemo[0];
 
-    for (int idx = 1; idx < towerdemo_len; idx++) {
+    for (idx = 1; idx < towerdemo_len; idx++) {
       if ((data != towerdemo[idx]) || (run == 0xff)) {
         fwrite(&run, 1, 1, fmission);
         tmp = data & 0xff;

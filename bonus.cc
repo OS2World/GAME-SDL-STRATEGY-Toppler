@@ -22,7 +22,6 @@
 #include "menu.h"
 #include "decl.h"
 #include "points.h"
-#include "sprites.h"
 #include "level.h"
 
 #include <stdlib.h>

@@ -161,13 +161,15 @@ Tower File Format
 
 Just in case you are interested in the format of the tower file:
 
-First line is the name. The second line contains the color of the
-tower as 3 valued between 0 ... 255 separated by comma. Third line is
-the time that the player has to reach the target door. Last line before
-the tower bitmap is the height in rows of the tower.
+The format is similar to the windows configuration format. Each section
+starts with its name in squarebrackets "[]". Unknown sections are
+ignored. Most sections are selfexplainatory, except for the data
+section.
 
-The following table explains the characters used for the tower bitmap
-and their meaning.
+This section has the towerheight in its first line followed by a table
+where each character represents one position on the tower. The
+following table explains the characters used for the tower bitmap and
+their meaning.
 
    empty
 v  top elevator station
@@ -183,14 +185,68 @@ v  top elevator station
 !  pillar
 -  platform
 b  flashing box
-#  normal door
 .  vanishng platform
 >  slippery platform
+<  slippery platform
+#  normal door
 T  target door
+
+The demo section is also not really obvious. The numbers represent
+states of the important keys. Each bit in the number corresponds to one
+key. If it is set the key is pressed, otherwise not. Because Tower
+Toppler is strictly deterministic and uses fixed intervalls for display
+and update each line corresponds to one cycle of update and display.
 
 I can not promise that the program will be able to load the files if
 you are changing them manually, so better leave your fingers away from
 these.
+
+Because of the ongoing development of Tower Toppler this format is
+likely to change. New sections may be added, other ones deprecated. I
+hope that the section format will help to achive backwards
+compatibility but I promise, of course, nothing. If you have problems
+loading your old tower files, send them to me and I'll do my best to
+convert them.
+
+Also, if you want to send me your missions, please do not send the
+mission files, but the towers. Because the mission files are binary and
+are changing as well it may be quite complicated to convert a mission
+file generated with an old version of tower toppler to a new version.
+But it will nearly always be possible to edit the tower files.
+
+Mission File Format
+-------------------
+
+And another paragraph for the interested ones. Here the format of the
+mission files is explained.
+
+First in the mission files is the mission name. The first byte is the
+lenght of the string followed by the text itself. Then comed a
+priority. This value is used to sort the missions in the game menu.
+Then comes the number of towers in the mission followed by the offset
+of the tower offset table (b bytes). This table contains 4 bytes for
+every tower showing the starting position of the tower inside the file.
+The offset table is normally at the end of the file.
+
+Now to the towers. They are structured into sections just as the tower
+file is. The section header contains 5 bytes. One shows the section
+type. The other 4 the lenght in bytes of the section data. Then the
+data follows. This allows the program to skip unknown sections.
+
+The section numbers can be found in level.cc.
+
+Most of the sections are fairly simple. Except for the tower and demo.
+
+The tower data is split into 2 parts. First a bitmap detailing which
+places do contain something. For each occupied place there is a byte in
+the following data. The byte details what occupies the field. Details
+in the source.
+
+The demo uses a run length encoding. One byte for the run length and
+one word for the key state.
+
+So this should help to find your way into the code, if it's neccessary.
+
 
 Mission Creation
 ----------------
@@ -275,4 +331,3 @@ Contact
 
 Webpage: toppler.sf.net
 Email  : roever@users.sf.net
-

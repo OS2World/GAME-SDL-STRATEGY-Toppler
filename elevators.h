@@ -21,7 +21,7 @@
 
 #include <SDL_types.h>
 
-/* this module handles all the necessities for up to 4
+/* this module handles all the necessities for up to 10
  elevators */
 
 /* initializes the elevator structures */

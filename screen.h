@@ -20,6 +20,7 @@
 #define SCREEN_H
 
 #include "archi.h"
+#include "sprites.h"
 
 #include <SDL.h>
 
@@ -45,7 +46,14 @@ void scr_init(void);
 void scr_reinit(void);
 
 /* call this when the sprites need to be reloaded */
-void scr_reload_sprites(void);
+/* the flags for the sprites that need to be reloaded */
+enum {
+  RL_FONT = 1,
+  RL_OBJECTS = 2,
+  RL_SCROLLER = 4
+};
+
+void scr_reload_sprites(Uint8 what);
 
 
 /* frees graphics */
@@ -54,8 +62,7 @@ void scr_done(void);
 /* loads a number of sprites, enters them into the sprite collection
  and returns the index of the first sprite */
 void scr_read_palette(file * fi, Uint8 *pal);
-unsigned short scr_loadsprites(file * fi, int num, int w, int h, bool sprite, const Uint8 *pal,
-                               bool usealpha, bool usescreenformat);
+Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, bool sprite, const Uint8 *pal, bool usealpha);
 
 
 /* changes the colors of the slices, doors and battlement
@@ -107,7 +114,7 @@ void scr_putrect(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 col,
 void scr_swap(void);
 
 /* blits a sprite onto the invisible surface */
-void scr_blit(SDL_Surface *s, int x, int y);
+void scr_blit(SDL_Surface * s, int x, int y);
 
 /* draws everything necessary for the towergame */
 void scr_drawall(long vert, long angle, long time, bool svisible, int subshape, int substart, screenflag flags);

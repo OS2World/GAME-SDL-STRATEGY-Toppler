@@ -59,7 +59,7 @@ void configuration::register_entry(char *cnf_name, cnf_type  cnf_typ, void *cnf_
   t->cnf_name = cnf_name;
   t->cnf_typ = cnf_typ;
   t->cnf_var = cnf_var;
-  t->maxlen = t->maxlen;
+  t->maxlen = maxlen;
 }
 
 #define CNF_BOOL(a,b) register_entry(a, CT_BOOL, b, 0)
@@ -88,7 +88,7 @@ configuration::configuration(FILE *glob, FILE *local) {
   i_game_speed = DEFAULT_GAME_SPEED;
 
   first_data = 0;
-  need_save = false;
+  need_save = (local == 0);
 
   CNF_BOOL( "fullscreen",          &i_fullscreen );
   CNF_BOOL( "nosound",             &i_nosound );
@@ -128,37 +128,37 @@ configuration::configuration(FILE *glob, FILE *local) {
 
 configuration::~configuration(void) {
 
-  if (f) {
-    if (need_save) {
+  if (need_save) {
 
-      config_data *t = first_data;
+    if (!f) f = create_local_config_file(".toppler.rc");
 
-      while(t) {
-        fprintf(f, "%s: ", t->cnf_name);
+    config_data *t = first_data;
 
-        switch (t->cnf_typ) {
-        case CT_BOOL:
-          fprintf(f, "%s", (*(bool *)t->cnf_var)?("yes"):("no"));
-          break;
-        case CT_STRING:
-          fprintf(f, "\"%s\"", (char *)(t->cnf_var));
-          break;
-        case CT_INT:
-          fprintf(f, "%i", *(int *)t->cnf_var);
-          break;
-        case CT_KEY:
-          fprintf(f, "%i", (int)key_conv2sdlkey((ttkey)t->maxlen, true));
-          break;
-        default: assert(0, "Unknown config data type.");
-        }
+    while(t) {
+      fprintf(f, "%s: ", t->cnf_name);
 
-        fprintf(f, "\n");
-
-        t = t->next;
+      switch (t->cnf_typ) {
+      case CT_BOOL:
+        fprintf(f, "%s", (*(bool *)t->cnf_var)?("yes"):("no"));
+        break;
+      case CT_STRING:
+        fprintf(f, "\"%s\"", (char *)(t->cnf_var));
+        break;
+      case CT_INT:
+        fprintf(f, "%i", *(int *)t->cnf_var);
+        break;
+      case CT_KEY:
+        fprintf(f, "%i", (int)key_conv2sdlkey((ttkey)t->maxlen, true));
+        break;
+      default: assert(0, "Unknown config data type.");
       }
+
+      fprintf(f, "\n");
+
+      t = t->next;
     }
-    fclose(f);
   }
+  fclose(f);
 
   config_data *t = first_data;
 
@@ -180,3 +180,4 @@ void configuration::editor_towername(char name[TOWERNAMELEN+1]) {
 }
 
 
+configuration config(open_local_config_file(".toppler.rc"), open_local_config_file(".toppler.rc"));

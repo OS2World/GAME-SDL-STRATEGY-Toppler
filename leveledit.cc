@@ -181,6 +181,7 @@ static void editor_background_proc(void) {
 
 static char *editor_background_menu_proc(void *ms) {
     editor_background_proc();
+    return 0;
 }
 
 static bool really_quit(int row, int col) {
@@ -541,19 +542,20 @@ void le_edit(void) {
     scr_swap();
     dcl_wait();
 
-    inp = key_sdlkey();
     inp_char = key_chartyped();
+    inp = key_sdlkey();
     keymod = (SDL_GetModState() & ~(KMOD_NUM|KMOD_CAPS|KMOD_MODE));
     if (keymod & KMOD_SHIFT) keymod |= KMOD_SHIFT;
     if (keymod & KMOD_CTRL) keymod |= KMOD_CTRL;
     if (keymod & KMOD_ALT) keymod |= KMOD_ALT;
     if (keymod & KMOD_META) keymod |= KMOD_META;
 
+
     int k, action = -1;
 
     if (inp_char != 0)
       for (k = 0; k < SIZE(_ed_keys); k++)
-        if (_ed_keys[k].character == inp_char && _ed_keys[k].mod == keymod) {
+        if (_ed_keys[k].character == inp_char) {
           action = _ed_keys[k].action;
           break;
         }
@@ -564,6 +566,9 @@ void le_edit(void) {
           action = _ed_keys[k].action;
           break;
         }
+
+    if ((action != -1) || (inp_char != 0) || (inp != SDLK_UNKNOWN))
+      debugprintf(3, "key: %s, char: %c, action: %i\n", SDL_GetKeyName(inp), inp_char, action);
 
     if (action != -1) {
 

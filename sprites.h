@@ -23,6 +23,8 @@
 
 /* coordinates a collection of sprites */
 
+#if 0
+
 /* initializes with a maximum number of possible sprites */
 void spr_init(Uint16 maxsp);
 
@@ -34,5 +36,32 @@ long spr_savesprite(SDL_Surface *s);
 
 /* returns the sprite data for the given index */
 SDL_Surface *spr_spritedata(Uint16 nr);
+
+#endif
+
+class spritecontainer {
+
+public:
+
+  spritecontainer(void) : size(0), usage(0), array(0) {};
+  ~spritecontainer(void);
+
+  void freedata(void);
+
+  SDL_Surface * data(const Uint16 nr) const {if (nr < usage) return array[nr]; }
+  Uint16 save(SDL_Surface * s);
+
+private:
+
+  Uint16 size;
+  Uint16 usage;
+
+  SDL_Surface ** array;
+};
+
+extern spritecontainer fontsprites;   // for all sprites that are alpha toggled with font option
+extern spritecontainer layersprites;  // for all sprites that are alpha toggled with the layer option
+extern spritecontainer objectsprites; // for all sprites that are alpha toggled with the robots option
+extern spritecontainer restsprites;   // for the rest
 
 #endif

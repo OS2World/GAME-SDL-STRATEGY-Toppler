@@ -94,7 +94,6 @@ typedef struct {
   Sint16 tower; /* tower reached, -1 = mission finished */
 } _scores;
 
-static Uint8 num_scores = 0;
 static _scores *scores = NULL;
 
 static menubg_callback_proc menu_background_proc = NULL;
@@ -112,24 +111,31 @@ void set_men_bgproc(menubg_callback_proc proc) {
    menu_background_proc = proc;
 }
 
-void men_reload_sprites(void) {
+static
+void men_reload_sprites(Uint8 what) {
   Uint8 pal[3*256];
 
-  file *fi = dataarchive.assign(menudat);
+  file *fi;
 
-  scr_read_palette(fi, pal);
-  menupicture = scr_loadsprites(fi, 1, 640, 480, false, pal, config.use_alpha_font(), true);
-  delete fi;
+  if (what & 1) {
+    fi = dataarchive.assign(menudat);
 
-  fi = dataarchive.assign(titledat);
+    scr_read_palette(fi, pal);
+    menupicture = scr_loadsprites(&restsprites, fi, 1, 640, 480, false, pal, 0);
+    delete fi;
+  }
 
-  scr_read_palette(fi, pal);
-  titledata = scr_loadsprites(fi, 1, SPR_TITLEWID, SPR_TITLEHEI, true, pal, config.use_alpha_font(), true);
-  delete fi;
+  if (what & 2) {
+    fi = dataarchive.assign(titledat);
+
+    scr_read_palette(fi, pal);
+    titledata = scr_loadsprites(&fontsprites, fi, 1, SPR_TITLEWID, SPR_TITLEHEI, true, pal, config.use_alpha_font());
+    delete fi;
+  }
 }
 
 void men_init(void) {
-  men_reload_sprites();
+  men_reload_sprites(3);
 }
 
 static char *
@@ -137,8 +143,8 @@ men_yn_background_proc(void *ms)
 {
   if (menu_background_proc) (*menu_background_proc) ();
   else {
-      scr_blit(spr_spritedata(menupicture), 0, 0);
-      scr_blit(spr_spritedata(titledata), (SCREENWID - spr_spritedata(titledata)->w) / 2, 20);
+      scr_blit(restsprites.data(menupicture), 0, 0);
+      scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
   }
   return "";
 }
@@ -557,8 +563,8 @@ static char *
 men_main_background_proc(void *ms)
 {
   if (ms) {
-    scr_blit(spr_spritedata(menupicture), 0, 0);
-    scr_blit(spr_spritedata(titledata), (SCREENWID - spr_spritedata(titledata)->w) / 2, 20);
+    scr_blit(restsprites.data(menupicture), 0, 0);
+    scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
     return NULL;
   }
   return "";
@@ -684,7 +690,7 @@ game_options_menu_speed(void *prevmenu)
 static char *men_game_options_menu(void *prevmenu) {
     static char s[20] = "Game Options";
     if (prevmenu) {
-	_menusystem *ms = new_menu_system(s, NULL, 0, spr_spritedata(titledata)->h+30);
+	_menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
 	ms = add_menu_option(ms, NULL, game_options_menu_password, SDLK_UNKNOWN, MOF_LEFT);
 	ms = add_menu_option(ms, NULL, game_options_menu_lives, SDLK_UNKNOWN, 
@@ -704,7 +710,7 @@ static char *men_game_options_menu(void *prevmenu) {
 
 static char *run_redefine_menu(void *prevmenu) {
   if (prevmenu) {
-    _menusystem *ms = new_menu_system("Redefine Keys", NULL, 0, spr_spritedata(titledata)->h+30);
+    _menusystem *ms = new_menu_system("Redefine Keys", NULL, 0, fontsprites.data(titledata)->h+30);
 
     times_called = 0;
 
@@ -753,12 +759,23 @@ men_options_sounds(void *ms)
 }
 
 static void
-reload_graphics(void) {
-  spr_done();
+reload_font_graphics(void) {
+  fontsprites.freedata();
 
-  spr_init(1000);
-  scr_reload_sprites();
-  men_reload_sprites();
+  scr_reload_sprites(RL_FONT);
+  men_reload_sprites(2);
+}
+
+static void
+reload_robot_graphics(void) {
+  objectsprites.freedata();
+  scr_reload_sprites(RL_OBJECTS);
+}
+
+static void
+reload_layer_graphics(void) {
+  layersprites.freedata();
+  scr_reload_sprites(RL_SCROLLER);
 }
 
 static char *
@@ -766,7 +783,7 @@ men_alpha_font(void *ms)
 {
   if (ms) {
     config.use_alpha_font(!config.use_alpha_font());
-    reload_graphics();
+    reload_font_graphics();
   }
   if (config.use_alpha_font()) return "Font alpha \x04";
   else return "Font alpha \x03";
@@ -777,7 +794,7 @@ men_alpha_sprites(void *ms)
 {
   if (ms) {
     config.use_alpha_sprites(!config.use_alpha_sprites());
-    reload_graphics();
+    reload_robot_graphics();
   }
   if (config.use_alpha_sprites()) return "Sprites alpha \x04";
   else return "Sprites alpha \x03";
@@ -788,7 +805,7 @@ men_alpha_layer(void *ms)
 {
   if (ms) {
     config.use_alpha_layers(!config.use_alpha_layers());
-    reload_graphics();
+    reload_layer_graphics();
   }
   if (config.use_alpha_layers()) return "Scroller alpha \x04";
   else return "Scroller alpha \x03";
@@ -848,7 +865,7 @@ men_alpha_options(void *mainmenu) {
   static char s[20] = "Alpha Options";
   if (mainmenu) {
 
-    _menusystem *ms = new_menu_system(s, NULL, 0, spr_spritedata(titledata)->h+30);
+    _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
     if (!ms) return NULL;
 
@@ -872,7 +889,7 @@ men_options_graphic(void *mainmenu) {
   static char s[20] = "Graphics";
   if (mainmenu) {
 
-    _menusystem *ms = new_menu_system(s, NULL, 0, spr_spritedata(titledata)->h+30);
+    _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
     if (!ms) return NULL;
 
@@ -896,7 +913,7 @@ men_options(void *mainmenu) {
   static char s[20] = "Options";
   if (mainmenu) {
 
-    _menusystem *ms = new_menu_system(s, NULL, 0, spr_spritedata(titledata)->h+30);
+    _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
     if (!ms) return NULL;
 
@@ -916,8 +933,8 @@ men_options(void *mainmenu) {
 }
   
 static void emptyscoretable(void) {
-  if (scores && num_scores) {
-      for (int t = 0; t < num_scores; t++) {
+  if (scores) {
+      for (int t = 0; t < NUMHISCORES; t++) {
 	  scores[t].points = 0;
 	  scores[t].name[0] = 0;
       }
@@ -932,8 +949,8 @@ static void savescores(void) {
   FILE *f = create_highscore_file("toppler.hsc");
 #endif
 
-  assert(!(!scores || !num_scores), "Savescores without scores"); 
-   
+  assert(scores, "Savescores without scores");
+
   if (f) {
     unsigned char len;
     char mname[30];
@@ -951,86 +968,65 @@ static void savescores(void) {
           // on the fly from reading to writing
           fseek(f, ftell(f), SEEK_SET);
 
-	  assert(!(nscores != num_scores || !scores || !num_scores), "Savescores error");
-	  fwrite(scores, sizeof(_scores)*num_scores, 1, f);
+          fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
           fclose(f);
           return;
         }
       } else
         break;
 
-      fseek(f, ftell(f) + sizeof(_scores)*num_scores, SEEK_SET);
+      fseek(f, ftell(f) + sizeof(_scores)*NUMHISCORES, SEEK_SET);
     }
 
     unsigned char tmp = strlen(lev_missionname(currentmission));
 
-    if (!scores) {
-	num_scores = NUMHISCORES;
-	scores = new _scores[num_scores];
-    }
+    if (!scores)
+      scores = new _scores[NUMHISCORES];
 
-    fwrite(&num_scores, 1, 1, f);
     fwrite(&tmp, 1, 1, f);
     fwrite(lev_missionname(currentmission), 1, tmp, f);
-    fwrite(scores, sizeof(_scores)*num_scores, 1, f);
+    fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
+
     fclose(f);
   }
 }
 
 static void getscores(void) {
+
 #ifdef USE_LOCKING
   FILE *f = open_highscore_file(SCOREFILE);
 #else
   FILE *f = open_highscore_file("toppler.hsc");
 #endif
-    
+
   bool foundit = false;
 
-  if (scores && num_scores) {
-      delete [] scores;
-      scores = NULL;
-      num_scores = 0;
-  }
-    
+  if (!scores)
+    scores = new _scores[NUMHISCORES];
+
   if (f) {
 
     unsigned char len;
-    char mname[30];
-    Uint8 nscores;
+    char mname[256];
 
-    while (true) {
+    while (!feof(f)) {
 
-      fread(&nscores, 1, 1, f);
       if ((fread(&len, 1, 1, f) == 1) &&
-          (fread(mname, 1, len, f) == len)
-	  /*&&
-          (fread(scores, 1, sizeof(scores), f) == sizeof(scores))*/) {
+          (fread(mname, 1, len, f) == len) &&
+          (fread(scores, 1, sizeof(_scores) * NUMHISCORES, f) == sizeof(_scores) * NUMHISCORES)) {
         mname[len] = 0;
         if (strcasecmp(mname, lev_missionname(currentmission)) == 0) {
-	  num_scores = nscores;
-	  scores = new _scores[num_scores];
-	  emptyscoretable();
-	  fread(scores, 1, sizeof(_scores)*num_scores, f);
-	  foundit = true;
+          foundit = true;
           break;
-        } else {
-	    fseek(f, ftell(f) + sizeof(_scores)*nscores, SEEK_SET);
-	}
-      } else {
-        emptyscoretable();
-        break;
+        }
       }
-
     }
 
     fclose(f);
   }
-    
-  if (!foundit) {
-      num_scores = NUMHISCORES;
-      scores = new _scores[num_scores];
-      emptyscoretable();
-  }
+
+  if (!foundit)
+    emptyscoretable();
 }
 
 static int hiscores_timer = 0;
@@ -1046,7 +1042,7 @@ static int hiscores_maxlen = 0;
 void
 get_hiscores_string(int p, char **pos, char **points, char **name)
 {
-  if (!scores || (p < 0) || (p > num_scores))
+  if (!scores || (p < 0) || (p > NUMHISCORES))
     *pos = * points = *name = "";
   static char buf1[SCORENAMELEN + 5];
   static char buf2[SCORENAMELEN + 5];
@@ -1064,7 +1060,7 @@ get_hiscores_string(int p, char **pos, char **points, char **name)
 void
 calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
 {
-  for (int x = 0; x < num_scores; x++) {
+  for (int x = 0; x < NUMHISCORES; x++) {
     char *a, *b, *c;
     int clen;
 
@@ -1075,7 +1071,7 @@ calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
 
     clen = scr_textlength(b);
     if (clen < 64) clen = 64; 
-    else if (clen > *max_points) *max_points = clen;
+    if (clen > *max_points) *max_points = clen;
 
     clen = scr_textlength(c);
     if (clen > *max_name) *max_name = clen;
@@ -1090,8 +1086,8 @@ men_hiscores_background_proc(void *ms)
 
   if (ms) {
 
-    scr_blit(spr_spritedata(menupicture), 0, 0);
-    scr_blit(spr_spritedata(titledata), (SCREENWID - spr_spritedata(titledata)->w) / 2, 20);
+    scr_blit(restsprites.data(menupicture), 0, 0);
+    scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
 
     switch (hiscores_state) {
     case 0: /* bring the scores in */
@@ -1106,7 +1102,7 @@ men_hiscores_background_proc(void *ms)
       } else {
 	  bool filled_page = false;
 	  bool firstpage = (hiscores_pager == 0);
-	  int pager = (hiscores_pager + 1) % (num_scores / HISCORES_PER_PAGE);
+	  int pager = (hiscores_pager + 1) % (NUMHISCORES / HISCORES_PER_PAGE);
 	  for (int tmp = 0; tmp < HISCORES_PER_PAGE; tmp++) {
 	      int cs = tmp + (pager * HISCORES_PER_PAGE);
 	      if (scores[cs].points || strlen(scores[cs].name)) {
@@ -1136,7 +1132,7 @@ men_hiscores_background_proc(void *ms)
     }
     for (int t = 0; t < HISCORES_PER_PAGE; t++) {
       int cs = t + (hiscores_pager * HISCORES_PER_PAGE);
-      int ypos = (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + FONTHEI*2;
+      int ypos = (t*(FONTHEI+1)) + fontsprites.data(titledata)->h + FONTHEI*2;
       char *pos, *points, *name;
       get_hiscores_string(cs, &pos, &points, &name);
       if (cs == hiscores_hilited) {
@@ -1156,14 +1152,14 @@ men_hiscores_background_proc(void *ms)
 static void show_scores(bool back = true, int mark = -1) {
   static char buf[50];
   sprintf(buf, "Scores for %s", lev_missionname(currentmission));
-  _menusystem *ms = new_menu_system(buf, men_hiscores_background_proc, 0, spr_spritedata(titledata)->h + 30);
+  _menusystem *ms = new_menu_system(buf, men_hiscores_background_proc, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return;
 
   getscores();
 
   hiscores_timer = 0;
-  if ((mark >= 0) && (mark < num_scores))
+  if ((mark >= 0) && (mark < NUMHISCORES))
     hiscores_pager = (mark / HISCORES_PER_PAGE);
   else
     hiscores_pager = 0;
@@ -1350,7 +1346,7 @@ men_main_timer_proc(void *ms)
 void men_main() {
   _menusystem *ms;
 
-  ms = new_menu_system(NULL, men_main_background_proc, 0, spr_spritedata(titledata)->h + 30);
+  ms = new_menu_system(NULL, men_main_background_proc, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return;
 
@@ -1405,7 +1401,7 @@ bool men_game() {
   bool do_quit;
   int  speed = dcl_update_speed(MENU_DCLSPEED);
     
-  ms = new_menu_system(NULL, NULL, 0, spr_spritedata(titledata)->h + 30);
+  ms = new_menu_system(NULL, NULL, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return 0;
 
@@ -1574,8 +1570,8 @@ static int congrats_placement = 0;
 static void
 congrats_background_proc(void)
 {
-  scr_blit(spr_spritedata(menupicture), 0, 0);
-  scr_blit(spr_spritedata(titledata), (SCREENWID - spr_spritedata(titledata)->w) / 2, 20);
+  scr_blit(restsprites.data(menupicture), 0, 0);
+  scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
 
   scr_writetext_center(130, "Congratulations");
   if (congrats_placement == 0) {
@@ -1583,7 +1579,7 @@ congrats_background_proc(void)
     scr_writetext_center(210, "highest score");
   } else {
     char buf[40];
-    sprintf(buf, "%i best players", num_scores);
+    sprintf(buf, "%i best players", NUMHISCORES);
     scr_writetext_center(170, "You are one of the");
     scr_writetext_center(210, buf);
   }
@@ -1605,20 +1601,20 @@ void men_highscore(unsigned long pt, int twr) {
   close(lockfd);
 #endif
 
-  scr_blit(spr_spritedata(menupicture), 0, 0);
-  scr_blit(spr_spritedata(titledata), 8, 0);
+  scr_blit(restsprites.data(menupicture), 0, 0);
+  scr_blit(fontsprites.data(titledata), 8, 0);
 
   getscores();
 
-  int t = num_scores;
+  int t = NUMHISCORES;
     
   while ((t > 0) && (pt > scores[t-1].points)) {
-    if (t < num_scores)
+    if (t < NUMHISCORES)
       scores[t] = scores[t-1];
     t--;
   }
 
-  if (t < num_scores) {
+  if (t < NUMHISCORES) {
     congrats_placement = t;
     set_men_bgproc(congrats_background_proc);
 
@@ -1645,10 +1641,9 @@ void men_highscore(unsigned long pt, int twr) {
 
   show_scores(false, t);
     
-  if (scores && num_scores) {
-      delete [] scores;
-      scores = NULL;
-      num_scores = 0;
+  if (scores) {
+    delete [] scores;
+    scores = NULL;
   }
 }
 
