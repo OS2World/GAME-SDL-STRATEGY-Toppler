@@ -74,6 +74,7 @@ int main(int argc, char *argv[]) {
 
   setlocale(LC_MESSAGES, "");
   bindtextdomain("toppler", LOCALEDIR"/locale");
+//  bindtextdomain("toppler", "po");
   textdomain("toppler");
   bind_textdomain_codeset("toppler", "iso-latin1");
 
