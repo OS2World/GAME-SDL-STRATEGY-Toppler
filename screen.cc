@@ -27,6 +27,8 @@ static int topplerstart;
 
 unsigned short  step, elevatorsprite, stick;
 
+#define SCALE2
+
 /* table used to calculate the distance of an object from the center of the
  tower that is at x degrees on the tower */
 static long sintab[189] = {
@@ -394,16 +396,26 @@ void scr_init(void) {
   loadgraphics();
   loadfont();
   loadscroller();
+#ifdef SCALE2
+  display = SDL_SetVideoMode(640, 480, 8,
+                             SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
+#else
   display = SDL_SetVideoMode(320, 240, 8,
                              SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
+#endif
   second = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 8, 0, 0, 0, 0);
   pal_setstdpalette(second);
 }
 
 void scr_toggle_fullscreen() {
   fullscreen = !fullscreen;
+#ifdef SCALE2
+  display = SDL_SetVideoMode(640, 480, 8,
+                             SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
+#else
   display = SDL_SetVideoMode(320, 240, 8,
                              SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
+#endif
   pal_colors(pal_menu);
 }
 
@@ -544,7 +556,8 @@ void scr_putbar(int x, int y, int br, int h, unsigned char col = 0) {
 
 /* exchange active and inactive page */
 void scr_swap(void) {
-/*
+#ifdef SCALE2
+
   int p = 0;
   int q = 0;
   unsigned char i = ((unsigned char *)(second->pixels))[0];
@@ -557,7 +570,8 @@ void scr_swap(void) {
     }
     memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - 640], 640);
     p += 640;
-    }*/
+  }
+#else
   int d = 0;
   int s = 0;
   for (int y = 0; y < 240; y++) {
@@ -565,6 +579,7 @@ void scr_swap(void) {
     d += display->pitch;
     s += second->pitch;
   }
+#endif
   SDL_UpdateRect(display, 0, 0, 0, 0);
 }
 
@@ -703,25 +718,25 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     break;
 
   case 0x10:
-    scr_blit(spr_spritedata(ballst + 1), x + 160 - 4, h - 8);
+    scr_blit(spr_spritedata(ballst + 1), x + 160 - 8, h - 8);
     break;
   case 0x20:
-    scr_blit(spr_spritedata(ballst), x + 160 - 4 + state / 2, h - 8);
+    scr_blit(spr_spritedata(ballst), x + 160 - 8 + state / 2, h - 8);
     break;
   case 0x30:
-    scr_blit(spr_spritedata(ballst), x + 160 - 4, h - 8);
+    scr_blit(spr_spritedata(ballst), x + 160 - 8, h - 8);
     break;
   case 0x40:
-    scr_blit(spr_spritedata(robotsst), x + 160 - 4, h - 4 + abs(state - 8));
+    scr_blit(spr_spritedata(robotsst), x + 160 - 8, h - 4 + abs(state - 8));
     break;
   case 0x50:
-    scr_blit(spr_spritedata(robotsst), x + 160 - 4, h - 8 + abs(state - 8) * 2);
+    scr_blit(spr_spritedata(robotsst), x + 160 - 8, h - 8 + abs(state - 8) * 2);
     break;
   case 0x60:
-    scr_blit(spr_spritedata(robotsst), x + 160 - 4 + abs(state - 8), h);
+    scr_blit(spr_spritedata(robotsst), x + 160 - 8 + abs(state - 8), h);
     break;
   case 0x70:
-    scr_blit(spr_spritedata(robotsst), x + 160 - 4 + 2 * abs(state - 8), h);
+    scr_blit(spr_spritedata(robotsst), x + 160 - 8 + 2 * abs(state - 8), h);
     break;
   }
 }
