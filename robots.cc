@@ -196,7 +196,7 @@ void rob_initialize(void) {
     object[b].time = -1;
   }
 
-  next_cross_timer = -2; //125;
+  next_cross_timer = 125;
   nextcrosscolor = rand() / (RAND_MAX / 8);
   cross_direction = 1;
 

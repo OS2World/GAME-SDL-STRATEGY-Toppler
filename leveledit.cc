@@ -150,16 +150,16 @@ void le_edit(void) {
 
   bool ende = false;
   bool changed = false;
-  bool palchanged = false;
+  bool palchanged = true;
   char inp;
   int row = 0, col = 0;
   int rstep = 0, gstep = 0, bstep = 0, tstep = 0;
   char tname[20] = "tower";
 
-//  lev_new();
+  lev_new();
+  pal_colors(pal_towergame);
   pal_settowercolor(255, 0, 0);
   pal_calcdark(pal_towergame);
-  pal_colors(pal_towergame);
 
   key_readkey();
 
