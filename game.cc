@@ -584,6 +584,22 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
       dcl_wait();
     }
 
+    /* first remove all the layera above the target door */
+    while (lev_towerrows() > tower_position / 4 + 4) {
+
+      lev_removelayer(lev_towerrows()-1);
+      snd_crumble();
+      rob_update();
+      scr_drawall(towerpos(top_verticalpos(), tower_position,
+                           top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
+      scr_swap();
+      snd_play();
+
+      dcl_wait();
+
+    }
+
+    /* now remvoe all layers below the target door */
     while (tower_position > 8) {
 
       if (top_verticalpos() > 8) {
