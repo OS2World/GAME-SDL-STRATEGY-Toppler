@@ -65,6 +65,7 @@ void gam_arrival(void) {
 
   rob_initialize();
   snb_init();
+  char *passwd = lev_get_passwd();
 
   bool svisible = true;
   int substart = 0;
@@ -81,11 +82,18 @@ void gam_arrival(void) {
   do {
     scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart, SF_NONE);
     scr_darkenscreen();
-       scr_writetext_center((SCREENHEI / 5), "You are entering the");
+       scr_writetext_center((SCREENHEI / 6), "You are entering the");
+
     if (strlen(lev_towername()))
-       scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, lev_towername());
+       scr_writetext_center((SCREENHEI*2 / 6), lev_towername());
     else
-       scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, "Nameless Tower");
+       scr_writetext_center((SCREENHEI*2 / 6), "Nameless Tower");
+      
+    if (passwd && lev_show_passwd(lev_towernr())) {
+	char buf[50];
+	sprintf(buf, "Password:   %s", passwd);
+	scr_writetext_center(SCREENHEI * 5 / 6, buf);
+    }
     scr_swap();
     snd_play();
 
@@ -335,9 +343,9 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
   do {
      writebonus(tower_position, tower_angle, zeit, tec, extra, time);
      dcl_wait();
-  } while ((delay++ < 80) && (!key_keypressed(fire_key)));
+  } while ((delay++ < 80) && !key_keypressed(fire_key) && !key_keypressed(quit_action));
 
-  while (zeit > 0) {
+  while ((zeit > 0) && !key_keypressed(quit_action)) {
     dcl_wait();
     countdown(zeit);
     snd_score();
@@ -345,7 +353,7 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
 
-  while (tec > 0) {
+  while ((tec > 0) && !key_keypressed(quit_action)) {
     dcl_wait();
     countdown(tec);
     snd_score();
@@ -353,7 +361,7 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
 
-  while (extra > 0) {
+  while ((extra > 0) && !key_keypressed(quit_action)) {
     dcl_wait();
     countdown(extra);
     snd_score();
@@ -366,7 +374,7 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
   do {
      writebonus(tower_position, tower_angle, zeit, tec, extra, time);
      dcl_wait();
-  } while ((delay++ < 30) && (!key_keypressed(fire_key)));
+  } while ((delay++ < 30) && (!key_keypressed(fire_key) || !key_keypressed(quit_action)));
 }
 
 /* update the time */
@@ -568,7 +576,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
       dcl_wait();
     }
 
-    while (tower_position > 8) {
+    while ((tower_position > 8) && !key_keypressed(quit_action)) {
 
       if (top_verticalpos() > 8) {
         lev_removelayer(top_verticalpos() / 4 - 2);
@@ -594,7 +602,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   if (demo < 0) {
       demo = demolen;
   }
-  if (demo) state = STATE_ABORTED;
+  if (key_keypressed(quit_action) || demo) state = STATE_ABORTED;
 
   switch (state) {
 

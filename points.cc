@@ -17,6 +17,7 @@
  */
 
 #include "points.h"
+#include "decl.h"
 
 static unsigned int points;
 static unsigned long nextlife;
@@ -26,7 +27,7 @@ static int lifes;
 
 void pts_reset(void) {
   points = 0;
-  lifes = 3;
+  lifes = start_lives;
   nextlife = LIFE_INCREMENT;
 }
 

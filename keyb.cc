@@ -72,6 +72,8 @@ void key_init(void) {
   SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_IGNORE);
   SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
 
+  SDL_EnableUNICODE(use_unicode_input ? 1 : 0);
+
   numkeydown = chartyped = 0;
   keytyped = keydown = no_key;
   sdlkeytyped = SDLK_UNKNOWN;
@@ -111,6 +113,11 @@ static void handleEvents(void) {
         } else
           if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP)) {
             if (e.key.state == SDL_RELEASED) {
+	      if (use_unicode_input && ((e.key.keysym.unicode & 0xff80) == 0)) {
+		  chartyped = e.key.keysym.unicode & 0x7f;
+	      } else {
+		  /* else we don't have UNICODE in use, 
+		     or it's international char */
               if ((e.key.keysym.sym >= SDLK_a) && (e.key.keysym.sym <= SDLK_z)) {
                 if (e.key.keysym.mod & (KMOD_LSHIFT | KMOD_RSHIFT))
                   chartyped = e.key.keysym.sym - SDLK_a + 'A';
@@ -155,6 +162,8 @@ static void handleEvents(void) {
                 chartyped = 8;
               if (e.key.keysym.sym == SDLK_HOME)
                 chartyped = 9;
+
+	     }
             }
 
             for (tmpk = 0; tmpk < SIZE(ttkeyconv); tmpk++)
@@ -200,6 +209,17 @@ SDLKey key_sdlkey(void) {
   chartyped = 0;
   return tmp;
 }
+
+void key_keydatas(SDLKey &sdlkey, ttkey &tkey, char &ch) {
+    handleEvents();
+    sdlkey = sdlkeytyped;
+    tkey = keytyped;
+    ch = chartyped;
+    sdlkeytyped = SDLK_UNKNOWN;
+    keytyped = no_key;
+    chartyped = 0;
+}
+
 
 SDLKey key_conv2sdlkey(ttkey k, bool game) {
   register int i;
@@ -249,9 +269,9 @@ ttkey key_readkey(void) {
 
 void wait_for_focus(void) {
 
-  while (!tt_has_focus) {
+  while (!tt_has_focus && !received_kill) {
       handleEvents();
-      SDL_Delay(100);
+      if (!tt_has_focus && !received_kill) SDL_Delay(200);
   }
 
   keytyped = no_key;

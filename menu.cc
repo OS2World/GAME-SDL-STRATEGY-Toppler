@@ -299,10 +299,16 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
   for (y = 0; y < maxy; y++) {
     if (strlen(ms->moption[y+offs].oname)) {
       miny = ms->ystart + (y + titlehei)*FONTHEI;
-      if (!(ms->moption[y+offs].oflags & MOF_NOCENTER))
-	  scr_writetext_center(miny, ms->moption[y+offs].oname);
-      else scr_writetext((SCREENWID - ms->maxoptlen) / 2 + 4, miny,
+      if ((ms->moption[y+offs].oflags & MOF_LEFT))
+	  scr_writetext((SCREENWID - ms->maxoptlen) / 2 + 4, miny,
 			 ms->moption[y+offs].oname);
+      else
+      if ((ms->moption[y+offs].oflags & MOF_RIGHT))
+	  scr_writetext((SCREENWID + ms->maxoptlen) / 2 - 4 
+			- scr_textlength(ms->moption[y+offs].oname), miny,
+			 ms->moption[y+offs].oname);
+      else
+	  scr_writetext_center(miny, ms->moption[y+offs].oname);
     }
   }
 
@@ -453,6 +459,239 @@ run_menu_system(struct _menusystem *ms)
   return ms;
 }
 
+struct _textsystem {
+    char *title;
+    int  numlines;
+    int  shownlines;
+    int  ystart;
+    long max_length;
+    char **lines;
+    menuopt_callback_proc mproc;
+    menuopt_callback_proc timeproc;
+    long curr_mtime;
+    long mtime;
+    long xoffs;
+    long yoffs;
+    long disp_xoffs;
+    long disp_yoffs;
+    SDLKey key;
+};
+
+struct _textsystem *
+new_text_system(char *title, menuopt_callback_proc pr)
+{
+    struct _textsystem *ts = (struct _textsystem *)malloc(sizeof(struct _textsystem));
+    
+    if (ts) {
+	if (title) {
+	  ts->title = (char *)malloc(strlen(title)+1);
+	  strcpy(ts->title, title);
+	} else ts->title = NULL;
+
+	ts->numlines = 0;
+	ts->max_length = 0;
+	ts->lines = NULL;
+	ts->mproc = pr;
+	ts->timeproc = NULL;
+	ts->curr_mtime = 0;
+	ts->mtime = -1;
+	ts->xoffs = ts->yoffs = ts->disp_xoffs = ts->disp_yoffs = 0;
+	ts->key = SDLK_UNKNOWN;
+	ts->ystart = (title) ? FONTHEI + 15 : 0;
+	ts->shownlines = ((SCREENHEI - ts->ystart) / FONTHEI) + 1;
+    }
+    
+    return ts;
+}
+
+struct _textsystem *
+add_text_line(struct _textsystem *ts, char *line)
+{
+   char **tmp;
+   int olen;
+   if (!ts) return ts;
+    
+   tmp = (char **)malloc(sizeof(char *)*(ts->numlines+1));
+    
+   if (!tmp) return ts;
+
+   if (ts->lines) {
+      memcpy(tmp, ts->lines, sizeof(char *)*ts->numlines);
+      free(ts->lines);
+   }
+    
+   if (line && (strlen(line)>0)) {
+       tmp[ts->numlines] = (char *)malloc(strlen(line)+1);
+       strcpy(tmp[ts->numlines], line);
+   } else tmp[ts->numlines] = NULL;
+
+   ts->lines = tmp;
+    
+   ts->numlines++;
+    
+   if (line) {
+       olen = scr_formattextlength(0,0,line);
+       if (olen < 0) olen = 0;
+   }
+   else olen = 0;
+
+   if (ts->max_length < olen) ts->max_length = olen;
+   
+   return ts;
+}
+
+struct _textsystem *
+set_text_system_timeproc(struct _textsystem *ts, long t, menuopt_callback_proc pr)
+{
+    if (!ts) return ts;
+    
+    ts->timeproc = pr;
+    ts->mtime = t;
+    
+    return ts;
+}
+
+void
+free_text_system(struct _textsystem *ts)
+{
+    int i;
+
+    if (!ts) return;
+
+    if (ts->lines && ts->numlines) {
+	for (i = 0; i < ts->numlines; i++)
+	  if (ts->lines[i]) 
+	    free(ts->lines[i]);
+	free(ts->lines);
+    }
+    if (ts->title) free(ts->title);
+}
+
+void
+draw_text_system(struct _textsystem *ts)
+{
+    char pointup[2], pointdown[2], pointleft[2], pointright[2];
+
+    if (!ts) return;
+    
+    pointup[0] = fontptrup;
+    pointup[1] = 0;
+    pointdown[0] = fontptrdown;
+    pointdown[1] = 0;
+    pointleft[0] = fontptrleft;
+    pointleft[1] = 0;
+    pointright[0] = fontptrright;
+    pointright[1] = 0;
+
+    if (ts->mproc) {
+	(*ts->mproc) (ts);
+	menu_background_proc = NULL;
+    } else men_yn_background_proc(ts);
+
+    if (ts->title)
+      scr_writetext_center(5, ts->title);
+      
+    if (ts->disp_yoffs < ts->yoffs) {
+	ts->disp_yoffs += ((ts->yoffs - ts->disp_yoffs+3) / 4)+1;
+	if (ts->disp_yoffs > ts->yoffs) ts->disp_yoffs = ts->yoffs;
+    } else if (ts->disp_yoffs > ts->yoffs) {
+	ts->disp_yoffs -= ((ts->disp_yoffs - ts->yoffs+3) / 4)+1;
+	if (ts->disp_yoffs < ts->yoffs) ts->disp_yoffs = ts->yoffs;
+    }
+
+    if (ts->disp_xoffs < ts->xoffs) {
+	ts->disp_xoffs += ((ts->xoffs - ts->disp_xoffs) / 4)+1;
+	if (ts->disp_xoffs > ts->xoffs) ts->disp_xoffs = ts->xoffs;
+    } else if (ts->disp_xoffs > ts->xoffs) {
+	ts->disp_xoffs -= ((ts->disp_xoffs - ts->xoffs) / 4)+1;
+	if (ts->disp_xoffs < ts->xoffs) ts->disp_xoffs = ts->xoffs;
+    }
+
+    scr_setclipping(0, ts->ystart, SCREENWID, SCREENHEI);
+    for (int k = 0; k <= ts->shownlines; k++)
+      if (k+(ts->disp_yoffs / FONTHEI) < ts->numlines) {
+	  if (ts->lines[k+(ts->disp_yoffs / FONTHEI)])
+	    scr_writeformattext(-ts->disp_xoffs,
+			  k*FONTHEI + ts->ystart - (ts->disp_yoffs % FONTHEI),
+			  ts->lines[k+(ts->disp_yoffs / FONTHEI)]);
+      }
+
+    scr_setclipping();
+
+    if (ts->disp_yoffs > 0)
+      scr_writetext(SCREENWID-FONTWID, 34, pointup);
+    if ((ts->disp_yoffs / FONTHEI) + ts->shownlines < ts->numlines)
+      scr_writetext(SCREENWID-FONTWID, SCREENHEI-FONTHEI, pointdown);
+    
+    if (ts->disp_xoffs > 0)
+      scr_writetext(FONTWID, 5, pointleft);
+    if (ts->disp_xoffs < ts->max_length - SCREENWID)
+      scr_writetext(SCREENWID-FONTWID, 5, pointright);
+
+    scr_swap();
+    dcl_wait();
+}
+
+struct _textsystem *
+run_text_system(struct _textsystem *ts)
+{
+    bool ende = false;
+    
+    if (!ts) return ts;
+    
+    do {
+	(void)key_readkey();
+
+	draw_text_system(ts);
+	
+	ts->key = key_sdlkey();
+      
+	if (key_keypressed(quit_action)) break;
+
+	switch (key_sdlkey2conv(ts->key, false)) {
+	    case up_key:
+	        if (ts->yoffs >= FONTHEI) ts->yoffs -= FONTHEI;
+	        else ts->yoffs = 0;
+	        break;
+	    case down_key:
+	        if (ts->yoffs + (ts->shownlines*FONTHEI) < (ts->numlines*FONTHEI)) ts->yoffs += FONTHEI;
+	        else ts->yoffs = (ts->numlines - ts->shownlines+1)*FONTHEI;
+	        break;
+	    case break_key: ende = true; break;
+	    case left_key:
+	        if (ts->xoffs >= FONTWID) ts->xoffs -= FONTWID; 
+	        else ts->xoffs = 0; 
+	        break;
+	    case right_key: 
+	        if (ts->xoffs <= ts->max_length-SCREENWID-FONTWID) ts->xoffs += FONTWID;
+		else ts->xoffs = ts->max_length-SCREENWID;
+	        break;
+	    default:
+	        switch (ts->key) {
+		    case SDLK_PAGEUP:
+		        if (ts->yoffs >= ts->shownlines*FONTHEI) ts->yoffs -= ts->shownlines*FONTHEI;
+		        else ts->yoffs = 0;
+		        break;
+		    case SDLK_SPACE:
+		    case SDLK_PAGEDOWN:
+		        if ((ts->yoffs/FONTHEI) + (ts->shownlines*2) <= ts->numlines)
+		           ts->yoffs += ts->shownlines*FONTHEI;
+		        else ts->yoffs = (ts->numlines - ts->shownlines+1)*FONTHEI;
+		        break;
+		    case SDLK_HOME:   ts->yoffs = 0; break;
+		    case SDLK_END:    ts->yoffs = (ts->numlines - ts->shownlines+1)*FONTHEI; break;
+		    case SDLK_RETURN:
+		    case SDLK_ESCAPE: ende = true; break;
+		    default: break;
+		}
+	}
+
+    } while (!ende);
+    
+    return ts;
+}
+
+
 #ifdef GAME_DEBUG_KEYS
 static char *debug_menu_extralife(void *ms) {
     if (ms) lives_add();
@@ -594,17 +833,78 @@ static char *redefine_menu_up(void *tms) {
   return buf;
 }
 
+static char *game_options_menu_password(void *prevmenu) {
+    static char buf[50];
+    if (prevmenu) {
+	while (!men_input(curr_password, PASSWORD_LEN, -1, -1, PASSWORD_CHARS)) ;
+	/* FIXME: change -1, -1 to correct position; Need to fix menu system
+	   first... */
+    }
+    sprintf(buf, "Password: %s", curr_password);
+    return buf;
+}
+
+static char *game_options_menu_statustop(void *prevmenu) {
+    if (prevmenu) {
+	status_top = !status_top;
+    }
+    if (status_top) return "Status on top \x04";
+    else return "Status on top \x03";
+}
+
+static char *game_options_menu_lives(void *prevmenu) {
+    static char buf[50];
+    int i;
+    if (prevmenu) {
+	struct _menusystem *tms = (struct _menusystem *)prevmenu;
+	switch (key_sdlkey2conv(tms->key, false)) {
+	    case right_key: 
+	        start_lives = start_lives + 1;
+	        if (start_lives > 3) start_lives = 3;
+	        break;
+	    case left_key:  
+	        start_lives = start_lives - 1;
+	        if (start_lives < 1) start_lives = 1;
+	        break;
+	    default: return NULL;
+	}
+    }
+    sprintf(buf, "Lives: ");
+    for (i = 0; i < start_lives; i++)
+      sprintf(buf + strlen(buf), "%c", fonttoppler);
+    return buf;
+}
+
+static char *men_game_options_menu(void *prevmenu) {
+    static char s[20] = "Game Options";
+    if (prevmenu) {
+	struct _menusystem *ms = new_menu_system(s, NULL, 0, spr_spritedata(titledata)->h+30);
+
+	ms = add_menu_option(ms, NULL, game_options_menu_password, SDLK_UNKNOWN, MOF_LEFT);
+	ms = add_menu_option(ms, NULL, game_options_menu_lives, SDLK_UNKNOWN, 
+			     (menuoptflags)((int)MOF_PASSKEYS|(int)MOF_LEFT));
+	ms = add_menu_option(ms, NULL, game_options_menu_statustop);
+	ms = add_menu_option(ms, NULL, NULL);
+	ms = add_menu_option(ms, "Back", NULL);
+	
+	ms = run_menu_system(ms);
+	
+	free_menu_system(ms);
+    }
+    return s;
+}
+
 static char *run_redefine_menu(void *prevmenu) {
   if (prevmenu) {
     struct _menusystem *ms = new_menu_system("Redefine Keys", NULL, 0, spr_spritedata(titledata)->h+30);
 
     times_called = 0;
 
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
     ms = add_menu_option(ms, "Back", NULL);
 
     ms = run_menu_system(ms);
@@ -763,7 +1063,7 @@ men_options(void *mainmenu) {
 
     if (!ms) return NULL;
 
-      
+    ms = add_menu_option(ms, NULL, men_game_options_menu);
     ms = add_menu_option(ms, NULL, run_redefine_menu);
     ms = add_menu_option(ms, NULL, men_options_graphic);
     ms = add_menu_option(ms, NULL, men_options_sounds);
@@ -1008,6 +1308,8 @@ main_game_loop()
   Uint16 *tmpbuf = NULL;
 
   lev_loadmission(currentmission);
+    
+  tower = lev_tower_passwd_entry(curr_password);
 
   gam_newgame();
   do {
@@ -1041,7 +1343,7 @@ main_game_loop()
     }
   } while (pts_lifesleft() && (tower < lev_towercount()) && (gameresult != GAME_ABORTED));
 
-  men_highscore(pts_points());
+  if (gameresult != GAME_ABORTED) men_highscore(pts_points());
 }
 
 #ifdef HUNT_THE_FISH
@@ -1280,18 +1582,32 @@ void men_input_wait_proc(void) {
     dcl_wait();
 }
 
-void men_input(char *s, int max_len, int xpos, int ypos, const char *allowed) {
-  char inp;
-  int pos = strlen(s);
+bool men_input(char *origs, int max_len, int xpos, int ypos, const char *allowed) {
+  SDLKey sdlinp;
+  char inpc;
+  ttkey inptt;
+  static int pos = strlen(origs);
   int ztmp;
+  static char s[256];
+  static bool copy_origs = true;
+  bool restore_origs = false;
   bool ende = false;
 
+  if ((strlen(origs) >= 256)) return true;
+    
+  if (copy_origs) {
+      strcpy(s, origs);
+      copy_origs = false;
+      pos = strlen(origs);
+  }
+   
   (void)key_readkey();
-  key_wait_for_none(men_input_wait_proc);
 
-  do {
-
-    if (key_keypressed(quit_action)) break;
+    if (key_keypressed(quit_action)) {
+	copy_origs = true;
+	s[0] = 0;
+	return true;
+    }
 
     if (menu_background_proc) (*menu_background_proc) ();
 
@@ -1299,46 +1615,66 @@ void men_input(char *s, int max_len, int xpos, int ypos, const char *allowed) {
     scr_swap();
     dcl_wait();
 
-    inp = key_chartyped();
+    key_keydatas(sdlinp, inptt, inpc);
 
-    switch (inp) {
-    case 0: break;
-    case 4: if ((unsigned)pos < strlen(s)) pos++; break;
-    case 3: if (pos > 0) pos--; break;
-    case 27: if (strlen(s)) {
-      s[0] = '\0';
-      pos = 0;
-      break;
-    } /* fall through */
-    case '\r': ende = true; break;
-    case 6:
-      if (strlen(s) >= (unsigned)pos) {
-        for (ztmp = pos; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
-        s[ztmp] = '\0';
-      }
-      break;
-    case '\b':
-      if (pos > 0) {
-        if (pos <= max_len) {
-          for (ztmp = pos-1; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
-          s[ztmp] = '\0';
-        }
-        pos--;
-      }
-      break;
-    default:
-      if ((((allowed != NULL) && (strchr(allowed, inp))) ||
-           ((allowed == NULL) && (isalnum(inp) || (inp == ' ')))) &&
-          (pos < max_len) && (strlen(s) >= (unsigned)pos) &&
-          (strlen(s) < (unsigned)max_len)) {
-        for (ztmp = max_len-1; ztmp >= pos; ztmp--) s[ztmp+1] = s[ztmp];
-        s[pos] = inp;
-        s[max_len] = '\0';
-        pos++;
-      }
-      break;
+    switch (sdlinp) {
+	case SDLK_RIGHT: if ((unsigned)pos < strlen(s)) pos++; break;
+	case SDLK_LEFT: if (pos > 0) pos--; break;
+	case SDLK_ESCAPE:if (strlen(s)) {
+	    s[0] = '\0';
+	    pos = 0;
+	    restore_origs = false;
+	} else {
+	    restore_origs = true;
+	    ende = true;
+	}
+	break;
+	case SDLK_RETURN: restore_origs = false; copy_origs = true; ende = true;
+	break;
+	case SDLK_DELETE:
+	if (strlen(s) >= (unsigned)pos) {
+	    for (ztmp = pos; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
+	    s[ztmp] = '\0';
+	}
+	break;
+	case SDLK_BACKSPACE:
+	if (pos > 0) {
+	    if (pos <= max_len) {
+		for (ztmp = pos-1; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
+		s[ztmp] = '\0';
+	    }
+	    pos--;
+	}
+	break;
+	default:
+	if (pos >= max_len || (inpc < ' ')) break;
+	if (allowed) {
+	  if (!strchr(allowed, inpc)) {
+	      if (strchr(allowed, toupper(inpc))) inpc = toupper(inpc);
+	      else
+	      if (strchr(allowed, tolower(inpc))) inpc = tolower(inpc);
+	      else break;
+	  }
+	} else {
+	  if (inpc < ' ' || inpc > 'z') break;
+	}
+	if ((strlen(s) >= (unsigned)pos) &&
+	  (strlen(s) < (unsigned)max_len)) {
+	    for (ztmp = max_len-1; ztmp >= pos; ztmp--) s[ztmp+1] = s[ztmp];
+	    s[pos] = inpc;
+	    s[max_len] = '\0';
+	    pos++;
+	}
+	break;
     }
-  } while (!ende);
+  if (ende) {
+      if (!restore_origs) strcpy(origs, s);
+      s[0] = 0;
+      copy_origs = true;
+  } else {
+      copy_origs = false;
+  }
+  return ende;
 }
 
 
@@ -1404,7 +1740,7 @@ void men_highscore(unsigned long pt) {
 #endif
 
 #ifndef GAME_DEBUG_KEYS
-    men_input(scores[t].name, SCORENAMELEN);
+    while (!men_input(scores[t].name, SCORENAMELEN)) ;
 
     scores[t].points = pt;
 

@@ -17,6 +17,7 @@
  */
 
 #include "decl.h"
+#include "keyb.h"
 
 #include <SDL.h>
 
@@ -41,23 +42,31 @@ bool use_alpha_font = false;
 bool use_alpha_darkening = false;
 bool use_waves = false;
 bool status_top = true;  /* is status line top or bottom of screen? */
-
+int  editor_towerpagesize = -1;
+int  editor_towerstarthei = -5;
+char curr_password[PASSWORD_LEN+1] = "";
+int  start_lives = 3;
+bool use_unicode_input = true;
 char editor_towername[TOWERNAMELEN+1] = "";
 
 typedef enum {
     CT_BOOL,
-    CT_STRING
+    CT_STRING,
+    CT_INT,
+    CT_KEY
 } cnf_type;
 
 struct _config_data {
     char     *cnf_name;
     cnf_type  cnf_typ;
     void     *cnf_var;
-    int       maxlen;
+    long      maxlen;
 };
 
 #define CNF_BOOL(a,b) {a, CT_BOOL, b, 0}
 #define CNF_CHAR(a,b,c) {a, CT_STRING, b, c}
+#define CNF_INT(a,b) {a, CT_INT, b, 0}
+#define CNF_KEY(a,b) {a, CT_KEY, NULL, b}
 
 static const struct _config_data config_data[] = {
     CNF_BOOL( "fullscreen",          &fullscreen ),
@@ -68,7 +77,16 @@ static const struct _config_data config_data[] = {
     CNF_BOOL( "use_alpha_layers",    &use_alpha_layers ),
     CNF_BOOL( "use_alpha_darkening", &use_alpha_darkening ),
     CNF_BOOL( "use_waves",           &use_waves ),
-    CNF_BOOL( "status_top",          &status_top )
+    CNF_BOOL( "status_top",          &status_top ),
+    CNF_INT(  "editor_pagesize",     &editor_towerpagesize ),
+    CNF_INT(  "editor_towerstarthei",&editor_towerstarthei ),
+    CNF_KEY(  "key_fire",             fire_key ),
+    CNF_KEY(  "key_up",               up_key ),
+    CNF_KEY(  "key_down",             down_key ),
+    CNF_KEY(  "key_left",             left_key ),
+    CNF_KEY(  "key_right",            right_key ),
+    CNF_CHAR( "password",            &curr_password, PASSWORD_LEN ),
+    CNF_BOOL( "use_unicode_input",   &use_unicode_input),
 };
 
 bool str2bool(char *s) {
@@ -80,9 +98,11 @@ bool str2bool(char *s) {
 }
 
 void dcl_wait(void) {
-  static Uint32 last;
-  while ((SDL_GetTicks() - last) < 55*1 ) SDL_Delay(2);
-  last = SDL_GetTicks();
+  if (!key_keypressed(quit_action)) {
+      static Uint32 last;
+      while ((SDL_GetTicks() - last) < 55*1 ) SDL_Delay(2);
+      last = SDL_GetTicks();
+  }
 }
 
 /* returns true, if file exists */
@@ -329,6 +349,13 @@ static void parse_config(FILE * in) {
 		strncpy((char *)config_data[idx].cnf_var, param+1, config_data[idx].maxlen);
 	      }
 	      break;
+	    case CT_INT:
+	      *(int *)config_data[idx].cnf_var = atoi(param);
+	      break;
+	    case CT_KEY:
+	      if (atoi(param) > 0)
+		key_redefine((ttkey)config_data[idx].maxlen, (SDLKey)atoi(param));
+	      break;
 	    default: assert(0, "Unknown config data type.");
 	  }
 	  break;
@@ -355,6 +382,9 @@ void load_config(void) {
     parse_config(in);
     fclose(in);
   }
+    
+  if (start_lives < 1) start_lives = 1;
+  else if (start_lives > 3) start_lives = 3;
 }
 
 void save_config(void) {
@@ -365,10 +395,16 @@ void save_config(void) {
 	fprintf(out, "%s: ", config_data[idx].cnf_name);
 	switch (config_data[idx].cnf_typ) {
 	    case CT_BOOL: 
-	      fprintf(out, "%i", (*(bool *)config_data[idx].cnf_var)?(1):(0));
+	      fprintf(out, "%s", (*(bool *)config_data[idx].cnf_var)?("yes"):("no"));
 	      break;
 	    case CT_STRING:
 	      fprintf(out, "\"%s\"", (char *)(config_data[idx].cnf_var));
+	      break;
+	    case CT_INT:
+	      fprintf(out, "%i", *(int *)config_data[idx].cnf_var);
+	      break;
+	    case CT_KEY:
+	      fprintf(out, "%i", (int)key_conv2sdlkey((ttkey)config_data[idx].maxlen, true));
 	      break;
 	    default: assert(0, "Unknown config data type.");
 	}

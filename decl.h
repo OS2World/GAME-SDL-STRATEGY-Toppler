@@ -166,6 +166,9 @@
 #define FDECL(f,p) f p
 #define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))
 
+#define PASSWORD_LEN 4
+#define PASSWORD_CHARS "abcdefghijklmnopqrstuvwxyz"
+
 /* waits around 1/18 of a second */
 void dcl_wait(void);
 
@@ -190,6 +193,11 @@ extern bool use_alpha_font;
 extern bool use_alpha_darkening;
 extern bool use_waves;
 extern bool status_top;
+extern int  editor_towerpagesize;
+extern int  editor_towerstarthei;
+extern int  start_lives;
+extern char curr_password[PASSWORD_LEN+1];
+extern bool use_unicode_input;
 
 /* Is the TT window active? */
 extern bool tt_has_focus;

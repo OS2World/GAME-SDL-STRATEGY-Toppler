@@ -51,7 +51,7 @@ void men_highscore(unsigned long pt);
 void men_done(void);
 
 /* input line */
-void men_input(char *s, int max_len, int xpos = -1,
+bool men_input(char *origs, int max_len, int xpos = -1,
                int ypos = (SCREENHEI  * 2) / 3,
                const char *allowed = NULL);
 
@@ -71,7 +71,8 @@ void run_debug_menu(void);
 typedef enum {
   MOF_NONE     = 0x00,
   MOF_PASSKEYS = 0x01,  /* Do keys get passed onto this option? */
-  MOF_NOCENTER = 0x02   /* Do _not_ center this option txt */
+  MOF_LEFT     = 0x02,  /* Option string is left justified */
+  MOF_RIGHT    = 0x04   /* Option string is right justified */
 } menuoptflags;
 
 /* create a new menu */
@@ -94,5 +95,16 @@ void set_men_bgproc(menubg_callback_proc proc);
 
 /* menu shown to user when he presses esc during play */
 bool men_game(void);
+
+/**/
+struct _textsystem *new_text_system(char *title, menuopt_callback_proc pr = NULL);
+/**/
+struct _textsystem *add_text_line(struct _textsystem *ts, char *line);
+/**/
+struct _textsystem *set_text_system_timeproc(struct _textsystem *ts, long t, menuopt_callback_proc pr);
+/**/
+void free_text_system(struct _textsystem *ts);
+/**/
+struct _textsystem *run_text_system(struct _textsystem *ts);
 
 #endif

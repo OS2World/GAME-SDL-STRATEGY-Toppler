@@ -93,9 +93,6 @@ static struct _scroll_layer *scroll_layers;
 Uint8 towerpal[2*256];
 Uint8 crosspal[2*256];
 
-Uint8 last_towercol_r, last_towercol_g, last_towercol_b;
-
-
 void color_ramp1(int *c, int *adj, int min, int max) {
   *c = *c + *adj;
   if (*c > max - abs(*adj)) {
@@ -273,6 +270,8 @@ static void loadgraphics(void) {
       }
   }
 
+  scr_settowercolor(255, 0, 0);
+
   for (t = 0; t < 256; t++) {
     unsigned char c1, c2;
 
@@ -374,14 +373,6 @@ void scr_settowercolor(Uint8 r, Uint8 g, Uint8 b) {
     for (int et = 0; et < 3; et++)
       if (doors[t+36].width != 0)
         scr_regensprites(doors[t+36].data[et], spr_spritedata(doors[t+36].s[et]), 1, doors[t+36].width, SPR_SLICEHEI, false, pal, false);
-
-  last_towercol_r = r;
-  last_towercol_g = g;
-  last_towercol_b = b;
-}
-
-void resettowercolor(void) {
-  scr_settowercolor(last_towercol_r, last_towercol_g, last_towercol_b);
 }
 
 void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
@@ -502,7 +493,6 @@ static void free_memory(void) {
 void scr_reload_sprites() {
   free_memory();
   load_sprites();
-  resettowercolor();
 }
 
 void scr_init(void) {
@@ -521,8 +511,8 @@ void scr_init(void) {
   /* initialize wave table */
   for (int t = 0; t < 0x80; t++)
     waves[t] = (Sint8)(8 * (sin(t * 2.0 * M_PI / 0x7f)) +
-      4 * (sin(t * 4.0 * M_PI / 0x7f+2)) +
-      3 * (sin(t * 6.0 * M_PI / 0x7f+3)) + 0.5);
+      4 * (sin(t * 3.0 * M_PI / 0x7f+2)) +
+      3 * (sin(t * 5.0 * M_PI / 0x7f+3)) + 0.5);
 
 }
 
@@ -547,24 +537,25 @@ static void cleardesk(void) {
 
 void scr_darkenscreen(void) {
 
+  int x, y;
+
   if (!use_alpha_darkening)
     return;
 
   static SDL_Surface *s = NULL;
 
   if (!s) {
-    s = SDL_CreateRGBSurface(SDL_HWSURFACE, 20, 20, 24, 0xff, 0xff00, 0xff0000, 0);
-    SDL_SetColorKey(s, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0xff);
+      s = SDL_CreateRGBSurface(SDL_HWSURFACE, 20, 20, 24, 0xff, 0xff00, 0xff0000, 0);
+      SDL_SetColorKey(s, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0xff);
+
+      for (y = 0; y < 20; y++)
+	for (x = 0; x < 20; x++)
+	  if ((y+x) & 1)
+	    ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0x00;
+          else
+            ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0xff;
+
   }
-
-  int x, y;
-
-  for (y = 0; y < 20; y++)
-    for (x = 0; x < 20; x++)
-      if ((y+x) & 1)
-        ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0x00;
-      else
-        ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0xff;
 
   x = y = 0;
 
@@ -754,57 +745,6 @@ void scr_writetext_center(long y, const char *s) {
   scr_writetext ((SCREENWID - scr_textlength(s)) / 2, y, s);
 }
 
-void scr_writetext(long x, long y, const char *s, int maxchars) {
-  int t = 0;
-  unsigned char c;
-  while (s[t] && (maxchars-- != 0)) {
-    if (s[t] == ' ') {
-      x += FONTMINWID;
-      t++;
-      continue;
-    }
-
-    c = s[t];
-    if (fontchars[c].s != 0) {
-      scr_blit(spr_spritedata(fontchars[c].s), x, y);
-      x += fontchars[c].width + 3;
-    }
-    t++;
-  }
-}
-
-void scr_writeformattext(long x, long y, const char *s) {
-
-  int t = 0;
-  unsigned char c;
-  while (s[t]) {
-    switch(s[t]) {
-    case ' ':
-      x += FONTMINWID;
-      t++;
-      break;
-    case '~':
-      switch(s[t+1]) {
-      case 't':
-        x = (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
-        t += 5;
-        break;
-      default:
-        assert(0, "Wrong command in formatted text.");
-        t += 2;
-      }
-      break;
-    default:
-      c = s[t];
-      if (fontchars[c].s != 0) {
-        scr_blit(spr_spritedata(fontchars[c].s), x, y);
-        x += fontchars[c].width + 3;
-      }
-      t++;
-    }
-  }
-}
-
 void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb, Uint8 alpha) {
 
   if (alpha != 255) {
@@ -846,12 +786,25 @@ scr_putrect(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb, Uin
 
 /* exchange active and inactive page */
 void scr_swap(void) {
+  if (key_keypressed(quit_action)) return;
   if (!tt_has_focus) {
       scr_darkenscreen();
       SDL_UpdateRect(display, 0, 0, 0, 0);
       wait_for_focus();
   }
   SDL_UpdateRect(display, 0, 0, 0, 0);
+}
+
+void scr_setclipping(int x, int y, int w, int h) {
+    if (x < 0) SDL_SetClipRect(display, NULL);
+    else {
+	SDL_Rect r;
+	r.x = x;
+	r.y = y;
+	r.w = w;
+	r.h = h;
+	SDL_SetClipRect(display, &r);
+    }
 }
 
 void scr_blit(SDL_Surface *s, int x, int y) {
@@ -998,8 +951,21 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
     break;
   case TB_STEP_VANISHER:
-    if (state & 1)
-      scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
+    if (use_alpha_sprites) {
+	SDL_Surface *s = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, SPR_STEPWID, SPR_STEPHEI, 24, 0xff, 0xff00, 0xff0000, 0);
+	SDL_Rect r;
+	r.w = SPR_STEPWID;
+	r.h = SPR_STEPHEI;
+	r.x = 0;
+	r.y = 0;
+	SDL_BlitSurface(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), NULL, s, &r);
+	SDL_SetAlpha(s, SDL_SRCALPHA, 96);
+	scr_blit(s, x - (SPR_STEPWID / 2), h);
+	SDL_FreeSurface(s);
+    } else {
+	if (state & 1)
+	  scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
+    }
     break;
   case TB_STEP_LSLIDER:
     scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) + state % 4, h);
@@ -1075,6 +1041,119 @@ static void putrobot(int t, int m, long x, long h)
   }
 
   scr_blit(spr_spritedata(nr), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI);
+}
+
+void scr_writetext(long x, long y, const char *s, int maxchars) {
+  int t = 0;
+  unsigned char c;
+  while (s[t] && (maxchars-- != 0)) {
+    if (s[t] == ' ') {
+      x += FONTMINWID;
+      t++;
+      continue;
+    }
+
+    c = s[t];
+    if (fontchars[c].s != 0) {
+      scr_blit(spr_spritedata(fontchars[c].s), x, y);
+      x += fontchars[c].width + 3;
+    }
+    t++;
+  }
+}
+
+void scr_writeformattext(long x, long y, const char *s) {
+
+  int origx = x;
+  int t = 0;
+  Uint8 towerblock = 0;
+  unsigned char c;
+  while (s[t]) {
+    switch(s[t]) {
+    case ' ':
+      x += FONTMINWID;
+      t++;
+      break;
+    case '~':
+      switch(s[t+1]) {
+      case 't':
+        x = (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
+        t += 5;
+        break;
+      case 'T':
+	x = origx + (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
+	t += 5;
+	break;
+      case 'b':
+	towerblock = conv_char2towercode(s[t+2]);
+	putcase(towerblock, x+16, y);
+	x += 32;
+	t += 3;
+	break;
+      case 'e':
+	towerblock = conv_char2towercode(s[t+2]);
+	putcase_editor(towerblock, x+16, y, boxstate);
+	x += 32;
+	t += 3;
+	break;
+      default:
+        assert(0, "Wrong command in formatted text.");
+        t += 2;
+      }
+      break;
+    default:
+      c = s[t];
+      if (fontchars[c].s != 0) {
+        scr_blit(spr_spritedata(fontchars[c].s), x, y);
+        x += fontchars[c].width + 3;
+      }
+      t++;
+    }
+  }
+}
+
+long scr_formattextlength(long x, long y, const char *s) {
+  int origx = x;
+  int t = 0;
+  unsigned char c;
+  while (s[t]) {
+    switch(s[t]) {
+    case ' ':
+      x += FONTMINWID;
+      t++;
+      break;
+    case '~':
+      switch(s[t+1]) {
+      case 't':
+        x = (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
+        t += 5;
+        break;
+      case 'T':
+	x = origx + (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
+	t += 5;
+	break;
+      case 'b':
+	x += 32;
+	t += 3;
+	break;
+      case 'e':
+	x += 32;
+	t += 3;
+	break;
+      default:
+        assert(0, "Wrong command in formatted text, scr_formattextlength.");
+        t += 2;
+      }
+      break;
+    default:
+      c = s[t];
+      if (fontchars[c].s != 0) {
+        x += fontchars[c].width + 3;
+      }
+      t++;
+    }
+  }
+  return (x-origx);
 }
 
 /* draws something of the tower */

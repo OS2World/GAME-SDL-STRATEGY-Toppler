@@ -10,7 +10,7 @@ Group: Amusements/Games
 
 BuildRoot: %{_tmppath}/%{name}-root
 
-Requires: SDL >= 1.2.4, SDL_mixer >= 1.2.4
+Requires: SDL >= 1.2.4, SDL_mixer >= 1.2.4, zlib, libstdc++
 BuildRequires: SDL-devel >= 1.2.4
 AutoReqProv: no
 

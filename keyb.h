@@ -73,6 +73,8 @@ SDLKey key_conv2sdlkey(ttkey k, bool game);
 /* returns a types character */
 char key_chartyped(void);
 
+void key_keydatas(SDLKey &sdlkey, ttkey &tkey, char &ch);
+
 /* waits until no key is pressed, calling bg while waiting */
 void key_wait_for_none(keyb_wait_proc bg);
 

@@ -1,3 +1,88 @@
+-when user selects "Quit game" from the game menu during
+ game, do not show hiscores after that, but go directly
+ back to main menu.
+
+-Bugfix: In level editor, if you loaded a tower which was shorter
+ the cursor stayed higher than the new tower's top.
+
+-In text input routine, if a low-case letter is allowed but
+ not high-case, and user enters high-case letter, convert
+ the letter to low-case. And vice versa.
+
+-you can now define justification better for menu options:
+ left justify, right justify, or centered.
+ (MOF_LEFT, MOF_RIGHT)
+
+-if we have alpha for sprites on, use that instead of
+ blinking the vanishing steps in the level editor.
+
+-in level editor, added 2 new commands: cut and paste row(s).
+
+-level editor tower start height and page up/down movement size
+ are saved to config file.
+
+-key redefinitions are saved to config file.
+
+-Bugfix: when game was waiting in some loops,
+ killing wasn't effective. (no checking of quit_action)
+ (leveledit.cc: tower color changer and key help,
+  game.cc: bonus(), keyb.cc: wait_for_focus())
+
+-Use UNICODE to get input for input fields; this
+ is toggleable in the config file, as it causes a
+ bit of an overhead. If this is on, the keyboard works
+ more like expected in men_input(), eg. shifted keys work.
+ There's lots more characters missing from the char set
+ grpahics, eg. @, -, which should be available...
+
+-changed men_input() to nonblocking function.
+
+-in level editor, in tower color changer, you can now
+ press '.' to randomize the colors.
+
+-generalized textsystem, similar to menu system.
+ level editor key help uses the textsystem.
+
+-level editor: new command: adjust tower height.
+ it asks for an input, and depending on what you give,
+ changes the tower height:
+   100 => set tower height to 100
+   -50 => shorten the tower by 50,
+   +25 => make tower 25 lines taller.
+
+ NOTE: there's no minus in the character set graphics!!
+
+-you can now select how many lives you have when starting the
+ game; 1-3 lives.
+
+-tower passwords; you can enter a password in the menu, and
+ then start a game. The passwords are calculated from the
+ tower[][] -array. (see gen_passwd() in level.cc)
+ The game shows the password every 3rd tower,
+ unless it's the first or last tower of the mission.
+ The last entered password is saved to config file.
+ (see level.cc: gen_passwd(), lev_get_passwd(), lev_show_passwd(),
+  lev_tower_passwd_entry())
+
+-added a new level editor command: goto end. it finds the target
+ door, and moves cursor there.
+
+-level editor background screen is now darkened when the editor
+ waits for input or shows some informational text on the screen.
+
+-3 new text formatting commands for scr_writeformattext():
+ ~T###  - same as ~t, but relative to x, instead of screen edge.
+ ~b#    - show a tower block.
+ ~e#    - show a tower block in level editor style.
+
+-added a new function scr_formattextlength(), that returns
+ the length of formatted text.
+ (Needed to make the level editor key help work with the
+ generalized text system as previously)
+
+
+Version 0.98.1 24.11.2002
+
 - Added a new config option "status_top"; this tells whether
   the status line is on top or bottom of screen.
   Currently this option is not in the menus. (OK, so this is

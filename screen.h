@@ -34,6 +34,8 @@ void scr_color_ramp(int *r, int *g, int *b);
 
 void scr_savedisplaybmp(char *fname);
 
+void scr_setclipping(int x = -1, int y = -1, int w = -1, int h = -1);
+
 /* initializes the module, loads the graphics, sets up the display */
 void scr_init(void);
 
@@ -71,10 +73,18 @@ void scr_writetext_center(long y, const char *s);
  have the from ~ followed by letter followed by a fixed set of parameters.
  currently the following command(s) are defined:
 
- t###: moves the x position to the given coordinate, the number must
-       have 3 digits
+ t###: moves the x position to the given coordinate, relative to the
+       screen. The number must have 3 digits
+ T###: moves the x position to the given coordinate, relative to the
+       starting x position. The number must have 3 digits.
+ b#  : displays a tower block. The '#' is a character, as represented
+       in towerblockdata[].ch. Does NOT show robots.
+ e#  : displays tower blocks in level editor style. The '#' is a character,
+       as represented in towerblockdata[].ch.
  */
 void scr_writeformattext(long x, long y, const char *s);
+/* returns the length of formatted text in pixels. */
+long scr_formattextlength(long x, long y, const char *s);
 
 /* returns the number of pixels the first chars characters in
  text needs in the display (if the string is only n chars long

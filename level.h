@@ -81,6 +81,19 @@ void lev_findmissions();
 Uint16 lev_missionnumber();
 const char * lev_missionname(Uint16 num);
 
+/* Convert a char into towerblock */
+Uint8 conv_char2towercode(char ch);
+  
+/* Get tower password. Note that the password changes when
+   the tower changes. */
+char *lev_get_passwd(void);
+/* Do we show the tower password to user at the beginning
+   of current tower? */
+bool lev_show_passwd(int levnum);
+/* Which tower does password allow entry to in the
+   current mission? */
+int lev_tower_passwd_entry(char *passwd);
+
 /* loads a mission from the file with the given name */
 void lev_loadmission(Uint16 num);
 
@@ -105,6 +118,8 @@ void lev_set_towercol(Uint8 r, Uint8 g, Uint8 b);
 
 /* returns the value at this position in the level array */
 Uint8 lev_tower(Uint16 row, Uint8 column);
+/* sets the value at this pos in the level array */
+Uint8 lev_set_tower(Uint16 row, Uint8 column, Uint8 block);
 
 /* returns the height of the tower */
 Uint8 lev_towerrows(void);

@@ -332,7 +332,7 @@ void lev_loadmission(Uint16 num) {
 }
 
 Uint8 lev_towercount(void) {
-  return mission[mission[0] + 1];
+  return mission[mission[0] + 2];
 }
 
 void lev_selecttower(Uint8 number) {
@@ -421,6 +421,57 @@ void lev_selecttower(Uint8 number) {
   lev_set_towerdemo(tmpbuf_len, tmpbuf);
 }
 
+char *
+gen_passwd(int pwlen, char *allowed, int buflen, char *buf)
+{
+    static char passwd[PASSWORD_LEN + 1];
+    int len = buflen;
+    int alen;
+    int i;
+    
+    if (!allowed) return NULL;
+    
+    alen = strlen(allowed);
+    
+    if (pwlen > PASSWORD_LEN) pwlen = PASSWORD_LEN;
+    
+    if (buflen < (pwlen*5)) len = pwlen*5;
+    
+    (void)memset(passwd, 0, PASSWORD_LEN);
+    
+    for (i = 0; i < len; i++) {
+      passwd[i % pwlen] += buf[i % buflen];
+      if (passwd[i % pwlen] > alen) passwd[(i+1) % pwlen]++;
+    }
+    
+    for (i = 0; i < pwlen; i++)
+	passwd[i] = allowed[abs(passwd[i]) % alen];
+
+    passwd[pwlen] = '\0';
+    
+    return passwd;
+}
+
+char *lev_get_passwd(void) {
+    return gen_passwd(PASSWORD_LEN, PASSWORD_CHARS, 256*TOWERWID, (char *)tower);
+}
+
+bool lev_show_passwd(int levnum) {
+    return ((levnum > 0) &&
+	    (levnum < lev_towercount()) &&
+	    ((levnum % 3) == 0));
+}
+
+int lev_tower_passwd_entry(char *passwd) {
+    int i;
+    if (!passwd) return 0;
+    for (i = 0; i < lev_towercount(); i++) {
+	lev_selecttower(i);
+	if (!strcmp(passwd,lev_get_passwd())) return i;
+    }
+    return 0;
+}
+
 void lev_clear_tower(void) {
     memset(&tower, TB_EMPTY, 256*TOWERWID);
 }
@@ -445,6 +496,12 @@ Uint8 lev_towercol_blue() {
 
 Uint8 lev_tower(Uint16 row, Uint8 column) {
   return tower[row][column];
+}
+
+Uint8 lev_set_tower(Uint16 row, Uint8 column, Uint8 block) {
+    Uint8 tmp = tower[row][column];
+    tower[row][column] = block;
+    return tmp;
 }
 
 Uint8 lev_towerrows(void) {
