@@ -34,7 +34,6 @@
 
 bool fullscreen;
 bool nosound;
-bool doublescale;
 bool use_water = true;
 bool use_alpha = true;
 
@@ -281,8 +280,6 @@ static void parse_config(FILE * in) {
 
     if (strstr(line, "fullscreen")) {
       fullscreen = (atoi(param) == 1);
-    } else if (strstr(line, "scale2x")) {
-      doublescale = (atoi(param) == 1);
     } else if (strstr(line, "nosound")) {
       nosound = (atoi(param) == 1);
     } else if (strstr(line, "editor_towername")) {
@@ -298,7 +295,6 @@ static void parse_config(FILE * in) {
 void load_config(void) {
   fullscreen = false;
   nosound = false;
-  doublescale = false;
 
   FILE * in = open_global_config_file(".toppler.rc");
   
@@ -320,7 +316,6 @@ void save_config(void) {
 
   if (out) {
     fprintf(out, "fullscreen: %i\n", (fullscreen)?(1):(0));
-    fprintf(out, "scale2x: %i\n", (doublescale)?(1):(0));
     fprintf(out, "nosound: %i\n", (nosound)?(1):(0));
     fprintf(out, "editor_towername: %s\n", editor_towername);
 

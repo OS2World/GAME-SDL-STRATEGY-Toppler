@@ -129,7 +129,7 @@ new_menu_system(char *title, menuopt_callback_proc pr, int molen, int ystart)
   if (ms) {
     memset(ms->title, '\0', MENUTITLELEN);
     if (title) {
-	memcpy(ms->title, title, (strlen(title) < MENUTITLELEN) ? strlen(title) + 1 : (MENUTITLELEN-1));
+      memcpy(ms->title, title, (strlen(title) < MENUTITLELEN) ? strlen(title) + 1 : (MENUTITLELEN-1));
     }
 
     ms->numoptions = 0;
@@ -214,8 +214,8 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
 
   if (!ms) return;
 
-  int y, offs = 0, len, realy, minx, miny, maxx, maxy, scrlen, 
-      newhilite = -1, yz, titlehei;
+  int y, offs = 0, len, realy, minx, miny, maxx, maxy, scrlen,
+    newhilite = -1, yz, titlehei;
   bool has_title = (ms->title) && (strlen(ms->title) != 0);
 
   if (ms->wraparound) {
@@ -238,41 +238,41 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
   /* TODO: Calculate offs from ms->hilited.
    * TODO: Put slider if more options than fits in screen.
    */
-    
+
   yz = ms->ystart + (titlehei) * FONTHEI;
 
   for (y = 0; (yz+y+1 < SCREENHEI) && (y+offs < ms->numoptions); y++) {
-      realy = yz + y * FONTHEI;
-      len = strlen(ms->moption[y+offs].oname);
-      scrlen = scr_textlength(ms->moption[y+offs].oname, len);
-      minx = (SCREENWID - scrlen) / 2;
-      miny = realy;
-      maxx = (SCREENWID + scrlen) / 2;
-      maxy = realy + FONTHEI;
-      if (len) {
-	  if (dx >= minx && dx <= maxx && dy >= miny && dy <= maxy)
-	    newhilite = y + offs;
-	  if (y + offs == ms->hilited) {
-	      if (ms->yhilitpos == -1) {
-		  ms->yhilitpos = miny;
-	      } else {
-		  if (ms->yhilitpos < miny) ms->yhilitpos += (miny - ms->yhilitpos) / 4;
-		  else if (ms->yhilitpos > miny) ms->yhilitpos -= (ms->yhilitpos - miny) / 4;
-	      }
-	      scr_putbar((SCREENWID - ms->maxoptlen - 8) / 2, ms->yhilitpos - 3,
-			 ms->maxoptlen + 8, FONTHEI + 3,
-			 color_r, color_g, color_b, 128);
-	  }
+    realy = yz + y * FONTHEI;
+    len = strlen(ms->moption[y+offs].oname);
+    scrlen = scr_textlength(ms->moption[y+offs].oname, len);
+    minx = (SCREENWID - scrlen) / 2;
+    miny = realy;
+    maxx = (SCREENWID + scrlen) / 2;
+    maxy = realy + FONTHEI;
+    if (len) {
+      if (dx >= minx && dx <= maxx && dy >= miny && dy <= maxy)
+        newhilite = y + offs;
+      if (y + offs == ms->hilited) {
+        if (ms->yhilitpos == -1) {
+          ms->yhilitpos = miny;
+        } else {
+          if (ms->yhilitpos < miny) ms->yhilitpos += (miny - ms->yhilitpos) / 4;
+          else if (ms->yhilitpos > miny) ms->yhilitpos -= (ms->yhilitpos - miny) / 4;
+        }
+        scr_putbar((SCREENWID - ms->maxoptlen - 8) / 2, ms->yhilitpos - 3,
+                   ms->maxoptlen + 8, FONTHEI + 3,
+                   color_r, color_g, color_b, 128);
       }
+    }
   }
-    
+
   maxy = y;
 
   for (y = 0; y < maxy; y++) {
-      if (strlen(ms->moption[y+offs].oname)) {
-	  miny = ms->ystart + (y + titlehei)*FONTHEI;
-	  scr_writetext_center(miny, ms->moption[y+offs].oname);
-      }
+    if (strlen(ms->moption[y+offs].oname)) {
+      miny = ms->ystart + (y + titlehei)*FONTHEI;
+      scr_writetext_center(miny, ms->moption[y+offs].oname);
+    }
   }
 
   if (newhilite >= 0) ms->hilited = newhilite;
@@ -287,16 +287,16 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
 void
 menu_system_caller(struct _menusystem *ms)
 {
-    char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
-    if (tmpbuf) {
-	int olen = strlen(tmpbuf);
-	memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
-	memcpy(ms->moption[ms->hilited].oname, tmpbuf,
-	       (olen < MENUOPTIONLEN) ? olen + 1 : (MENUOPTIONLEN-1));
-	olen = scr_textlength(tmpbuf);
-	if (ms->maxoptlen < olen) ms->maxoptlen = olen;
-	ms->key = SDLK_UNKNOWN;
-    }
+  char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
+  if (tmpbuf) {
+    int olen = strlen(tmpbuf);
+    memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
+    memcpy(ms->moption[ms->hilited].oname, tmpbuf,
+           (olen < MENUOPTIONLEN) ? olen + 1 : (MENUOPTIONLEN-1));
+    olen = scr_textlength(tmpbuf);
+    if (ms->maxoptlen < olen) ms->maxoptlen = olen;
+    ms->key = SDLK_UNKNOWN;
+  }
 }
 
 
@@ -305,13 +305,13 @@ run_menu_system(struct _menusystem *ms)
 {
   Uint16 x,y, bttn;
   bool stolen = false;
-    
+
   if (!ms) return ms;
 
   (void)key_sdlkey();
 
   do {
-      
+
     stolen = false;
     bttn = false;
     x = y = 0;
@@ -319,83 +319,83 @@ run_menu_system(struct _menusystem *ms)
     ms->key = SDLK_UNKNOWN;
 
     if (key_keypressed(quit_action)) {
-	ms->exitmenu = true;
-	break;
+      ms->exitmenu = true;
+      break;
     }
-      
-    if ((ms->opt_steal_control >= 0) && 
-	(ms->opt_steal_control < ms->numoptions) && 
-	ms->moption[ms->opt_steal_control].oproc) {
-	ms->key = key_sdlkey();
-	ms->hilited = ms->opt_steal_control;
-	stolen = true;
+
+    if ((ms->opt_steal_control >= 0) &&
+        (ms->opt_steal_control < ms->numoptions) &&
+        ms->moption[ms->opt_steal_control].oproc) {
+      ms->key = key_sdlkey();
+      ms->hilited = ms->opt_steal_control;
+      stolen = true;
     } else {
-	if (!fullscreen && !key_mouse(&x, &y, &bttn) && bttn)
-	  ms->key = key_conv2sdlkey(bttn, false);
-	else ms->key = key_sdlkey();
+      if (!fullscreen && !key_mouse(&x, &y, &bttn) && bttn)
+        ms->key = key_conv2sdlkey(bttn, false);
+      else ms->key = key_sdlkey();
     }
-      
+
     draw_menu_system(ms, x, y);
 
     if ((ms->key != SDLK_UNKNOWN) || stolen) {
 
       if (!stolen)
-	  for (int tmpz = 0; tmpz < ms->numoptions; tmpz++)
-	    if (ms->moption[tmpz].quickkey == ms->key) {
-		ms->hilited = tmpz;
-		ms->key = SDLK_UNKNOWN;
-		break;
-	    }
+        for (int tmpz = 0; tmpz < ms->numoptions; tmpz++)
+          if (ms->moption[tmpz].quickkey == ms->key) {
+            ms->hilited = tmpz;
+            ms->key = SDLK_UNKNOWN;
+            break;
+          }
 
       if ((((ms->moption[ms->hilited].oflags & MOFLAG_PASSKEYS)) || stolen) &&
           (ms->moption[ms->hilited].oproc) && ((ms->key != SDLK_UNKNOWN) || stolen)) {
-	  menu_system_caller(ms);
+        menu_system_caller(ms);
       }
       if (!stolen) {
-      switch (key_sdlkey2conv(ms->key, false)) {
-      case down_key:
-        if (ms->wraparound) {
-          do {
-            ms->hilited = (ms->hilited + 1) % ms->numoptions;
-          } while (!strlen(ms->moption[ms->hilited].oname));
-        } else {
-          if (ms->hilited < ms->numoptions) {
-            ms->hilited++;
-            if (!strlen(ms->moption[ms->hilited].oname)) ms->hilited++;
+        switch (key_sdlkey2conv(ms->key, false)) {
+        case down_key:
+          if (ms->wraparound) {
+            do {
+              ms->hilited = (ms->hilited + 1) % ms->numoptions;
+            } while (!strlen(ms->moption[ms->hilited].oname));
+          } else {
+            if (ms->hilited < ms->numoptions) {
+              ms->hilited++;
+              if (!strlen(ms->moption[ms->hilited].oname)) ms->hilited++;
+            }
           }
-        }
-        break;
-      case up_key:
-        if (ms->wraparound) {
-          do {
-            ms->hilited--;
-            if (ms->hilited < 0) ms->hilited = ms->numoptions - 1;
-          } while (!strlen(ms->moption[ms->hilited].oname));
-        } else {
-          if (ms->hilited > 0) {
-            ms->hilited--;
-            if (!strlen(ms->moption[ms->hilited].oname)) ms->hilited--;
+          break;
+        case up_key:
+          if (ms->wraparound) {
+            do {
+              ms->hilited--;
+              if (ms->hilited < 0) ms->hilited = ms->numoptions - 1;
+            } while (!strlen(ms->moption[ms->hilited].oname));
+          } else {
+            if (ms->hilited > 0) {
+              ms->hilited--;
+              if (!strlen(ms->moption[ms->hilited].oname)) ms->hilited--;
+            }
           }
+          break;
+        case fire_key:
+          if ((ms->hilited >= 0) && (ms->hilited < ms->numoptions) &&
+              ms->moption[ms->hilited].oproc) {
+            char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
+            if (tmpbuf) {
+              int olen = strlen(tmpbuf);
+              memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
+              memcpy(ms->moption[ms->hilited].oname, tmpbuf,
+                     (olen < MENUOPTIONLEN) ? olen + 1 : (MENUOPTIONLEN-1));
+              olen = scr_textlength(tmpbuf);
+              if (ms->maxoptlen < olen) ms->maxoptlen = olen;
+            }
+            break;
+          }
+        case break_key : ms->exitmenu = true; break;
+        default:
+          break;
         }
-        break;
-      case fire_key:
-	if ((ms->hilited >= 0) && (ms->hilited < ms->numoptions) &&
-                     ms->moption[ms->hilited].oproc) {
-        char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
-        if (tmpbuf) {
-          int olen = strlen(tmpbuf);
-          memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
-          memcpy(ms->moption[ms->hilited].oname, tmpbuf,
-                 (olen < MENUOPTIONLEN) ? olen + 1 : (MENUOPTIONLEN-1));
-          olen = scr_textlength(tmpbuf);
-          if (ms->maxoptlen < olen) ms->maxoptlen = olen;
-        }
-        break;
-      }
-      case break_key : ms->exitmenu = true; break;
-      default:
-        break;
-      }
       }
     }
   } while (!ms->exitmenu);
@@ -414,16 +414,16 @@ static char *debug_menu_extrascore(void *ms) {
 }
 
 void run_debug_menu(void) {
-    struct _menusystem *ms = new_menu_system("DEBUG MENU", men_yn_background_proc, 0, SCREENHEI / 5);
+  struct _menusystem *ms = new_menu_system("DEBUG MENU", men_yn_background_proc, 0, SCREENHEI / 5);
 
-    ms = add_menu_option(ms, NULL, debug_menu_extralife);
-    ms = add_menu_option(ms, NULL, debug_menu_extrascore);
-    ms = add_menu_option(ms, NULL, NULL);
-    ms = add_menu_option(ms, "Back to Game", NULL);
+  ms = add_menu_option(ms, NULL, debug_menu_extralife);
+  ms = add_menu_option(ms, NULL, debug_menu_extrascore);
+  ms = add_menu_option(ms, NULL, NULL);
+  ms = add_menu_option(ms, "Back to Game", NULL);
 
-    ms = run_menu_system(ms);
+  ms = run_menu_system(ms);
 
-    free_menu_system(ms);
+  free_menu_system(ms);
 }
 #endif /* GAME_DEBUG_KEYS */
 
@@ -471,18 +471,18 @@ unsigned char men_yn(char *s, bool defchoice) {
 }
 
 void men_info(char *s, long timeout, int fire) {
-   bool ende = false;
+  bool ende = false;
   do {
-     if (menu_background_proc) (*menu_background_proc) ();
-     scr_writetext_center((SCREENHEI / 5), s);
-     if (fire)
-       scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, (fire == 1) ? "Press fire" : "Press space");
-     scr_swap();
-     dcl_wait();
-     if (timeout > 0) timeout--;
-     if (!timeout) ende = true;
-     else if ((fire == 2) && (key_chartyped() == ' ')) ende = true;
-     else if ((fire != 2) && key_keypressed(fire_key)) ende = true;
+    if (menu_background_proc) (*menu_background_proc) ();
+    scr_writetext_center((SCREENHEI / 5), s);
+    if (fire)
+      scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, (fire == 1) ? "Press fire" : "Press space");
+    scr_swap();
+    dcl_wait();
+    if (timeout > 0) timeout--;
+    if (!timeout) ende = true;
+    else if ((fire == 2) && (key_chartyped() == ' ')) ende = true;
+    else if ((fire != 2) && key_keypressed(fire_key)) ende = true;
   } while (!ende);
   (void)key_sdlkey();
 }
@@ -501,66 +501,65 @@ men_options_background_proc(void *ms)
 #define REDEFINEREC 5
 static int times_called = 0;
 static char *redefine_menu_up(void *tms) {
-    struct _menusystem *ms = (struct _menusystem *)tms;
-    static char buf[50];
-    const char *code[REDEFINEREC] = {"Up", "Down", "Left", "Right", "Fire"};
-    char *keystr;
-    static int blink, times_called;
-    const Uint16 key[REDEFINEREC] = {1, 2, 4, 8, 16};
-    buf[0] = '\0';
-    if (ms) {
-	switch (ms->mstate) {
-	    default:
-	    if (key_sdlkey2conv(ms->key, false) == fire_key) {
-		ms->mstate = 1;
-		ms->opt_steal_control = ms->hilited;
-		ms->key = SDLK_UNKNOWN;
-	    }
-	    break;
-	    case 1:
-	    if (ms->key != SDLK_UNKNOWN) {
-		key_redefine(key[ms->hilited % REDEFINEREC], ms->key);
-		ms->mstate = 2;
-		ms->opt_steal_control = ms->hilited;
-		blink = 0;
-	    } else blink++;
-	    break;
-	    case 2:
-	    ms->mstate = 0;
-	    ms->opt_steal_control = -1;
-	    break;
-	}
-	if ((blink & 4) || (ms->mstate != 1))
-	  keystr = SDL_GetKeyName(key_conv2sdlkey(key[ms->hilited % REDEFINEREC], true));
-	else keystr = "????";
-	sprintf(buf, "%s: %s", code[ms->hilited % REDEFINEREC], keystr);
-    } else {
-	keystr = SDL_GetKeyName(key_conv2sdlkey(key[times_called], true));
-	sprintf(buf, "%s: %s", code[times_called], keystr);
-	times_called = (times_called + 1) % REDEFINEREC;
+  struct _menusystem *ms = (struct _menusystem *)tms;
+  static char buf[50];
+  const char *code[REDEFINEREC] = {"Up", "Down", "Left", "Right", "Fire"};
+  char *keystr;
+  static int blink, times_called;
+  const Uint16 key[REDEFINEREC] = {1, 2, 4, 8, 16};
+  buf[0] = '\0';
+  if (ms) {
+    switch (ms->mstate) {
+    default:
+      if (key_sdlkey2conv(ms->key, false) == fire_key) {
+        ms->mstate = 1;
+        ms->opt_steal_control = ms->hilited;
+        ms->key = SDLK_UNKNOWN;
+      }
+      break;
+    case 1:
+      if (ms->key != SDLK_UNKNOWN) {
+        key_redefine(key[ms->hilited % REDEFINEREC], ms->key);
+        ms->mstate = 2;
+        ms->opt_steal_control = ms->hilited;
+        blink = 0;
+      } else blink++;
+      break;
+    case 2:
+      ms->mstate = 0;
+      ms->opt_steal_control = -1;
+      break;
     }
-    return buf;
+    if ((blink & 4) || (ms->mstate != 1))
+      keystr = SDL_GetKeyName(key_conv2sdlkey(key[ms->hilited % REDEFINEREC], true));
+    else keystr = "????";
+    sprintf(buf, "%s: %s", code[ms->hilited % REDEFINEREC], keystr);
+  } else {
+    keystr = SDL_GetKeyName(key_conv2sdlkey(key[times_called], true));
+    sprintf(buf, "%s: %s", code[times_called], keystr);
+    times_called = (times_called + 1) % REDEFINEREC;
+  }
+  return buf;
 }
 
 static char *run_redefine_menu(void *prevmenu) {
-    if (prevmenu) {
-	struct _menusystem *ms = new_menu_system("Redefine Keys", men_options_background_proc, 0, spr_spritedata(titledata)->h+30);
+  if (prevmenu) {
+    struct _menusystem *ms = new_menu_system("Redefine Keys", men_options_background_proc, 0, spr_spritedata(titledata)->h+30);
 
-	times_called = 0;
-	
-	ms = add_menu_option(ms, NULL, redefine_menu_up);
-	ms = add_menu_option(ms, NULL, redefine_menu_up);
-	ms = add_menu_option(ms, NULL, redefine_menu_up);
-	ms = add_menu_option(ms, NULL, redefine_menu_up);
-	ms = add_menu_option(ms, NULL, redefine_menu_up);
-//	ms = add_menu_option(ms, NULL, NULL);
-	ms = add_menu_option(ms, "Back", NULL);
+    times_called = 0;
 
-	ms = run_menu_system(ms);
+    ms = add_menu_option(ms, NULL, redefine_menu_up);
+    ms = add_menu_option(ms, NULL, redefine_menu_up);
+    ms = add_menu_option(ms, NULL, redefine_menu_up);
+    ms = add_menu_option(ms, NULL, redefine_menu_up);
+    ms = add_menu_option(ms, NULL, redefine_menu_up);
+    ms = add_menu_option(ms, "Back", NULL);
 
-	free_menu_system(ms);
-    }
-    return "Redefine Keys";
+    ms = run_menu_system(ms);
+
+    free_menu_system(ms);
+  }
+  return "Redefine Keys";
 }
 
 static char *
@@ -574,19 +573,6 @@ men_options_windowed(void *ms)
   if (fullscreen) return "Windowed";
   else return "Fullscreen";
 }
-
-/*
-static char *
-men_options_scaling(void *ms)
-{
-  if (ms) {
-    doublescale = !doublescale;
-    scr_reinit();
-  }
-  if (doublescale) return "Do not scale";
-  else return "Scale  2x";
-}
-*/
 
 static char *
 men_options_sounds(void *ms)
@@ -618,7 +604,6 @@ men_options(void *mainmenu) {
       
     ms = add_menu_option(ms, NULL, run_redefine_menu);
     ms = add_menu_option(ms, NULL, men_options_windowed);
-    /*ms = add_menu_option(ms, NULL, men_options_scaling);*/
     ms = add_menu_option(ms, NULL, men_options_sounds);
 
     ms = add_menu_option(ms, NULL, NULL);
@@ -804,9 +789,9 @@ men_hiscores_background_proc(void *ms)
       get_hiscores_string(cs, &pos, &points, &name);
       if (cs == hiscores_hilited) {
         int clen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20 + 10;
-        scr_putbar(hiscores_xpos - 5, 
-		   (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45 - 3, 
-		   clen, FONTHEI + 3, blink_r, blink_g, blink_b, 128);
+        scr_putbar(hiscores_xpos - 5,
+                   (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45 - 3,
+                   clen, FONTHEI + 3, blink_r, blink_g, blink_b, 128);
       }
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, pos);
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 10 + hiscores_maxlen_points - scr_textlength(points) , (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, points);
@@ -947,7 +932,6 @@ men_main_leveleditor_proc(void *ms)
     snd_stoptitle();
     le_edit();
     (void)key_sdlkey();
-//    pal_colors(pal_menu);
     snd_playtitle();
   }
   return "Level Editor";
@@ -959,8 +943,6 @@ void men_main() {
   ms = new_menu_system(NULL, men_options_background_proc, 0, spr_spritedata(titledata)->h + 30);
 
   if (!ms) return;
-
-//  pal_colors(pal_menu);
 
   snd_playtitle();
 
@@ -995,8 +977,8 @@ draw_input_box(int x, int y, int len, int cursor, char *txt)
   scr_writetext(x+1,y, txt);
 
   if ((input_box_cursor_state & 4) && ((cursor >= 0) && (cursor < len)))
-    scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI, 
-	       col_r, col_g, col_b, 128);
+    scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI,
+               col_r, col_g, col_b, 128);
   scr_putrect(x,y, len * FONTMAXWID, FONTHEI, col_r, col_g, col_b, 128);
   input_box_cursor_state++;
 
@@ -1023,9 +1005,9 @@ void men_input(char *s, int max_len, int xpos, int ypos, const char *allowed) {
   key_wait_for_none(men_input_wait_proc);
 
   do {
-      
+
     if (key_keypressed(quit_action)) break;
-      
+
     if (menu_background_proc) (*menu_background_proc) ();
 
     draw_input_box(xpos,ypos, max_len, pos, s);
@@ -1039,10 +1021,10 @@ void men_input(char *s, int max_len, int xpos, int ypos, const char *allowed) {
     case 4: if ((unsigned)pos < strlen(s)) pos++; break;
     case 3: if (pos > 0) pos--; break;
     case 27: if (strlen(s)) {
-	         s[0] = '\0'; 
-	         pos = 0;
-	         break;
-             } /* fall through */
+      s[0] = '\0';
+      pos = 0;
+      break;
+    } /* fall through */
     case '\r': ende = true; break;
     case 6:
       if (strlen(s) >= (unsigned)pos) {
@@ -1061,9 +1043,9 @@ void men_input(char *s, int max_len, int xpos, int ypos, const char *allowed) {
       break;
     default:
       if ((((allowed != NULL) && (strchr(allowed, inp))) ||
-	  ((allowed == NULL) && (isalnum(inp) || (inp == ' ')))) &&
-	  (pos < max_len) && (strlen(s) >= (unsigned)pos) &&
-	  (strlen(s) < (unsigned)max_len)) {
+           ((allowed == NULL) && (isalnum(inp) || (inp == ' ')))) &&
+          (pos < max_len) && (strlen(s) >= (unsigned)pos) &&
+          (strlen(s) < (unsigned)max_len)) {
         for (ztmp = max_len-1; ztmp >= pos; ztmp--) s[ztmp+1] = s[ztmp];
         s[pos] = inp;
         s[max_len] = '\0';
@@ -1085,7 +1067,7 @@ congrats_background_proc(void)
 
   scr_writetext_center(130, "Congratulations");
   if (congrats_placement == 0) {
-    scr_writetext_center(170, "You got the");
+    scr_writetext_center(170, "You've got the");
     scr_writetext_center(210, "highest score");
   } else {
     char buf[40];
@@ -1097,8 +1079,6 @@ congrats_background_proc(void)
 }
   
 void men_highscore(unsigned long pt) {
-
-//  pal_colors(pal_menu);
 
 #ifdef USE_LOCKING
   int lockfd;
