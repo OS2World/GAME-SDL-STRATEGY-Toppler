@@ -4,7 +4,11 @@ Version 1.1.0
 - make it possible to not use internationalisation for BeOS
 - fix saving of bonus level option
 - add joystick support (untested by me)
+- new sound system
+- update build system
+- display check on start
 
+Version 1.0.6
 
 - add 5000 points for each life left after the last tower is finished
 - more characters, should now be possible to add all unicode character,
@@ -12,16 +16,19 @@ Version 1.1.0
 - add characters for Esperanto ^c, ^g, ^h, ^j, ^s and ~u
 - fix mismatching new [] delete problem
 
+Version 1.0.5
 
 - fix encoding bugs
 - fix ê letter
 
+Version 1.0.4
 
 - smoother toppler images
 - move bonus level switch into game menu
 - internationalze, add German, add French
 - add some french letters, resize letters for accents
 
+Version 1.0.3
 
 - add switch to skip bonus level, thanks to Beni Cherniavsky
 - add checks for different video modis (thanks Stephane Marchesin)
@@ -30,16 +37,13 @@ Version 1.1.0
 - hopefully fix bug that caused the timeout screen to become
   a highscore screen with timeout text
   
+
 Version 1.0.2 8.Jun.2003
 
 - add check for sound on torpedo off, this fixes a crash
 - update the green dude to have a higher resolution
 - add not into README that signed versions of the game
   are allowed
-- new sound system
-- update build system
-- display check on start
-- add switch to skip bonus level thanks to Beni Cherniavsky
 
 Version 1.0.1
 
