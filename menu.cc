@@ -592,8 +592,8 @@ men_options_sounds(void *ms)
       nosound = true;
     }
   }
-  if (nosound) return "Sounds  On";
-  else return "Sounds Off";
+  if (nosound) return "Sounds \x04";
+  else return "Sounds \x03";
 }
 
 static void

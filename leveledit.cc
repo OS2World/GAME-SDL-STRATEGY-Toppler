@@ -363,10 +363,12 @@ void le_showkeyhelp(int row, int col) {
   int c, k, offs = 0;
   bool ende = false;
   int lines = ((SCREENHEI - 75) / FONTHEI);
-  char point[2];
+  char pointup[2], pointdown[2];
 
-  point[0] = fontpoint;
-  point[1] = 0;
+  pointup[0] = fontptrup;
+  pointup[1] = 0;
+  pointdown[0] = fontptrdown;
+  pointdown[1] = 0;
 
   do {
     (void)key_readkey();
@@ -386,8 +388,8 @@ void le_showkeyhelp(int row, int col) {
       scr_writetext(185 + FONTWID, k * FONTHEI + 75, _ed_key_actions[_ed_keys[k+offs].action]);
     }
 
-    if (offs > 0) scr_writetext(SCREENWID-FONTWID, 34, point);
-    if (offs + lines < SIZE(_ed_keys)) scr_writetext(SCREENWID-FONTWID, SCREENHEI-FONTHEI, point);
+    if (offs > 0) scr_writetext(SCREENWID-FONTWID, 34, pointup);
+    if (offs + lines < SIZE(_ed_keys)) scr_writetext(SCREENWID-FONTWID, SCREENHEI-FONTHEI, pointdown);
 
     scr_swap();
     dcl_wait();

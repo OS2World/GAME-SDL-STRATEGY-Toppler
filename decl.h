@@ -152,6 +152,12 @@
 /* the two special characters in the font */
 #define fonttoppler     '\x01'
 #define fontpoint       '\x02'
+#define fontemptytagbox '\x03'
+#define fonttagedtagbox '\x04'
+#define fontptrup       '\x05'
+#define fontptrright    '\x06'
+#define fontptrdown     '\x07'
+#define fontptrleft     '\x08'
 
 #define FDECL(f,p) f p
 #define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))
