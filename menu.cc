@@ -731,10 +731,8 @@ main_game_loop()
       gam_loadtower(tower);
       scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
       ttsounds::instance()->setsoundvol(SND_WATER, 128);
-      //snd_playtgame();
       gam_arrival();
       gameresult = gam_towergame(anglepos, resttime, demo, &tmpbuf);
-      //snd_stoptgame();
     } while ((gameresult == GAME_DIED) && pts_lifesleft());
 
     if (gameresult == GAME_FINISHED) {
@@ -766,12 +764,10 @@ static const char *
 men_main_bonusgame_proc(_menusystem *ms)
 {
   if (ms) {
-    //snd_stoptitle();
     gam_newgame();
     scr_settowercolor(rand() % 256, rand() % 256, rand() % 256);
     lev_set_towercol(rand() % 256, rand() % 256, rand() % 256);
     bns_game();
-    //snd_playtitle();
   }
   return _("Hunt the Fish");
 }
@@ -785,9 +781,7 @@ men_main_startgame_proc(_menusystem *ms)
     switch (key_sdlkey2conv(ms->key, false)) {
     case fire_key:
       dcl_update_speed(config.game_speed());
-      //snd_stoptitle();
       main_game_loop();
-      //snd_playtitle();
       dcl_update_speed(MENU_DCLSPEED);
       break;
     case right_key: currentmission = (currentmission + 1) % missioncount; break;
@@ -855,19 +849,14 @@ men_main_timer_proc(_menusystem *ms)
     lev_get_towerdemo(demolen, demobuf);
 
     dcl_update_speed(config.game_speed());
-    //snd_stoptitle();
     gam_newgame();
     ttsounds::instance()->startsound(SND_WATER);
     scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
     ttsounds::instance()->setsoundvol(SND_WATER, 128);
-    //snd_playtgame();
     rob_initialize();
     (void)gam_towergame(anglepos, resttime, demolen, &demobuf);
-    //snd_stoptgame();
     ttsounds::instance()->stopsound(SND_WATER);
     dcl_update_speed(MENU_DCLSPEED);
-
-    //snd_playtitle();
   }
   return NULL;
 }
@@ -920,8 +909,6 @@ void men_main() {
 
   if (!ms) return;
 
-  //snd_playtitle();
-
   ms = set_menu_system_timeproc(ms, 200, men_main_timer_proc);
 
   ms = add_menu_option(ms, NULL, men_main_startgame_proc, SDLK_s, MOF_PASSKEYS);
@@ -940,8 +927,6 @@ void men_main() {
   ms = run_menu_system(ms, 0);
 
   free_menu_system(ms);
-
-  //snd_stoptitle();
 }
 
 bool men_game() {
