@@ -44,12 +44,22 @@ global_settings{
 #declare stutz=cylinder { <58,0,0>, <58,0,7>, 4  texture { pigment { color rgb 0.7 } } }
 #declare eleva=cylinder { <58,0,0>, <58,0,7>, 8  texture { pigment { color rgb 0.7 } } }
 
-#declare moertel = texture { pigment { color rgb <0.7,0.7,0.7> } }
+#macro brick_tex()
+  texture {
+    pigment { farb }
+    normal { bumps 0.3 scale 0.5 }
+  }
+#end
+
+#declare moertel = texture {
+  pigment { color rgb <0.7,0.7,0.7> }
+  normal { bumps 0.2 scale 0.4 }
+}
 
 #declare current_layer = 0;
 
 #macro battlement()
-  object { zinnen translate z*8*current_layer pigment { farb } }
+  object { zinnen translate z*8*current_layer brick_tex() }
 #end /* battlement */
 
 /* 
@@ -68,14 +78,14 @@ global_settings{
 #end /* pillar */
 
 #macro door(dx)
-  box { <-50,-10, -0.001>, <50,10,8.002> rotate z*(360/16)*dx translate z*8*(current_layer-1) pigment { farb } }
+  box { <-50,-10, -0.001>, <50,10,8.002> rotate z*(360/16)*dx translate z*8*(current_layer-1) brick_tex() }
 #end /* door */
 
 /* add a layer to the tower */
 #macro layer()
   union {
-    object { scheibe rotate z*11.25*mod((current_layer+1), 2) translate z*8*current_layer pigment {farb} }
-    cylinder { <0, 0, 0>, <0,0,8.001>, 45 open translate z*8*current_layer texture { moertel } }
+    object { scheibe rotate z*11.25*mod((current_layer+1), 2) translate z*8*current_layer brick_tex() }
+    cylinder { <0, 0, 0>, <0,0,8.001>, 48 open translate z*8*current_layer texture { moertel } }
   }
   #declare current_layer = current_layer + 1;
 #end /* layer */

@@ -184,6 +184,7 @@ int main() {
   get(colors, mask, '\x06'); /* pointer right */
   get(colors, mask, '\x07'); /* pointer down */
   get(colors, mask, '\x08'); /* pointer left */
+  get(colors, mask, '-');
 
   fclose(outp);
 }
