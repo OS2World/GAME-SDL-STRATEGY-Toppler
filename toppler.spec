@@ -1,6 +1,6 @@
 
 Name: toppler
-Version: 0.97
+Version: 0.97.2
 Release: 1
 
 URL: http://toppler.soureforge.net
@@ -11,11 +11,11 @@ Group: Amusements/Games
 BuildRoot: %{_tmppath}/%{name}-root
 
 Requires: SDL >= 1.2.4, SDL_mixer >= 1.2.4
-BuildRequires: SDL-devel >= 1.2.4, SDL_mixer-devel >= 1.2.4
+BuildRequires: SDL-devel >= 1.2.4
 
 Source0: %{name}-%{version}.tar.gz
-Patch0: %{name}-%{version}-patch0.diff.gz
-Patch1: %{name}-%{version}-patch1.diff.gz
+#Patch0: %{name}-%{version}-patch0.diff.gz
+#Patch1: %{name}-%{version}-patch1.diff.gz
 
 Summary: Tower Toppler
 
@@ -28,8 +28,8 @@ avoid these beeings.
 %prep
 
 %setup -q
-%patch0 -p1
-%patch1 -p1
+#%patch0 -p1
+#%patch1 -p1
 
 
 %build

@@ -124,8 +124,6 @@
 #define titledat        "titles"
 #define scrollerdat     "scroller"
 
-#define hiscore         "nebulous.hsc"
-
 /* the start number and the number of colors for the different objects */
 
 /* bricks and battlement */
@@ -215,7 +213,7 @@ void save_config(void);
 
 
 #define CONFIGDIR "/etc"
-#define HISCOREDIR "/var/games/nebulous"
+#define HISCOREDIR "/var/games/toppler"
 
 int alpha_scandir(const char *dir, struct dirent ***namelist,
             int (*select)(const struct dirent *));
