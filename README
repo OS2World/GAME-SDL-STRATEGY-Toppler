@@ -426,7 +426,17 @@ level editor, new missions, towers read/write/create
 
 highscore file, read/write/create
 
-  in global dir, home, 
+  in global dir, home,
+
+Signing
+-------
+
+If it is necessary to sign the binary to get it to run on a device
+(like handhelds or smartphones) and this signing requires a fee, you
+are allowed to charge a small amount of money to get this signing fee
+back. Also, you are not required to publish the code that is necessary
+to communicate with the underlying device operating system. All other
+changes to the game must be published under the GPL.
 
 Contact
 -------
