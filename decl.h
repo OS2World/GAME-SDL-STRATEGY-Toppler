@@ -23,7 +23,10 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+
+#ifdef USE_INTERNATIONALISATION
 #include <libintl.h>
+#endif
 
 /* screen width and height, in pixels. */
 #define SCREENWID 640
@@ -222,8 +225,13 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
 
 /* for internationalisation */
 
+#ifdef USE_INTERNATIONALISATION
 #define _(x) gettext(x)
 #define N_(x) x
+#else
+#define _(x) x
+#define N_(x) x
+#endif
 
 
 #endif
