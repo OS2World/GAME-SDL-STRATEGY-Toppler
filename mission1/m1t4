@@ -1,7 +1,14 @@
+[name]
 Slippery slide
+[color]
 163, 120, 88
+[time]
 800
+[robot]
+3
+[height]
 67
+[data]
                 |
                 |
          T      |
@@ -69,6 +76,7 @@ Slippery slide
  -              |
 -   . .    -----|
                 |
+[demo]
 920
 0
 0

@@ -1,7 +1,14 @@
+[name]
 The maddening
+[color]
 36, 3, 255
+[time]
 1200
+[robot]
+3
+[height]
 111
+[data]
                 |
       T         |
   #   T   #     |

@@ -1,7 +1,14 @@
+[name]
 Broken path
+[color]
 0, 155, 155
+[time]
 900
+[robot]
+4
+[height]
 97
+[data]
                 |
                 |
     -     T     |

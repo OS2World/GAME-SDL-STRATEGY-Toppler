@@ -1,7 +1,14 @@
+[name]
 Spiral
+[color]
 150, 65, 65
+[time]
 200
+[robot]
+6
+[height]
 25
+[data]
                 |
                 |
     #       #   |
@@ -27,4 +34,3 @@ Spiral
 #       #     - |
 -               |
                 |
-0

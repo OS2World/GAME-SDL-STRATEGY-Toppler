@@ -1,7 +1,14 @@
+[name]
 Watch your step
+[color]
 185, 90, 0
+[time]
 1000
+[robot]
+1
+[height]
 86
+[data]
 T        -      |
 T               |
 T               |

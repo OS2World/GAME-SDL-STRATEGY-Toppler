@@ -1,7 +1,14 @@
+[name]
 Short, but deadly
+[color]
 95, 0, 16
+[time]
 700
+[robot]
+2
+[height]
 24
+[data]
    #       #    |
    #  #    #  # |
    #  #    #  # |

@@ -1,7 +1,14 @@
+[name]
 Corridors
+[color]
 130, 35, 155
+[time]
 145
+[robot]
+1
+[height]
 12
+[data]
                 |
  #     # # T   #|
  #     # # T   #|
@@ -14,4 +21,3 @@ Corridors
 #-^--#  #! -!#  |
 -!! !#^---  !#  |
  !! ! !  !  !---|
-0

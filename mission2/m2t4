@@ -1,7 +1,14 @@
+[name]
 No man's land
+[color]
 163, 120, 88
+[time]
 800
+[robot]
+3
+[height]
 65
+[data]
                 |
                 |
             T   |
@@ -67,6 +74,7 @@ No man's land
        ^ ^ ^   ^|
 -      - - -   -|
                 |
+[demo]
 1167
 0
 0

@@ -1,7 +1,14 @@
+[name]
 Higher Ground
+[color]
 39, 85, 65
+[time]
 200
+[robot]
+2
+[height]
 17
+[data]
                 |
          T      |
          T      |
@@ -19,4 +26,3 @@ Higher Ground
  --   b         |
 -  -  b  -- ^   |
     -----  --  -|
-0

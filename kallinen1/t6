@@ -1,7 +1,14 @@
+[name]
 Two Ways
+[color]
 56, 0, 139
+[time]
 200
+[robot]
+5
+[height]
 29
+[data]
            - - -|
     T           |
     T           |
@@ -31,4 +38,3 @@ Two Ways
  # ! #^  #^  #  |
 -- ! --  --  ---|
    !     !     !|
-0

@@ -1,7 +1,14 @@
+[name]
 Enemies everywhere
+[color]
 205, 235, 175
+[time]
 1200
+[robot]
+5
+[height]
 116
+[data]
 ---             |
 b! !            |
  ! bbbbb    v-- |
@@ -118,6 +125,7 @@ bb   v   >      |
  b  b  >  ! -   |
 b -   ^  ^!-    |
    - --  --     |
+[demo]
 1001
 0
 0

@@ -1,7 +1,14 @@
+[name]
 Trick of traps
+[color]
 170, 170, 170
+[time]
 700
+[robot]
+2
+[height]
 55
+[data]
                 |
                 |
          T      |

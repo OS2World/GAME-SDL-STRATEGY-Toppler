@@ -1,7 +1,14 @@
+[name]
 Riddle of reason
+[color]
 255, 100, 100
+[time]
 1000
+[robot]
+5
+[height]
 95
+[data]
                 |
                 |
        T        |

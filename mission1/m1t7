@@ -1,7 +1,14 @@
+[name]
 Nasty one
+[color]
 150, 255, 150
+[time]
 1100
+[robot]
+6
+[height]
 81
+[data]
                 |
                 |
  T              |
@@ -83,6 +90,7 @@ Nasty one
  -   ^  ^      -|
 -    -----      |
                 |
+[demo]
 929
 0
 0

@@ -1,7 +1,14 @@
+[name]
 You will loose
+[color]
 100, 255, 253
+[time]
 900
+[robot]
+6
+[height]
 53
+[data]
                 |
                 |
     #       #  7|

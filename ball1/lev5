@@ -1,7 +1,14 @@
+[name]
 Doom at every step
+[color]
 225, 255, 63
+[time]
 666
+[robot]
+4
+[height]
 60
+[data]
 --     #!      #|
 ! -    #!      #|
 ! #-1  #! #  33#|

@@ -1,7 +1,14 @@
+[name]
 No Icing
+[color]
 54, 132, 33
+[time]
 550
+[robot]
+3
+[height]
 25
+[data]
                 |
                 |
        # T     #|
@@ -27,4 +34,3 @@ No Icing
     #  #    #  #|
 -^--------------|
  -              |
-0

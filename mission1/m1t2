@@ -1,7 +1,14 @@
+[name]
 Realm of robots
+[color]
 150, 150, 255
+[time]
 600
+[robot]
+1
+[height]
 72
+[data]
                 |
                 |
      T          |

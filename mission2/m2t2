@@ -1,7 +1,14 @@
+[name]
 Robot's heaven
+[color]
 150, 150, 255
+[time]
 600
+[robot]
+1
+[height]
 57
+[data]
                 |
                 |
    -    T       |
@@ -59,6 +66,7 @@ v--   v- -v--- -|
    # #     #^#  |
 >>>>>>>>    --  |
                 |
+[demo]
 294
 0
 0

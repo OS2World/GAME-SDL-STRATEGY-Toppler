@@ -1,7 +1,14 @@
+[name]
 Blink of the eye
+[color]
 255, 0, 0
+[time]
 500
+[robot]
+0
+[height]
 55
+[data]
                 |
                 |
              T  |

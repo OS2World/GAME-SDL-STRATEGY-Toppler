@@ -1,7 +1,14 @@
+[name]
 Run and don't stop
+[color]
 0, 255, 0
+[time]
 1000
+[robot]
+0
+[height]
 58
+[data]
                 |
                 |
         -  -    |

@@ -1,7 +1,14 @@
+[name]
 Maze of mistakes
+[color]
 150, 255, 150
+[time]
 1100
+[robot]
+6
+[height]
 81
+[data]
                 |
                 |
                T|

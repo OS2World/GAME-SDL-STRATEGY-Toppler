@@ -1,7 +1,14 @@
+[name]
 Edge of doom
+[color]
 255, 155, 0
+[time]
 1200
+[robot]
+7
+[height]
 97
+[data]
                 |
                 |
  ####    #T##   |
