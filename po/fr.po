@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-11 18:41+0100\n"
+"POT-Creation-Date: 2004-12-13 17:53+0100\n"
 "PO-Revision-Date: 2004-02-08 10:56+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.2\n"
 
 #: archi.cc:37
@@ -51,23 +51,23 @@ msgstr "Type de donnée de configuration inconnue"
 #: decl.h:200
 #, c-format
 msgid "Assertion failure: %s\n"
-msgstr "Échec de l'insertion : %s\n"
+msgstr "Échec de l'assertion : %s\n"
 
 #: elevators.cc:63
 msgid "Select more than one elevator."
-msgstr "Sélectionnez plus d'un ascenceur"
+msgstr "Sélectionner plus d'un ascenseur"
 
 #: elevators.cc:90
 msgid "Work with unselected elevator, activate."
-msgstr "Travaille sans un ascenceur sélectionné (activer)"
+msgstr "Travailler sans un ascenseur sélectionné (activer)"
 
 #: elevators.cc:99
 msgid "Work with unselected elevator, move."
-msgstr "Travaille sans un ascenceur sélectionné (déplacer)"
+msgstr "Travailler sans un ascenseur sélectionné (déplacer)"
 
 #: elevators.cc:114
 msgid "Work with unselected elevator, is_atstop."
-msgstr "Travaille sans un ascenceur sélectionné (is_atstop)"
+msgstr "Travailler sans un ascenseur sélectionné (is_atstop)"
 
 #: elevators.cc:124
 msgid "Deselected an inactive elevator."
@@ -106,27 +106,27 @@ msgid "Extra:     ~t35010 X %3d"
 msgstr "Extra :     ~t35010 X %3d"
 
 #: game.cc:320
-#, fuzzy, c-format
+#, c-format
 msgid "Lifes:     ~t3505000 X %3d"
-msgstr "Temps :      ~t35010 X %3d"
+msgstr "Vies :    ~t3505000 X %3d"
 
 #: game.cc:520
 msgid "Trying to play or record a null demo."
-msgstr ""
+msgstr "Essai de jouer ou d'enregistrer une démo vide."
 
 #: keyb.cc:161
 msgid "Wheee!!\n"
 msgstr "Woooaaaa !\n"
 
-#: level.cc:1288
+#: level.cc:1311
 msgid "called mission_finish twice"
 msgstr "mission_finish appelé deux fois"
 
-#: level.cc:1329
+#: level.cc:1352
 msgid "called mission_addtower without mission_new"
 msgstr "mission_addtower appelé sans mission_new"
 
-#: level.cc:1459
+#: level.cc:1482
 msgid "called mission_finish without mission_new"
 msgstr "mission_finish appelé sans mission_new"
 
@@ -192,7 +192,7 @@ msgstr "Placer un but"
 
 #: leveledit.cc:107
 msgid "Check tower"
-msgstr "Contrôler la tour"
+msgstr "Vérifier la tour"
 
 #: leveledit.cc:107
 msgid "Put rolling ball"
@@ -212,7 +212,7 @@ msgstr "Placer un robot haut-bas"
 
 #: leveledit.cc:108
 msgid "Put robot up down fast"
-msgstr "Placer un robot haut-bas lent"
+msgstr "Placer un robot haut-bas rapide"
 
 #: leveledit.cc:109
 msgid "Put robot left right"
@@ -228,11 +228,11 @@ msgstr "Placer ascenceur"
 
 #: leveledit.cc:109
 msgid "Lift middle stop"
-msgstr "Arrêt d'ascenceur intermédiaire"
+msgstr "Arrêt d'ascenseur intermédiaire"
 
 #: leveledit.cc:110
 msgid "Lift top stop"
-msgstr "Dernier arrêt d'ascenceur"
+msgstr "Dernier arrêt d'ascenseur"
 
 #: leveledit.cc:110
 msgid "Put pillar"
@@ -272,11 +272,11 @@ msgstr "Créer une mission"
 
 #: leveledit.cc:112
 msgid "Move page up"
-msgstr "Page suivante"
+msgstr "Aller page suivante"
 
 #: leveledit.cc:112
 msgid "Move page down"
-msgstr "Page précédente"
+msgstr "Aller page précédente"
 
 #: leveledit.cc:113
 msgid "Go to start"
@@ -312,11 +312,11 @@ msgstr "Aller à la fin"
 
 #: leveledit.cc:115
 msgid "Cut row"
-msgstr "Couper un échelon"
+msgstr "Couper une rangé"
 
 #: leveledit.cc:115
 msgid "Paste row"
-msgstr "Coller un échelon"
+msgstr "Coller une rangé"
 
 #: leveledit.cc:115
 msgid "Change robot type"
@@ -324,11 +324,11 @@ msgstr "Changer le type du robot"
 
 #: leveledit.cc:189
 msgid "Tower changed, really quit"
-msgstr "###Tour modifiée, voulez-vous vraiment quitter ?"
+msgstr "Tour modifiée, voulez-vous vraiment quitter ?"
 
 #: leveledit.cc:199
 msgid "Tower changed, really load"
-msgstr "###Tour modifier, voulez-vous vraiment charger ?"
+msgstr "Tour modifiée, voulez-vous vraiment charger ?"
 
 #: leveledit.cc:216
 msgid "Red"
@@ -364,11 +364,11 @@ msgstr "Bloc inconnu"
 
 #: leveledit.cc:309
 msgid "No elevator stop"
-msgstr "Pas d'arrêt à l'ascenceur"
+msgstr "Pas d'arrêt de l'ascenseur"
 
 #: leveledit.cc:310
 msgid "Elevator is blocked"
-msgstr "L'ascenceur est bloqué"
+msgstr "L'ascenseur est bloqué"
 
 #: leveledit.cc:311
 msgid "No opposing doorway"
@@ -400,7 +400,7 @@ msgstr "La tour n'a pas de nom"
 
 #: leveledit.cc:325
 msgid "Tower check:"
-msgstr "Contrôle de la tour :"
+msgstr "Vérification de la tour :"
 
 #: leveledit.cc:351 leveledit.cc:367 leveledit.cc:389
 msgid "Mission creation"
@@ -437,20 +437,20 @@ msgstr "Aide de l'éditeur"
 
 #: leveledit.cc:532
 msgid "cut#"
-msgstr ""
+msgstr "coupe#"
 
 #: leveledit.cc:571
 #, c-format
 msgid "key: %s, char: %c, action: %i\n"
-msgstr ""
+msgstr "cle: %s, car.: %c, action: %i\n"
 
 #: leveledit.cc:703
 msgid "Load tower:"
-msgstr "Tour chargée"
+msgstr "Charger la tour:"
 
 #: leveledit.cc:724
 msgid "Save tower:"
-msgstr "Tour sauvergardée"
+msgstr "Sauver la tour"
 
 #: leveledit.cc:785
 msgid "No recorded demo"
@@ -482,7 +482,7 @@ msgstr ""
 "\tOptions :\n"
 "\n"
 "  -f\tActiver le mode plein écran\n"
-"  -s\tDésactiver le son\n"
+"  -s\tSilence, désactiver les sons\n"
 "  -dX\tNiveau de débuggage à X  (défaut : %i)\n"
 
 #: main.cc:55
@@ -657,7 +657,7 @@ msgstr "Probablement suffisament bon pour"
 
 #: menu.cc:659
 msgid "enter the highscore table!"
-msgstr "##Vous entrez dans le tableau des scores !"
+msgstr "entrer dans le tableau des scores !"
 
 #: menu.cc:661
 msgid "Please enter your name"
@@ -738,15 +738,15 @@ msgstr "Échec pour l'allocation de mémoire pour le défilement bonus"
 msgid "could not open display"
 msgstr "Ne peut pas accéder à l'affichage"
 
-#: screen.cc:1324 screen.cc:1410
+#: screen.cc:1326 screen.cc:1412
 msgid "Wrong command in formatted text."
 msgstr "Commande incorrecte en texte formaté"
 
-#: screen.cc:1579
+#: screen.cc:1581
 msgid "REC"
-msgstr "###ENREGISTREMENT"
+msgstr "ENREG"
 
-#: screen.cc:1580
+#: screen.cc:1582
 msgid "DEMO"
 msgstr "DÉMO"
 

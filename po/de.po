@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-11 18:41+0100\n"
+"POT-Creation-Date: 2004-12-13 17:53+0100\n"
 "PO-Revision-Date: 2004-02-08 11:01+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -118,15 +118,15 @@ msgstr "Versuch ein nicht existierendes Demo zu spielen oder aufzunehmen."
 msgid "Wheee!!\n"
 msgstr "Huuuaaaa!\n"
 
-#: level.cc:1288
+#: level.cc:1311
 msgid "called mission_finish twice"
 msgstr "mission_finish zweimal gerufen"
 
-#: level.cc:1329
+#: level.cc:1352
 msgid "called mission_addtower without mission_new"
 msgstr "mission_addtower ohne vorherigen mission_new Aufruf"
 
-#: level.cc:1459
+#: level.cc:1482
 msgid "called mission_finish without mission_new"
 msgstr "mission_finish ohne vorherigen mission_new Aufruf"
 
@@ -737,15 +737,15 @@ msgstr "Speicher für Scroller konnte nicht reserviert werden!"
 msgid "could not open display"
 msgstr "Display konnte nicht geöffnet werden"
 
-#: screen.cc:1324 screen.cc:1410
+#: screen.cc:1326 screen.cc:1412
 msgid "Wrong command in formatted text."
 msgstr "Falsches Kommando in formatierten Text"
 
-#: screen.cc:1579
+#: screen.cc:1581
 msgid "REC"
 msgstr "REC"
 
-#: screen.cc:1580
+#: screen.cc:1582
 msgid "DEMO"
 msgstr "DEMO"
 
