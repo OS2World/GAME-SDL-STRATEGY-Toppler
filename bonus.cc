@@ -227,6 +227,7 @@ bool bns_game(void) {
             (fish[b].y > subposy - 40) &&
             (fish[b].y < subposy + 40)) {
           pts_add(50);
+          snd_hit();
           fish[b].x = - (SPR_FISHWID + 1);
         }
       }
