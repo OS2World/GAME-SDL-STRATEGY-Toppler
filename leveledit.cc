@@ -183,8 +183,10 @@ static void createMission(void) {
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
   scr_drawedit(0, 0);
   scr_writetext_center(30, "Mission creation");
-  scr_writetext_center(60, "enter mission name");
-  scr_writetext_center(70, "empty to abort");
+  scr_writetext_center(70, "enter mission name");
+  scr_writetext_center(85, "empty to abort");
+
+  set_men_bgproc(NULL);
 
   char missionname[25];
   men_input(missionname, 25);
@@ -200,7 +202,7 @@ static void createMission(void) {
     scr_writetext_center(30, "Mission creation");
                               
     scr_writetext_center(70, "could not create file");
-    scr_writetext_center(90, "aborting");
+    scr_writetext_center(85, "aborting");
 
     scr_swap();
 
@@ -222,11 +224,11 @@ static void createMission(void) {
 
     scr_drawedit(0, 0);
     scr_writetext_center(30, "Mission creationg");
-    scr_writetext_center(60, "enter name of");
+    scr_writetext_center(70, "enter name of");
 
     char s[30];
     sprintf(s, "tower no %i", currenttower);
-    scr_writetext_center(70, s);
+    scr_writetext_center(85, s);
 
     towername[0] = 0;
     men_input(towername, 25);
@@ -303,7 +305,7 @@ struct _ed_key {
    char key;
 } _ed_keys[] = {
    {EDACT_QUIT,          27},
-   {EDACT_SHOWKEYHELP,   'H'},
+   {EDACT_SHOWKEYHELP,   'h'},
    {EDACT_MOVEUP,        1},
    {EDACT_MOVEDOWN,      2},
    {EDACT_MOVELEFT,      3},
@@ -311,15 +313,15 @@ struct _ed_key {
    {EDACT_MOVEPAGEUP,    7},
    {EDACT_MOVEPAGEDOWN,  8},
    {EDACT_GOTOSTART,     9},
-   {EDACT_ROT180,        'Y'},
+   {EDACT_ROT180,        'y'},
    {EDACT_INSROW,        5},
    {EDACT_DELROW,        6},
    {EDACT_PUTSPACE,      ' '},
-   {EDACT_PUTSTEP,       'W'},
-   {EDACT_PUTVANISHER,   'S'},
-   {EDACT_PUTSLIDER,     'X'},
-   {EDACT_PUTDOOR,       'I'},
-   {EDACT_PUTGOAL,       'K'},
+   {EDACT_PUTSTEP,       'w'},
+   {EDACT_PUTVANISHER,   's'},
+   {EDACT_PUTSLIDER,     'x'},
+   {EDACT_PUTDOOR,       'i'},
+   {EDACT_PUTGOAL,       'k'},
    {EDACT_PUTROBOT1,     '1'},
    {EDACT_PUTROBOT2,     '2'},
    {EDACT_PUTROBOT3,     '3'},
@@ -327,19 +329,19 @@ struct _ed_key {
    {EDACT_PUTROBOT5,     '5'},
    {EDACT_PUTROBOT6,     '6'},
    {EDACT_PUTROBOT7,     '7'},
-   {EDACT_PUTLIFT,       'C'},
-   {EDACT_PUTLIFTMID,    'D'},
-   {EDACT_PUTLIFTTOP,    'E'},
-   {EDACT_PUTSTICK,      'Q'},
-   {EDACT_PUTBOX,        'A'},
-   {EDACT_CHECKTOWER,    'Z'},
-   {EDACT_LOADTOWER,     'L'},
-   {EDACT_SAVETOWER,     'O'},
-   {EDACT_TESTTOWER,     'P'},
-   {EDACT_SETTOWERCOLOR, 'V'},
-   {EDACT_INCTIME,       'B'},
-   {EDACT_DECTIME,       'N'},
-   {EDACT_CREATEMISSION, 'M'},
+   {EDACT_PUTLIFT,       'c'},
+   {EDACT_PUTLIFTMID,    'd'},
+   {EDACT_PUTLIFTTOP,    'e'},
+   {EDACT_PUTSTICK,      'q'},
+   {EDACT_PUTBOX,        'a'},
+   {EDACT_CHECKTOWER,    'z'},
+   {EDACT_LOADTOWER,     'l'},
+   {EDACT_SAVETOWER,     'o'},
+   {EDACT_TESTTOWER,     'p'},
+   {EDACT_SETTOWERCOLOR, 'v'},
+   {EDACT_INCTIME,       'b'},
+   {EDACT_DECTIME,       'n'},
+   {EDACT_CREATEMISSION, 'm'},
 };
 
 void le_showkeyhelp(int row, int col) {

@@ -239,12 +239,16 @@ static void loadgraphics(void) {
   arc_closefile();
 }
 
+
 static void loadfont(void) {
 
   unsigned char pal[fontcnt*3];
   Uint32 res;
   SDL_Surface *s;
   char c;
+  bool first;
+  int max_font_width;
+  int min_font_width;
 
   arc_assign(fontdat);
 
@@ -256,14 +260,27 @@ static void loadfont(void) {
     pal_setpal(t+fontcol, pal[3*t], pal[3*t+1], pal[3*t+2], pal_bonusgame);
   }
 
+  first = true;
+
   while (!arc_eof()) {
     arc_read(&c, 1, &res);
     if (!c) break;
 
     arc_read(&fontchars[c-32].width, 1, &res);
-    printf("%i\n", fontchars[c-32].width);
     fontchars[c-32].s = scr_loadsprites(1, fontchars[c-32].width, 20, 4, fontcol, true);
+
+    if (first) {
+      max_font_width = min_font_width = fontchars[c-32].width;
+      first = false;
+    } else {
+      if (fontchars[c-32].width < min_font_width) min_font_width = fontchars[c-32].width;
+      if (fontchars[c-32].width > max_font_width) max_font_width = fontchars[c-32].width;
+    }
   }
+
+  assert(min_font_width == FONTMINWID, "fontmin wrong");
+  assert(max_font_width == FONTMAXWID, "fontmax wrong");
+
   arc_closefile();
 }
 
@@ -459,7 +476,7 @@ static void putwater(long height) {
   wavetime++;
 }
 
-int scr_textlength(const char *s) {
+int scr_textlength(const char *s, int chars) {
   int len = 0;
   int pos = 0;
   unsigned char c;
@@ -473,6 +490,8 @@ int scr_textlength(const char *s) {
         len += fontchars[c].width + 1;
     }
     pos++;
+    if (pos == chars)
+      break;
   }
 
   return len - 1;

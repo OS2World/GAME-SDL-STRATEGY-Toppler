@@ -358,7 +358,6 @@ void lev_selecttower(Uint8 number) {
     idxpos += long(mission[mission[0] + 4]) << 16;
     idxpos += long(mission[mission[0] + 5]) << 24;
 
-
     towerstart = mission[idxpos + 4 * number];
     towerstart += long(mission[idxpos + 4 * number + 1]) << 8;
     towerstart += long(mission[idxpos + 4 * number + 2]) << 16;
@@ -393,14 +392,17 @@ void lev_selecttower(Uint8 number) {
   memset(&tower, 0, 2048L);
 
   // extract level data
-  for (Uint8 row = 0; row < towerheight; row++)
+  for (Uint8 row = 0; row < towerheight; row++) {
     for (Uint8 col = 0; col < TOWERWID; col++) {
       if ((mission[bitstart + (bpos >> 3)] << (bpos & 7)) & 0x80)
         tower[row][col] = mission[bytestart + wpos++];
       else
         tower[row][col] = 0;
+
       bpos++;
     }
+  }
+
 }
 
 void lev_set_towercol(Uint8 r, Uint8 g, Uint8 b) {
@@ -650,17 +652,22 @@ void lev_restore(int row, int col, unsigned char bg) {
 /* load and save a tower */
 bool lev_loadtower(char *fname) {
   FILE *in = open_local_data_file(fname);
+  char line[200];
 
   if (in == NULL) return false;
 
   fgets(towername, TOWERNAMELEN+1, in);
-  fscanf(in, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);
 
-  fscanf(in, "%hu\n", &towertime);
-  fscanf(in, "%hhu\n", &towerheight);
+  fgets(line, 200, in);
+  sscanf(line, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);
+
+  fgets(line, 200, in);
+  sscanf(line, "%hu\n", &towertime);
+
+  fgets(line, 200, in);
+  sscanf(line, "%hhu\n", &towerheight);
 
   for (int row = towerheight - 1; row >= 0; row--) {
-    char line[200];
 
     fgets(line, 200, in);
 
@@ -830,26 +837,26 @@ void lev_restore(unsigned char *&data) {
 
 int lev_is_consistent(int &row, int &col) {
 
-   int y;
-   bool has_exit = false;
+  int y;
+  bool has_exit = false;
   // check first, if the starting point is correctly organized
   // so that there is no obstacle and we can survive there
   if (((tower[1][0] != 0x80) && (tower[1][0] != 0x81) &&
        (tower[1][0] != 0x82) && (tower[1][0] != 0x85) &&
-       (tower[1][0] != 0xb1) && (tower[0][0] != 0x80) && 
-       (tower[0][0] != 0x81) && (tower[0][0] != 0x82) && 
+       (tower[1][0] != 0xb1) && (tower[0][0] != 0x80) &&
+       (tower[0][0] != 0x81) && (tower[0][0] != 0x82) &&
        (tower[0][0] != 0x85) && (tower[0][0] != 0xb1))) {
-	row = 1;
-	col = 0;
-	return TPROB_NOSTARTSTEP;
+    row = 1;
+    col = 0;
+    return TPROB_NOSTARTSTEP;
   }
   for (y = 2; y < 5; y++)
-     if ((tower[y][0] >= 0x10) && (tower[y][0] != 0xc3) &&
-	 (tower[y][0] != 0x83)) {
-	row = y;
-	col = 0;
-	return TPROB_STARTBLOCKED;
-     }
+    if ((tower[y][0] >= 0x10) && (tower[y][0] != 0xc3) &&
+        (tower[y][0] != 0x83)) {
+      row = y;
+      col = 0;
+      return TPROB_STARTBLOCKED;
+    }
 
   for (int r = 0; r < towerheight; r++)
     for (int c = 0; c < TOWERWID; c++) {
@@ -990,20 +997,20 @@ int lev_is_consistent(int &row, int &col) {
 
       /* check for exit, and that it's reachable */
       if (tower[r][c] == 0xc3) {
-	 int d = r - 1;
-	 while ((d >= 0) && (tower[d][c] == 0xc3))  d--;
-	 if (d >= 0) {
-	    if ((tower[d][c] != 0x80) && (tower[d][c] != 0x81) &&
-		(tower[d][c] != 0x82) && (tower[d][c] != 0x85) &&
-		(tower[d][c] != 0x80)) {
-	       row = r;
-	       col = c;
-	       return TPROB_UNREACHABLEEXIT;
-	    }
-	 }
-	 has_exit = true;
+        int d = r - 1;
+        while ((d >= 0) && (tower[d][c] == 0xc3))  d--;
+        if (d >= 0) {
+          if ((tower[d][c] != 0x80) && (tower[d][c] != 0x81) &&
+              (tower[d][c] != 0x82) && (tower[d][c] != 0x85) &&
+              (tower[d][c] != 0x80)) {
+            row = r;
+            col = c;
+            return TPROB_UNREACHABLEEXIT;
+          }
+        }
+        has_exit = true;
       }
-      
+
       // check doors
       if ((tower[r][c] == 0x83) &&
           ((tower[r][(c + (TOWERWID/2)) % TOWERWID] & 0x83) != 0x83)) {
@@ -1084,10 +1091,16 @@ void lev_mission_addtower(char * name) {
   {
     Uint8 red, green, blue, towerheight, tmp;
     Uint16 towertime;
+    char line[200];
 
-    fscanf(in, "%hhu, %hhu, %hhu\n", &red, &green, &blue);
-    fscanf(in, "%hu\n", &towertime);
-    fscanf(in, "%hhu\n", &towerheight);
+    fgets(line, 200, in);
+    sscanf(line, "%hhu, %hhu, %hhu\n", &red, &green, &blue);
+
+    fgets(line, 200, in);
+    sscanf(line, "%hu\n", &towertime);
+
+    fgets(line, 200, in);
+    sscanf(line, "%hhu\n", &towerheight);
 
     fwrite(&towerheight, 1, 1, fmission);
     tmp = towertime & 0xff;
@@ -1110,7 +1123,8 @@ void lev_mission_addtower(char * name) {
     fgets(line, 200, in);
 
     for (Uint8 col = 0; col < TOWERWID; col++)
-       tower[row][col] = conv_char2towercode(line[col]);
+      tower[row][col] = conv_char2towercode(line[col]);
+
   }
 
   /* output bitmap */
@@ -1162,7 +1176,6 @@ void lev_mission_finish() {
   /* write out the number of towers in this mission */
   fseek(fmission, 0, SEEK_SET);
   fread(&c, 1, 1, fmission);
-  printf("%i\n", c);
 
   fseek(fmission, c + 1, SEEK_SET);
   fwrite(&nmission, 1, 1, fmission);

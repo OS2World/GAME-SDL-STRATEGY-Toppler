@@ -17,6 +17,13 @@ work from pasi
 
 my work
 
+- removed "original by" and "programmed by" from menu picture
+- small letters in levereditor
+- keyb can output small and capital letters
+- adapt input to new font
+- fix bug in menu creation that made the help text vanish
+- fix bug in tower loading routine that screwed up the top line of the tower
+- recreated mission files that were corruped by this bug
 - fix buglet in mission 1 tower 7
 - fix buglet in input code
 - new better readable font (update to most output routines)

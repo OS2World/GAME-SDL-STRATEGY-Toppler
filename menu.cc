@@ -634,8 +634,8 @@ men_hiscores_background_proc(void *ms)
       char *pos, *points, *name;
       get_hiscores_string(cs, &pos, &points, &name);
       if (cs == hiscores_hilited) {
-        int clen = scr_textlength(pos) + scr_textlength(points) + scr_textlength(name) + 20;
-        scr_putbar(hiscores_xpos, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, clen, FONTHEI, fontcol + get_blink_color());
+        int clen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20 + 10;
+        scr_putbar(hiscores_xpos - 5, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45 - 3, clen, FONTHEI + 3, fontcol + get_blink_color());
       }
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, pos);
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 10 + hiscores_maxlen_points - scr_textlength(points) , (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, points);
@@ -825,11 +825,13 @@ void
 draw_input_box(int x, int y, int len, int cursor, char *txt)
 {
   int col = get_blink_color();
-  scr_putbar(x, y, len*FONTWID, FONTHEI, 0);
+
+  scr_putbar(x, y, len * FONTMAXWID, FONTHEI, 0);
   scr_writetext(x+1,y, txt);
+
   if ((input_box_cursor_state & 4) && ((cursor >= 0) && (cursor < len)))
-    scr_putbar(x + (cursor*FONTWID)+1, y, FONTWID, FONTHEI, fontcol + 14 - col);
-  scr_putrect(x,y, len*FONTWID, FONTHEI, fontcol + col);
+    scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI, fontcol + 14 - col);
+  scr_putrect(x,y, len * FONTMAXWID, FONTHEI, fontcol + col);
   input_box_cursor_state++;
 }
 
@@ -837,7 +839,7 @@ void men_input(char *s, int max_len, int xpos = -1, int ypos = (SCREENHEI  * 2) 
   char inp;
   char pos = 0;
 
-  if (xpos < 0) xpos = (SCREENWID / 2) - max_len * (FONTWID / 2);
+  if (xpos < 0) xpos = (SCREENWID / 2) - max_len * (FONTMAXWID / 2);
   if (ypos < 0) ypos = (SCREENHEI / 2) - (FONTHEI / 2);
 
   s[0] = 0;

@@ -30,7 +30,8 @@
 
 /* font width and height, in pixels. */
 #define FONTWID 12
-#define FONTMINWID 8
+#define FONTMINWID 5
+#define FONTMAXWID 20
 #define FONTHEI 20
 
 /* title sprite "NEBULOUS" width and height, in pixels */
@@ -198,7 +199,6 @@ extern bool nosound;
 extern bool doublescale;
 extern bool use_water;
 extern char editor_towername[TOWERNAMELEN+1];
-
 
 void load_config(void);
 void save_config(void);

@@ -58,8 +58,12 @@ static void handleEvents(void) {
     if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP)) {
 
       if (e.key.state == SDL_RELEASED) {
-        if ((e.key.keysym.sym >= SDLK_a) && (e.key.keysym.sym <= SDLK_z))
-          chartyped = e.key.keysym.sym - SDLK_a + 'A';
+        if ((e.key.keysym.sym >= SDLK_a) && (e.key.keysym.sym <= SDLK_z)) {
+          if (e.key.keysym.mod & (KMOD_LSHIFT | KMOD_RSHIFT))
+            chartyped = e.key.keysym.sym - SDLK_a + 'A';
+          else
+            chartyped = e.key.keysym.sym - SDLK_a + 'a';
+        }
         if ((e.key.keysym.sym >= SDLK_0) && (e.key.keysym.sym <= SDLK_9))
           chartyped = e.key.keysym.sym - SDLK_0 + '0';
         if (e.key.keysym.sym == SDLK_SPACE)
@@ -101,10 +105,10 @@ static void handleEvents(void) {
       }
 
       for (tmpk = 0; tmpk < SIZE(ttkeyconv); tmpk++)
-	 if (ttkeyconv[tmpk].key == e.key.keysym.sym) {
-	    key = ttkeyconv[tmpk].outval;
-	    break;
-	 }
+        if (ttkeyconv[tmpk].key == e.key.keysym.sym) {
+          key = ttkeyconv[tmpk].outval;
+          break;
+        }
 
       if (e.key.state == SDL_PRESSED) {
         keydown |= key;
