@@ -331,7 +331,7 @@ And another paragraph for the interested ones. Here the format of the
 mission files is explained.
 
 First in the mission files is the mission name. The first byte is the
-lenght of the string followed by the text itself. Then comed a
+lenght of the string followed by the text itself. Then comes a
 priority. This value is used to sort the missions in the game menu.
 Then comes the number of towers in the mission followed by the offset
 of the tower offset table (b bytes). This table contains 4 bytes for
