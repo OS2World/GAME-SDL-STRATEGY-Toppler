@@ -48,12 +48,12 @@ cross_colors.png: colorreduction cross_colors_rgb.png
 cross_mask.png: colorreduction cross_mask_rgb.png
 	./colorreduction cross_mask_rgb.png 256 cross_mask.png
 
-cross_colors_rgb.png: assembler cross_pov/cross000.png
+cross_colors_rgb.png: assembler cross_pov/cross239.png
 	./assembler vm cross_rgb cross_pov/*.png
 	mv cross_rgb_colors.png cross_colors_rgb.png
 	mv cross_rgb_mask.png cross_mask_rgb.png
 
-cross_pov/cross001.png: cross_pov/cross.pov cross_pov/cross.ini
+cross_pov/cross239.png: cross_pov/cross.pov cross_pov/cross.ini
 	( cd cross_pov && $(POVRAY) cross.ini )
 
 cross.clean:
