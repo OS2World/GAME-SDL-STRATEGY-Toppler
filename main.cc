@@ -44,7 +44,7 @@ static void startgame(void) {
   stat = men_main();
   while (stat > 0) {
     gam_newgame();
-    tower = 0;
+    tower = 4;
 
     do {
       snd_wateron();

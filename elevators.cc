@@ -17,7 +17,7 @@
 static struct {
   /* the current position of the platform */
   Uint8 angle;
-  Uint8 vertical;
+  Uint16 vertical;
 
   /* time until the elevator falls down */
   Sint8 time;
@@ -41,7 +41,7 @@ void ele_init(void) {
 
 }
 
-void ele_select(Uint8 row, Uint8 col) {
+void ele_select(Uint16 row, Uint8 col) {
 
   assert(active_ele == -1, "select more than one elevator\n");
 

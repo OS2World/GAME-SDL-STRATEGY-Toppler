@@ -11,7 +11,7 @@ void ele_init(void);
 
 /* activates the elevator. there can be only one
  active elevator */
-void ele_select(Uint8 row, Uint8 col);
+void ele_select(Uint16 row, Uint8 col);
 
 /* the elevator gets startet */
 void ele_activate(Sint8 dir);

@@ -224,8 +224,6 @@ static void parse_config(FILE * in) {
 
     if (strstr(line, "fullscreen")) {
       fullscreen = (i == 1);
-    } else if (strstr(line, "nosound")){
-      nosound = (i == 1);
     } else if (strstr(line, "scale2x")){
       doublescale = (i == 1);
     }
@@ -253,7 +251,6 @@ void save_config(void) {
 
   if (out) {
     fprintf(out, "fullscreen: %i\n", (fullscreen)?(1):(0));
-    fprintf(out, "nosound: %i\n", (nosound)?(1):(0));
     fprintf(out, "scale2x: %i\n", (doublescale)?(1):(0));
   
     fclose(out);
