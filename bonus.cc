@@ -43,9 +43,9 @@ static bool escape(long time, long x) {
   }
   scr_draw_bonus2(x, towerpos);
 
-  scr_writetext(160 - 11 * 6,  61, "REALLY QUIT");
-  scr_writetext(160 - 16 * 6,  95, "  ESC: YES, QUIT");
-  scr_writetext(160 - 16 * 6, 112, "OTHER: NO PLAY");
+  scr_writetext_center(61, "REALLY QUIT?");
+  scr_writetext_center(95,  "  ESC: YES, QUIT");
+  scr_writetext_center(112, "OTHER: NO PLAY");
 
   scr_swap();
   do {
@@ -85,8 +85,8 @@ static void pause(long time, long x) {
   }
   scr_draw_bonus2(x, towerpos);
 
-  scr_writetext(160 -  5 * 6, 61, "PAUSE");
-  scr_writetext(160 - 11 * 6, 95, "PRESS SPACE");
+  scr_writetext_center(61, "PAUSE");
+  scr_writetext_center(95, "PRESS SPACE");
 
   scr_swap();
   do {

@@ -65,7 +65,7 @@ static long layerwidth[scrolllayers];
 static SDL_Surface *layerimage[scrolllayers];
 char scrollerpalette[168*3];
 
-/* this functions are so complex because the graphics are save in a
+/* this functions are so complex because the graphics are saved in a
  way that allowed easy loading into the video memory in a tricky vga
  graphics mode in old times, now we need to sort the pixels in an
  orderly manner */
@@ -485,6 +485,10 @@ static void putwater(long height) {
   wavetime++;
 }
 
+void scr_writetext_center(long y, char *s) {
+  scr_writetext (160 - 6*strlen(s), y, s);
+}
+
 /*Schreibt Text mit aktuellem Font*/
 void scr_writetext(long x, long y, char *s) {
   int t = 0;
@@ -729,7 +733,7 @@ static void draw_bevore(long  vert, long angle, long hs, long he)
   }
 }
 
-/* draws the cross the moves to and fro over the screen */
+/* draws the cross that moves to and fro over the screen */
 static void putkreuz(long vert)
 {
   long i, y;
@@ -756,7 +760,7 @@ static void draw_data(int time)
 
   if (time > 0) {
     sprintf(s, "%u", time);
-    scr_writetext(160 - strlen(s) * 6L, 5L, s);
+    scr_writetext_center(5L, s);
   }
 
   sprintf(s, "%u", pts_points());

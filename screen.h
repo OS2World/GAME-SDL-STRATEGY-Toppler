@@ -19,8 +19,10 @@ unsigned short scr_loadsprites(int num, const int w, const int h, int colstart, 
  call swap */
 
 
-/* writes some text ontoe the surface */
+/* writes some text onto the screen */
 void scr_writetext(long x, long y, char *s);
+/* centers the text horizontally */
+void scr_writetext_center(long y, char *s);
 
 /* draws a filles rectangle with color 0 */
 void scr_putbar(int x, int y, int br, int h);

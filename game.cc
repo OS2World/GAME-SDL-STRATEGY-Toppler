@@ -58,15 +58,15 @@ void gam_arrival() {
   key_readkey();
 
   scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart);
-  scr_writetext(40L, 40L, "you are entering the");
-  scr_writetext(160 - strlen(lev_towername()) * 6L, 70L, lev_towername());
+  scr_writetext_center(40L, "you are entering the");
+  scr_writetext_center(70L, lev_towername());
   scr_swap();
   pal_colors();
 
   do {
     scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart);
-    scr_writetext(40L, 40L, "you are entering the");
-    scr_writetext(160 - strlen(lev_towername()) * 6L, 70L, lev_towername());
+    scr_writetext_center(40L, "you are entering the");
+    scr_writetext_center(70L, lev_towername());
     scr_swap();
     snd_play();
 
@@ -251,7 +251,7 @@ static void timeout(int &tower_position, int &tower_anglepos) {
 
   scr_drawall(towerpos(top_verticalpos(), tower_position,
                        top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, 0, false, 0, 0);
-  scr_writetext(52L, 70L, "HEY, TIME IS OVER !");
+  scr_writetext_center(70L, "TIME IS OVER");
   scr_swap();
   t = 90;
   do {
@@ -335,11 +335,18 @@ static void akt_time(int &time, int &timecount, int &state) {
     if (timecount == 5) {
       timecount = 0;
       time--;
-      if ((time <= 50) && (time & 1) || (time <= 25))
-        snd_alarm();
+      if (time <= 20 || (time <= 40 && (time % 2)))
+	snd_alarm;
       if (time == 0)
         state = STATE_TIMEOUT;
     }
+#if 0
+    if (time <= 50) {
+      int x = 5*(50-time) + timecount;
+      if ((125*x + x*x)/2500 > (125*(x-1) + (x-1)*(x-1))/2500)
+        snd_alarm();
+    }
+#endif
   }
 }
 
@@ -373,9 +380,9 @@ static void escape(int &state, int &tower_position, int &tower_anglepos, int tim
   pal_darkening(fontcol, fontcol + fontcnt - 1);
   scr_drawall(towerpos(top_verticalpos(), tower_position,
                        top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
-  scr_writetext(160 - 11 * 6,  61, "REALLY QUIT");
-  scr_writetext(160 - 16 * 6,  95, "  ESC: YES, QUIT");
-  scr_writetext(160 - 16 * 6, 112, "OTHER: NO PLAY");
+  scr_writetext_center(61, "REALLY QUIT?");
+  scr_writetext_center(95,  "  ESC: YES, QUIT");
+  scr_writetext_center(112, "OTHER: NO PLAY");
 
   snd_wateroff();
 

@@ -15,7 +15,7 @@ void pts_reset() {
 void pts_add(int add) {
   points += add;
 
-  while (points > nextlife) {
+  while (points >= nextlife) {
     lifes++;
     nextlife += LIFE_INCREMENT;
     if (lifes > 8)
