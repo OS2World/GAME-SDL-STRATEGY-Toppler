@@ -517,8 +517,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   if (demo < 0) drawflags = SF_REC;
   else if (demo > 0) drawflags = SF_DEMO;
 
-  assert(!(demo && !demobuf), _("Trying to play or record a null demo."));
-
+  assert(!(demo && !demobuf), "Trying to play or record a null demo.");
 
   top_init();
 

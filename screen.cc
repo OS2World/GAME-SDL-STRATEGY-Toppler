@@ -549,10 +549,10 @@ static void loadscroller(void) {
 
   num_scrolllayers = layers;
 
-  assert(num_scrolllayers > 1, _("Must have at least 2 scroll layers!"));
+  assert(num_scrolllayers > 1, "Must have at least 2 scroll layers!");
 
   scroll_layers = new _scroll_layer[layers];
-  assert(scroll_layers, _("Failed to alloc memory for bonus scroller!"));
+  assert(scroll_layers, "Failed to alloc memory for bonus scroller!");
     
   towerpos = fi.getbyte();
     
@@ -640,7 +640,7 @@ void scr_init(void) {
 
 void scr_reinit() {
   display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (config.fullscreen()) ? (SDL_FULLSCREEN) : (0));
-  assert(display, _("could not open display"));
+  assert(display, "could not open display");
 }
 
 void scr_done(void) {
@@ -1323,7 +1323,7 @@ void scr_writeformattext(long x, long y, const char *s) {
         x += 32;
         break;
       default:
-        assert(0, _("Wrong command in formatted text."));
+        assert(0, "Wrong command in formatted text.");
       }
       break;
     default:
@@ -1409,7 +1409,7 @@ long scr_formattextlength(long x, long y, const char *s) {
         x += 32;
         break;
       default:
-        assert(0, _("Wrong command in formatted text."));
+        assert(0, "Wrong command in formatted text.");
       }
       break;
     default:

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-13 17:53+0100\n"
+"POT-Creation-Date: 2004-12-14 20:59+0100\n"
 "PO-Revision-Date: 2004-02-08 11:01+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -16,62 +16,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
 
-#: archi.cc:37
-msgid "Data file not found"
-msgstr "Datendatei nicht gefunden"
-
-#: archi.cc:44
-msgid "Failed to alloc memory for archive index."
-msgstr "Speicher für Archivindex konnte nicht reserviert werden."
-
-#: archi.cc:58
-msgid "Filename too long, datafile corrupt?"
-msgstr "Dateiname zu lang, Archiv kaputt?"
-
-#: archi.cc:133
-msgid "Decompression problem, data file corrupt?"
-msgstr "Problem beim Entpacken, Archiv kaputt?"
-
-#: archi.cc:134
-msgid "Data file corrupt."
-msgstr "Archiv kaputt."
-
-#: archi.cc:144
-msgid "File not found in archive!"
-msgstr "Datei nicht im Archiv gefunden!"
-
 #: bonus.cc:104 game.cc:480
 msgid "Pause"
 msgstr "Pause"
-
-#: configuration.cc:60 configuration.cc:174
-msgid "Unknown config data type."
-msgstr "Unbekannter Configurationsdatentyp"
 
 #: decl.h:200
 #, c-format
 msgid "Assertion failure: %s\n"
 msgstr "Annahme gescheitert: %s\n"
-
-#: elevators.cc:63
-msgid "Select more than one elevator."
-msgstr "Mehr als ein Fahrstuhl aktiviert."
-
-#: elevators.cc:90
-msgid "Work with unselected elevator, activate."
-msgstr "Arbeit mit nicht selektiertem Fahrstuhl (Aktivierung)."
-
-#: elevators.cc:99
-msgid "Work with unselected elevator, move."
-msgstr "Arbeit mit nicht selektiertem Fahrstuhl (Bewegen)."
-
-#: elevators.cc:114
-msgid "Work with unselected elevator, is_atstop."
-msgstr "Arbeit mit nicht selektiertem Fahrstuhl (is_atstop)."
-
-#: elevators.cc:124
-msgid "Deselected an inactive elevator."
-msgstr "Deselektion eines nicht selektierten Fahrstuhls."
 
 #: game.cc:85
 msgid "You are entering the"
@@ -110,27 +62,11 @@ msgstr "Extra:     ~t35010 X %3d"
 msgid "Lifes:     ~t3505000 X %3d"
 msgstr "Leben:       ~t35010 X %3d"
 
-#: game.cc:520
-msgid "Trying to play or record a null demo."
-msgstr "Versuch ein nicht existierendes Demo zu spielen oder aufzunehmen."
-
 #: keyb.cc:161
 msgid "Wheee!!\n"
 msgstr "Huuuaaaa!\n"
 
-#: level.cc:1311
-msgid "called mission_finish twice"
-msgstr "mission_finish zweimal gerufen"
-
-#: level.cc:1352
-msgid "called mission_addtower without mission_new"
-msgstr "mission_addtower ohne vorherigen mission_new Aufruf"
-
-#: level.cc:1482
-msgid "called mission_finish without mission_new"
-msgstr "mission_finish ohne vorherigen mission_new Aufruf"
-
-#: leveledit.cc:103 menu.cc:936
+#: leveledit.cc:103 menu.cc:923
 msgid "Quit"
 msgstr "Beenden"
 
@@ -496,18 +432,14 @@ msgstr "Illegaler Debuglevel, benutze default.\n"
 
 #: main.cc:102
 #, c-format
-msgid "Nebulous version %s\n"
-msgstr "Nebulous Version %s\n"
+msgid "Nebulous version %s"
+msgstr "Nebulous Version %s"
 
-#: main.cc:104
-msgid "Nebulous\n"
-msgstr "Nebulous\n"
-
-#: main.cc:111
+#: main.cc:104 main.cc:112
 msgid "Nebulous"
 msgstr "Nebulous"
 
-#: main.cc:118
+#: main.cc:119
 msgid "Thanks for playing!\n"
 msgstr "Danke für's spielen!\n"
 
@@ -676,36 +608,36 @@ msgstr ""
 "eine neue Version von\n"
 "Toppler, Weiter?"
 
-#: menu.cc:776
+#: menu.cc:772
 msgid "Hunt the Fish"
 msgstr "Fischjagt"
 
-#: menu.cc:799
+#: menu.cc:793
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Start: %s %c"
 
-#: menu.cc:809
+#: menu.cc:803
 msgid "Highscores"
 msgstr "Siegerliste"
 
-#: menu.cc:821
+#: menu.cc:815
 msgid "Level Editor"
 msgstr "Leveleditor"
 
-#: menu.cc:882
+#: menu.cc:871
 msgid "Return to Game"
 msgstr "Zurück zum Spiel"
 
-#: menu.cc:892
+#: menu.cc:881
 msgid "Quit Game"
 msgstr "Beende Spiel"
 
-#: menu.cc:899
+#: menu.cc:888
 msgid "DEBUG MENU"
 msgstr "DEBUG MENÜ"
 
-#: menu.cc:904
+#: menu.cc:893
 msgid "Back to Game"
 msgstr "Zurück zum Spiel"
 
@@ -725,22 +657,6 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nein"
 
-#: screen.cc:552
-msgid "Must have at least 2 scroll layers!"
-msgstr "Es müssen mindestens 2 Schichten im Scroller sein!"
-
-#: screen.cc:555
-msgid "Failed to alloc memory for bonus scroller!"
-msgstr "Speicher für Scroller konnte nicht reserviert werden!"
-
-#: screen.cc:643
-msgid "could not open display"
-msgstr "Display konnte nicht geöffnet werden"
-
-#: screen.cc:1326 screen.cc:1412
-msgid "Wrong command in formatted text."
-msgstr "Falsches Kommando in formatierten Text"
-
 #: screen.cc:1581
 msgid "REC"
 msgstr "REC"
@@ -749,215 +665,218 @@ msgstr "REC"
 msgid "DEMO"
 msgstr "DEMO"
 
-#: sprites.cc:45
-msgid "could not alloc memory for sprite array"
-msgstr "Speicher für Spritefeld nicht reservierbar"
-
-#: stars.cc:54
-msgid "sts_init with too few stars!"
-msgstr "Zu wenig Sterne!"
-
-#: stars.cc:57
-msgid "Failed to alloc memory!"
-msgstr "Speicher nicht reserviert"
-
-#~ msgid "using global highscore at %s\n"
-#~ msgstr "benutze globale Siegerliste %s\n"
-
-#~ msgid "using local highscore at %s\n"
-#~ msgstr "benutze lokale Siegerliste %s\n"
-
-#~ msgid "Couldn't init the sound system, muting.\n"
-#~ msgstr "Sound konnte nicht initialisiert werden, schalte ab.\n"
-
-#~ msgid "Could not open audio, muting.\n"
-#~ msgstr "Sound konnte nicht geöffnet werden, schalte ab.\n"
-
-#~ msgid "Run and don't stop"
-#~ msgstr "Laufen und nicht anhalten"
-
-#~ msgid "Watch your step"
-#~ msgstr "Pass auf wohin Du trittst"
-
-#~ msgid "Short, but deadly"
-#~ msgstr "Kurz aber tödlich"
-
-#~ msgid "The maddening"
-#~ msgstr "den in den Wahnsinn treibenden"
-
-#~ msgid "Doom at every step"
-#~ msgstr "Schicksal bei jedem Schritt"
-
-#~ msgid "Enemies everywhere"
-#~ msgstr "Gegner überall"
-
-#~ msgid "You will loose"
-#~ msgstr "Du wirst verlieren"
-
-#~ msgid "Mind destroyer"
-#~ msgstr "den Geist Zerstörer"
-
-#~ msgid "Mind Trap"
-#~ msgstr "die Fangfrage"
-
-#~ msgid "Breaking Tower"
-#~ msgstr "Brechende Turm"
-
-#~ msgid "Great Fall"
-#~ msgstr "den großen Fall"
-
-#~ msgid "Tower of Intrigue"
-#~ msgstr "den faszinierenden Turm"
-
-#~ msgid "Massacre"
-#~ msgstr "das Massaker"
-
-#~ msgid "Bouncing Murders"
-#~ msgstr "springende Mörder"
-
-#~ msgid "Trial and error"
-#~ msgstr "Versuch und Irrtum"
-
-#~ msgid "Tower of Pure Evil"
-#~ msgstr "den Turm des puren Bösen"
-
-#~ msgid "Annoying Tower"
-#~ msgstr "den lästigen Turm"
-
-#~ msgid "Cave of Failure"
-#~ msgstr "die Höhle des Versagens"
-
-#~ msgid "Dividing path"
-#~ msgstr "die Weggabelung"
-
-#~ msgid "No Way Out?"
-#~ msgstr "Kein Ausweg?"
-
-#~ msgid "Trap"
-#~ msgstr "die Falle"
-
-#~ msgid "Tower of Mystery"
-#~ msgstr "den Turm der Mysterien"
-
-#~ msgid "Slip ... and die"
-#~ msgstr "Irre ... und sterbe"
-
-#~ msgid "Mission Impossible"
-#~ msgstr "Mission impossible"
-
-#~ msgid "Slices"
-#~ msgstr "Scheiben"
-
-#~ msgid "Corridors"
-#~ msgstr "Korridore"
-
-#~ msgid "Higher Ground"
-#~ msgstr "den Hohen Boden"
-
-#~ msgid "No Icing"
-#~ msgstr "kein Eis"
-
-#~ msgid "Three Layers"
-#~ msgstr "drei Schichten"
-
-#~ msgid "Two Ways"
-#~ msgstr "den 2 Wege Turm"
-
-#~ msgid "Spiral"
-#~ msgstr "die Spirale"
-
-#~ msgid "Skygazer"
-#~ msgstr "den Himmelsanbeter"
-
-#~ msgid "Tower of eyes"
-#~ msgstr "Turm der Augen"
-
-#~ msgid "Realm of robots"
-#~ msgstr "das Reich der Roboter"
-
-#~ msgid "Trap of tricks"
-#~ msgstr "die trickreiche Falle"
-
-#~ msgid "Slippery slide"
-#~ msgstr "den glitschigen Rutsch"
-
-#~ msgid "Broken path"
-#~ msgstr "den unterbrochenen Weg"
-
-#~ msgid "Swimmers delight"
-#~ msgstr "das Paradies für Schwimmer"
-
-#~ msgid "Nasty one"
-#~ msgstr "den Gehässigen"
-
-#~ msgid "Edge of doom"
-#~ msgstr "die Kante des Schicksals"
-
-#~ msgid "Blink of the eye"
-#~ msgstr "das zwinkernde Auge"
-
-#~ msgid "Robot's heaven"
-#~ msgstr "den Roboterhimmel"
-
-#~ msgid "Trick of traps"
-#~ msgstr "die fallenden Tricks"
-
-#~ msgid "No man's land"
-#~ msgstr "das Niemannsland"
-
-#~ msgid "Oh, *******!!"
-#~ msgstr "Oh, *******!!"
-
-#~ msgid "Riddle of reason"
-#~ msgstr "Rätsel der Gründe"
-
-#~ msgid "Maze of mistakes"
-#~ msgstr "Labyrinth von Irrtümern"
-
-#~ msgid "Last trump"
-#~ msgstr "den Letzten Trumpf"
-
-#~ msgid "Mission 1"
-#~ msgstr "Mission 1"
-
-#~ msgid "Mission 2"
-#~ msgstr "Mission 2"
-
-#~ msgid "Ball 1"
-#~ msgstr "Ball 1"
-
-#~ msgid "Ball 2"
-#~ msgstr "Ball 2"
-
-#~ msgid "Ball 3"
-#~ msgstr "Ball 3"
-
-#~ msgid "ABC Towers"
-#~ msgstr "Turm-ABC"
-
-#~ msgid "Wrong command in formatted text, scr_formattextlength."
-#~ msgstr "Falsches Kommando in formatierten Text, scr_formattextlength"
-
-#~ msgid "Status on top "
-#~ msgstr "Status oben "
-
-#~ msgid "Bonus "
-#~ msgstr "Bonus "
-
-#~ msgid "Fullscreen "
-#~ msgstr "Vollbild "
-
-#~ msgid "Sounds "
-#~ msgstr "Sounds "
-
-#~ msgid "Font alpha "
-#~ msgstr "Schrift glätten "
-
-#~ msgid "Sprites alpha "
-#~ msgstr "Sprites glätten "
-
-#~ msgid "Scroller alpha "
-#~ msgstr "Scroller glätten "
-
-#~ msgid "Shadowing "
-#~ msgstr "Schattieren "
+#: levelnames.txt:1
+msgid "Mission 1"
+msgstr "Mission 1"
+
+#: levelnames.txt:2
+msgid "Tower of eyes"
+msgstr "Turm der Augen"
+
+#: levelnames.txt:3
+msgid "Realm of robots"
+msgstr "das Reich der Roboter"
+
+#: levelnames.txt:4
+msgid "Trap of tricks"
+msgstr "die trickreiche Falle"
+
+#: levelnames.txt:5
+msgid "Slippery slide"
+msgstr "den glitschigen Rutsch"
+
+#: levelnames.txt:6
+msgid "Broken path"
+msgstr "den unterbrochenen Weg"
+
+#: levelnames.txt:7
+msgid "Swimmers delight"
+msgstr "das Paradies für Schwimmer"
+
+#: levelnames.txt:8
+msgid "Nasty one"
+msgstr "den Gehässigen"
+
+#: levelnames.txt:9
+msgid "Edge of doom"
+msgstr "die Kante des Schicksals"
+
+#: levelnames.txt:11
+msgid "Mission 2"
+msgstr "Mission 2"
+
+#: levelnames.txt:12
+msgid "Blink of the eye"
+msgstr "das zwinkernde Auge"
+
+#: levelnames.txt:13
+msgid "Robot's heaven"
+msgstr "den Roboterhimmel"
+
+#: levelnames.txt:14
+msgid "Trick of traps"
+msgstr "die fallenden Tricks"
+
+#: levelnames.txt:15
+msgid "No man's land"
+msgstr "das Niemannsland"
+
+#: levelnames.txt:16
+msgid "Oh, *******!!"
+msgstr "Oh, *******!!"
+
+#: levelnames.txt:17
+msgid "Riddle of reason"
+msgstr "Rätsel der Gründe"
+
+#: levelnames.txt:18
+msgid "Maze of mistakes"
+msgstr "Labyrinth von Irrtümern"
+
+#: levelnames.txt:19
+msgid "Last trump"
+msgstr "den Letzten Trumpf"
+
+#: levelnames.txt:21
+msgid "Ball 1"
+msgstr "Ball 1"
+
+#: levelnames.txt:22
+msgid "Run and don't stop"
+msgstr "Laufen und nicht anhalten"
+
+#: levelnames.txt:23
+msgid "Watch your step"
+msgstr "Pass auf wohin Du trittst"
+
+#: levelnames.txt:24
+msgid "Short, but deadly"
+msgstr "Kurz aber tödlich"
+
+#: levelnames.txt:25
+msgid "The maddening"
+msgstr "den in den Wahnsinn treibenden"
+
+#: levelnames.txt:26
+msgid "Doom at every step"
+msgstr "Schicksal bei jedem Schritt"
+
+#: levelnames.txt:27
+msgid "Enemies everywhere"
+msgstr "Gegner überall"
+
+#: levelnames.txt:28
+msgid "You will loose"
+msgstr "Du wirst verlieren"
+
+#: levelnames.txt:29
+msgid "Mind destroyer"
+msgstr "den Geist Zerstörer"
+
+#: levelnames.txt:31
+msgid "Ball 2"
+msgstr "Ball 2"
+
+#: levelnames.txt:32
+msgid "Mind Trap"
+msgstr "die Fangfrage"
+
+#: levelnames.txt:33
+msgid "Breaking Tower"
+msgstr "Brechende Turm"
+
+#: levelnames.txt:34
+msgid "Great Fall"
+msgstr "den großen Fall"
+
+#: levelnames.txt:35
+msgid "Tower of Intrigue"
+msgstr "den faszinierenden Turm"
+
+#: levelnames.txt:36
+msgid "Massacre"
+msgstr "das Massaker"
+
+#: levelnames.txt:37
+msgid "Bouncing Murders"
+msgstr "springende Mörder"
+
+#: levelnames.txt:38
+msgid "Trial and error"
+msgstr "Versuch und Irrtum"
+
+#: levelnames.txt:39
+msgid "Tower of Pure Evil"
+msgstr "den Turm des puren Bösen"
+
+#: levelnames.txt:41
+msgid "Ball 3"
+msgstr "Ball 3"
+
+#: levelnames.txt:42
+msgid "Annoying Tower"
+msgstr "den lästigen Turm"
+
+#: levelnames.txt:43
+msgid "Cave of Failure"
+msgstr "die Höhle des Versagens"
+
+#: levelnames.txt:44
+msgid "Dividing path"
+msgstr "die Weggabelung"
+
+#: levelnames.txt:45
+msgid "No Way Out?"
+msgstr "Kein Ausweg?"
+
+#: levelnames.txt:46
+msgid "Trap"
+msgstr "die Falle"
+
+#: levelnames.txt:47
+msgid "Tower of Mystery"
+msgstr "den Turm der Mysterien"
+
+#: levelnames.txt:48
+msgid "Slip ... and die"
+msgstr "Irre ... und sterbe"
+
+#: levelnames.txt:49
+msgid "Mission Impossible"
+msgstr "Mission impossible"
+
+#: levelnames.txt:51
+msgid "ABC Towers"
+msgstr "Turm-ABC"
+
+#: levelnames.txt:52
+msgid "Slices"
+msgstr "Scheiben"
+
+#: levelnames.txt:53
+msgid "Corridors"
+msgstr "Korridore"
+
+#: levelnames.txt:54
+msgid "Higher Ground"
+msgstr "den Hohen Boden"
+
+#: levelnames.txt:55
+msgid "No Icing"
+msgstr "kein Eis"
+
+#: levelnames.txt:56
+msgid "Three Layers"
+msgstr "drei Schichten"
+
+#: levelnames.txt:57
+msgid "Two Ways"
+msgstr "den 2 Wege Turm"
+
+#: levelnames.txt:58
+msgid "Spiral"
+msgstr "die Spirale"
+
+#: levelnames.txt:59
+msgid "Skygazer"
+msgstr "den Himmelsanbeter"

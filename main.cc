@@ -99,10 +99,11 @@ int main(int argc, char *argv[]) {
 #endif
 
 #ifdef VERSION
-  printf(_("Nebulous version %s\n"), VERSION);
+  printf(_("Nebulous version %s"), VERSION);
 #else
-  printf(_("Nebulous\n"));
+  printf(_("Nebulous"));
 #endif
+  printf("\n");
 
   hsc_init();
 

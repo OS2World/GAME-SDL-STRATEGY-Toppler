@@ -1,49 +1,60 @@
-Tower of eyes
-Realm of robots
-Trap of tricks
-Slippery slide
-Broken path
-Swimmers delight
-Nasty one
-Edge of doom
-Blink of the eye
-Robot's heaven
-Trick of traps
-No man's land
-Oh, *******!!
-Riddle of reason
-Maze of mistakes
-Last trump
-Run and don't stop
-Watch your step
-Short, but deadly
-The maddening
-Doom at every step
-Enemies everywhere
-You will loose
-Mind destroyer
-Mind Trap
-Breaking Tower
-Great Fall
-Tower of Intrigue
-Massacre
-Bouncing Murders
-Trial and error
-Tower of Pure Evil
-Annoying Tower
-Cave of Failure
-Dividing path
-No Way Out?
-Trap
-Tower of Mystery
-Slip ... and die
-Mission Impossible
-Slices
-Corridors
-Higher Ground
-No Icing
-Three Layers
-Two Ways
-Spiral
-Skygazer
+_("Mission 1")
+_("Tower of eyes")
+_("Realm of robots")
+_("Trap of tricks")
+_("Slippery slide")
+_("Broken path")
+_("Swimmers delight")
+_("Nasty one")
+_("Edge of doom")
+
+_("Mission 2")
+_("Blink of the eye")
+_("Robot's heaven")
+_("Trick of traps")
+_("No man's land")
+_("Oh, *******!!")
+_("Riddle of reason")
+_("Maze of mistakes")
+_("Last trump")
+
+_("Ball 1")
+_("Run and don't stop")
+_("Watch your step")
+_("Short, but deadly")
+_("The maddening")
+_("Doom at every step")
+_("Enemies everywhere")
+_("You will loose")
+_("Mind destroyer")
+
+_("Ball 2")
+_("Mind Trap")
+_("Breaking Tower")
+_("Great Fall")
+_("Tower of Intrigue")
+_("Massacre")
+_("Bouncing Murders")
+_("Trial and error")
+_("Tower of Pure Evil")
+
+_("Ball 3")
+_("Annoying Tower")
+_("Cave of Failure")
+_("Dividing path")
+_("No Way Out?")
+_("Trap")
+_("Tower of Mystery")
+_("Slip ... and die")
+_("Mission Impossible")
+
+_("ABC Towers")
+_("Slices")
+_("Corridors")
+_("Higher Ground")
+_("No Icing")
+_("Three Layers")
+_("Two Ways")
+_("Spiral")
+_("Skygazer")
 
