@@ -134,7 +134,7 @@ unsigned short scr_loadsprites(int num, const int w, const int h, int colstart, 
   unsigned short erg = 0;
   unsigned char p[w * h / 2];
   SDL_Surface *z;
-  int res;
+  Uint32 res;
 
   for (int t = 0; t < num; t++) {
     arc_read(p, w * h / 2, &res);
@@ -204,7 +204,7 @@ static unsigned short loadsprites(int num, int w, int h, int bits, int colstart)
 /* loads all the graphics */
 static void loadgraphics(void) {
 
-  int res;
+  Uint32 res;
   unsigned char pal[192];
 
   arc_assign(grafdat);
@@ -222,8 +222,21 @@ static void loadgraphics(void) {
   battlementstart = scr_loadsprites(8, 144, 24, brickcol, false, false);
 
   for (int t = -36; t <= 36; t++) {
-    arc_read(&doors[t+36].xs, 2, &res);
-    arc_read(&doors[t+36].br, 2, &res);
+
+    {
+      Uint8 tmp;
+
+      arc_read(&tmp, 1, &res);
+      doors[t+36].xs = tmp;
+      arc_read(&tmp, 1, &res);
+      doors[t+36].xs |= ((Uint16)tmp) << 8;;
+
+      arc_read(&tmp, 1, &res);
+      doors[t+36].br = tmp;
+      arc_read(&tmp, 1, &res);
+      doors[t+36].br |= ((Uint16)tmp) << 8;;
+    }
+
 
     for (int et = 0; et < 3; et++)
 
@@ -295,7 +308,7 @@ static void loadgraphics(void) {
 static void loadfont(void) {
 
   unsigned char pal[fontcnt*3];
-  int res;
+  Uint32 res;
   unsigned char p[6*16];
   SDL_Surface *s;
   char c;
@@ -381,7 +394,7 @@ void scr_init(void) {
   loadgraphics();
   loadfont();
   loadscroller();
-  display = SDL_SetVideoMode(320*2, 240*2, 8,
+  display = SDL_SetVideoMode(320, 240, 8,
                              SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
   second = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 8, 0, 0, 0, 0);
   pal_setstdpalette(second);
@@ -389,9 +402,9 @@ void scr_init(void) {
 
 void scr_toggle_fullscreen() {
   fullscreen = !fullscreen;
-  display = SDL_SetVideoMode(320*2, 240*2, 8,
+  display = SDL_SetVideoMode(320, 240, 8,
                              SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
-  pal_colors(pal_menu);		
+  pal_colors(pal_menu);
 }
 
 void scr_done(void) {
@@ -500,12 +513,12 @@ static void putwater(long height) {
   wavetime++;
 }
 
-void scr_writetext_center(long y, char *s) {
+void scr_writetext_center(long y, const char *s) {
   scr_writetext (160 - 6*strlen(s), y, s);
 }
 
 /*Schreibt Text mit aktuellem Font*/
-void scr_writetext(long x, long y, char *s) {
+void scr_writetext(long x, long y, const char *s) {
   int t = 0;
   unsigned char c;
   while (s[t] != 0) {
@@ -531,6 +544,7 @@ void scr_putbar(int x, int y, int br, int h, unsigned char col = 0) {
 
 /* exchange active and inactive page */
 void scr_swap(void) {
+/*
   int p = 0;
   int q = 0;
   unsigned char i = ((unsigned char *)(second->pixels))[0];
@@ -543,6 +557,13 @@ void scr_swap(void) {
     }
     memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - 640], 640);
     p += 640;
+    }*/
+  int d = 0;
+  int s = 0;
+  for (int y = 0; y < 240; y++) {
+    memmove(&((char *)(display->pixels))[d], &((char *)(second->pixels))[s], 320);
+    d += display->pitch;
+    s += second->pitch;
   }
   SDL_UpdateRect(display, 0, 0, 0, 0);
 }

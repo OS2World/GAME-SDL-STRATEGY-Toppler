@@ -1,7 +1,7 @@
 #ifndef PALETTE_H
 #define PALETTE_H
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 /* the game has more or less 3 palettes, one for the tower game,
  one for the menu and one for the bonus game

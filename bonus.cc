@@ -49,11 +49,16 @@ static bool escape(long time, long x) {
   scr_writetext_center(112, "OTHER: NO PLAY");
 
   scr_swap();
+
+  Uint8 inp = key_chartyped();
+
   do {
-  } while (!key_keypressed(any_key));
-  if (key_keypressed(break_key)) {
+    inp = key_chartyped();
+  } while (!inp);
+
+  if (inp == 27)
     return true;
-  }else
+  else
     pal_colors(pal_bonusgame);
 
   return false;

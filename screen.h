@@ -1,7 +1,7 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 /* this modules handles nearly all the output onto the screen */
 
@@ -22,9 +22,9 @@ unsigned short scr_loadsprites(int num, const int w, const int h, int colstart, 
 
 
 /* writes some text onto the screen */
-void scr_writetext(long x, long y, char *s);
+void scr_writetext(long x, long y, const char *s);
 /* centers the text horizontally */
-void scr_writetext_center(long y, char *s);
+void scr_writetext_center(long y, const char *s);
 
 /* draws a filles rectangle with color col */
 void scr_putbar(int x, int y, int br, int h, unsigned char col = 0);

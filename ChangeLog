@@ -1,3 +1,9 @@
+Version 0.74
+
+- changes to compile successfully on sparc
+- change some datatypes to Uintxx and Sintxx (from SDL)
+- improved configure script a bit
+
 Version 0.73
 
 - fixed bug with wrong loops in robots that overwrote some global variables on windows

@@ -1,51 +1,53 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
+#include <SDL_types.h>
+
 /* handles one mission with 8 towers and the necessary manipulations
  on the towerlayout when the game is going on */
 
 /* tries to find all missions installed on this system
  * returns the number of missions found
  */
-int lev_findmissions();
-int lev_missionnumber();
-const char * lev_missionname(int num);
+void lev_findmissions();
+Uint16 lev_missionnumber();
+const char * lev_missionname(Uint16 num);
 
 /* loads a mission from the file with the given name */
-void lev_loadmission(int num);
+void lev_loadmission(Uint16 num);
 
 /* returns the number of towers that are in the current mission */
-int lev_towercount(void);
+Uint8 lev_towercount(void);
 
 /* selects one of the towers in this mission */
-void lev_selecttower(int number);
+void lev_selecttower(Uint8 number);
 
 /* returns the color for the current tower */
-unsigned char lev_towercol_red(void);
-unsigned char lev_towercol_green(void);
-unsigned char lev_towercol_blue(void);
+Uint8 lev_towercol_red(void);
+Uint8 lev_towercol_green(void);
+Uint8 lev_towercol_blue(void);
 
-void lev_set_towercol(unsigned char r, unsigned char g, unsigned char b);
+void lev_set_towercol(Uint8 r, Uint8 g, Uint8 b);
 
 /* returns the value at this position in the level array */
-unsigned char lev_tower(int row, int column);
+unsigned char lev_tower(Uint8 row, Uint8 column);
 
 /* returns the height of the tower */
-int lev_towerrows(void);
+Uint8 lev_towerrows(void);
 
 /* the name of the tower */
-char *lev_towername(void);
+const char *lev_towername(void);
 
 /* the number of the actual tower */
-int lev_towernr(void);
+Uint8 lev_towernr(void);
 
 /* the time the player has to reach the top */
-int lev_towertime(void);
+Uint16 lev_towertime(void);
 
-void lev_set_towertime(int time);
+void lev_set_towertime(Uint16 time);
 
 /* removes one layer of the tower (for destruction) */
-void lev_removelayer(int layer);
+void lev_removelayer(Uint8 layer);
 
 /* if the positions contains a vanishing step, remove it */
 void lev_removevanishstep(int row, int col);

@@ -32,9 +32,9 @@ static bool parse_arguments(int argc, char *argv[]) {
 static void startgame(void) {
 
   unsigned char stat, tower;
-  int anglepos;
+  Uint8 anglepos;
   int gameresult;
-  int resttime;
+  Uint16 resttime;
 
   arc_init("toppler.dat");
   lev_findmissions();

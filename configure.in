@@ -1,6 +1,5 @@
 AC_INIT(toppler.cc)
 AM_INIT_AUTOMAKE(toppler, `cat VERSION`)
-AM_CONFIG_HEADER(config.h)
 
 AC_PROG_CXX
 SDL_VERSION=1.2.0
@@ -9,7 +8,12 @@ AM_PATH_SDL($SDL_VERSION, :,
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
 
-AC_CHECK_LIB(SDL_mixer, main,:,AC_MSG_ERROR([*** can not find SDL_mixer]))
-LIBS="$LIBS -lSDL_mixer"
+AC_CHECK_LIB(SDL_mixer, main,
+  AC_DEFINE(SDL_MIXER) LIBS="$LIBS -lSDL_mixer",
+  AC_MSG_WARN([can not find SDL_mixer tower toppler will have no sound]))
+
+AC_CHECK_FUNCS([scandir],
+  :,
+  AC_DEFINE(SELF_SCANDIR))
 
 AC_OUTPUT(Makefile)

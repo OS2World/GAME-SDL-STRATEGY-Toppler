@@ -59,13 +59,13 @@
 
 */
 
-static unsigned char * mission = NULL;
-static int towerheight;
-static unsigned char tower[256][16];
+static Uint8 * mission = NULL;
+static Uint8 towerheight;
+static Uint8 tower[256][16];
 static char towername[20];
-static int towernumber;
-static unsigned char towercolor_red, towercolor_green, towercolor_blue;
-static int towertime;
+static Uint8 towernumber;
+static Uint8 towercolor_red, towercolor_green, towercolor_blue;
+static Uint16 towertime;
 
 typedef struct mission_node {
   char name[30];
@@ -143,7 +143,7 @@ static void add_mission(char *fname) {
 }
 
 
-int lev_findmissions() {
+void lev_findmissions() {
 
   char pathname[100];
   char mname[30];
@@ -202,7 +202,7 @@ int lev_findmissions() {
   }
 }
 
-int lev_missionnumber() {
+Uint16 lev_missionnumber() {
   int num = 0;
   mission_node * m = missions;
 
@@ -214,7 +214,7 @@ int lev_missionnumber() {
   return num;
 }
 
-const char * lev_missionname(int num) {
+const char * lev_missionname(Uint16 num) {
   mission_node * m = missions;
 
   while (num) {
@@ -225,7 +225,7 @@ const char * lev_missionname(int num) {
   return m->name;
 }
 
-void lev_loadmission(int num) {
+void lev_loadmission(Uint16 num) {
 
   mission_node *m = missions;
   while (num) {
@@ -235,34 +235,33 @@ void lev_loadmission(int num) {
 
   FILE * in = fopen(m->fname, "rb");
 
-  if (mission) delete mission;
+  if (mission) delete [] mission;
 
+  /* find out file size */
   fseek(in, 0, SEEK_END);
-
   int fsize = ftell(in);
 
+  /* get enough memory and load the whole file into memory */
   mission = new unsigned char[fsize];
-
   fseek(in, 0, SEEK_SET);
-
   fread(mission, fsize, 1, in);
 
   fclose(in);
 }
 
-int lev_towercount(void) {
+Uint8 lev_towercount(void) {
   return mission[mission[0] + 1];
 }
 
-void lev_selecttower(int number) {
+void lev_selecttower(Uint8 number) {
 
-  int towerstart;
+  Uint32 towerstart;
 
   towernumber = number;
 
   // find start of towerdata in mission
   {
-    long idxpos = 0;
+    Uint32 idxpos = 0;
 
     idxpos += mission[mission[0] + 2];
     idxpos += long(mission[mission[0] + 3]) << 8;
@@ -277,36 +276,35 @@ void lev_selecttower(int number) {
   }
 
   // extract towername
-  int pos = mission[towerstart];
-  memmove(towername, &mission[towerstart + 1], pos);
-  towername[pos] = 0;
+  memmove(towername, &mission[towerstart + 1], mission[towerstart]);
+  towername[mission[towerstart]] = 0;
 
-  pos ++;
+  towerstart += mission[towerstart] + 1;
 
   // save number of rows in tower
-  towerheight = mission[towerstart + pos++];
-  towertime = mission[towerstart + pos] + (int(mission[towerstart + pos + 1]) << 8);
-  pos += 2;
+  towerheight = mission[towerstart++];
+  towertime = mission[towerstart] + (int(mission[towerstart + 1]) << 8);
+  towerstart += 2;
 
-  towercolor_red = mission[towerstart + pos];
-  towercolor_green = mission[towerstart + pos + 1];
-  towercolor_blue = mission[towerstart + pos + 2];
-  pos += 3;
+  towercolor_red = mission[towerstart];
+  towercolor_green = mission[towerstart + 1];
+  towercolor_blue = mission[towerstart + 2];
+  towerstart += 3;
 
   // save start of bitmap and bytemap
-  int bitstart = towerstart + pos;
-  int bytestart = bitstart + 2 * towerheight;
+  Uint32 bitstart = towerstart;
+  Uint32 bytestart = bitstart + 2 * towerheight;
 
   // initialize positions inside the fields
-  int wpos = 0;
-  int bpos = 0;
+  Uint16 wpos = 0;
+  Uint16 bpos = 0;
 
   // clean tower
-  memset(&tower, 0, sizeof(char) * 2048L);
+  memset(&tower, 0, 2048L);
 
   // extract level data
-  for (int row = 0; row < towerheight; row++)
-    for (int col = 0; col < 16; col++) {
+  for (Uint8 row = 0; row < towerheight; row++)
+    for (Uint8 col = 0; col < 16; col++) {
       if ((mission[bitstart + (bpos >> 3)] << (bpos & 7)) & 0x80)
         tower[row][col] = mission[bytestart + wpos++];
       else
@@ -315,51 +313,51 @@ void lev_selecttower(int number) {
     }
 }
 
-void lev_set_towercol(unsigned char r, unsigned char g, unsigned char b) {
+void lev_set_towercol(Uint8 r, Uint8 g, Uint8 b) {
   towercolor_red = r;
   towercolor_green = g;
   towercolor_blue = b;
 }
 
-unsigned char lev_towercol_red() {
+Uint8 lev_towercol_red() {
   return towercolor_red;
 }
 
-unsigned char lev_towercol_green() {
+Uint8 lev_towercol_green() {
   return towercolor_green;
 }
 
-unsigned char lev_towercol_blue() {
+Uint8 lev_towercol_blue() {
   return towercolor_blue;
 }
 
-unsigned char lev_tower(int row, int column) {
+unsigned char lev_tower(Uint8 row, Uint8 column) {
   return tower[row][column];
 }
 
-int lev_towerrows(void) {
+Uint8 lev_towerrows(void) {
   return towerheight;
 }
 
-char *lev_towername(void) {
+const char * lev_towername(void) {
   return towername;
 }
 
-int lev_towernr(void) {
+Uint8 lev_towernr(void) {
   return towernumber;
 }
 
-int lev_towertime(void) {
+Uint16 lev_towertime(void) {
   return towertime;
 }
 
-void lev_set_towertime(int time) {
+void lev_set_towertime(Uint16 time) {
   towertime = time;
 }
 
-void lev_removelayer(int layer) {
+void lev_removelayer(Uint8 layer) {
   while (layer < towerheight) {
-    for (int c = 0; c < 16; c++)
+    for (Uint8 c = 0; c < 16; c++)
       tower[layer][c] = tower[layer + 1][c];
     layer++;
   }
@@ -967,8 +965,8 @@ bool lev_is_consistent(int &row, int &col) {
 /* the functions for mission creation */
 
 static FILE * fmission = NULL;
-static unsigned char nmission = 0;
-static long missionidx[256];
+static Uint8 nmission = 0;
+static Uint32 missionidx[256];
 
 bool lev_mission_new(char * name) {
   assert(!fmission, "called mission_finish twice");
@@ -998,7 +996,7 @@ bool lev_mission_new(char * name) {
 void lev_mission_addtower(char * name) {
   assert(fmission, "called mission_addtower without mission_new");
 
-  int rows;
+  Uint8 rows;
 
   FILE * in = open_local_data_file(name);
   if (!tower) return;
@@ -1010,18 +1008,16 @@ void lev_mission_addtower(char * name) {
     char towername[20];
     fgets(towername, 20, in);
 
-    unsigned char tmp = strlen(towername);
+    Uint8 tmp = strlen(towername);
     fwrite(&tmp, 1, 1, fmission);
     fwrite(towername, 1, tmp, fmission);
   }
 
   {
-    unsigned char towercolor_red, towercolor_green, towercolor_blue;
-    int towertime;
-    int towerheight;
-    unsigned char tmp;
+    Uint8 red, green, blue, towerheight, tmp;
+    Uint16 towertime;
 
-    fscanf(in, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);
+    fscanf(in, "%hhu, %hhu, %hhu\n", &red, &green, &blue);
     fscanf(in, "%i\n", &towertime);
     fscanf(in, "%i\n", &towerheight);
 
@@ -1031,21 +1027,21 @@ void lev_mission_addtower(char * name) {
     tmp = (towertime >> 8) & 0xff;
     fwrite(&tmp, 1, 1, fmission);
 
-    fwrite(&towercolor_red, 1, 1, fmission);
-    fwrite(&towercolor_green, 1, 1, fmission);
-    fwrite(&towercolor_blue, 1, 1, fmission);
+    fwrite(&red, 1, 1, fmission);
+    fwrite(&green, 1, 1, fmission);
+    fwrite(&blue, 1, 1, fmission);
 
     rows = towerheight;
   }
 
   /* load the tower */
-  unsigned char tower[256][16];
-  for (int row = rows - 1; row >= 0; row--) {
+  Uint8 tower[256][16];
+  for (Sint16 row = rows - 1; row >= 0; row--) {
     char line[200];
 
     fgets(line, 200, in);
 
-    for (int col = 0; col < 16; col++) {
+    for (Uint8 col = 0; col < 16; col++) {
       switch(line[col]) {
       case '1': tower[row][col] = 0x10; break;
       case '2': tower[row][col] = 0x20; break;
@@ -1068,25 +1064,23 @@ void lev_mission_addtower(char * name) {
 
       case '.': tower[row][col] = 0x91; break;
       case '>': tower[row][col] = 0xb1; break;
-      default:
-         tower[row][col] = 0; break;
+      default:  tower[row][col] = 0x00; break;
       }
     }
   }
 
   /* output bitmap */
-  for (int row = 0; row < rows; row++) {
+  for (Uint8 row = 0; row < rows; row++) {
 
-    unsigned char c = 0;
-
-    for (int col = 0; col < 8; col ++)
+    Uint8 c = 0;
+    for (Uint8 col = 0; col < 8; col ++)
       if (tower[row][col])
         c |= (0x80 >> col);
 
     fwrite(&c, 1, 1, fmission);
 
     c = 0;
-    for (int col = 0; col < 8; col ++)
+    for (Uint8 col = 0; col < 8; col ++)
       if (tower[row][col + 8])
         c |= (0x80 >> col);
 
@@ -1094,8 +1088,8 @@ void lev_mission_addtower(char * name) {
   }
 
   /* output bytemep */
-  for (int row = 0; row < rows; row++)
-    for (int c = 0; c < 16; c ++)
+  for (Uint8 row = 0; row < rows; row++)
+    for (Uint8 c = 0; c < 16; c ++)
       if (tower[row][c])
         fwrite(&tower[row][c], 1, 1, fmission);
 
@@ -1105,12 +1099,11 @@ void lev_mission_addtower(char * name) {
 void lev_mission_finish() {
   assert(fmission, "called mission_finish without mission_new");
 
-  unsigned char tmp;
-  unsigned char c;
+  Uint8 c;
 
   /* save indexstart and write out index */
-  int idxpos = ftell(fmission);
-  for (int i = 0; i < nmission; i++) {
+  Uint32 idxpos = ftell(fmission);
+  for (Uint8 i = 0; i < nmission; i++) {
 
     c = missionidx[i] & 0xff;
     fwrite(&c, 1, 1, fmission);
@@ -1124,12 +1117,11 @@ void lev_mission_finish() {
 
   /* write out the number of towers in this mission */
   fseek(fmission, 0, SEEK_SET);
-  fread(&tmp, 1, 1, fmission);
-  printf("%i\n", tmp);
+  fread(&c, 1, 1, fmission);
+  printf("%i\n", c);
 
-  fseek(fmission, tmp + 1, SEEK_SET);
-  c = nmission;
-  fwrite(&c, 1, 1, fmission);
+  fseek(fmission, c + 1, SEEK_SET);
+  fwrite(&nmission, 1, 1, fmission);
 
   /* write out index position */
   c = idxpos & 0xff;

@@ -1,6 +1,8 @@
 #ifndef KEYB_H
 #define KEYB_H
 
+#include <SDL_types.h>
+
 /* keyboard handling */
 
 #define no_key          0
@@ -18,14 +20,14 @@ void key_init(void);
 void key_done(void);
 
 /* returns bitmask with currently pressed keys */
-int key_keystat(void);
+Uint8 key_keystat(void);
 
 /* true, if key is pressed */
-bool key_keypressed(int key);
+bool key_keypressed(Uint8 key);
 
 /* returns if a key has been pushed and released (typed) but only for the keys in
  the list */
-char key_readkey(void);
+Uint8 key_readkey(void);
 
 /* returns a types character */
 char key_chartyped(void);

@@ -3,7 +3,7 @@
 #include "sprites.h"
 #include "screen.h"
 
-#include "SDL/SDL.h"
+#include "SDL.h"
 #include "stdlib.h"
 
 #define starstep 5

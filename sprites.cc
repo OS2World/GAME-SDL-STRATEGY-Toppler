@@ -4,10 +4,10 @@
 
 #include <stdlib.h>
 
-static int maxsprite = 0;
+static Uint16 maxsprite = 0;
 static SDL_Surface **sarray = NULL;
 
-void spr_init(int maxsp) {
+void spr_init(Uint16 maxsp) {
   assert(maxsprite == 0, "sprite init called more than once\n");
 
   maxsprite = maxsp;
@@ -28,9 +28,8 @@ void spr_done(void) {
 
 long spr_savesprite(SDL_Surface *s) {
 
-  long t;
+  Uint16 t = 0;
 
-  t = 0;
   while ((sarray[t] != NULL) && (t < maxsprite))
     t++;
 
@@ -41,7 +40,7 @@ long spr_savesprite(SDL_Surface *s) {
     return -1;
 }
 
-SDL_Surface *spr_spritedata(long nr) {
+SDL_Surface *spr_spritedata(Uint16 nr) {
 
   if (nr < maxsprite)
     return sarray[nr];

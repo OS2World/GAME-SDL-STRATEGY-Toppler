@@ -23,18 +23,18 @@ void arc_assign(char *name);
 void arc_closefile(void);
 
 /* returns the size of the currently opened file */
-long arc_filesize(void);
+Uint32 arc_filesize(void);
 
 /* returns true if the current file is completely read */
 bool arc_eof(void);
 
 /* reads up to size bytes into the buffer, returning in result
  the real number read */
-void arc_read(void *buf, int size, int *result);
+void arc_read(void *buf, Uint32 size, Uint32 *result);
 
 /* returns the specified number of bits on the lower bits of the retuned
  value, dont use arc_read and arc_getbits on the same file */
-unsigned short arc_getbits(int anz);
+Uint16 arc_getbits(Uint8 anz);
 
 #endif
 

@@ -76,7 +76,7 @@
 #define fontpoint       '*'
 
 /* waits around 1/18 of a second */
-extern void dcl_wait(void);
+void dcl_wait(void);
 
 /* opens files looking into the right directories */
 FILE *open_data_file(char *name);
@@ -101,5 +101,13 @@ void save_config(void);
 
 #define CONFIGDIR "/etc"
 #define HISCOREDIR "/var/games/nebulous"
+
+/* sunOS doesn't have this function so I need to implement by myself */
+#if SELF_SCANDIR
+int scandir(const char *dir, struct dirent ***namelist,
+            int (*select)(const struct dirent *),
+            int (*compar)(const void *, const void *));
+int alphasort(const void *a, const void *b);
+#endif
 
 #endif

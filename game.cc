@@ -35,7 +35,7 @@ void gam_newgame(void) {
   pts_reset();
 }
 
-void gam_loadtower(int tow) {
+void gam_loadtower(Uint8 tow) {
   lev_selecttower(tow);
 }
 
@@ -130,7 +130,7 @@ void gam_arrival(void) {
 
 }
 
-void gam_pick_up(int anglepos, int time) {
+void gam_pick_up(Uint8 anglepos, Uint16 time) {
   /* the shapes of the toppler when it turns after leaving a door*/
   static unsigned char door4[4] = { 0xa, 0x9, 0x8, 0x0 };
 
@@ -329,21 +329,21 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
 }
 
 /* update the time */
-static void akt_time(int &time, int &timecount, int &state) {
+static void akt_time(int &time, int &timecount, Uint8 &state) {
   if (timecount >= 0) {
     timecount++;
     if (timecount == 5) {
       timecount = 0;
       time--;
       if (time <= 20 || (time <= 40 && (time % 2)))
-	snd_alarm();
+        snd_alarm();
       if (time == 0)
         state = STATE_TIMEOUT;
     }
   }
 }
 
-static void get_keys(int &left_right, int &up_down, bool &space) {
+static void get_keys(Sint8 &left_right, Sint8 &up_down, bool &space) {
   if (key_keystat() & left_key)
     left_right = -1;
   else {
@@ -368,13 +368,16 @@ static void get_keys(int &left_right, int &up_down, bool &space) {
     space = false;
 }
 
-static void escape(int &state, int &tower_position, int &tower_anglepos, int time) {
+static void escape(Uint8 &state, int &tower_position, int &tower_anglepos, int time) {
 
   key_readkey();
-  int inp = key_chartyped();
+
+  Uint8 inp = key_chartyped();
+
   do {
     inp = key_chartyped();
   } while (!inp);
+
   key_readkey();
 
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
@@ -424,16 +427,16 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
            top_anglepos(), tower_anglepos);
 }
 
-int gam_towergame(int &anglepos, int &resttime) {
+int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
 
-  static unsigned char door3[6] = {
+  static Uint8 door3[6] = {
     0x17, 0x18, 0x18, 0x19, 0x19, 0xb
   };
 
-  int left_right, up_down;
+  Sint8 left_right, up_down;
   bool space;
 
-  int state = STATE_PLAYING;
+  Uint8 state = STATE_PLAYING;
 
   /* the maximal reached height for this tower */
   int reached_height;

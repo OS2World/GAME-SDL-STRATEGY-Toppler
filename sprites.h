@@ -1,12 +1,12 @@
 #ifndef SPRITES_H
 #define SPRITES_H
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
 /* coordinates a collection of sprites */
 
 /* initializes with a maximum number of possible prites */
-void spr_init(int maxsp);
+void spr_init(Uint16 maxsp);
 
 /* frees all sprites */
 void spr_done(void);
@@ -15,6 +15,6 @@ void spr_done(void);
 long spr_savesprite(SDL_Surface *s);
 
 /* returns the sprite data for the given index */
-SDL_Surface *spr_spritedata(long nr);
+SDL_Surface *spr_spritedata(Uint16 nr);
 
 #endif

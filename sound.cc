@@ -2,18 +2,25 @@
 
 #include "decl.h"
 
-#include <SDL/SDL.h>
-#include <SDL/SDL_mixer.h>
+#include <SDL.h>
+
+#ifdef SDL_MIXER
+#include <SDL_mixer.h>
+#endif
+
 #include <stdlib.h>
 
+#ifdef SDL_MIXER
 static Mix_Chunk *sounds[18];
 static Mix_Music *music;
+#endif
 static int waterchannel;
 static int boinkmax = 0;
 static int splashmax = 0;
 
 static long play;
 
+#ifdef SDL_MIXER
 static Mix_Chunk *LoadWAV(char *name) {
   FILE *f = open_data_file(name);
 
@@ -22,10 +29,12 @@ static Mix_Chunk *LoadWAV(char *name) {
   else
     return NULL;
 }
+#endif
 
 void snd_init(void) {
   if (nosound) return;
 
+#ifdef SDL_MIXER
   SDL_InitSubSystem(SDL_INIT_AUDIO);
 
   if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
@@ -54,11 +63,13 @@ void snd_init(void) {
   sounds[17] = LoadWAV("timeout.wav");
 
   music = Mix_LoadMUS("title.ogg");
+#endif
 }
 
 void snd_done(void) {
   if (nosound) return;
 
+#ifdef SDL_MIXER
   while (Mix_Playing(-1)) dcl_wait();
 
   for (int t = 0; t < 18; t++)
@@ -70,6 +81,7 @@ void snd_done(void) {
   Mix_CloseAudio();
 
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
+#endif
 }
 
 void snd_tap(void) {           play |= 0x1; }
@@ -97,6 +109,7 @@ void snd_play(void) {
 
   if (nosound) return;
 
+#ifdef SDL_MIXER
   if (play & 0x01)
     Mix_Volume(Mix_PlayChannel(-1, sounds[1], 0), MIX_MAX_VOLUME);
   if (play & 0x02)
@@ -146,6 +159,7 @@ void snd_play(void) {
     Mix_Volume(Mix_PlayChannel(-1, sounds[17], 0), MIX_MAX_VOLUME);
   if (play & 0x20000)
     Mix_Volume(Mix_PlayChannel(-1, sounds[13], 0), MIX_MAX_VOLUME);
+#endif
 
   play = 0;
   splashmax = boinkmax = 0;
@@ -153,22 +167,32 @@ void snd_play(void) {
 
 void snd_wateron(void) {
   if (nosound) return;
+#ifdef SDL_MIXER
   waterchannel = Mix_PlayChannel(-1, sounds[0], -1);
+#endif
 }
 void snd_wateroff(void) {
   if (nosound) return;
+#ifdef SDL_MIXER
   Mix_HaltChannel(waterchannel);
+#endif
 }
 void snd_watervolume(int v) {
   if (nosound) return;
+#ifdef SDL_MIXER
   Mix_Volume(waterchannel, v);
+#endif
 }
 
 void snd_playtitle(void) {
+#ifdef SDL_MIXER
   Mix_PlayMusic(music, -1);
+#endif
 }
 
 void snd_stoptitle(void) {
+#ifdef SDL_MIXER
   Mix_HaltMusic();
+#endif
 }
 

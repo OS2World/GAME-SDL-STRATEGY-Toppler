@@ -1,8 +1,8 @@
 #include "keyb.h"
 
-#include <SDL/SDL.h>
+#include <SDL.h>
 
-static int keydown, keytyped;
+static Uint8 keydown, keytyped;
 static char chartyped;
 
 void key_init(void) {
@@ -18,7 +18,7 @@ void key_init(void) {
 
 static void handleEvents(void) {
   SDL_Event e;
-  int key;
+  Uint8 key;
 
   while (SDL_PollEvent(&e)) {
     if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP)) {
@@ -105,17 +105,17 @@ static void handleEvents(void) {
 void key_done(void) {
 }
 
-int key_keystat(void) {
+Uint8 key_keystat(void) {
   handleEvents();
   return keydown;
 }
 
-bool key_keypressed(int key) {
+bool key_keypressed(Uint8 key) {
   handleEvents();
   return (keytyped & key);
 }
 
-char key_readkey(void) {
+Uint8 key_readkey(void) {
   handleEvents();
 
   int i = keytyped;

@@ -10,6 +10,8 @@
 #include "sound.h"
 #include "leveledit.h"
 
+#include <SDL_endian.h>
+
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -140,7 +142,6 @@ static void savescores(void) {
 #endif
 
   if (f) {
-
     unsigned char len;
     char mname[30];
 
@@ -150,6 +151,11 @@ static void savescores(void) {
           (fread(mname, 1, len, f) == len)) {
         mname[len] = 0;
         if (strcmp(mname, lev_missionname(currentmission)) == 0) {
+
+          // this is necessary because some system can not switch
+          // on the fly from reading to writing
+          fseek(f, ftell(f), SEEK_SET);
+
           fwrite(scores, sizeof(scores), 1, f);
           fclose(f);
           return;
@@ -188,8 +194,9 @@ static void getscores(void) {
           (fread(mname, 1, len, f) == len) &&
           (fread(scores, 1, sizeof(scores), f) == sizeof(scores))) {
         mname[len] = 0;
-        if (strcmp(mname, lev_missionname(currentmission)) == 0)
+        if (strcmp(mname, lev_missionname(currentmission)) == 0) {
           break;
+        }
       } else {
         emptyscoretable();
         break;

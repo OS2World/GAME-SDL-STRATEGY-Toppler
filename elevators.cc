@@ -16,36 +16,36 @@
 
 static struct {
   /* the current position of the platform */
-  int angle;
-  int vertical;
+  Uint8 angle;
+  Uint8 vertical;
 
   /* time until the elevator falls down */
-  int time;
+  Sint8 time;
 
   /* backgound value necesary because in between the stations it
    is impossible to show a platform so we save the actual value
    there and force a station at the position, when the elevator moves
    further down we restore the value there */
-  unsigned char bg;
+  Uint8 bg;
 } elevators[MAX_ELE];
 
-static int active_ele;
-static int ele_dir;
+static Sint8 active_ele;
+static Sint8 ele_dir;
 
 void ele_init(void) {
 
-  for (int t = 0; t < MAX_ELE; t++)
+  for (Uint8 t = 0; t < MAX_ELE; t++)
     elevators[t].time = -1;
 
   active_ele = -1;
 
 }
 
-void ele_select(int row, int col) {
+void ele_select(Uint8 row, Uint8 col) {
 
   assert(active_ele == -1, "select more than one elevator\n");
 
-  int what = 0;
+  Uint8 what = 0;
 
   col /= 8;
   row /= 4;
@@ -68,7 +68,7 @@ void ele_select(int row, int col) {
 
 }
 
-void ele_activate(int dir) {
+void ele_activate(Sint8 dir) {
 
   assert(active_ele != -1, "work with unselected elevator, activate\n");
 
@@ -110,7 +110,7 @@ void ele_deactivate(void) {
 
   lev_stick2platform(elevators[active_ele].vertical, elevators[active_ele].angle);
 
-  int ae = active_ele;
+  Uint8 ae = active_ele;
   active_ele = -1;
 
   if (!lev_is_station(elevators[ae].vertical, elevators[ae].angle))
@@ -126,7 +126,7 @@ void ele_deactivate(void) {
 
 void ele_update(void) {
 
-  for (int t = 0; t < MAX_ELE; t++) {
+  for (Uint8 t = 0; t < MAX_ELE; t++) {
     if (elevators[t].time == 0) {
       lev_restore(elevators[t].vertical, elevators[t].angle, elevators[t].bg);
       lev_platform2empty(elevators[t].vertical, elevators[t].angle);

@@ -1,6 +1,8 @@
 #ifndef ELEVATORS_H
 #define ELEVATORS_H
 
+#include <SDL_types.h>
+
 /* this modules handles all the neccessities for up to 4
  elevators */
 
@@ -9,10 +11,10 @@ void ele_init(void);
 
 /* activates the elevator. there can be only one
  active elevator */
-void ele_select(int row, int col);
+void ele_select(Uint8 row, Uint8 col);
 
 /* the elevator gets startet */
-void ele_activate(int dir);
+void ele_activate(Sint8 dir);
 
 /* moves the elevator one level up */
 void ele_move(void);

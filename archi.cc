@@ -2,28 +2,63 @@
 
 #include "decl.h"
 
+#include <SDL_endian.h>
+
 #include <string.h>
 #include <stdlib.h>
 
-static long pos;
+#define MAX_FILES 9
+
 static FILE *f;
 
-static unsigned long bitbuffer;
-static int bitpos;
+static Uint32 bitbuffer;
+static Uint8 bitpos;
 
-static struct {
-  char name[13];
-  long start, size;
-} files[9];
+typedef struct {
+  char name[16];
+  Uint32 start, size;
+} fileindex;
+
+static fileindex files[MAX_FILES];
+static unsigned char filecount;
+static Uint8 pos;
 
 
 void arc_init(char *name) {
   f = open_data_file(name);
 
-  assert(f != 0, "archive file not opened\n");
+  assert(f != 0, "archive file could not be opened\n");
 
-  fread(files, 1, 1, f);
-  fread(files, sizeof(files), 1, f);
+  fread(&filecount, 1, 1, f);
+  assert(filecount <= MAX_FILES, "too many files in archive");
+
+  for (Uint8 file = 0; file < filecount; file++) {
+    for (Uint8 strpos = 0; strpos < 16; strpos++)
+      fread(&files[file].name[strpos], 1, 1, f);
+
+
+    Uint8 tmp;
+
+    /* load start from archive */
+    fread(&tmp, 1, 1, f);
+    files[file].start = (Uint32(tmp)) << 0;
+    fread(&tmp, 1, 1, f);
+    files[file].start |= (Uint32(tmp)) << 8;
+    fread(&tmp, 1, 1, f);
+    files[file].start |= (Uint32(tmp)) << 16;
+    fread(&tmp, 1, 1, f);
+    files[file].start |= (Uint32(tmp)) << 24;
+
+    /* load filesize from archive */
+    fread(&tmp, 1, 1, f);
+    files[file].size = (Uint32(tmp)) << 0;
+    fread(&tmp, 1, 1, f);
+    files[file].size |= (Uint32(tmp)) << 8;
+    fread(&tmp, 1, 1, f);
+    files[file].size |= (Uint32(tmp)) << 16;
+    fread(&tmp, 1, 1, f);
+    files[file].size |= (Uint32(tmp)) << 24;
+  }
 }
 
 void arc_closefile(void) {
@@ -39,7 +74,7 @@ void arc_assign(char *name) {
 
   assert(f != 0, "archive not initialized\n");
 
-  for (int i = 0; i < 9; i++)
+  for (Uint8 i = 0; i < filecount; i++)
     if (strcmp(name, files[i].name) == 0) {
       fseek(f, files[i].start, SEEK_SET);
       bitpos = 0;
@@ -52,22 +87,20 @@ void arc_assign(char *name) {
 }
 
 
-void arc_read(void *buf, int size, int *result) {
-
+void arc_read(void *buf, Uint32 size, Uint32 *result) {
   *result = fread(buf, 1, size, f);
 }
 
-static unsigned char getbyte(void) {
-  unsigned char erg;
-  int res;
+static Uint8 getbyte(void) {
+  Uint8 erg;
 
-  res = fread(&erg, 1, 1, f);
+  fread(&erg, 1, 1, f);
 
   return erg;
 }
 
-unsigned short arc_getbits(int anz) {
-  unsigned short result;
+Uint16 arc_getbits(Uint8 anz) {
+  Uint16 result;
 
   while (bitpos <= 24) {
     bitbuffer = (bitbuffer << 8) | getbyte();
@@ -79,7 +112,7 @@ unsigned short arc_getbits(int anz) {
   return result;
 }
 
-long arc_filesize(void) {
+Uint32 arc_filesize(void) {
   return files[pos].size;
 }
 

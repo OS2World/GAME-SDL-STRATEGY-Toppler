@@ -311,7 +311,8 @@ void le_edit(void) {
       break;
     case 'P':
       {
-        int dummy1, dummy2;
+        Uint8 dummy1;
+        Uint16 dummy2;
         unsigned char *p;
         lev_save(p);
         gam_newgame();
