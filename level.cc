@@ -22,6 +22,7 @@
 #include "archi.h"
 #include "decl.h"
 #include "configuration.h"
+#include "screen.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -455,6 +456,7 @@ void lev_selecttower(Uint8 number) {
       }
     case TSS_ROBOT:
       towerrobot = mission[towerstart];
+      towerrobot %= scr_numrobots();
       break;
     case TSS_END:
     default:      break;
@@ -858,7 +860,7 @@ bool lev_loadtower(const char *fname) {
       {
         int i;
         sscanf(line, "%u\n", &i);
-        towerrobot = i & 0xFF;
+        towerrobot = (i & 0xFF) % scr_numrobots();
       }
     }
   }
