@@ -112,44 +112,6 @@ scr_savedisplaybmp(char *fname)
   SDL_SaveBMP(display, fname);
 }
 
-unsigned short scr_loadsprites(int num, int w, int h, int bits, bool sprite, const Uint8 *pal) {
-  Uint16 erg = 0;
-  Uint8 b;
-  SDL_Surface *z;
-
-  for (int t = 0; t < num; t++) {
-    z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite) ? SDL_SRCALPHA : 0,
-                             2* w, 2* h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite) ? 0xFF000000 : 0);
-
-    for (int y = 0; y < h; y++)
-      for (int x = 0; x < w; x++) {
-        b = arc_getbits(bits);
-        if (sprite && (b == 0)) {
-          ((Uint8 *)(z->pixels))[(2*y+0)*z->pitch+(2*x+0)*z->format->BytesPerPixel + 3] = 0;
-          ((Uint8 *)(z->pixels))[(2*y+0)*z->pitch+(2*x+1)*z->format->BytesPerPixel + 3] = 0;
-          ((Uint8 *)(z->pixels))[(2*y+1)*z->pitch+(2*x+0)*z->format->BytesPerPixel + 3] = 0;
-          ((Uint8 *)(z->pixels))[(2*y+1)*z->pitch+(2*x+1)*z->format->BytesPerPixel + 3] = 0;
-        } else {
-          if (sprite) b--;
-          for (int i = 0; i < 2; i++)
-            for (int j = 0; j < 2; j++) {
-              ((Uint8 *)(z->pixels))[(2*y+i)*z->pitch+(2*x+j)*z->format->BytesPerPixel + 0] = pal[b*3 + 2];
-              ((Uint8 *)(z->pixels))[(2*y+i)*z->pitch+(2*x+j)*z->format->BytesPerPixel + 1] = pal[b*3 + 1];
-              ((Uint8 *)(z->pixels))[(2*y+i)*z->pitch+(2*x+j)*z->format->BytesPerPixel + 2] = pal[b*3 + 0];
-              ((Uint8 *)(z->pixels))[(2*y+i)*z->pitch+(2*x+j)*z->format->BytesPerPixel + 3] = 255;
-            }
-        }
-      }
-
-    if (t == 0)
-      erg = spr_savesprite(z);
-    else
-      spr_savesprite(z);
-  }
-
-  return erg;
-}
-
 unsigned short scr_loadsprites_new(int num, int w, int h, bool sprite, const Uint8 *pal) {
   Uint16 erg = 0;
   Uint8 b, a;
@@ -360,8 +322,8 @@ static void loadgraphics(void) {
   read_palette(pal);
   subst = scr_loadsprites_new(31, SPR_SUBMWID, SPR_SUBMHEI, true, pal);
 
-  arc_read(pal, 3*subcnt - 3, &res);
-  torb = scr_loadsprites(1, SPR_TORPWID, SPR_TORPHEI, 6, true, pal);
+  read_palette(pal);
+  torb = scr_loadsprites_new(1, SPR_TORPWID, SPR_TORPHEI, true, pal);
 
   arc_closefile();
 

@@ -107,8 +107,8 @@
 #define SPR_SUBMHEI 80 // 17
 
 /* submarine ammunition, torpedo */
-#define SPR_TORPWID 16
-#define SPR_TORPHEI 3
+#define SPR_TORPWID 32
+#define SPR_TORPHEI 6
 
 /* torpedo launch offset relative to submarine */
 #define TORPEDO_OFS_X 80
