@@ -265,8 +265,10 @@ static void show_scores(int mark = 10) {
   scr_swap();
 
   key_readkey();
-  while (!key_keypressed(any_key));
-  key_readkey();
+  int c = key_chartyped();
+  do {
+    c = key_chartyped();
+  } while (!c);
 }
 
 
