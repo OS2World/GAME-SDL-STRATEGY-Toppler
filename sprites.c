@@ -3,6 +3,10 @@
 
 #include <stdio.h>
 
+#include <math.h>
+
+#include "pngsaver.h"
+
 Uint8 get_color(SDL_Surface *s, int x, int y) {
   return ((Uint8*)s->pixels)[y*s->pitch+x];
 }
@@ -37,40 +41,36 @@ void write_palette(FILE *out, SDL_Surface *s) {
  */
 
 
-void render_star(SDL_Surface *s, Uint8 size, double power) {
-  Uint8 x, y, t, z;
+void render_star(SDL_Surface *s, Uint16 size, double power) {
+  Uint16 x, y, t, z;
   double alias;
 
-  Uint8 rad = (size - 1) / 2;
+  Uint16 rad = size / 2;
 
-
-  for (x = 0; x < rad+1; x++)
-    for (y = 0; y < rad+1; y++) {
+  for (x = 0; x < rad; x++)
+    for (y = 0; y < rad; y++) {
       alias = 0;
       for (t = 0; t < 8; t++)
         for (z = 0; z < 8; z++) {
-          double dx = x * 8 + t - 4;
-          double dy = y * 8 + z - 4;
+          double dx = x * 8 + t;
+          double dy = y * 8 + z;
 
-          dx /= (rad * 8);
-          dy /= (rad * 8);
-
+          dx /= ((rad+1) * 8);
+          dy /= ((rad+1) * 8);
 
           double o = pow(sin(acos(pow(dx, 1/power))), power);
-
-          printf("%f  ", o);
-
 
           if (dy < o)
             alias++;
         }
-      alias /= 16;
 
-      alias *= 255;
-      alias += 0.5;
+      alias = alias * 255 / 64 + 0.5;
 
 
-      ((Uint8*)s->pixels)[y*s->pitch+x] = (Uint8)alias;
+      ((Uint8*)s->pixels)[y*s->pitch+x] = 255-(Uint8)alias;
+      ((Uint8*)s->pixels)[(size-1-y)*s->pitch+x] = 255-(Uint8)alias;
+      ((Uint8*)s->pixels)[y*s->pitch+size-1-x] = 255-(Uint8)alias;
+      ((Uint8*)s->pixels)[(size-1-y)*s->pitch+size-1-x] = 255-(Uint8)alias;
     }
 }
 
@@ -122,28 +122,8 @@ unsigned char b_;
 
 
 main(int argc, char *argv[]) {
-/*
-  Uint16 t;
 
-  SDL_Init(SDL_INIT_VIDEO);
-
-  SDL_Surface *src = SDL_SetVideoMode(640, 480, 8, 0);
-
-  for (t = 0; t < 256; t++) {
-    src->format->palette->colors[t].r = t;
-    src->format->palette->colors[t].g = t;
-    src->format->palette->colors[t].b = t;
-  }
-
-  render_star(src, 32, 1);
-
-  SDL_UpdateRect(src, 0, 0, 0, 0);
-
-  SDL_Delay(10000);
-
-  return;
-*/
-  unsigned char s, n, p, x, y;
+  Uint16 s, n, p, x, y;
 
   SDL_Surface * screen;
 
@@ -243,24 +223,35 @@ main(int argc, char *argv[]) {
   SDL_FreeSurface(colors);
   SDL_FreeSurface(mask);
 
-  screen = IMG_LoadPNG_RW(SDL_RWFromFile("sprites_star.png", "rb"));
   printf("star\n");
 
-  for (p = 1; p <= 7; p++) {
-    putbits(screen->format->palette->colors[p].r, 8);
-    putbits(screen->format->palette->colors[p].g, 8);
-    putbits(screen->format->palette->colors[p].b, 8);
+  SDL_Surface *src = SDL_CreateRGBSurface(SDL_SWSURFACE, 32, 32, 8, 0, 0, 0, 0);
+
+  for (n = 0; n < 256; n++) {
+    src->format->palette->colors[n].r = n;
+    src->format->palette->colors[n].g = n;
+    src->format->palette->colors[n].b = n;
   }
 
-  for (n = 0; n <= 15; n++) {
-    for (y = 0; y <= 15; y++) {
-      for (x = 0; x <= 15; x++) {
-        putbits(getpixel(screen, n * 16 + x, y), 3);
+  write_palette(outf, src);
+
+
+  for (n = 0; n < 16; n++) {
+    render_star(src, 32, 3 * exp((-1.0*n)/5));
+    for (y = 0; y < 32; y++) {
+      for (x = 0; x < 32; x++) {
+          Uint8 b;
+  
+          b = 255;
+          fwrite(&b, 1, 1, outf);
+          b = get_alpha(src, x, y);
+          fwrite(&b, 1, 1, outf);
       }
     }
   }
 
-  SDL_FreeSurface(screen);
+  SDL_FreeSurface(src);
+
 
   screen = IMG_LoadPNG_RW(SDL_RWFromFile("sprites_bonus.png", "rb"));
   xchg(screen);

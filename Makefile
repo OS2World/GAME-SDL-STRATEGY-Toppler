@@ -142,7 +142,7 @@ sprites.dat: sprites sprites_robots_colors.png sprites_robots_mask.png \
 	./sprites
 
 sprites: sprites.c
-	gcc sprites.c -o sprites -lSDL -lSDL_image -I/usr/include/SDL
+	gcc sprites.c -o sprites -lSDL -lSDL_image -lm -I/usr/include/SDL
 
 sprites_robots_colors.png: colorreduction sprites_robots_colors_rgb.png
 	./colorreduction sprites_robots_colors_rgb.png 256 sprites_robots_colors.png
