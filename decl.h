@@ -75,8 +75,12 @@ extern void dcl_wait();
 
 bool dcl_fileexists(char *n);
 
-/* opens a file looking into the right directories */
-FILE *file_open(char *name, char *par);
+/* opens files looking into the right directories */
+FILE *open_data_file(char *name, char *par);
+FILE *open_global_config_file(char *name, char *par);
+FILE *open_local_config_file(char *name, char *par);
+FILE *open_highscore_file(char *name, char *par);
+FILE *create_highscore_file(char *name, char *par);
 
 /* GAME PARAMETERS */
 extern bool fullscreen;
@@ -84,5 +88,9 @@ extern bool nosound;
 
 /* for errorcheking */
 #define assert(cond,text) if (!(cond)) { printf(text); exit(1); }
+
+
+#define CONFIGDIR "/etc"
+#define HISCOREDIR "/var/games/nebulous"
 
 #endif

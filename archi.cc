@@ -18,7 +18,7 @@ static struct {
 
 
 void arc_init(char *name) {
-  f = file_open(name, "rb");
+  f = open_data_file(name, "rb");
 
   assert(f != 0, "archive file not opened\n");
 

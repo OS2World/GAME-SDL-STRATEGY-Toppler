@@ -15,16 +15,12 @@ static int splashmax = 0;
 static long play;
 
 static Mix_Chunk *LoadWAV(char *name) {
-  if (dcl_fileexists(name))
-    return Mix_LoadWAV(name);
+  FILE *f = open_data_file("water.wav", "rb");
 
-  char n[400];
-  sprintf(n, DATADIR"/%s", name);
-
-  if (dcl_fileexists(n))
-    return Mix_LoadWAV(n);
-
-  return 0;
+  if (f)
+    return Mix_LoadWAV_RW(SDL_RWFromFP(f, 1), 1);
+  else
+    return NULL;
 }
 
 void snd_init() {

@@ -180,7 +180,7 @@ static void emptyscoretable() {
 
 static void getscores() {
 
-  FILE *f = fopen(SCOREFILE, "rb");
+  FILE *f = open_highscore_file(SCOREFILE, "rb");
 
   if (f) {
 
@@ -198,10 +198,10 @@ static void getscores() {
 
 static void savescores() {
 
-  FILE *f = fopen(SCOREFILE, "r+b");
+  FILE *f = open_highscore_file(SCOREFILE, "r+b");
 
   if (!f)
-    f = fopen(SCOREFILE, "a+b");
+    f = create_highscore_file(SCOREFILE, "a+b");
 
   fseek(f, currentmission * sizeof(scores), SEEK_SET);
 
@@ -270,8 +270,8 @@ void men_highscore(long pt, bool pal) {
     int defName = 1;
     scores[t].name[pos] = 0;
 
-    strncpy(scores[t].name,getenv("LOGNAME"),8);
-    scores[t].name[8]=0; //to be sure
+    strncpy(scores[t].name, getenv("LOGNAME"), 8);
+    scores[t].name[8] = 0; //to be sure
 
     scr_putbar(100, 160, 120, 16);
     scr_writetext(160 - 6 * strlen(scores[t].name), 160, scores[t].name);
@@ -284,18 +284,18 @@ void men_highscore(long pt, bool pal) {
       while ((inp = key_chartyped()) == 0) dcl_wait();
 
       if (defName) {
-	defName=0;
+        defName=0;
 #if 0
-	if (inp==' ') inp='\b'; /* Is this right? */
+        if (inp==' ') inp='\b'; /* Is this right? */
 #endif
-	if (inp!='\r') scores[t].name[pos] = 0;
+        if (inp!='\r') scores[t].name[pos] = 0;
       }
 
       if (inp == '\b') {
-	if (pos > 0) {
+        if (pos > 0) {
           pos--;
           scores[t].name[pos] = 0;
-	} //else do nothing!
+        } //else do nothing!
       } else if ((inp != '\r') && (pos < 9)) {
         scores[t].name[pos] = inp;
         pos++;

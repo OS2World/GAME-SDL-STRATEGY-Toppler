@@ -325,7 +325,7 @@ static void loadfont() {
 }
 
 static void loadscroller() {
-  FILE *in = file_open("layer1.tga", "rb");
+  FILE *in = open_data_file("layer1.tga", "rb");
   layerimage[0] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
                                640, 240, 8, 0, 0, 0, 0);
     SDL_SetColorKey(layerimage[0], SDL_SRCCOLORKEY, 0);
@@ -334,7 +334,7 @@ static void loadscroller() {
   fread((layerimage[0]->pixels), 640*240, 1, in);
   fclose(in);
   
-  in = file_open("layer2.tga", "rb");
+  in = open_data_file("layer2.tga", "rb");
   layerimage[1] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
                                640, 240, 8, 0, 0, 0, 0);
     SDL_SetColorKey(layerimage[1], SDL_SRCCOLORKEY, 0);
@@ -346,7 +346,7 @@ static void loadscroller() {
   fread((layerimage[1]->pixels), 640*240, 1, in);
   fclose(in);
   
-  in = file_open("layer3.tga", "rb");
+  in = open_data_file("layer3.tga", "rb");
   layerimage[2] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
                                640, 240, 8, 0, 0, 0, 0);
     SDL_SetColorKey(layerimage[2], SDL_SRCCOLORKEY, 0);
