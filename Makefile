@@ -50,7 +50,7 @@ cross_colors_rgb.png: assembler cross_pov/cross000.png
 	mv cross_rgb_colors.png cross_colors_rgb.png
 	mv cross_rgb_mask.png cross_mask_rgb.png
 
-cross_pov/cross000.png: cross_pov/cross.pov cross_pov/cross.ini
+cross_pov/cross001.png: cross_pov/cross.pov cross_pov/cross.ini
 	( cd cross_pov && $(POVRAY) cross.ini )
 
 cross.clean:

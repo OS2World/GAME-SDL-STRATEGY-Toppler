@@ -40,7 +40,7 @@ void write_palette(FILE *out, SDL_Surface *s) {
   }
 }
 
-void get(SDL_Surface *colors, SDL_Surface * mask, char c)
+void get(SDL_Surface *colors, SDL_Surface * mask, unsigned short c)
 {
   // xpos und ypos zeigen auf oberes linkes umrandungs pixel */
   // hoehe ist bekannt : 19
@@ -50,14 +50,16 @@ void get(SDL_Surface *colors, SDL_Surface * mask, char c)
   unsigned char width = 0;
   int i, x, y;
   Uint8 b;
-
+  
   while (get_color(colors, xpos + width + 1, ypos + 1) != markercolor)
     width++;
 
   i = 0;
 
-  fwrite(&c, 1, 1, outp);
+  fwrite(&c, 1, 2, outp);
   fwrite(&width, 1, 1, outp);
+  
+  printf(" get %c(%i) at pos (%i;%i)\n", c, c, xpos, ypos);
 
   for (y = 0; y < height; y++)
     for (x = 0; x < width; x++) {
@@ -185,6 +187,60 @@ int main() {
   get(colors, mask, '\x07'); /* pointer down */
   get(colors, mask, '\x08'); /* pointer left */
   get(colors, mask, '-');
+  get(colors, mask, (unsigned char)'ä');
+  get(colors, mask, (unsigned char)'ö');
+  get(colors, mask, (unsigned char)'ü');
+  get(colors, mask, (unsigned char)'Ä');
+  get(colors, mask, (unsigned char)'Ö');
+  get(colors, mask, (unsigned char)'Ü');
+  get(colors, mask, (unsigned char)'ß');
+
+  get(colors, mask, (unsigned char)'é');
+  get(colors, mask, (unsigned char)'è');
+  get(colors, mask, (unsigned char)'á');
+  get(colors, mask, (unsigned char)'à');
+  get(colors, mask, (unsigned char)'í');
+  get(colors, mask, (unsigned char)'ì');
+  get(colors, mask, (unsigned char)'ó');
+  get(colors, mask, (unsigned char)'ò');
+  get(colors, mask, (unsigned char)'ç');
+  get(colors, mask, (unsigned char)'É');
+  get(colors, mask, (unsigned char)'È');
+  get(colors, mask, (unsigned char)'Á');
+  get(colors, mask, (unsigned char)'À');
+  get(colors, mask, (unsigned char)'Í');
+  get(colors, mask, (unsigned char)'Ì');
+  get(colors, mask, (unsigned char)'Ó');
+  get(colors, mask, (unsigned char)'Ò');
+  get(colors, mask, (unsigned char)'Ç');
+  get(colors, mask, (unsigned char)'ñ');
+  get(colors, mask, (unsigned char)'Ñ');
+  get(colors, mask, (unsigned char)'õ');
+  get(colors, mask, (unsigned char)'Õ');
+  get(colors, mask, (unsigned char)'î');
+  get(colors, mask, (unsigned char)'Î');
+  
+  get(colors, mask, (unsigned char)'ê');
+  get(colors, mask, (unsigned char)'Ê');
+  get(colors, mask, (unsigned char)'â');
+  get(colors, mask, (unsigned char)'Â');
+  get(colors, mask, (unsigned char)'ô');
+  get(colors, mask, (unsigned char)'Ô');
+  get(colors, mask, (unsigned char)'û');
+  get(colors, mask, (unsigned char)'Û');
+
+  get(colors, mask, 0x108);
+  get(colors, mask, 0x109);
+  get(colors, mask, 0x11c);
+  get(colors, mask, 0x11d);
+  get(colors, mask, 0x124);
+  get(colors, mask, 0x125);
+  get(colors, mask, 0x134);
+  get(colors, mask, 0x135);
+  get(colors, mask, 0x15c);
+  get(colors, mask, 0x15d);
+  get(colors, mask, 0x168);
+  get(colors, mask, 0x169);
 
   fclose(outp);
 }
