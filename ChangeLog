@@ -6,7 +6,9 @@ Version 1.1.0
 - add joystick support (untested by me)
 - new sound system
 - update build system
-- display check on start
+- move the sound files into the data file
+- add 2 tower mission with 2 towers from Pasi Kallinen
+- make sticks in front of doors possible, so that elevators can pass doors now
 
 Version 1.0.6
 
