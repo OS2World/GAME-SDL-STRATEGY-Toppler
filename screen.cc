@@ -1132,6 +1132,7 @@ static void putrobot(int t, int m, long x, long h)
   
     case OBJ_KIND_FREEZEBALL:
     case OBJ_KIND_FREEZEBALL_FROZEN:
+    case OBJ_KIND_FREEZEBALL_FALLING:
       nr = ballst + 1;
       break;
   

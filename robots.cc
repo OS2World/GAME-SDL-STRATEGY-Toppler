@@ -89,7 +89,7 @@ static int figurecollision(int nr) {
   return -1;
 }
 
-/* returns true, if the robot can be at the given position without colliding
+/* returns true, if the robot cannot be at the given position without colliding
  with an element from the tower */
 static bool testroboter(int nr) {
   return (!lev_testfigure((long)object[nr].anglepos, object[nr].verticalpos, -2L, 1L, 1L, 1L, 7L));
@@ -461,11 +461,13 @@ void rob_update(void) {
         }
 
         h = jumping_ball[object[t].time];
+        printf("h=%i\n", h);
 
         while (h != 0) {
+          printf("h=%i\n", h);
 
           object[t].verticalpos += h;
-          if (testroboter(t) | (figurecollision(t) != -1)) break;
+          if (!testroboter(t) || (figurecollision(t) != -1)) break;
           object[t].verticalpos -= h;
 
           if (h > 0)
