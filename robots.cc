@@ -320,7 +320,7 @@ void rob_new(int verticalpos) {
           object[t].anglepos = 120;
         object[t].verticalpos = verticalpos;
 
-        TTSound->startsound(SND_CROSS);
+        ttsounds::instance()->startsound(SND_CROSS);
 
       } else {
         bool is_robo = false;
@@ -495,8 +495,8 @@ void rob_update(void) {
           if (w >= 0x80)
             w = 0xff & (~w + 1);
 
-	  TTSound->setsoundvol(SND_BOINK, 120-w);
-          TTSound->startsound(SND_BOINK);
+	  ttsounds::instance()->setsoundvol(SND_BOINK, 120-w);
+          ttsounds::instance()->startsound(SND_BOINK);
         }
 
         if (object[t].verticalpos + jumping_ball[object[t].time] < 0) {
@@ -527,8 +527,8 @@ void rob_update(void) {
           if (w >= 0x80)
             w = 0xff & (~w + 1);
 
-	  TTSound->setsoundvol(SND_BOINK, 128-2*w);
-          TTSound->startsound(SND_BOINK);
+	  ttsounds::instance()->setsoundvol(SND_BOINK, 128-2*w);
+          ttsounds::instance()->startsound(SND_BOINK);
 
           /* restart bounce cyclus */
           object[t].time = 0;

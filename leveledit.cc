@@ -749,9 +749,9 @@ void le_edit(void) {
 	    gam_newgame();
 	    rob_initialize();
 	    snb_init();
-	    TTSound->startsound(SND_WATER);
+	    ttsounds::instance()->startsound(SND_WATER);
 	    gam_towergame(dummy1, dummy2, demolen, &demobuf);
-	    TTSound->stopsound(SND_WATER);
+	    ttsounds::instance()->stopsound(SND_WATER);
 	    lev_restore(p);
 	    lev_set_towerdemo(demolen, demobuf);
 	    key_readkey();
@@ -773,9 +773,9 @@ void le_edit(void) {
 		gam_newgame();
 		rob_initialize();
 		snb_init();
-		TTSound->startsound(SND_WATER);
+		ttsounds::instance()->startsound(SND_WATER);
 		gam_towergame(dummy1, dummy2, demolen, &demobuf);
-		TTSound->stopsound(SND_WATER);
+		ttsounds::instance()->stopsound(SND_WATER);
 		lev_restore(p);
 		key_readkey();
 		set_men_bgproc(editor_background_proc);
@@ -798,9 +798,9 @@ void le_edit(void) {
           gam_newgame();
           rob_initialize();
           snb_init();
-          TTSound->startsound(SND_WATER);
+          ttsounds::instance()->startsound(SND_WATER);
           gam_towergame(dummy1, dummy2, dummy3, &dummybuf);
-          TTSound->stopsound(SND_WATER);
+          ttsounds::instance()->stopsound(SND_WATER);
           lev_restore(p);
           key_readkey();
           set_men_bgproc(editor_background_proc);

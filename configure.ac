@@ -1,6 +1,7 @@
 # Process this file with autoconf to produce a configure script.
 AC_INIT
 AC_CANONICAL_TARGET
+#AC_CHECK_TOOL
 AM_INIT_AUTOMAKE(toppler,$(cat VERSION))
 AC_CONFIG_SRCDIR([toppler.cc])
 AM_CONFIG_HEADER(config.h)

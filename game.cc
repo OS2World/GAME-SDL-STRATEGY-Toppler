@@ -95,12 +95,12 @@ void gam_arrival(void) {
       scr_writetext_center(SCREENHEI * 5 / 6, buf);
     }
     scr_swap();
-    TTSound->play();
+    ttsounds::instance()->play();
 
     switch (b) {
 
     case 5:
-      //TTSound->startsound(SND_START);
+      //ttsounds::instance()->startsound(SND_START);
       b = 6;
       delay = 0;
       break;
@@ -109,7 +109,7 @@ void gam_arrival(void) {
       delay++;
       if (delay == 10) {
         b = 0;
-        //TTSound->startsound(SND_SUB_RAISE);
+        //ttsounds::instance()->startsound(SND_SUB_RAISE);
       }
       break;
 
@@ -140,7 +140,7 @@ void gam_arrival(void) {
       subshape--;
       if (subshape == 9) {
         b = 4;
-        //TTSound->startsound(SND_SUB_DOWN);
+        //ttsounds::instance()->startsound(SND_SUB_DOWN);
       }
       break;
 
@@ -274,7 +274,7 @@ static unsigned short towerpos(int verticalpos, int &tower_position, int anglepo
   sts_move(j, i);
   tower_position += i;
 
-  TTSound->setsoundvol(SND_WATER, verticalpos > 100 ? 30 : 128 - verticalpos);
+  ttsounds::instance()->setsoundvol(SND_WATER, verticalpos > 100 ? 30 : 128 - verticalpos);
 
   return tower_position;
 }
@@ -351,24 +351,24 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
   while (zeit > 0) {
     dcl_wait();
     countdown(zeit);
-    TTSound->startsound(SND_SCORE);
-    TTSound->play();
+    ttsounds::instance()->startsound(SND_SCORE);
+    ttsounds::instance()->play();
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
 
   while (tec > 0) {
     dcl_wait();
     countdown(tec);
-    TTSound->startsound(SND_SCORE);
-    TTSound->play();
+    ttsounds::instance()->startsound(SND_SCORE);
+    ttsounds::instance()->play();
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
 
   while (extra > 0) {
     dcl_wait();
     countdown(extra);
-    TTSound->startsound(SND_SCORE);
-    TTSound->play();
+    ttsounds::instance()->startsound(SND_SCORE);
+    ttsounds::instance()->play();
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
    
@@ -388,7 +388,7 @@ static void akt_time(int &time, int &timecount, gam_states &state) {
       timecount = 0;
       time--;
       if ((time >= 0) && (time <= 20 || (time <= 40 && (time % 2))))
-	  TTSound->startsound(SND_ALARM);
+	  ttsounds::instance()->startsound(SND_ALARM);
       if (time == 0)
         state = STATE_TIMEOUT;
     }
@@ -428,7 +428,7 @@ static void get_keys(Sint8 &left_right, Sint8 &up_down, bool &space, Uint16 ksta
 
 static void escape(gam_states &state, int &tower_position, int &tower_anglepos, int time) {
 
-  TTSound->stopsound(SND_WATER);
+  ttsounds::instance()->stopsound(SND_WATER);
 
   bg_tower_pos = tower_position;
   bg_tower_angle = tower_anglepos;
@@ -438,14 +438,14 @@ static void escape(gam_states &state, int &tower_position, int &tower_anglepos, 
   if (men_game())
     state = STATE_ABORTED;
 
-  TTSound->startsound(SND_WATER);
+  ttsounds::instance()->startsound(SND_WATER);
   towerpos(top_verticalpos(), tower_position,
            top_anglepos(), tower_anglepos);
 }
 
 static void pause(int &tower_position, int tower_anglepos, int time) {
 
-  TTSound->stopsound(SND_WATER);
+  ttsounds::instance()->stopsound(SND_WATER);
 
   bg_tower_pos = tower_position;
   bg_tower_angle = tower_anglepos;
@@ -454,7 +454,7 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
   set_men_bgproc(game_background_proc);
   men_info("Pause", -1, 1);
 
-  TTSound->startsound(SND_WATER);
+  ttsounds::instance()->startsound(SND_WATER);
   towerpos(top_verticalpos(), tower_position,
            top_anglepos(), tower_anglepos);
 }
@@ -566,7 +566,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
     scr_drawall(towerpos(top_verticalpos(), tower_position,
                          top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
     scr_swap();
-    TTSound->play();
+    ttsounds::instance()->play();
     dcl_wait();
   } while (!top_ended() && (state == STATE_PLAYING));
 
@@ -588,12 +588,12 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
     while (lev_towerrows() > tower_position / 4 + 4) {
 
       lev_removelayer(lev_towerrows()-1);
-      TTSound->startsound(SND_CRUMBLE);
+      ttsounds::instance()->startsound(SND_CRUMBLE);
       rob_update();
       scr_drawall(towerpos(top_verticalpos(), tower_position,
                            top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
       scr_swap();
-      TTSound->play();
+      ttsounds::instance()->play();
 
       dcl_wait();
 
@@ -604,7 +604,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
 
       if (top_verticalpos() > 8) {
         lev_removelayer(top_verticalpos() / 4 - 2);
-        TTSound->startsound(SND_CRUMBLE);
+        ttsounds::instance()->startsound(SND_CRUMBLE);
         top_drop1layer();
       }
 
@@ -612,7 +612,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
       scr_drawall(towerpos(top_verticalpos(), tower_position,
                            top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
       scr_swap();
-      TTSound->play();
+      ttsounds::instance()->play();
 
       dcl_wait();
     }

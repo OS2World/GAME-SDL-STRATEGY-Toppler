@@ -154,7 +154,7 @@ bool bns_game(void) {
               (torpedoy + SPR_TORPHEI > fish[b].y) && (torpedoy < fish[b].y + SPR_FISHHEI)) {
             torpedox = -1;
             fish[b].state -= 32;
-            TTSound->stopsound(SND_TORPEDO);
+            ttsounds::instance()->stopsound(SND_TORPEDO);
           }
         }
       }
@@ -166,7 +166,7 @@ bool bns_game(void) {
         if (torpedox == -1) {
           torpedox = subposx + TORPEDO_OFS_X;
           torpedoy = subposy + TORPEDO_OFS_Y;
-          TTSound->startsound(SND_TORPEDO);
+          ttsounds::instance()->startsound(SND_TORPEDO);
         }
       }
 
@@ -229,7 +229,7 @@ bool bns_game(void) {
             (fish[b].y > subposy - 40) &&
             (fish[b].y < subposy + 40)) {
           pts_add(50);
-          TTSound->startsound(SND_HIT);
+          ttsounds::instance()->startsound(SND_HIT);
           fish[b].x = - (SPR_FISHWID + 1);
         }
       }
@@ -269,12 +269,12 @@ bool bns_game(void) {
       time++;
     }
 
-    if (!((time + 20) & 0x3f)) TTSound->startsound(SND_SONAR);
+    if (!((time + 20) & 0x3f)) ttsounds::instance()->startsound(SND_SONAR);
 
     /* display screen and wait */
     show();
     scr_swap();
-    TTSound->play();
+    ttsounds::instance()->play();
     dcl_wait();
 
   } while (true);

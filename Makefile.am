@@ -1,6 +1,6 @@
-CPPFLAGS = @CPPFLAGS@ -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(scoredir)\"
+CPPFLAGS = @CPPFLAGS@ -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(scoredir)\"
 
-bin_PROGRAMS = toppler
+noinst_PROGRAMS = toppler
 
 toppler_SOURCES =                  \
   archi.cc         archi.h         \
@@ -21,6 +21,7 @@ toppler_SOURCES =                  \
   screen.cc        screen.h        \
   snowball.cc      snowball.h      \
   sound.cc         sound.h         \
+  soundsys.cc      soundsys.h      \
   sprites.cc       sprites.h       \
   stars.cc         stars.h         \
   toppler.cc       toppler.h       \

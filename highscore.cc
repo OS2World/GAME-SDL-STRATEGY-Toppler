@@ -191,7 +191,6 @@ void hsc_init(void) {
   /* asume we use local highscore table */ 
   globalHighscore = false;
   snprintf(highscoreName, 199, "%s/.toppler/%s", homedir(), SCOREFNAME);
-  printf("%i\n", strlen(highscoreName));
 
   /* now check if wen have access to a global highscore table */
 
@@ -239,9 +238,9 @@ void hsc_init(void) {
   /* no dir to the global highscore table -> not global highscore table */
 
   if (globalHighscore)
-    printf("using global highscore at %s\n", highscoreName);
+    debugprintf(2, "using global highscore at %s\n", highscoreName);
   else
-    printf("using local highscore at %s\n", highscoreName);
+    debugprintf(2, "using local highscore at %s\n", highscoreName);
 
 #else // (SYSTEM == SYS_LINUX)
 

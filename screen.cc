@@ -90,8 +90,10 @@ static struct {
 
 /* bonus game scrolling layer */
 typedef struct  {
-  long width;    // width of the layer
-  int  num, den; // speed
+  long xpos, ypos;    // position of the layer
+  long xrepeat;       // how often the image repeats
+  long width, height; // size of the layer
+  int  num, den;      // speed
   Uint16 image;
 } _scroll_layer;
 
@@ -551,13 +553,19 @@ static void loadscroller(void) {
 
   for (int l = 0; l < layers; l++) {
 
+    scroll_layers[l].xpos = fi.getword();
+    scroll_layers[l].ypos = fi.getword();
     scroll_layers[l].width = fi.getword();
+    scroll_layers[l].height = fi.getword();
     scroll_layers[l].num = fi.getword();
     scroll_layers[l].den = fi.getword();
+    scroll_layers[l].xrepeat = fi.getword();
 
     scr_read_palette(&fi, pal);
 
-    scroll_layers[l].image = scr_loadsprites(&layersprites, &fi, 1, scroll_layers[l].width, 480, l != 0, pal, config.use_alpha_layers());
+    scroll_layers[l].image = scr_loadsprites(&layersprites, &fi, 1, 
+	scroll_layers[l].width, scroll_layers[l].height, 
+	l != 0, pal, config.use_alpha_layers());
   }
 }
 
@@ -1541,11 +1549,12 @@ void scr_drawedit(long vpos, long apos, bool showtime) {
 }
 
 static void put_scrollerlayer(long horiz, int layer) {
-  horiz %= scroll_layers[layer].width;
-  scr_blit(layersprites.data(scroll_layers[layer].image), -horiz, 0);
-  if (horiz + SCREENWID > scroll_layers[layer].width)
+  horiz += scroll_layers[layer].xpos;
+  horiz %= scroll_layers[layer].xrepeat;
+  scr_blit(layersprites.data(scroll_layers[layer].image), -horiz, scroll_layers[layer].ypos);
+  if (horiz + SCREENWID > scroll_layers[layer].xrepeat)
     scr_blit(layersprites.data(scroll_layers[layer].image),
-             scroll_layers[layer].width - horiz, 0);
+             scroll_layers[layer].width - horiz, scroll_layers[layer].ypos);
 }
 
 void scr_draw_bonus1(long horiz, long towerpos) {

@@ -20,6 +20,7 @@
 #define SOUND_H
 
 #include "config.h"
+#include "soundsys.h"
 
 #ifdef HAVE_LIBSDL_MIXER
 #include <SDL_mixer.h>
@@ -27,63 +28,29 @@
 
 /* this module handles all the soundoutput necessary for the game */
 
-struct ttsnddat {
-    bool in_use; //is this datablock in use (sndfile is loaded)
-    bool play;   //is this block goind to get played next time?
-    int id_num;  //unique ID # of this sound
-    int channel; //sound channel
-    int volume;  //sound volume
-    int loops;   //how many times to loop this sound?
-#ifdef HAVE_LIBSDL_MIXER
-    Mix_Chunk *sound; //sound data
-#endif
+enum {
+  SND_WATER,
+  SND_TAP,
+  SND_BOINK,
+  SND_HIT,
+  SND_CROSS,
+  SND_TICK,
+  SND_DROWN,
+  SND_SPLASH,
+  SND_SHOOT,
+  SND_ALARM,
+  SND_SCORE,
+  SND_CRUMBLE,
+  SND_FANFARE,
+  SND_SONAR,
+  SND_TORPEDO,
+  SND_DOORTAP = SND_TAP
+//  SND_SUB_RAISE
+//  SND_SUB_DOWN
+//  SND_START
+//  SND_TIMEOUT
+//  SND_FALL
 };
-
-class ttsounds {
-   public:
-      ttsounds(void);
-      ~ttsounds(void);
-
-      void addsound(char *fname, int id, int vol, int loops);
-      //void delsound(int snd);
-
-      void play(void); //play all active sounds
-      void stop(void); //stop all sounds
-
-      void stopsound(int snd); //stop the sound from playing
-      void startsound(int snd); //the sound will play in the next update
-      void setsoundvol(int snd, int vol); //set sound volume
-   private:
-      bool nosoundinit;
-      int n_sounds; // # of sounds allocated
-      struct ttsnddat *sounds;
-};
-
-extern ttsounds *TTSound;
-
-
-
-#define SND_WATER 0
-#define SND_TAP 1
-#define SND_DOORTAP 1
-#define SND_BOINK 2
-#define SND_HIT 3
-#define SND_CROSS 4
-#define SND_TICK 5
-#define SND_DROWN 6
-#define SND_SPLASH 7
-#define SND_SHOOT 8
-#define SND_ALARM 9
-#define SND_SCORE 10
-#define SND_CRUMBLE 11
-#define SND_FANFARE 12
-#define SND_SONAR 13
-#define SND_TORPEDO 14
-//#define SND_SUB_RAISE 13
-//#define SND_SUB_DOWN 14
-//#define SND_START 13
-//#define SND_TIMEOUT 16
-//#define SND_FALL 17
 
 void snd_init(void);
 void snd_done(void);

@@ -272,9 +272,7 @@ men_options_sounds(_menusystem *ms)
       config.nosound(false);
       snd_init();
     } else {
-      //snd_stoptitle();
-      //snd_stoptgame();
-      TTSound->stop();
+      snd_done();
       config.nosound(true);
     }
   }
@@ -690,11 +688,11 @@ main_game_loop()
   bns_restart();
     
   do {
-    TTSound->startsound(SND_WATER);
+    ttsounds::instance()->startsound(SND_WATER);
     do {
       gam_loadtower(tower);
       scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
-      TTSound->setsoundvol(SND_WATER, 128);
+      ttsounds::instance()->setsoundvol(SND_WATER, 128);
       //snd_playtgame();
       gam_arrival();
       gameresult = gam_towergame(anglepos, resttime, demo, &tmpbuf);
@@ -704,7 +702,7 @@ main_game_loop()
     if (gameresult == GAME_FINISHED) {
       gam_pick_up(anglepos, resttime);
 
-      TTSound->stopsound(SND_WATER);
+      ttsounds::instance()->stopsound(SND_WATER);
       tower++;
 
       if (tower < lev_towercount()) {
@@ -716,7 +714,7 @@ main_game_loop()
           gameresult = GAME_ABORTED;
       }
     } else {
-      TTSound->stopsound(SND_WATER);
+      ttsounds::instance()->stopsound(SND_WATER);
     }
   } while (pts_lifesleft() && (tower < lev_towercount()) && (gameresult != GAME_ABORTED));
 
@@ -820,14 +818,14 @@ men_main_timer_proc(_menusystem *ms)
     dcl_update_speed(config.game_speed());
     //snd_stoptitle();
     gam_newgame();
-    TTSound->startsound(SND_WATER);
+    ttsounds::instance()->startsound(SND_WATER);
     scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
-    TTSound->setsoundvol(SND_WATER, 128);
+    ttsounds::instance()->setsoundvol(SND_WATER, 128);
     //snd_playtgame();
     rob_initialize();
     (void)gam_towergame(anglepos, resttime, demolen, &demobuf);
     //snd_stoptgame();
-    TTSound->stopsound(SND_WATER);
+    ttsounds::instance()->stopsound(SND_WATER);
     dcl_update_speed(MENU_DCLSPEED);
 
     //snd_playtitle();
