@@ -73,12 +73,12 @@ static void men_reload_sprites(Uint8 what) {
 }
 
 #ifdef GAME_DEBUG_KEYS
-static char *debug_menu_extralife(void *ms) {
+static char *debug_menu_extralife(_menusystem *ms) {
   if (ms) lives_add();
   return "Extra Life";
 }
 
-static char *debug_menu_extrascore(void *ms) {
+static char *debug_menu_extrascore(_menusystem *ms) {
   if (ms) pts_add(200);
   return "+200 Points";
 }
@@ -726,7 +726,7 @@ main_game_loop()
 
 #ifdef HUNT_THE_FISH
 static char *
-men_main_bonusgame_proc(void *ms)
+men_main_bonusgame_proc(_menusystem *ms)
 {
   if (ms) {
     snd_stoptitle();

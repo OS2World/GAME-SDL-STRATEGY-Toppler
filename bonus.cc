@@ -23,6 +23,7 @@
 #include "decl.h"
 #include "points.h"
 #include "level.h"
+#include "sound.h"
 
 #include <stdlib.h>
 
@@ -265,9 +266,12 @@ bool bns_game(void) {
       time++;
     }
 
+    if (!(time & 0x1f)) snd_sonar();
+
     /* display screen and wait */
     show();
     scr_swap();
+    snd_play();
     dcl_wait();
 
   } while (true);

@@ -1,3 +1,9 @@
+Version 1.0.0
+
+- check for the existence of the datafile
+- merge the 2 READMEs the have somehow appeared
+- some soundeffects for the bonusgame
+
 Version 0.99.2
 
 - make tower beeing destroyed completely, even if target toor is not at top

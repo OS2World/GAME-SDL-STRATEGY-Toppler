@@ -65,6 +65,8 @@ void snd_start(void);
 void snd_timeout(void);
 /* toppler is falling */
 void snd_fall(void);
+/* sonar pling for submarine game */
+void snd_sonar(void);
 
 
 void snd_play(void);

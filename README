@@ -60,6 +60,83 @@ pixel mode.
 -s makes the game silent. If you don't have a soundcard or for another
 reason get an "can't open audio" error try this option.
 
+Options Menu
+------------
+
+Game Options:
+
+- Password: this menu entry allows you to define a password. The
+password us used to restart a mission from a tower that is not the
+first. You get a password for every third tower while you are playing
+
+- Lives: for the tough guys you cen decrease the number of lives you
+start the game
+
+- Status on top: if you prefere the game status at the bottom of the
+screen. Here is the place to switch
+
+- Game speed: if you want faster gameplay, then this is the option for
+you. This option doesn't influence the behaviour. Only the delays
+between the frames is decreased. Providing you mashine does allow the
+game will run faster.
+
+Redefine Keys:
+
+The options here allow you to redefine the keys that are important for
+playing. Select the key you want to redefine. Press Enter and then the
+new key you want to use. Bare in mind, that you are not overwriting the
+old keys but just define an alternitive that has a lower priority than
+the original keys. So you can not use "p", because this is already used
+for pause.
+
+Graphics:
+
+The submenus here allow you to finely tune the looks of tower toppler.
+Depending on your computers capabilities and you graphic card you can
+change here between very low requirements and modest ones. I have an
+celeron 366 and can play Tower Toppler with everything switched on
+except for the expensive waves.
+
+- Fullscreen: Toggle between windowed and fullscreen display.
+
+- Alpha options toggle the usage of alpha for the different objects
+that are drawn on screen. Alpha blitting requires a bit more time, so
+if the game runs too slow, switch some of them off.
+
+  - Fonts: for all the text displayed
+
+  - Sprites: for all robots and the toppler
+
+  - Scroller: for the underwater scroller in the bonus level
+
+  - Shadowing: toggles if the menu uses a translucent bar and the
+screen gets darker if you start the menu in the game and on some other
+occasions. Shadowing takes up quite a lot of time.
+
+- waves: here you can toggle between nonreflecting, simple and
+expensive waves. Nonreflecting waves take up the lest amount of CPU
+time but don't look very good. Expensive waves look quite good but
+require quite a bit of CPU time.
+
+- scroller: here you can toggle between a 2 layer scroller and the
+complete (currently 3 layer) scroller. The 2 layer scroller only draws
+the front and the backround layer of the underwater scroller in the
+bonus level.
+
+Speed Indicator
+---------------
+
+In the normal tower climbing game there is an indicator displaying if
+your computer is fast enough for the current playing mode. If you can
+see a small red square in the top left corner of the game then the game
+can not run as fast as it needs to. Consider the following options:
+
+- drop game speed in the game options menu
+
+- don't use the expensive waves, they ARE expensive in CPU time
+
+- switch off some of the alpha options
+
 Controls
 --------
 

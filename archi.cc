@@ -34,6 +34,8 @@
 
 archive::archive(FILE *stream) : f(stream) {
 
+  assert(f, "Data file not found");
+
   /* find out the number of files inside the archive
    * alloce the neccessary memory
    */
