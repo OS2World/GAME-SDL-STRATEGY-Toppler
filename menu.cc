@@ -417,7 +417,7 @@ men_options_graphic(_menusystem *mainmenu) {
     ms = add_menu_option(ms, NULL, men_options_windowed);
     ms = add_menu_option(ms, NULL, men_alpha_options);
     ms = add_menu_option(ms, NULL, men_waves_menu, SDLK_UNKNOWN, MOF_PASSKEYS);
-    ms = add_menu_option(ms, NULL, men_full_scroller, SDLK_UNKNOWN, MOF_RIGHT);
+    ms = add_menu_option(ms, NULL, men_full_scroller, SDLK_UNKNOWN);
 
     ms = add_menu_option(ms, NULL, NULL);
     ms = add_menu_option(ms, "Back", NULL);

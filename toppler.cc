@@ -782,7 +782,17 @@ void top_show(int shape, int vpos, int apos) {
 }
 
 void top_sidemove(void) {
-  if (state != STATE_STANDING) return;
+  // FIXME: the toppler needs the be brought out of the way of the elevater when they fall down
+  // that needs to happen at least when standing, walking and jumping, but it might be also in other
+  // cases
+  // it is definitively not necessary when falling and drowning
+  // i hope this if is right
+  if ((state != STATE_STANDING) &&
+      (state != STATE_JUMPING) &&
+      (state != STATE_TURNING) &&
+      (state != STATE_SHOOTING))
+    return;
+
   if (movetoppler( 0, 0)) return;
 
   int i = 1;
