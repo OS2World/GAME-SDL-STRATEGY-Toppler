@@ -1,51 +1,49 @@
-#if (clock >= 1)
-#declare white = 1;
-#declare cl = clock - 1;
+#include "../sprites_pov/environment.pov"
+
+#if (white = 1)
+  #declare TC1 = texture { white_text }
+  #declare TC2 = texture { white_text }
 #else
-#declare white = 0;
-#declare cl = clock;
+  #declare TC1 = texture { pigment { color rgb <0,0,1> } finish { phong 1 ambient 0.3 } }
+  #declare TC2 = texture { pigment { color rgb <1,0,0> } finish { phong 1 ambient 0.3 } }
 #end
 
-camera { 
-  orthographic
-  location  <16,0,0>
-  sky       z  
-  up        <0,0,6>  
-  right     <6,0,0>
-  look_at   <0,0,0>
+#declare cyl = union {
+  cone { 0, 0.3, -x*2, 0 }
+  cone { 0, 0.3, x*2, 0 }
+
+  cone { x, 0.15, 2*x-y*0.7, 0 rotate x * (0   + rot * 10) }
+  cone { x, 0.15, 2*x-y*0.7, 0 rotate x * (120 + rot * 10) }
+  cone { x, 0.15, 2*x-y*0.7, 0 rotate x * (240 + rot * 10) }
+
+  cone { -x, 0.15, -2*x-y*0.7, 0 rotate x * (0   + rot * 10) }
+  cone { -x, 0.15, -2*x-y*0.7, 0 rotate x * (120 + rot * 10) }
+  cone { -x, 0.15, -2*x-y*0.7, 0 rotate x * (240 + rot * 10) }
 }
 
-light_source { <16,-10,10> color 1 }
+union {
 
-union {  
-  union {
-    sphere { z*2  1 }
-    sphere { -z*2 1 }
-    sphere { y*2  1 }
-    sphere { -y*2 1 }
+  sphere { 0  0.7  texture { TC2 } }
 
-#if (white = 1)
-    pigment { color rgb 1 }
-    finish { ambient 1 }
-#else
-    pigment { color rgb <0,0,1> }
-    finish { phong 1 ambient 0.3 }
-#end    
-  }
   union {
-    cylinder { z*2, -z*2, 0.3 }
-    cylinder { y*2, -y*2, 0.3 }
-#if (white = 1)
-    pigment { color rgb 1 }
-    finish { ambient 1 }
-#else
-    pigment { color rgb <1,0,0> }
-    finish { phong 1 ambient 0.3 }
-#end
+    object { cyl }
+    object { cyl rotate z * 90 }
+    object { cyl rotate z * 45}
+    object { cyl rotate -z * 45}
+
+    object { cyl rotate y * 90 }
+    object { cyl rotate y * 45}
+    object { cyl rotate -y * 45}
+
+    object { cyl rotate z * 90  rotate x * 45}
+    object { cyl rotate z * 90  rotate -x * 45}
+
+    texture { TC1 }
   }
-  rotate x*(cl+0.5)*90*5
-  rotate y*(cl+0.5)*90*6
-  rotate z*90*4*sin((cl+0.5)*2*pi)
+
+  rotate x*(260*1.9*rot+0.5)
+  rotate y*(260*1.7*rot+0.5)
+  rotate z*(260*1.4*rot+0.2)
   
-  scale 0.9
+  scale 1.5
 }

@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include "pngsaver.h"
+#include "colorreduction.h"
 
 Uint8 get_color(SDL_Surface *s, int x, int y) {
   return ((Uint8*)s->pixels)[y*s->pitch+x];
@@ -93,6 +94,106 @@ void xchg(SDL_Surface *s)
 unsigned char getpixel(SDL_Surface *s, Uint16 x, Uint16 y)
 {
   return ((Uint8*)(s->pixels))[y*s->pitch+x*s->format->BytesPerPixel];
+}
+
+void generate_fishes(SDL_Surface **c, SDL_Surface **m) {
+  int i, x, y;
+
+  SDL_Surface *col = SDL_CreateRGBSurface(0, 32*40, 2*40, 24, 0xff, 0xff00, 0xff0000, 0);
+  SDL_Surface *msk = SDL_CreateRGBSurface(0, 32*40, 2*40, 24, 0xff, 0xff00, 0xff0000, 0);
+
+  *c = col;
+  *m = msk;
+
+  for (i = 0; i < 32; i++) {
+    char s[100];
+
+    sprintf(s, "fish/render/%05i.tga", i+1);
+
+    SDL_Surface *img = IMG_LoadTGA_RW(SDL_RWFromFile(s, "rb"));
+
+    for (y = 0; y < 40; y++)
+      for (x = 0; x < 40; x++) {
+        Uint8 r, g, b, a;
+        Uint32 pix = *((Uint32*)((Uint8*)img->pixels + y*img->pitch+x*img->format->BytesPerPixel));
+        SDL_GetRGBA(pix, img->format, &r, &g, &b, &a);
+
+        *((Uint32*)((Uint8*)col->pixels + y*col->pitch + (x+i*40)*col->format->BytesPerPixel)) = SDL_MapRGB(col->format, r, g, b);
+        *((Uint32*)((Uint8*)msk->pixels + y*msk->pitch + (x+i*40)*msk->format->BytesPerPixel)) = SDL_MapRGB(msk->format, a, a, a);
+      }
+
+    SDL_FreeSurface(img);
+
+    sprintf(s, "fish/render/%5i.tga", 10001+i);
+
+    img =  IMG_LoadTGA_RW(SDL_RWFromFile(s, "rb"));
+
+    for (y = 0; y < 40; y++)
+      for (x = 0; x < 40; x++) {
+        Uint8 r, g, b, a;
+        Uint32 pix = *((Uint32*)((Uint8*)img->pixels + y*img->pitch+x*img->format->BytesPerPixel));
+        SDL_GetRGBA(pix, img->format, &r, &g, &b, &a);
+
+        *((Uint32*)((Uint8*)col->pixels + (y+40)*col->pitch + (x+i*40)*col->format->BytesPerPixel)) = SDL_MapRGB(col->format, r, g, b);
+        *((Uint32*)((Uint8*)msk->pixels + (y+40)*msk->pitch + (x+i*40)*msk->format->BytesPerPixel)) = SDL_MapRGB(msk->format, a, a, a);
+      }
+
+    SDL_FreeSurface(img);
+  }
+}
+
+void generate_submarine(SDL_Surface **c, SDL_Surface **m) {
+  int i, x, y;
+
+  SDL_Surface *col = SDL_CreateRGBSurface(0, 120, 80*(22+9), 24, 0xff, 0xff00, 0xff0000, 0);
+  SDL_Surface *msk = SDL_CreateRGBSurface(0, 120, 80*(22+9), 24, 0xff, 0xff00, 0xff0000, 0);
+
+  *c = col;
+  *m = msk;
+
+  for (i = 0; i < 9; i++) {
+    char s[100];
+
+    sprintf(s, "submarine/render/%04i.tga", i*4+1);
+
+    SDL_Surface *img = IMG_LoadTGA_RW(SDL_RWFromFile(s, "rb"));
+
+    printf("%i\n", i);
+
+    for (y = 0; y < 80; y++)
+      for (x = 0; x < 120; x++) {
+        Uint8 r, g, b, a;
+        Uint32 pix = *((Uint32*)((Uint8*)img->pixels + y*img->pitch+x*img->format->BytesPerPixel));
+        SDL_GetRGBA(pix, img->format, &r, &g, &b, &a);
+
+        *((Uint32*)((Uint8*)col->pixels + (y+i*80)*col->pitch + x*col->format->BytesPerPixel)) = SDL_MapRGB(col->format, r, g, b);
+        *((Uint32*)((Uint8*)msk->pixels + (y+i*80)*msk->pitch + x*msk->format->BytesPerPixel)) = SDL_MapRGB(msk->format, a, a, a);
+      }
+
+    SDL_FreeSurface(img);
+  }
+
+  for (i = 0; i < 22; i++) {
+    char s[100];
+
+    sprintf(s, "submarine/render/%04i.tga", i+50);
+
+    SDL_Surface *img = IMG_LoadTGA_RW(SDL_RWFromFile(s, "rb"));
+
+    for (y = 0; y < 80; y++)
+      for (x = 0; x < 120; x++) {
+        Uint8 r, g, b, a;
+        Uint32 pix = *((Uint32*)((Uint8*)img->pixels + y*img->pitch+x*img->format->BytesPerPixel));
+        SDL_GetRGBA(pix, img->format, &r, &g, &b, &a);
+
+        *((Uint32*)((Uint8*)col->pixels + (y+80*(i+9))*col->pitch + x*col->format->BytesPerPixel)) = SDL_MapRGB(col->format, r, g, b);
+        *((Uint32*)((Uint8*)msk->pixels + (y+80*(i+9))*msk->pitch + x*msk->format->BytesPerPixel)) = SDL_MapRGB(msk->format, a, a, a);
+      }
+
+    SDL_FreeSurface(img);
+  }
+
+  printf("finished\n");
 }
 
 long bitbuf;
@@ -250,6 +351,71 @@ int main() {
 
   SDL_FreeSurface(src);
 
+  generate_fishes(&colors, &mask);
+
+  {
+    SDL_Surface *col2 = colorreduction(colors, 256);
+    SDL_Surface *msk2 = colorreduction(mask, 256);
+  
+    SDL_FreeSurface(colors);
+    SDL_FreeSurface(mask);
+  
+    colors = col2;
+    mask = msk2;
+  }
+
+  write_palette(outf, colors);
+
+  printf("fisch\n");
+  for (n = 0; n < 2; n++) {
+    for (s = 0; s < 32; s++) {
+      for (y = 0; y < 40; y++) {
+        for (x = 0; x < 40; x++) {
+          Uint8 b;
+  
+          b = get_color(colors, x+s*40, y+n*40);
+          fwrite(&b, 1, 1, outf);
+          b = get_alpha(mask, x+s*40, y+n*40);
+          fwrite(&b, 1, 1, outf);
+        }
+      }
+    }
+  }
+
+  SDL_FreeSurface(colors);
+  SDL_FreeSurface(mask);
+
+  generate_submarine(&colors, &mask);
+
+  {
+    SDL_Surface *col2 = colorreduction(colors, 256);
+    SDL_Surface *msk2 = colorreduction(mask, 256);
+  
+    SDL_FreeSurface(colors);
+    SDL_FreeSurface(mask);
+  
+    colors = col2;
+    mask = msk2;
+  }
+
+  write_palette(outf, colors);
+
+  printf("submarine\n");
+  for (n = 0; n < 31; n++) {
+    for (y = 0; y < 80; y++) {
+      for (x = 0; x < 120; x++) {
+        Uint8 b;
+
+        b = get_color(colors, x, y+n*80);
+        fwrite(&b, 1, 1, outf);
+        b = get_alpha(mask, x, y+n*80);
+        fwrite(&b, 1, 1, outf);
+      }
+    }
+  }
+
+  SDL_FreeSurface(colors);
+  SDL_FreeSurface(mask);
 
   screen = IMG_LoadPNG_RW(SDL_RWFromFile("sprites_bonus.png", "rb"));
   xchg(screen);
@@ -259,30 +425,6 @@ int main() {
     putbits(screen->format->palette->colors[p].r, 8);
     putbits(screen->format->palette->colors[p].g, 8);
     putbits(screen->format->palette->colors[p].b, 8);
-  }
-
-  /* fisch */
-  printf("fisch\n");
-  for (n = 0; n <= 1; n++) {
-    for (s = 0; s <= 7; s++) {
-      for (y = 0; y <= 19; y++) {
-        for (x = 0; x <= 19; x++) {
-          putbits(getpixel(screen, s * 20 + x, y + n * 20), 6);
-        }
-      }
-    }
-  }
-
-  /* submarine */
-  printf("submarine\n");
-  for (n = 0; n < 2; n++) {
-    for (s = 0; s < 4; s++) {
-      for (y = 0; y < 39; y++) {
-        for (x = 0; x < 50; x++) {
-          putbits(getpixel(screen, s*51 + x, n* 40 + y + 121), 6);
-        }
-      }
-    }
   }
 
   /* torpedo */

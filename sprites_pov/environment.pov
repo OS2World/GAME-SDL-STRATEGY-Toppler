@@ -1,20 +1,10 @@
 #include "colors.inc"
 #include "textures.inc"
 
-#declare weiss = texture {
+#declare white_text = texture {
   pigment { color rgb 1 }
   finish { ambient 1 }
 }
-
-#if (clock >= 1)
-  #declare T1 = texture { weiss }
-  #declare T2 = texture { weiss }
-  #declare T3 = texture { weiss }
-#else
-  #declare T1 = texture { Gold_Texture }
-  #declare T2 = texture { Silver_Texture }
-  #declare T3 = texture { Copper_Texture }
-#end
 
 camera {
   orthographic
@@ -36,3 +26,14 @@ light_source { <16,-10,10> color 1 }
 #declare rot = clock;
 #declare white = 0;
 #end
+
+#if (white = 1)
+  #declare T1 = texture { white_text }
+  #declare T2 = texture { white_text }
+  #declare T3 = texture { white_text }
+#else
+  #declare T1 = texture { Gold_Texture }
+  #declare T2 = texture { Silver_Texture }
+  #declare T3 = texture { Copper_Texture }
+#end
+
