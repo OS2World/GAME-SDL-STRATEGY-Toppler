@@ -100,21 +100,16 @@ void set_men_bgproc(menubg_callback_proc proc) {
 void men_init(void) {
 
   Uint8 pal[3*256];
-  Uint32 res;
-  Uint8 num;
 
   arc_assign(menudat);
 
-  arc_read(&num, 1, &res);
-  arc_read(pal, 3*num+3, &res);
-
+  scr_read_palette(pal);
   menupicture = scr_loadsprites_new(1, 640, 480, false, pal);
   arc_closefile();
 
   arc_assign(titledat);
 
-  arc_read(&num, 1, &res);
-  arc_read(pal, 3*num+3, &res);
+  scr_read_palette(pal);
   titledata = scr_loadsprites_new(1, SPR_TITLEWID, SPR_TITLEHEI, true, pal);
   arc_closefile();
 }

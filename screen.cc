@@ -126,12 +126,12 @@ unsigned short scr_loadsprites_new(int num, int w, int h, bool sprite, const Uin
   
     for (int y = 0; y < h; y++)
       for (int x = 0; x < w; x++) {
-        b = arc_getbits(8);
+        b = arc_getbyte();
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = pal[b*3 + 2];
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 1];
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 2] = pal[b*3 + 0];
         if (sprite) {
-          a = arc_getbits(8);
+          a = arc_getbyte();
           if (use_alpha)
             ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = a;
           else {
@@ -217,10 +217,10 @@ static void scr_regensprites(Uint8 *data, SDL_Surface *z, int num, int w, int h,
       }
 }
 
-static void read_palette(Uint8 *pal) {
+void scr_read_palette(Uint8 *pal) {
   Uint8 b;
   Uint32 res;
-  arc_read(&b, 1, &res);
+  b = arc_getbyte();
 
   arc_read(pal, (Uint32)b*3+3, &res);
 }
@@ -250,17 +250,8 @@ static void loadgraphics(void) {
 
   for (t = -36; t <= 36; t++) {
 
-    Uint8 tmp;
-
-    arc_read(&tmp, 1, &res);
-    doors[t+36].xs = tmp;
-    arc_read(&tmp, 1, &res);
-    doors[t+36].xs |= ((Uint16)tmp) << 8;;
-
-    arc_read(&tmp, 1, &res);
-    doors[t+36].br = tmp;
-    arc_read(&tmp, 1, &res);
-    doors[t+36].br |= ((Uint16)tmp) << 8;;
+    doors[t+36].xs = arc_getword();
+    doors[t+36].br = arc_getword();
 
     for (int et = 0; et < 3; et++)
       if (doors[t+36].br != 0) {
@@ -278,8 +269,8 @@ static void loadgraphics(void) {
   for (t = 0; t < 256; t++) {
     unsigned char c1, c2;
 
-    arc_read(&c1, 1, &res);
-    arc_read(&c2, 1, &res);
+    c1 = arc_getbyte();
+    c2 = arc_getbyte();
 
     pal[3*t] = c1;
     pal[3*t+1] = c2;
@@ -294,47 +285,47 @@ static void loadgraphics(void) {
 
   arc_assign(topplerdat);
   
-  read_palette(pal);
+  scr_read_palette(pal);
 
   topplerstart = scr_loadsprites_new(74, SPR_HEROWID, SPR_HEROHEI, true, pal);
 
   arc_assign(spritedat);
 
-  read_palette(pal);
+  scr_read_palette(pal);
   robotsst = scr_loadsprites_new(128, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal);
 
-  read_palette(pal);
+  scr_read_palette(pal);
   ballst = scr_loadsprites_new(2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal);
 
-  read_palette(pal);
+  scr_read_palette(pal);
   boxst = scr_loadsprites_new(16, SPR_BOXWID, SPR_BOXHEI, true, pal);
 
-  read_palette(pal);
+  scr_read_palette(pal);
   snowballst = scr_loadsprites_new(1, SPR_AMMOWID, SPR_AMMOHEI, true, pal);
 
-  read_palette(pal);
+  scr_read_palette(pal);
   starst = scr_loadsprites_new(16, SPR_STARWID, SPR_STARHEI, true, pal);
   sts_init(starst + 9, NUM_STARS);
 
-  read_palette(pal);
+  scr_read_palette(pal);
   fishst = scr_loadsprites_new(32*2, SPR_FISHWID, SPR_FISHHEI, true, pal);
 
-  read_palette(pal);
+  scr_read_palette(pal);
   subst = scr_loadsprites_new(31, SPR_SUBMWID, SPR_SUBMHEI, true, pal);
 
-  read_palette(pal);
+  scr_read_palette(pal);
   torb = scr_loadsprites_new(1, SPR_TORPWID, SPR_TORPHEI, true, pal);
 
   arc_closefile();
 
   arc_assign(crossdat);
 
-  Uint8 numcol = arc_getbits(8);
+  Uint8 numcol = arc_getbyte();
 
   for (t = 0; t < numcol + 1; t++) {
-    crosspal[2*t] = arc_getbits(8);
-    arc_getbits(8);
-    crosspal[2*t+1] = arc_getbits(8);
+    crosspal[2*t] = arc_getbyte();
+    arc_getbyte();
+    crosspal[2*t+1] = arc_getbyte();
   }
 
   crossdata = (Uint8*)malloc(120*SPR_CROSSWID*SPR_CROSSHEI*2);
@@ -410,7 +401,6 @@ void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
 static void loadfont(void) {
 
   unsigned char pal[256*3];
-  Uint32 res;
   Uint8 c;
   int max_font_width = -1;
   int min_font_width = 256;
@@ -418,17 +408,16 @@ static void loadfont(void) {
 
   arc_assign(fontdat);
 
-  c = arc_getbits(8);
-  arc_read(pal, c*3 + 3, &res);
+  scr_read_palette(pal);
 
-  fontheight = arc_getbits(8);
+  fontheight = arc_getbyte();
 
   while (!arc_eof()) {
-    arc_read(&c, 1, &res);
+    c = arc_getbyte();
 
     if (!c || (c >= MAXCHARNUM)) break;
 
-    arc_read(&fontchars[c].width, 1, &res);
+    fontchars[c].width = arc_getbyte();
     fontchars[c].s = scr_loadsprites_new(1, fontchars[c].width, fontheight, true, pal);
 
     if (fontchars[c].width < min_font_width) min_font_width = fontchars[c].width;
@@ -452,10 +441,9 @@ static void loadscroller(void) {
   Uint8 layers;
   Uint8 towerpos;
   unsigned char c;
-  Uint32 res;
   Uint8 pal[3*256];
 
-  arc_read(&layers, 1, &res);
+  layers = arc_getbyte();
 
   num_scrolllayers = layers;
 
@@ -465,39 +453,20 @@ static void loadscroller(void) {
       (struct _scroll_layer *)malloc(sizeof(struct _scroll_layer)*layers);
   assert(scroll_layers, "Failed to alloc memory!");
     
-  arc_read(&towerpos, 1, &res);
+  towerpos = arc_getbyte();
     
   sl_tower_depth = towerpos;
 
-  arc_read(&c, 1, &res);
-  sl_tower_num = ((int)c) << 8;
-  arc_read(&c, 1, &res);
-  sl_tower_num += c;
-
-  arc_read(&c, 1, &res);
-  sl_tower_den = ((int)c) << 8;
-  arc_read(&c, 1, &res);
-  sl_tower_den += c;
+  sl_tower_num = arc_getword();
+  sl_tower_den = arc_getword();
 
   for (int l = 0; l < layers; l++) {
-    scroll_layers[l].width = 0;
 
-    arc_read(&c, 1, &res);
-    scroll_layers[l].width = ((int)c) << 8;
-    arc_read(&c, 1, &res);
-    scroll_layers[l].width += c;
+    scroll_layers[l].width = arc_getword();
+    scroll_layers[l].num = arc_getword();
+    scroll_layers[l].den = arc_getword();
 
-    arc_read(&c, 1, &res);
-    scroll_layers[l].num = ((int)c) << 8;
-    arc_read(&c, 1, &res);
-    scroll_layers[l].num += c;
-      
-    arc_read(&c, 1, &res);
-    scroll_layers[l].den = ((int)c) << 8;
-    arc_read(&c, 1, &res);
-    scroll_layers[l].den += c;
-
-    read_palette(pal);
+    scr_read_palette(pal);
 
     scroll_layers[l].image = scr_loadsprites_new(1, scroll_layers[l].width, 480, l != 0, pal);
   }

@@ -28,7 +28,7 @@
 
 /* elevators are handled in a quite complicated manner: while
  the toppler is moving on the elevator the platform is invisible
- and frawn together with the toppler. The stick below the elevator
+ and drawn together with the toppler. The stick below the elevator
  is always drawn in such a way that the last one will appear or disappear
  below the platform under the toppler */
 
@@ -56,7 +56,6 @@ void ele_init(void) {
     elevators[t].time = -1;
 
   active_ele = -1;
-
 }
 
 void ele_select(Uint16 row, Uint8 col) {

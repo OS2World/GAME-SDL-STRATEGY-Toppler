@@ -37,6 +37,7 @@ void scr_done(void);
 
 /* loads a number of sprite, enters it into the sprite collection
  and returns the index of the first sprite */
+void scr_read_palette(Uint8 *pal);
 unsigned short scr_loadsprites(int num, int w, int h, int bits, bool sprite, const Uint8 *pal);
 unsigned short scr_loadsprites_new(int num, int w, int h, bool sprite, const Uint8 *pal);
 

@@ -50,13 +50,9 @@ bool arc_eof(void);
  the real number read */
 void arc_read(void *buf, Uint32 size, Uint32 *result);
 
-/* returns the specified number of bits on the lower bits of the returned
- value, dont use arc_read and arc_getbits on the same file */
-Uint16 arc_getbits(Uint8 anz);
-
-
-/* drops the rest of the bits in the currently started byte */
-void arc_bytealign(void);
+/* read one byte from currently opened file */
+Uint8 arc_getbyte(void);
+Uint16 arc_getword(void);
 
 #endif
 

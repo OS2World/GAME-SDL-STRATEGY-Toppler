@@ -39,9 +39,6 @@
 
 static FILE *f;
 
-static Uint32 bitbuffer;
-static Uint8 bitpos;
-
 typedef struct {
   char name[FNAMELEN];
   Uint32 start, size, compress;
@@ -51,7 +48,7 @@ static fileindex *files;
 static Uint8 filecount;
 static Uint8 pos;
 
-static Uint8 * buffer = 0;
+static Uint8 *buffer = 0;
 static Uint32 bufferpos;
 
 
@@ -140,14 +137,12 @@ void arc_assign(char *name) {
       assert(erg == files[i].size, "data file corrupt\n");
 
       delete [] b;
-      bitpos = 0;
       pos = i;
       bufferpos = 0;
       return;
     }
 
   assert(0, "file not found in archive\n");
-
 }
 
 void arc_read(void *buf, Uint32 size, Uint32 *result) {
@@ -156,25 +151,14 @@ void arc_read(void *buf, Uint32 size, Uint32 *result) {
   *result = size;
 }
 
-static Uint8 getbyte(void) {
+Uint8 arc_getbyte(void) {
   return buffer[bufferpos++];
 }
 
-Uint16 arc_getbits(Uint8 anz) {
-  Uint16 result;
-
-  while (bitpos < anz) {
-    bitbuffer = (bitbuffer << 8) | getbyte();
-    bitpos += 8;
-  }
-
-  result = (bitbuffer >> (bitpos - anz)) & ((1 << anz) - 1);
-  bitpos -= anz;
-  return result;
-}
-
-void arc_bytealign(void) {
-  bitpos = (bitpos + 7) & ~7;
+Uint16 arc_getword(void) {
+  Uint16 w = (Uint16)buffer[bufferpos] + ((Uint16)buffer[bufferpos+1] << 8);
+  bufferpos+=2;
+  return w;
 }
 
 Uint32 arc_filesize(void) {
