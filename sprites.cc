@@ -37,7 +37,9 @@ long spr_savesprite(SDL_Surface *s) {
     sarray[t] = s;
     return t;
   } else
-    return -1;
+    assert(0, "now enough space for all the sprites\n");
+
+  return -1;
 }
 
 SDL_Surface *spr_spritedata(Uint16 nr) {
