@@ -1,18 +1,18 @@
 # translation of de.po to Deutsch
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR Andreas R?er.
-# Andreas RÃ¶ver <roever@users.sf.net>, 2003, 2004.
+# Andreas Röver <roever@users.sf.net>, 2003, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-02-08 10:31+0100\n"
-"PO-Revision-Date: 2004-01-04 09:35+0100\n"
-"Last-Translator: Andreas RÃ¶ver <roever@users.sf.net>\n"
+"PO-Revision-Date: 2004-02-08 11:01+0100\n"
+"Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
 
@@ -22,7 +22,7 @@ msgstr "Datendatei nicht gefunden"
 
 #: archi.cc:44
 msgid "Failed to alloc memory for archive index."
-msgstr "Speicher fÃ¼r Archivindex konnte nicht reserviert werden."
+msgstr "Speicher für Archivindex konnte nicht reserviert werden."
 
 #: archi.cc:58
 msgid "Filename too long, datafile corrupt?"
@@ -106,9 +106,9 @@ msgid "Extra:     ~t35010 X %3d"
 msgstr "Extra:     ~t35010 X %3d"
 
 #: game.cc:320
-#, fuzzy, c-format
+#, c-format
 msgid "Lifes:     ~t3505000 X %3d"
-msgstr "Zeit:       ~t35010 X %3d"
+msgstr "Leben:       ~t35010 X %3d"
 
 #: game.cc:520
 msgid "Trying to play or record a null demo."
@@ -162,15 +162,15 @@ msgstr "Bewege nach rechts"
 
 #: leveledit.cc:104
 msgid "Insert row"
-msgstr "Zeile einfÃ¼gen"
+msgstr "Zeile einfügen"
 
 #: leveledit.cc:104
 msgid "Delete row"
-msgstr "Zeile lÃ¶schen"
+msgstr "Zeile löschen"
 
 #: leveledit.cc:104
 msgid "Rotate 180"
-msgstr "um 180Â° drehen"
+msgstr "um 180° drehen"
 
 #: leveledit.cc:105
 msgid "Put space"
@@ -194,7 +194,7 @@ msgstr "Rechts-Rutscher"
 
 #: leveledit.cc:107
 msgid "Put door"
-msgstr "TÃ¼r"
+msgstr "Tür"
 
 #: leveledit.cc:107
 msgid "Put goal"
@@ -202,7 +202,7 @@ msgstr "Ziel"
 
 #: leveledit.cc:107
 msgid "Check tower"
-msgstr "Turm prÃ¼fen"
+msgstr "Turm prüfen"
 
 #: leveledit.cc:107
 msgid "Put rolling ball"
@@ -246,7 +246,7 @@ msgstr "Oberer Stop"
 
 #: leveledit.cc:110
 msgid "Put pillar"
-msgstr "SÃ¤ule"
+msgstr "Säule"
 
 #: leveledit.cc:110
 msgid "Put box"
@@ -262,7 +262,7 @@ msgstr "Sichern"
 
 #: leveledit.cc:111
 msgid "Test tower"
-msgstr "PrÃ¼fen"
+msgstr "Prüfen"
 
 #: leveledit.cc:111
 msgid "Set tower color"
@@ -314,7 +314,7 @@ msgstr "Demo abspielen"
 
 #: leveledit.cc:114
 msgid "Adjust tower height"
-msgstr "TurmhÃ¶he verÃ¤ndern"
+msgstr "Turmhöhe verändern"
 
 #: leveledit.cc:114
 msgid "Go to end"
@@ -322,11 +322,11 @@ msgstr "Zum Ende"
 
 #: leveledit.cc:115
 msgid "Cut row"
-msgstr "Reihe lÃ¶schen"
+msgstr "Reihe löschen"
 
 #: leveledit.cc:115
 msgid "Paste row"
-msgstr "Reihe einfÃ¼gen"
+msgstr "Reihe einfügen"
 
 #: leveledit.cc:115
 msgid "Change robot type"
@@ -334,11 +334,11 @@ msgstr "Robotertyp setzen"
 
 #: leveledit.cc:189
 msgid "Tower changed, really quit"
-msgstr "Turm verÃ¤ndert, sicher"
+msgstr "Turm verändert, sicher"
 
 #: leveledit.cc:199
 msgid "Tower changed, really load"
-msgstr "Turm verÃ¤ndert, sicher"
+msgstr "Turm verändert, sicher"
 
 #: leveledit.cc:216
 msgid "Red"
@@ -346,7 +346,7 @@ msgstr "Rot"
 
 #: leveledit.cc:216
 msgid "Green"
-msgstr "GrÃ¼n"
+msgstr "Grün"
 
 #: leveledit.cc:216
 msgid "Blue"
@@ -374,7 +374,7 @@ msgstr "unbekannter Block"
 
 #: leveledit.cc:309
 msgid "No elevator stop"
-msgstr "Kein Stop fÃ¼r Aufzug"
+msgstr "Kein Stop für Aufzug"
 
 #: leveledit.cc:310
 msgid "Elevator is blocked"
@@ -382,11 +382,11 @@ msgstr "Fahrstuhl blockiert"
 
 #: leveledit.cc:311
 msgid "No opposing doorway"
-msgstr "Keine gegenÃ¼berliegende TÃ¼r"
+msgstr "Keine gegenüberliegende Tür"
 
 #: leveledit.cc:312
 msgid "Broken doorway"
-msgstr "TÃ¼r kaputt"
+msgstr "Tür kaputt"
 
 #: leveledit.cc:313
 msgid "No exit"
@@ -434,7 +434,7 @@ msgstr "Abbruch"
 
 #: leveledit.cc:390
 msgid "enter name of"
-msgstr "Gib Name fÃ¼r Turm"
+msgstr "Gib Name für Turm"
 
 #: leveledit.cc:393
 #, c-format
@@ -443,7 +443,7 @@ msgstr "Nummer %i ein"
 
 #: leveledit.cc:414
 msgid "Editor Key Help"
-msgstr "Hilfe fÃ¼r Editortasten"
+msgstr "Hilfe für Editortasten"
 
 #: leveledit.cc:532
 msgid "cut#"
@@ -472,7 +472,7 @@ msgstr "Turm Zeit eingeben:"
 
 #: leveledit.cc:847
 msgid "Adjust tower height:"
-msgstr "TurmhÃ¶he einstellen"
+msgstr "Turmhöhe einstellen"
 
 #: leveledit.cc:927
 msgid "Name the tower:"
@@ -519,7 +519,7 @@ msgstr "Nebulous"
 
 #: main.cc:99
 msgid "Thanks for playing!\n"
-msgstr "Danke fÃ¼r's spielen!\n"
+msgstr "Danke für's spielen!\n"
 
 #: menu.cc:78
 msgid "Extra Life"
@@ -577,7 +577,7 @@ msgstr "Spieloptionen"
 
 #: menu.cc:245 menu.cc:265 menu.cc:439 menu.cc:463 menu.cc:487 menu.cc:644
 msgid "Back"
-msgstr "ZurÃ¼ck"
+msgstr "Zurück"
 
 #: menu.cc:256 menu.cc:271
 msgid "Redefine Keys"
@@ -593,15 +593,15 @@ msgstr "Sounds"
 
 #: menu.cc:339 menu.cc:340
 msgid "Font alpha"
-msgstr "Schrift glÃ¤tten"
+msgstr "Schrift glätten"
 
 #: menu.cc:353 menu.cc:354
 msgid "Sprites alpha"
-msgstr "Sprites glÃ¤tten"
+msgstr "Sprites glätten"
 
 #: menu.cc:367 menu.cc:368
 msgid "Scroller alpha"
-msgstr "Scroller glÃ¤tten"
+msgstr "Scroller glätten"
 
 #: menu.cc:380 menu.cc:381
 msgid "Shadowing"
@@ -625,7 +625,7 @@ msgstr "Fehler"
 
 #: menu.cc:419
 msgid "Complete Scroller"
-msgstr "VollstÃ¤ndiger Scroller"
+msgstr "Vollständiger Scroller"
 
 #: menu.cc:420
 msgid "2 layers Scoller"
@@ -633,7 +633,7 @@ msgstr "2-Schichten Scroller"
 
 #: menu.cc:426
 msgid "Alpha Options"
-msgstr "GlÃ¤ttungsoptionen"
+msgstr "Glättungsoptionen"
 
 #: menu.cc:450
 msgid "Graphics"
@@ -650,7 +650,7 @@ msgstr "Siegerliste"
 #: menu.cc:622
 #, c-format
 msgid "Scores for %s"
-msgstr "Punkte fÃ¼r %s"
+msgstr "Punkte für %s"
 
 #: menu.cc:646
 msgid "OK"
@@ -666,7 +666,7 @@ msgstr "wahrscheinlich gut genug"
 
 #: menu.cc:661
 msgid "enter the highscore table!"
-msgstr "fÃ¼r die Siegerliste!"
+msgstr "für die Siegerliste!"
 
 #: menu.cc:663
 msgid "Please enter your name"
@@ -680,7 +680,7 @@ msgid ""
 "version of Tower Toppler.\n"
 "Do you want to continue?"
 msgstr ""
-"Diese Mission enthÃ¤lt\n"
+"Diese Mission enthält\n"
 "unbekannte Elemente.\n"
 "Du braucht wahrscheinlich\n"
 "eine neue Version von\n"
@@ -705,7 +705,7 @@ msgstr "Leveleditor"
 
 #: menu.cc:884
 msgid "Return to Game"
-msgstr "ZurÃ¼ck zum Spiel"
+msgstr "Zurück zum Spiel"
 
 #: menu.cc:894
 msgid "Quit Game"
@@ -713,19 +713,19 @@ msgstr "Beende Spiel"
 
 #: menu.cc:901
 msgid "DEBUG MENU"
-msgstr "DEBUG MENÃœ"
+msgstr "DEBUG MENÜ"
 
 #: menu.cc:906
 msgid "Back to Game"
-msgstr "ZurÃ¼ck zum Spiel"
+msgstr "Zurück zum Spiel"
 
 #: menusys.cc:390
 msgid "Press fire"
-msgstr "DrÃ¼cke Feuer"
+msgstr "Drücke Feuer"
 
 #: menusys.cc:390
 msgid "Press space"
-msgstr "DrÃ¼cke Leertaste"
+msgstr "Drücke Leertaste"
 
 #: menusys.cc:554
 msgid "Yes"
@@ -737,15 +737,15 @@ msgstr "Nein"
 
 #: screen.cc:550
 msgid "Must have at least 2 scroll layers!"
-msgstr "Es mÃ¼ssen mindestens 2 Schichten im Scroller sein!"
+msgstr "Es müssen mindestens 2 Schichten im Scroller sein!"
 
 #: screen.cc:553
 msgid "Failed to alloc memory for bonus scroller!"
-msgstr "Speicher fÃ¼r Scroller konnte nicht reserviert werden!"
+msgstr "Speicher für Scroller konnte nicht reserviert werden!"
 
 #: screen.cc:635
 msgid "could not open display"
-msgstr "Display konnte nicht geÃ¶ffnet werden"
+msgstr "Display konnte nicht geöffnet werden"
 
 #: screen.cc:1316 screen.cc:1402
 msgid "Wrong command in formatted text."
@@ -765,11 +765,11 @@ msgstr "Sound konnte nicht initialisiert werden, schalte ab.\n"
 
 #: sound.cc:70
 msgid "Could not open audio, muting.\n"
-msgstr "Sound konnte nicht geÃ¶ffnet werden, schalte ab.\n"
+msgstr "Sound konnte nicht geöffnet werden, schalte ab.\n"
 
 #: sprites.cc:45
 msgid "could not alloc memory for sprite array"
-msgstr "Speicher fÃ¼r Spritefeld nicht reservierbar"
+msgstr "Speicher für Spritefeld nicht reservierbar"
 
 #: stars.cc:54
 msgid "sts_init with too few stars!"
@@ -789,7 +789,7 @@ msgstr "Pass auf wohin Du trittst"
 
 #: levelnames.txt:1
 msgid "Short, but deadly"
-msgstr "Kurz aber tÃ¶dlich"
+msgstr "Kurz aber tödlich"
 
 #: levelnames.txt:1
 msgid "The maddening"
@@ -801,7 +801,7 @@ msgstr "Schicksal bei jedem Schritt"
 
 #: levelnames.txt:1
 msgid "Enemies everywhere"
-msgstr "Gegner Ã¼berall"
+msgstr "Gegner überall"
 
 #: levelnames.txt:1
 msgid "You will loose"
@@ -809,7 +809,7 @@ msgstr "Du wirst verlieren"
 
 #: levelnames.txt:1
 msgid "Mind destroyer"
-msgstr "den Geist ZerstÃ¶rer"
+msgstr "den Geist Zerstörer"
 
 #: levelnames.txt:1
 msgid "Mind Trap"
@@ -821,7 +821,7 @@ msgstr "Brechende Turm"
 
 #: levelnames.txt:1
 msgid "Great Fall"
-msgstr "den groÃŸen Fall"
+msgstr "den großen Fall"
 
 #: levelnames.txt:1
 msgid "Tower of Intrigue"
@@ -833,7 +833,7 @@ msgstr "das Massaker"
 
 #: levelnames.txt:1
 msgid "Bouncing Murders"
-msgstr "springende MÃ¶rder"
+msgstr "springende Mörder"
 
 #: levelnames.txt:1
 msgid "Trial and error"
@@ -841,15 +841,15 @@ msgstr "Versuch und Irrtum"
 
 #: levelnames.txt:1
 msgid "Tower of Pure Evil"
-msgstr "den Turm des puren BÃ¶sen"
+msgstr "den Turm des puren Bösen"
 
 #: levelnames.txt:1
 msgid "Annoying Tower"
-msgstr "den lÃ¤stigen Turm"
+msgstr "den lästigen Turm"
 
 #: levelnames.txt:1
 msgid "Cave of Failure"
-msgstr "die HÃ¶hle des Versagens"
+msgstr "die Höhle des Versagens"
 
 #: levelnames.txt:1
 msgid "Dividing path"
@@ -929,11 +929,11 @@ msgstr "den unterbrochenen Weg"
 
 #: levelnames.txt:1
 msgid "Swimmers delight"
-msgstr "das Paradies fÃ¼r Schwimmer"
+msgstr "das Paradies für Schwimmer"
 
 #: levelnames.txt:1
 msgid "Nasty one"
-msgstr "den GehÃ¤ssigen"
+msgstr "den Gehässigen"
 
 #: levelnames.txt:1
 msgid "Edge of doom"
@@ -961,11 +961,11 @@ msgstr "Oh, *******!!"
 
 #: levelnames.txt:1
 msgid "Riddle of reason"
-msgstr "RÃ¤tsel der GrÃ¼nde"
+msgstr "Rätsel der Gründe"
 
 #: levelnames.txt:1
 msgid "Maze of mistakes"
-msgstr "Labyrinth von IrrtÃ¼mern"
+msgstr "Labyrinth von Irrtümern"
 
 #: levelnames.txt:1
 msgid "Last trump"
@@ -1011,13 +1011,14 @@ msgstr "Turm-ABC"
 #~ msgstr "Sounds "
 
 #~ msgid "Font alpha "
-#~ msgstr "Schrift glÃ¤tten "
+#~ msgstr "Schrift glätten "
 
 #~ msgid "Sprites alpha "
-#~ msgstr "Sprites glÃ¤tten "
+#~ msgstr "Sprites glätten "
 
 #~ msgid "Scroller alpha "
-#~ msgstr "Scroller glÃ¤tten "
+#~ msgstr "Scroller glätten "
 
 #~ msgid "Shadowing "
 #~ msgstr "Schattieren "
+
