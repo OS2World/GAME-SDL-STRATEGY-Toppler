@@ -67,19 +67,19 @@ void write_layer(layer * l, FILE * out) {
 
   Uint8 b;
 
-  c = l->width >> 8;
-  fwrite(&c, 1, 1, out);
   c = l->width & 0xff;
   fwrite(&c, 1, 1, out);
-
-  c = l->numerator >> 8;
+  c = l->width >> 8;
   fwrite(&c, 1, 1, out);
+
   c = l->numerator & 0xff;
   fwrite(&c, 1, 1, out);
-
-  c = l->denominator >> 8;
+  c = l->numerator >> 8;
   fwrite(&c, 1, 1, out);
+
   c = l->denominator & 0xff;
+  fwrite(&c, 1, 1, out);
+  c = l->denominator >> 8;
   fwrite(&c, 1, 1, out);
 
   write_palette(out, l->colors);
@@ -147,14 +147,14 @@ int main(int argv, char* args[]) {
   fwrite(&layers, 1, 1, o);
   fwrite(&towerpos, 1, 1, o);
 
-  c = towerspeed_num >> 8;
-  fwrite(&c, 1, 1, o);
   c = towerspeed_num & 0xff;
   fwrite(&c, 1, 1, o);
-
-  c = towerspeed_den >> 8;
+  c = towerspeed_num >> 8;
   fwrite(&c, 1, 1, o);
+
   c = towerspeed_den & 0xff;
+  fwrite(&c, 1, 1, o);
+  c = towerspeed_den >> 8;
   fwrite(&c, 1, 1, o);
 
   save(layer_ancor, o);
