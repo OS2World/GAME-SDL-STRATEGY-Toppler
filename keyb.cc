@@ -27,8 +27,13 @@ static SDLKey sdlkeytyped;
 static Uint16 mouse_x, mouse_y;
 static bool mouse_moved;
 static Uint16 mouse_button;
+static bool joy_inited = 0;
+static bool joy_action = 0;
+SDL_Joystick *joy;
 
 class quit_action_class {};
+
+#define JOYSTICK_DEADZONE 6000
 
 bool tt_has_focus;
 
@@ -74,6 +79,21 @@ void key_init(void) {
 
   SDL_EnableUNICODE(1);
 
+  if (joy_inited == 0) {
+    if (SDL_Init(SDL_INIT_JOYSTICK) < 0) {
+      joy_inited = 2;
+    } else {
+      joy = SDL_JoystickOpen(0);
+      if (!joy) {
+	joy_inited = 2;
+      } else {
+	SDL_JoystickEventState(SDL_ENABLE);
+	printf(_("Joystick enabled\n"));
+	joy_inited = 1;
+      }
+    }
+  }
+
   chartyped = 0;
   keytyped = keydown = no_key;
   sdlkeytyped = SDLK_UNKNOWN;
@@ -83,6 +103,12 @@ void key_init(void) {
 
 static void handleEvents(void) {
   SDL_Event e;
+
+  if (joy_action) {
+    keydown = no_key;
+    keytyped = no_key;
+    joy_action = 0;
+  }
 
   while (SDL_PollEvent(&e)) {
 
@@ -95,6 +121,35 @@ static void handleEvents(void) {
       mouse_x = e.motion.x;
       mouse_y = e.motion.y;
       mouse_moved = true;
+      break;
+    case SDL_JOYAXISMOTION:
+      if (e.jaxis.axis == 0) {
+	if (e.jaxis.value < -JOYSTICK_DEADZONE) {
+	  keydown = left_key;
+	} else
+	if (e.jaxis.value > JOYSTICK_DEADZONE) {
+	  keydown = right_key;
+	} else {
+	  keydown = no_key;
+	}
+      }
+      if (e.jaxis.axis == 1) {
+	if (e.jaxis.value < -JOYSTICK_DEADZONE) {
+	  keydown = up_key;
+	} else
+	if (e.jaxis.value > JOYSTICK_DEADZONE) {
+	  keydown = down_key;
+	} else {
+	  keydown = no_key;
+	}
+      }
+      keytyped = keydown;
+      break;
+    case SDL_JOYBUTTONDOWN:
+    case SDL_JOYBUTTONUP:
+      keydown = (ttkey)(keydown | fire_key);
+      keytyped = keydown;
+      joy_action = 1;
       break;
     case SDL_MOUSEBUTTONDOWN:
     case SDL_MOUSEBUTTONUP:
@@ -137,6 +192,7 @@ static void handleEvents(void) {
 }
 
 void key_done(void) {
+  SDL_JoystickClose(joy);
 }
 
 Uint16 key_keystat(void) {
