@@ -20,6 +20,7 @@
 #include "sound.h"
 
 #include "decl.h"
+#include "archi.h"
 #include "configuration.h"
 
 #include <SDL.h>
@@ -40,12 +41,10 @@
 
 #ifdef HAVE_LIBSDL_MIXER
 static Mix_Chunk *LoadWAV(char *name) {
-  FILE *f = open_data_file(name);
 
-  if (f)
-    return Mix_LoadWAV_RW(SDL_RWFromFP(f, 1), 1);
-  else
-    return NULL;
+  file f(&dataarchive, name);
+
+  return Mix_LoadWAV_RW(f.rwOps(), 1);
 }
 #endif
 

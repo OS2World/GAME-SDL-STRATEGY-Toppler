@@ -162,5 +162,10 @@ Uint16 file::getword(void) {
   return w;
 }
 
+SDL_RWops *file::rwOps(void) {
+  return SDL_RWFromMem(buffer, fsize);
+}
+
+
 archive dataarchive(open_data_file("toppler.dat"));
 

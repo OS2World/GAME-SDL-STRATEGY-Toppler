@@ -70,6 +70,9 @@ public:
    */
   Uint16 getword(void);
 
+  /* chreates an RW operation type from this file */
+  SDL_RWops *rwOps(void);
+
 private:
 
   /* the buffer containing the uncompressed file data
