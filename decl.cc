@@ -247,7 +247,7 @@ FILE *open_local_data_file(char *name) {
 
 #else
 
-  return fopen(name, "r");
+  return fopen(name, "rb");
 
 #endif
 
@@ -266,7 +266,8 @@ FILE *create_local_data_file(char *name) {
 
 #else
 
-  return fopen(name, "w");
+  fclose(fopen(name, "w+"));
+  return fopen(name, "rb+");
 
 #endif
 

@@ -49,8 +49,8 @@
 #define SPR_TITLEHEI 90
 
 /* star sprite size */
-#define SPR_STARWID 16
-#define SPR_STARHEI 16
+#define SPR_STARWID 32
+#define SPR_STARHEI 32
 
 /* size of one layer sprite of tower */
 #define SPR_SLICEWID 192
