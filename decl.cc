@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2002  Andreas Röver
+ * Copyright (C) 2000-2003  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -86,14 +86,7 @@ char * homedir()
 
 #if (SYSTEM == SYS_LINUX)
 
-  struct passwd *pw = getpwuid(getuid());
-  static char c = 0;
-  if (!pw) {
-
-    // empty string
-    return &c;
-  }
-  return pw->pw_dir;
+  return getenv("HOME");
 
 #else
 
@@ -110,7 +103,7 @@ static void checkdir(void) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler", homedir());
+  snprintf(n, 200, "%s/.toppler", homedir());
 
   DIR *d = opendir(n);
 
@@ -133,7 +126,7 @@ FILE *open_data_file(const char *name) {
   // look into the data dir
   char n[200];
 
-  sprintf(n, TOP_DATADIR"/%s", name);
+  snprintf(n, 200, TOP_DATADIR"/%s", name);
   if (dcl_fileexists(n))
     return fopen(n, "rb");
 
@@ -155,7 +148,7 @@ FILE *open_global_config_file(const char *name) {
 
   char n[200];
 
-  sprintf(n, CONFIGDIR"/%s", name);
+  snprintf(n, 200, CONFIGDIR"/%s", name);
   if (dcl_fileexists(n))
     return fopen(n, "r");
 
@@ -172,7 +165,7 @@ FILE *open_local_config_file(const char *name) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", homedir(), name);
+  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
   if (dcl_fileexists(n))
     return fopen(n, "r");
 
@@ -196,7 +189,7 @@ FILE *create_local_config_file(const char *name) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", homedir(), name);
+  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
 
   return fopen(n, "w");
 
@@ -208,17 +201,34 @@ FILE *create_local_config_file(const char *name) {
 
 }
 
+/* open a highscore table: on windows we only look in the current
+ directory, on unix system it's a bit more complicated:
+
+ if HIGHSCOREDIR is defined, then we first look for a file in
+ there, if there is one, we need to swith to our privileged level
+ open the file and switch back
+
+ if there is no file in HIGHSCOREDIR, look into the home dir of the user
+ */
+
 FILE *open_highscore_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
   char n[200];
 
-  sprintf(n, HISCOREDIR"/%s", name);
-  if (dcl_fileexists(n))
-    return fopen(n, "rb");
+#ifdef HISCOREDIR
 
-  sprintf(n, "%s/.toppler/%s", homedir(), name);
+  snprintf(n, 200, HISCOREDIR"/%s", name);
+  if (dcl_fileexists(n)) {
+    dcl_stickyEnable();
+    return fopen(n, "rb");
+    dcl_stickyDisable();
+  }
+
+#endif
+
+  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
   if (dcl_fileexists(n))
     return fopen(n, "rb");
 
@@ -235,15 +245,33 @@ FILE *open_highscore_file(const char *name) {
 
 }
 
+
+/* this is not really a creation but opens a file for write acces,
+ if the file doesn't exist it is created, but this creation
+ is not done for the global highscore table, because this must
+ be created by the sys admin
+ */
 FILE *create_highscore_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
-  checkdir();
-
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", homedir(), name);
+#ifdef HISCOREDIR
+
+  snprintf(n, 200, HISCOREDIR"/%s", name);
+
+  if (dcl_fileexists(n)) {
+    dcl_stickyEnable();
+    return fopen(n, "r+b");
+    dcl_stickyDisable();
+  }
+
+#endif
+
+  checkdir();
+
+  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
   fclose(fopen(n, "a+"));
   return fopen(n, "r+");
 
@@ -256,6 +284,8 @@ FILE *create_highscore_file(const char *name) {
 }
 
 
+/* used for tower and mission saving */
+
 FILE *open_local_data_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
@@ -264,7 +294,7 @@ FILE *open_local_data_file(const char *name) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", homedir(), name);
+  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
 
   return fopen(n, "r");
 
@@ -284,7 +314,7 @@ FILE *create_local_data_file(const char *name) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", homedir(), name);
+  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
   return fopen(n, "w+");
 
 #else
@@ -314,7 +344,7 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
 
   char name[200];
 
-  sprintf(name, "%s\\*", dir);
+  snprintf(nam, 200e, "%s\\*", dir);
 
   hand = FindFirstFile(name, &finddata);
 
@@ -388,6 +418,15 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
   qsort((void *)(*namelist), (size_t)i, sizeof(struct dirent *), sort_by_name);
     
   return(i);
+}
+
+void dcl_init(void) {
+}
+
+void dcl_stickyEnable(void) {
+}
+
+void dcl_stickyDisable(void) {
 }
 
 #endif

@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2002  Andreas Röver
+ * Copyright (C) 2000-2003  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -214,6 +214,23 @@ typedef struct dirent {
 #endif
 
 int alpha_scandir(const char *dir, struct dirent ***namelist,
-            int (*select)(const struct dirent *));
+                  int (*select)(const struct dirent *));
+
+
+/* privilege handling */
+
+/* this function saves the sticky bit information and
+ resets the effection id to the real id so that the
+ program is running with the users restrictions
+ */
+void dcl_init(void);
+
+/* this function enable the additionat abilities given with
+ the sticky bit
+ */
+void dcl_stickyEnable(void);
+
+/* this function disables the sticky bit abilities again */
+void dcl_stickyDisable(void);
 
 #endif

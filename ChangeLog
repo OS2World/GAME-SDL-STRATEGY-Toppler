@@ -1,6 +1,7 @@
 me:
 
 - fix highscore bug
+- replace all sprintf with snprintf to avoid buffer overflows
 
 Version 0.98.4 14.Jan.2003
 

@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2002  Andreas Röver
+ * Copyright (C) 2000-2003  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -91,7 +91,7 @@ void gam_arrival(void) {
       
     if (passwd && lev_show_passwd(lev_towernr())) {
 	char buf[50];
-	sprintf(buf, "Password:   %s", passwd);
+	snprintf(buf, 50, "Password:   %s", passwd);
 	scr_writetext_center(SCREENHEI * 5 / 6, buf);
     }
     scr_swap();
@@ -308,11 +308,11 @@ static void writebonus(int &tower_position, int tower_anglepos, int zeit, int te
 
   scr_darkenscreen();
 
-  sprintf(s, "Time:      ~t35010 X %3d", zeit);
+  snprintf(s, 30, "Time:      ~t35010 X %3d", zeit);
   scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, s);
-  sprintf(s, "Technique: ~t35010 X %3d", tec);
+  snprintf(s, 30, "Technique: ~t35010 X %3d", tec);
   scr_writeformattext(90, (SCREENHEI / 2), s);
-  sprintf(s, "Extra:     ~t35010 X %3d", extra);
+  snprintf(s, 30, "Extra:     ~t35010 X %3d", extra);
   scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, s);
 
   scr_swap();

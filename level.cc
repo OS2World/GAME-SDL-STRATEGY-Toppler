@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2002  Andreas Röver
+ * Copyright (C) 2000-2003  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -255,7 +255,7 @@ void lev_findmissions() {
 
 #if (SYSTEM != SYS_WINDOWS)
 
-  sprintf(pathname, "%s/.toppler/", getenv("HOME"));
+  snprintf(pathname, 100, "%s/.toppler/", getenv("HOME"));
   n = alpha_scandir(pathname, &eps, missionfiles);
 
   if (n >= 0) {
@@ -263,7 +263,7 @@ void lev_findmissions() {
     for (int i = 0; i < n; i++) {
 
       char fname[200];
-      sprintf(fname, "%s%s", pathname, eps[i]->d_name);
+      snprintf(fname, 200, "%s%s", pathname, eps[i]->d_name);
 
       add_mission(fname);
     }
@@ -271,7 +271,7 @@ void lev_findmissions() {
   free(eps);
   eps = NULL;
 
-  sprintf(pathname, "%s/", TOP_DATADIR);
+  snprintf(pathname, 100, "%s/", TOP_DATADIR);
   n = alpha_scandir(pathname, &eps, missionfiles);
 
   if (n >= 0) {
@@ -279,7 +279,7 @@ void lev_findmissions() {
     for (int i = 0; i < n; i++) {
 
       char fname[200];
-      sprintf(fname, "%s%s", pathname, eps[i]->d_name);
+      snprintf(fname, 200, "%s%s", pathname, eps[i]->d_name);
 
       add_mission(fname);
     }
@@ -1246,7 +1246,7 @@ bool lev_mission_new(char * name, Uint8 prio) {
   assert(!fmission, "called mission_finish twice");
 
   char fname[200];
-  sprintf(fname, "%s.ttm", name);
+  snprintf(fname, 200, "%s.ttm", name);
 
   fmission = create_local_data_file(fname);
 

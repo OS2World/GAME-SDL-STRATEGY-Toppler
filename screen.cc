@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2002  Andreas Röver
+ * Copyright (C) 2000-2003  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -1406,18 +1406,18 @@ static void draw_data(int time, screenflag flags)
   int y = config.status_top() ? 5 : SCREENHEI - FONTHEI;
 
   if (time > 0) {
-    sprintf(s, "%u", time);
+    snprintf(s, 256, "%u", time);
     scr_writetext_center(y, s);
   }
 
-  sprintf(s, "%u", pts_points());
+  snprintf(s, 256, "%u", pts_points());
   scr_writetext(5L, y, s);
 
   *s = '\0';
   if (pts_lifes() < 4)
     for (t = 0; t < pts_lifes(); t++)
-      sprintf(s + strlen(s), "%c", fonttoppler);
-  else sprintf(s, "%ix%c", pts_lifes(), fonttoppler);
+      snprintf(s + strlen(s), 256-strlen(s), "%c", fonttoppler);
+  else snprintf(s, 256, "%ix%c", pts_lifes(), fonttoppler);
   scr_writetext(SCREENWID - scr_textlength(s) - 5, y, s);
 
   y = config.status_top() ? SCREENHEI - FONTHEI : 5;
@@ -1538,7 +1538,7 @@ void scr_drawedit(long vpos, long apos, bool showtime) {
 
   if (showtime) {
       char s[20];
-      sprintf(s, "%u", lev_towertime());
+      snprintf(s, 20, "%u", lev_towertime());
       scr_writetext_center(5, s);
   }
 

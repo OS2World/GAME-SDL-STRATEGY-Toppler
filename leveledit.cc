@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2002  Andreas Röver
+ * Copyright (C) 2000-2003  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -244,7 +244,7 @@ static bool edit_towercolor(int row, int col) {
       case 2: scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, 0, 0, tmpcol / 3 + 64, 255); break;
       }
       cbuf[0] = '\0';
-      sprintf(cbuf, "%5s  %.3d", colorname[tmp], tmpcol);
+      snprintf(cbuf, 32, "%5s  %.3d", colorname[tmp], tmpcol);
       scr_writetext_center(z, cbuf);
     }
 
@@ -336,11 +336,11 @@ char *keymod2str(Uint16 kmod) {
     buf[0] = '\0';
     if (kmod != KMOD_NONE) {
 	if ((kmod & KMOD_LSHIFT) ||
-	   (kmod & KMOD_RSHIFT)) sprintf(buf, "shift+");
+	   (kmod & KMOD_RSHIFT)) snprintf(buf, 256, "shift+");
 	if ((kmod & KMOD_LCTRL) ||
-	   (kmod & KMOD_RCTRL)) sprintf(&buf[strlen(buf)], "ctrl+");
+	   (kmod & KMOD_RCTRL)) snprintf(&buf[strlen(buf)], 256-strlen(buf), "ctrl+");
 	if ((kmod & KMOD_LALT) ||
-	   (kmod & KMOD_RALT)) sprintf(&buf[strlen(buf)], "alt+");
+	   (kmod & KMOD_RALT)) snprintf(&buf[strlen(buf)], 256-strlen(buf), "alt+");
     }
     return buf;
 }
@@ -390,7 +390,7 @@ static void createMission(void) {
     scr_writetext_center(70, "enter name of");
 
     char s[30];
-    sprintf(s, "tower no %i", currenttower);
+    snprintf(s, 30, "tower no %i", currenttower);
     scr_writetext_center(85, s);
 
     towername[0] = 0;
@@ -418,13 +418,13 @@ static void le_showkeyhelp(int row, int col) {
 
   for (k = 0; k < SIZE(_ed_keys); k++) {
       char knam[256];
-      sprintf(knam, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
+      snprintf(knam, 256, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
       int l = scr_textlength(knam);
       
       if (l > maxkeylen) maxkeylen = l;
   }
 
-  sprintf(tabbuf1, "%3i", maxkeylen + FONTWID);
+  snprintf(tabbuf1, 6, "%3i", maxkeylen + FONTWID);
   if (tabbuf1[0] < '0') tabbuf1[0] = '0';
   if (tabbuf1[1] < '0') tabbuf1[1] = '0';
   if (tabbuf1[2] < '0') tabbuf1[2] = '0';
@@ -434,15 +434,15 @@ static void le_showkeyhelp(int row, int col) {
       char tmpb[256];
       char knam[256];
 
-      sprintf(knam, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
+      snprintf(knam, 256, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
       
-      sprintf(tabbuf2, "%3i", maxkeylen - scr_textlength(knam));
+      snprintf(tabbuf2, 256, "%3i", maxkeylen - scr_textlength(knam));
       if (tabbuf2[0] < '0') tabbuf2[0] = '0';
       if (tabbuf2[1] < '0') tabbuf2[1] = '0';
       if (tabbuf2[2] < '0') tabbuf2[2] = '0';
 
-      sprintf(tmpb, "~T%s%%s~T%s%%s", tabbuf2, tabbuf1);
-      sprintf(buf, tmpb, knam, _ed_key_actions[_ed_keys[k].action]);
+      snprintf(tmpb, 256, "~T%s%%s~T%s%%s", tabbuf2, tabbuf1);
+      snprintf(buf, 256, tmpb, knam, _ed_key_actions[_ed_keys[k].action]);
 
       ts->addline(buf);
   }
@@ -528,7 +528,7 @@ void le_edit(void) {
     scr_drawedit(row * 4, col * 8, true);
 
     status[0] = '\0';
-    sprintf(status, "%c~t050X%d~t150Y%d~t250cut#:%d",
+    snprintf(status, 80, "%c~t050X%d~t150Y%d~t250cut#:%d",
             changed ? '*' : ' ', -col & 0xf, row, clipboard_rows);
 
     scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(),
@@ -826,7 +826,7 @@ void le_edit(void) {
         {
           char buf[64];
 
-	  sprintf(buf, "%d", lev_towertime());
+	  snprintf(buf, 64, "%d", lev_towertime());
 
           bg_text = "Enter tower time:";
 	  bg_darken = true;
@@ -842,7 +842,7 @@ void le_edit(void) {
 	    char buf[64];
 	    int i;
 	    
-	    sprintf(buf, "0");
+	    snprintf(buf, 64, "0");
 	    
 	    bg_text = "Adjust tower height:";
 	    bg_darken = true;

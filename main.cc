@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2002  Andreas Röver
+ * Copyright (C) 2000-2003  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <unistd.h>
 
 static void printhelp(void) {
   printf("\n\tOptions:\n\n");
@@ -55,7 +56,6 @@ static bool parse_arguments(int argc, char *argv[]) {
 
 static void startgame(void) {
 
-//  arc_init("toppler.dat");
   lev_findmissions();
   gam_init();
   men_init();
@@ -64,8 +64,22 @@ static void startgame(void) {
   lev_done();
   snd_done();
   gam_done();
-//  arc_done();
 }
+
+static void QuitFunction(void) {
+
+  /* because of the extreme importance, of the deletion of
+   the locking file, we have a quit function that tries to delete
+   it again
+   */
+
+#ifdef HISCOREDIR
+  unlink(HISCOREDIR"/toppler.hsc.lck");
+#endif
+
+  SDL_Quit();
+}
+
 
 int main(int argc, char *argv[]) {
 
@@ -75,13 +89,15 @@ int main(int argc, char *argv[]) {
   printf("Nebulous\n");
 #endif
 
+  dcl_init();
+
   if (parse_arguments(argc, argv)) {
     SDL_InitSubSystem(SDL_INIT_VIDEO);
     SDL_WM_SetCaption("Nebulous", NULL);
 
     int mouse = SDL_ShowCursor(config.fullscreen() ? 0 : 1);
     tt_has_focus = true;
-    atexit(SDL_Quit);
+    atexit(QuitFunction);
     srand(time(0));
     startgame();
     printf("Thanks for playing!\n");

@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2002  Andreas Röver
+ * Copyright (C) 2000-2003  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -606,10 +606,10 @@ static char *redefine_menu_up(void *tms) {
     if ((blink & 4) || (ms->mstate != 1))
       keystr = SDL_GetKeyName(key_conv2sdlkey(key[ms->hilited % REDEFINEREC], true));
     else keystr = "";
-    sprintf(buf, redef_fmt, code[ms->hilited % REDEFINEREC], keystr);
+    snprintf(buf, 50, redef_fmt, code[ms->hilited % REDEFINEREC], keystr);
   } else {
     keystr = SDL_GetKeyName(key_conv2sdlkey(key[times_called], true));
-    sprintf(buf, redef_fmt, code[times_called], keystr);
+    snprintf(buf, 50, redef_fmt, code[times_called], keystr);
     times_called = (times_called + 1) % REDEFINEREC;
   }
   return buf;
@@ -627,7 +627,7 @@ static char *game_options_menu_password(void *prevmenu) {
 	/* FIXME: change -1, -1 to correct position; Need to fix menu system
 	   first... */
     }
-    sprintf(buf, "Password: %s", config.curr_password());
+    snprintf(buf, 50, "Password: %s", config.curr_password());
     return buf;
 }
 
@@ -685,7 +685,7 @@ game_options_menu_speed(void *prevmenu)
 	    default: return NULL;
 	}
     }
-    sprintf(buf, "Game Speed: %i", config.game_speed());
+    snprintf(buf, 50, "Game Speed: %i", config.game_speed());
     return buf;
 }
 
@@ -936,20 +936,16 @@ men_options(void *mainmenu) {
   
 static void emptyscoretable(void) {
   if (scores) {
-      for (int t = 0; t < NUMHISCORES; t++) {
-	  scores[t].points = 0;
-	  scores[t].name[0] = 0;
-      }
+    for (int t = 0; t < NUMHISCORES; t++) {
+      scores[t].points = 0;
+      scores[t].name[0] = 0;
+    }
   }
 }
 
 static void savescores(void) {
 
-#ifdef USE_LOCKING
-  FILE *f = create_highscore_file(SCOREFILE);
-#else
   FILE *f = create_highscore_file("toppler.hsc");
-#endif
 
   assert(scores, "Savescores without scores");
 
@@ -990,11 +986,7 @@ static void savescores(void) {
 
 static void getscores(void) {
 
-#ifdef USE_LOCKING
-  FILE *f = open_highscore_file(SCOREFILE);
-#else
   FILE *f = open_highscore_file("toppler.hsc");
-#endif
 
   if (!scores)
     scores = new _scores[NUMHISCORES];
@@ -1040,9 +1032,9 @@ get_hiscores_string(int p, char **pos, char **points, char **name)
   static char buf2[SCORENAMELEN + 5];
   static char buf3[SCORENAMELEN + 5];
   buf1[0] = buf2[0] = buf3[0] = '\0';
-  sprintf(buf1, "%i.", p + 1);
-  sprintf(buf2, "%i", scores ? scores[p].points : 0);
-  sprintf(buf3, "%s", scores ? scores[p].name : "");
+  snprintf(buf1, SCORENAMELEN + 5, "%i.", p + 1);
+  snprintf(buf2, SCORENAMELEN + 5, "%i", scores ? scores[p].points : 0);
+  snprintf(buf3, SCORENAMELEN + 5, "%s", scores ? scores[p].name : "");
     
   *pos = buf1;
   *points = buf2;
@@ -1143,7 +1135,7 @@ men_hiscores_background_proc(void *ms)
 
 static void show_scores(bool back = true, int mark = -1) {
   static char buf[50];
-  sprintf(buf, "Scores for %s", lev_missionname(currentmission));
+  snprintf(buf, 50, "Scores for %s", lev_missionname(currentmission));
   _menusystem *ms = new_menu_system(buf, men_hiscores_background_proc, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return;
@@ -1260,7 +1252,7 @@ men_main_startgame_proc(void *ms)
     }
   }
   static char s[30];
-  sprintf(s, "%c Start: %s %c", fontptrleft, lev_missionname(currentmission), fontptrright);
+  snprintf(s, 30, "%c Start: %s %c", fontptrleft, lev_missionname(currentmission), fontptrright);
   return s;
 }
 
@@ -1571,7 +1563,7 @@ congrats_background_proc(void)
     scr_writetext_center(210, "highest score");
   } else {
     char buf[40];
-    sprintf(buf, "%i best players", NUMHISCORES);
+    snprintf(buf, 40, "%i best players", NUMHISCORES);
     scr_writetext_center(170, "You are one of the");
     scr_writetext_center(210, buf);
   }
@@ -1579,18 +1571,30 @@ congrats_background_proc(void)
 }
   
 void men_highscore(unsigned long pt, int twr) {
-#ifdef USE_LOCKING
-  int lockfd;
 
-  scr_writetext_center(90,"SCOREFILE LOCKED");
-  scr_writetext_center(110,"PLEASE WAIT");
-  scr_swap();
+#ifdef HISCOREDIR
 
-  while ((lockfd = open(SCOREFILE ".lck", O_CREAT | O_RDWR | O_EXCL)) == -1) {
-    dcl_wait();
+  /* this part prevents two parties accessing the highscore table
+   at the same time by creating a file that guards this block of
+   code it is extremely important that the file is deleted upon
+   leaving this block */
+
+  if (dcl_fileexists(HISCOREDIR"/toppler.hsc", name)) {
+
+    int lockfd;
+  
+    scr_writetext_center(90,"Highscorefile locked");
+    scr_writetext_center(110,"please wait");
     scr_swap();
+  
+    while ((lockfd = open(HISCOREDIR"/toppler.hsc.lck", O_CREAT | O_RDWR | O_EXCL)) == -1) {
+      dcl_wait();
+      scr_swap();
+    }
+    close(lockfd);
+
   }
-  close(lockfd);
+
 #endif
 
   scr_blit(restsprites.data(menupicture), 0, 0);
@@ -1610,11 +1614,17 @@ void men_highscore(unsigned long pt, int twr) {
     congrats_placement = t;
     set_men_bgproc(congrats_background_proc);
 
-#if (SYSTEM == SYS_LINUX) 
+#if (SYSTEM == SYS_LINUX)
+
+    /* copy the login name into the name entered into the highscore table */
     strncpy(scores[t].name, getenv("LOGNAME"), SCORENAMELEN);
-    scores[t].name[SCORENAMELEN] = 0; //to be sure
+    scores[t].name[SCORENAMELEN] = 0; // to be sure we have a terminated string
+
 #else
+
+    /* on systems without login we have no name */
     scores[t].name[0] = 0;
+
 #endif
 
 #ifndef GAME_DEBUG_KEYS
@@ -1627,8 +1637,8 @@ void men_highscore(unsigned long pt, int twr) {
 #endif /* GAME_DEBUG_KEYS */
   }
 
-#ifdef USE_LOCKING
-  unlink(SCOREFILE ".lck");
+#ifdef HISCOREDIR
+  unlink(HISCOREDIR"/toppler.hsc.lck");
 #endif
 
   show_scores(false, t);
