@@ -60,8 +60,6 @@ static void startgame(void) {
   men_init();
   snd_init();
   stat = men_main();
-//  bns_game();
-  //return;
   while (stat > 0) {
     gam_newgame();
     tower = 0;
@@ -92,7 +90,6 @@ static void startgame(void) {
 
           if (!bns_game())
             gameresult = GAME_ABBORTED;
-          return;
         }
       } else {
         snd_wateroff();
