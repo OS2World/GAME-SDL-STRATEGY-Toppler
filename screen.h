@@ -75,7 +75,7 @@ void scr_blit(SDL_Surface *s, int x, int y);
 void scr_drawall(long vert, long angle, long time, bool svisible, int subshape, int substart);
 
 /* draws everything for the edit mode */
-void scr_drawedit(long vert, long angle);
+void scr_drawedit(long vert, long angle, bool showtime);
 
 void scr_draw_bonus1(long horiz, long towerpos);
 void scr_draw_bonus2(long horiz, long towerpos);

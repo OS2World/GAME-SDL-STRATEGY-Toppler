@@ -74,10 +74,17 @@ static struct {
   unsigned char width;
 } fontchars[91];  //32..122
 
-#define scrolllayers 3
+struct _scroll_layer {
+    long width;
+    int  num, den;
+    Uint16 image;
+};
 
-static long layerwidth[scrolllayers];
-static Uint16 layerimage[scrolllayers];
+static int num_scrolllayers;
+static int sl_tower_depth,
+           sl_tower_num,
+           sl_tower_den;
+static struct _scroll_layer *scroll_layers;
 
 Uint8 towerpal[2*256];
 Uint8 crosspal[2*256];
@@ -322,7 +329,7 @@ static void loadgraphics(void) {
 
   read_palette(pal);
   starst = scr_loadsprites_new(16, SPR_STARWID, SPR_STARHEI, true, pal);
-  sts_init(starst + 9);
+  sts_init(starst + 9, NUM_STARS);
 
   arc_read(pal, 3*subcnt - 3, &res);
   fishst = scr_loadsprites(16, SPR_FISHWID, SPR_FISHHEI, 6, true, pal);
@@ -463,43 +470,55 @@ static void loadscroller(void) {
 
   Uint8 layers;
   Uint8 towerpos;
-  Uint16 towersp_num;
-  Uint16 towersp_den;
   unsigned char c;
   Uint32 res;
   Uint8 pal[3*256];
 
   arc_read(&layers, 1, &res);
+
+  num_scrolllayers = layers;
+
+  assert(num_scrolllayers > 1, "Must have at least 2 scroll layers!");
+
+  scroll_layers = 
+      (struct _scroll_layer *)malloc(sizeof(struct _scroll_layer)*layers);
+  assert(scroll_layers, "Failed to alloc memory!");
+    
   arc_read(&towerpos, 1, &res);
+    
+  sl_tower_depth = towerpos;
 
   arc_read(&c, 1, &res);
-  towersp_num = ((Uint16)c) << 8;
+  sl_tower_num = ((int)c) << 8;
   arc_read(&c, 1, &res);
-  towersp_num += c;
+  sl_tower_num += c;
 
   arc_read(&c, 1, &res);
-  towersp_den = ((Uint16)c) << 8;
+  sl_tower_den = ((int)c) << 8;
   arc_read(&c, 1, &res);
-  towersp_den += c;
-
-  assert(layers == 3, "another value than 3 is not yet supported");
+  sl_tower_den += c;
 
   for (int l = 0; l < layers; l++) {
-    layerwidth[l] = 0;
+    scroll_layers[l].width = 0;
 
     arc_read(&c, 1, &res);
-    layerwidth[l] = ((int)c) << 8;
+    scroll_layers[l].width = ((int)c) << 8;
     arc_read(&c, 1, &res);
-    layerwidth[l] += c;
+    scroll_layers[l].width += c;
 
     arc_read(&c, 1, &res);
+    scroll_layers[l].num = ((int)c) << 8;
     arc_read(&c, 1, &res);
+    scroll_layers[l].num += c;
+      
     arc_read(&c, 1, &res);
+    scroll_layers[l].den = ((int)c) << 8;
     arc_read(&c, 1, &res);
+    scroll_layers[l].den += c;
 
     read_palette(pal);
 
-    layerimage[l] = scr_loadsprites_new(1, layerwidth[l], 480, l != 0, pal);
+    scroll_layers[l].image = scr_loadsprites_new(1, scroll_layers[l].width, 480, l != 0, pal);
   }
 
   arc_closefile();
@@ -527,6 +546,8 @@ void scr_reinit() {
 
 void scr_done(void) {
   spr_done();
+  free(scroll_layers);
+  sts_done();
 }
 
 static void cleardesk(void) {
@@ -1080,9 +1101,11 @@ static void draw_data(int time)
   scr_writetext(5L, 5L, s);
 
   *s = '\0';
-  for (t = 1; t <= pts_lifes(); t++)
-    sprintf(s + strlen(s), "%c", fonttoppler);
-  scr_writetext(5, 40, s);
+  if (pts_lifes() < 4)
+      for (t = 1; t <= pts_lifes(); t++)
+	sprintf(s + strlen(s), "%c", fonttoppler);
+  else sprintf(s, "%ix%c", pts_lifes(), fonttoppler);
+  scr_writetext(SCREENWID - scr_textlength(s) - 5, 5, s);
 }
 
 void scr_drawall(long vert,
@@ -1136,7 +1159,7 @@ void scr_drawall(long vert,
   boxstate = (boxstate + 1) & 0xf;
 }
 
-void scr_drawedit(long vpos, long apos) {
+void scr_drawedit(long vpos, long apos, bool showtime) {
 
   long t;
   static long vert = 0, angle = 0;
@@ -1188,29 +1211,37 @@ void scr_drawedit(long vpos, long apos) {
     scr_putrect((SCREENWID / 2) - (32 / 2), (SCREENHEI / 2) - 16, 32, 16, boxstate * 0xf, boxstate * 0xf, boxstate * 0xf, 128);
   }
 
-
-  char s[20];
-  sprintf(s, "%u", lev_towertime());
-  scr_writetext_center(5, s);
+  if (showtime) {
+      char s[20];
+      sprintf(s, "%u", lev_towertime());
+      scr_writetext_center(5, s);
+  }
 
   boxstate = (boxstate + 1) & 0xf;
 }
 
 static void put_scrollerlayer(long horiz, int layer) {
-  horiz %= layerwidth[layer];
-  scr_blit(spr_spritedata(layerimage[layer]), -horiz, 0);
-  if (horiz + SCREENWID > layerwidth[layer])
-    scr_blit(spr_spritedata(layerimage[layer]), layerwidth[layer] - horiz, 0);
+  horiz %= scroll_layers[layer].width;
+  scr_blit(spr_spritedata(scroll_layers[layer].image), -horiz, 0);
+  if (horiz + SCREENWID > scroll_layers[layer].width)
+    scr_blit(spr_spritedata(scroll_layers[layer].image), 
+	     scroll_layers[layer].width - horiz, 0);
 }
 
 void scr_draw_bonus1(long horiz, long towerpos) {
-  put_scrollerlayer(1*horiz/2, 0);
-  put_scrollerlayer(1*horiz/1  , 1);
+    int l;
+    
+    for (l = 0; (l < num_scrolllayers) && (l < sl_tower_depth); l++)
+	put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
 
-  puttower(0, SCREENHEI/2, SCREENHEI, towerpos);
+  puttower(0, SCREENHEI/2, SCREENHEI, sl_tower_num*towerpos/sl_tower_den);
 }
+
 void scr_draw_bonus2(long horiz, long towerpos) {
-  put_scrollerlayer(2*horiz/1, 2);
+  int l;
+  
+  for (l = sl_tower_depth; l < num_scrolllayers; l++) 
+      put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
 
   draw_data(-1);
 }

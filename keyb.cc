@@ -23,6 +23,7 @@
 
 static Uint8 keydown, keytyped;
 static char chartyped;
+static SDLKey sdlkeytyped;
 
 struct _ttkeyconv {
    Uint8 outval;
@@ -47,6 +48,7 @@ void key_init(void) {
   SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
 
   keydown = keytyped = chartyped = 0;
+  sdlkeytyped = SDLK_UNKNOWN;
 }
 
 static void handleEvents(void) {
@@ -113,6 +115,7 @@ static void handleEvents(void) {
       if (e.key.state == SDL_PRESSED) {
         keydown |= key;
         keytyped |= key;
+	sdlkeytyped = e.key.keysym.sym;
       } else {
         keydown &= ~key;
       }
@@ -133,6 +136,23 @@ bool key_keypressed(Uint8 key) {
   return (keytyped & key) != 0;
 }
 
+SDLKey key_sdlkey(void) {
+    handleEvents();
+    SDLKey tmp = sdlkeytyped;
+    sdlkeytyped = SDLK_UNKNOWN;
+    return tmp;
+}
+
+Uint8 key_sdlkey2conv(SDLKey k) {
+    register int i;
+    
+    for (i = 0; i < SIZE(ttkeyconv); i++)
+      if (ttkeyconv[i].key == k)
+	return ttkeyconv[i].outval;
+
+    return no_key;
+}
+
 Uint8 key_readkey(void) {
   handleEvents();
 
@@ -140,6 +160,7 @@ Uint8 key_readkey(void) {
 
   keytyped = 0;
   chartyped = 0;
+  sdlkeytyped = SDLK_UNKNOWN;
 
   return i;
 }
@@ -161,24 +182,3 @@ void key_wait_for_any(void) {
   key_readkey();
 }
 
-char *key_name(char c) { 
-   static char buf[10];
-   switch (c) {
-    case ' ': return "space";
-    case 1:   return "up";
-    case 2:   return "down";
-    case 3:   return "left";
-    case 4:   return "right";
-    case 5:   return "ins";
-    case 6:   return "del";
-    case 7:   return "pgup";
-    case 8:   return "pgdwn";
-    case 9:   return "home";
-    case 13:  return "enter";
-    case 27:  return "esc";
-    default:  
-      buf[0] = c;
-      buf[1] = '\0';
-      return buf;
-   }
-}

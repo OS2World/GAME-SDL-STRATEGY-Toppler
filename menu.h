@@ -47,6 +47,10 @@ unsigned char men_yn(char *s, bool defchoice);
    and if fire = 1 -> "press fire", if fire = 2 -> "press space" */
 void men_info(char *s, long timeout = -1, int fire = 0);
 
+#ifdef GAME_DEBUG_KEYS
+void run_debug_menu(void);
+#endif
+
 typedef void FDECL((*callback_proc), (void));
 
 /* sets the function that gets called whenever the background

@@ -1,3 +1,28 @@
+pasi
+
+- toppler.dat can now contain any number of files,
+- changed archi.cc to have the same length file name
+  in the fileindex as in the other diff. (8.3 filenames)
+- added GAME_DEBUG_KEYS define to decl.h. If you
+  define that, you can press up+down+left+right
+  during game and get a debug menu. Hiscores are
+  not saved if this is defined.
+- changed data file names to have the '.dat' suffix
+  in decl.h.
+- editor now doesn't display the tower time during
+  some operations. (eg. during key help)
+- editor key help and menu quick keys now use SDL keysyms
+  instead of chars.
+- player lives are now shown on the upper right corner,
+  and if player has more than 3 lives, they're shown
+  in a 'short' format.
+- screen.cc: bonus game now supports more than 3 scrolling
+  layers, and loading the layer speeds (and the tower speed
+  and layering depth) from toppler.dat. I haven't tested this
+  much, but at least the current setup works.
+- moved some hardwired constants from bonus game to decl.h
+- stars.cc: made the max. # of stars dynamic.
+
 my work
 
 - improved autoconf and automake (hopefully)

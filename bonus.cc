@@ -52,9 +52,9 @@ bonus_background_proc(void)
   scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 255);
 
   if (callback_time < 300)
-    towerpos = -(2*callback_time);
+    towerpos = -(4*callback_time);
   else
-    towerpos = gametime * scrollerspeed - 2*callback_time;
+    towerpos = gametime * scrollerspeed - 4*callback_time + SCREENWID + (SPR_SLICEWID*2);
 
   scr_draw_bonus1(callback_x, towerpos);
 
@@ -106,8 +106,8 @@ bool bns_game(void) {
 
   Uint8 b;
 
-  subposx = (SCREENWID / 2) - 30;
-  subposy = 60;
+  subposx = SUBM_TARGET_X;
+  subposy = SUBM_TARGET_Y;
 
   for (b = 0; b <= fishcnt; b++)
     fish[b].x = -(SPR_FISHWID+1);
@@ -125,12 +125,12 @@ bool bns_game(void) {
     
     if (torpedox >= 0) {
       torpedox += 8;
-      if (torpedox > (SCREENWID+10))
+      if (torpedox > (SCREENWID+SPR_TORPWID))
         torpedox = -1;
       for (b = 0; b <= fishcnt; b++) {
         if (fish[b].x > 0 && fish[b].state >= 8) {
-          if ((torpedox > fish[b].x - 12) && (torpedox < fish[b].x + 16) &&
-              (torpedoy > fish[b].y - 4) && (torpedoy < fish[b].y + 16)) {
+          if ((torpedox + SPR_TORPWID > fish[b].x) && (torpedox < fish[b].x + SPR_FISHWID) &&
+              (torpedoy + SPR_TORPHEI > fish[b].y) && (torpedoy < fish[b].y + SPR_FISHHEI)) {
             torpedox = -1;
             fish[b].state -= 8;
           }
@@ -141,37 +141,37 @@ bool bns_game(void) {
     if (!automatic) {
       if (key_keypressed(fire_key)) {
         if (torpedox == -1) {
-          torpedox = subposx + 80;
-          torpedoy = subposy + 30;
+          torpedox = subposx + TORPEDO_OFS_X;
+          torpedoy = subposy + TORPEDO_OFS_Y;
         }
       }
   
       if ((key_keystat() & down_key) != 0) {
-        if (subposy < 260)
+        if (subposy < SUBM_MAX_Y)
           subposy += 4;
       } else {
         if ((key_keystat() & up_key) != 0) {
-          if (subposy > 120)
+          if (subposy > SUBM_MIN_Y)
             subposy -= 4;
         }
       }
   
       if ((key_keystat() & left_key) != 0) {
-        if (subposx > 0)
+        if (subposx > SUBM_MIN_X)
           subposx -= 8;
       } else {
         if ((key_keystat() & right_key) != 0) {
-          if (subposx < SCREENWID/2)
+          if (subposx < SUBM_MAX_X)
             subposx += 4;
         }
       }
     } else {
-      if (subposx > (SCREENWID / 2) - 30)
+      if (subposx > SUBM_TARGET_X)
         subposx -= 8;
-      else if (subposx < (SCREENWID / 2) - 30)
+      else if (subposx < SUBM_TARGET_X)
         subposx += 4;
 
-      if (subposy > 60)
+      if (subposy > SUBM_TARGET_Y)
         subposy -= 4;
     }
 
@@ -228,9 +228,9 @@ bool bns_game(void) {
 //    scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 255);
 
     if (time < 300)
-      towerpos = -(2*time);
+      towerpos = -(4*time);
     else
-      towerpos = gametime * scrollerspeed - 2*time;
+      towerpos = gametime * scrollerspeed - 4*time + SCREENWID + (SPR_SLICEWID*2);
 
     scr_draw_bonus1(xpos, towerpos);
 
@@ -252,7 +252,7 @@ bool bns_game(void) {
 
     if (time == gametime) {
       automatic = true;
-      if ((subposx == (SCREENWID / 2) - 30) && (subposy == 60)) break;
+      if ((subposx == SUBM_TARGET_X) && (subposy == SUBM_TARGET_Y)) break;
     } else {
       xpos +=4;
       time++;

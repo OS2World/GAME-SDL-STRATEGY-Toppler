@@ -34,11 +34,15 @@ void pts_add(int add) {
   points += add;
 
   while (points >= nextlife) {
-    lifes++;
     nextlife += LIFE_INCREMENT;
+    lives_add();
+  }
+}
+
+void lives_add(void) {
+    lifes++;
     if (lifes > 8)
       lifes = 8;
-  }
 }
 
 unsigned int pts_points(void) {

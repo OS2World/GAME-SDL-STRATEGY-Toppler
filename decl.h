@@ -110,6 +110,28 @@
 #define SPR_TORPWID 16
 #define SPR_TORPHEI 3
 
+/* torpedo launch offset relative to submarine */
+#define TORPEDO_OFS_X 80
+#define TORPEDO_OFS_Y 30
+
+/* submarine moving limits in bonus game */
+#define SUBM_MIN_X 0
+#define SUBM_MIN_Y 60
+#define SUBM_MAX_X (SCREENWID/2)
+#define SUBM_MAX_Y 280
+
+/* submarine target coord during automatic guidance.
+   the sub also starts from this coord. */
+#define SUBM_TARGET_X (SCREENWID/2)-(SPR_SUBMWID/2)
+#define SUBM_TARGET_Y 60
+
+/* # of stars on the background during game */
+#define NUM_STARS 100
+
+/* define this if you want debugging keys during game.
+   (press up+down+left+right at the same time.)
+   debuggers don't get their name on hiscore table.  */
+/*#define GAME_DEBUG_KEYS*/
 
 /*   define this if you want the bonus game to be accessible 
      from the main menu. */
@@ -118,14 +140,14 @@
 #define TOWERNAMELEN 19
 
 /* names of the different data files */
-#define grafdat         "graphics"
-#define fontdat         "font"
-#define spritedat       "sprites"
-#define topplerdat      "dude"
-#define menudat         "menu"
-#define crossdat        "cross"
-#define titledat        "titles"
-#define scrollerdat     "scroller"
+#define grafdat         "graphics.dat"
+#define fontdat         "font.dat"
+#define spritedat       "sprites.dat"
+#define topplerdat      "dude.dat"
+#define menudat         "menu.dat"
+#define crossdat        "cross.dat"
+#define titledat        "titles.dat"
+#define scrollerdat     "scroller.dat"
 
 /* the start number and the number of colors for the different objects */
 

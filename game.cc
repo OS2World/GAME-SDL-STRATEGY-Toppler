@@ -377,6 +377,12 @@ static void akt_time(int &time, int &timecount, Uint8 &state) {
 }
 
 static void get_keys(Sint8 &left_right, Sint8 &up_down, bool &space) {
+#ifdef GAME_DEBUG_KEYS
+  if ((key_keystat() & left_key) && (key_keystat() & right_key) && 
+      (key_keystat() & up_key) && (key_keystat() & down_key)) {
+      run_debug_menu();
+  }
+#endif /* GAME_DEBUG_KEYS */
   if (key_keystat() & left_key)
     left_right = -1;
   else {

@@ -20,6 +20,7 @@
 #define KEYB_H
 
 #include <SDL_types.h>
+#include <SDL_keyboard.h>
 
 #define no_key          0
 #define up_key          1
@@ -45,14 +46,18 @@ bool key_keypressed(Uint8 key);
  the list */
 Uint8 key_readkey(void);
 
+/* Returns the last pressed key, in SDLKey format */
+SDLKey key_sdlkey(void);
+
+/* Converts sdlkey to internal key representation, or returns no_key
+   if SDLKey cannot be converted. */
+Uint8 key_sdlkey2conv(SDLKey k);
+
 /* returns a types character */
 char key_chartyped(void);
 
 /* waits for any keypress */
 void key_wait_for_any(void);
-
-/* return name of char */
-char *key_name(char c);
 
 #endif
 

@@ -24,12 +24,15 @@
 /* retest points to 0 and lifes to 4 */
 void pts_reset(void);
 
-/* ass points, updating the life counter, if necesary */
+/* add points, updating the life counter, if necesary */
 void pts_add(int add);
 
 /* returns the current points and lifes */
 unsigned int pts_points(void);
 unsigned char pts_lifes(void);
+
+/* adds one life */
+void lives_add();
 
 /* removes one live */
 void pts_died(void);

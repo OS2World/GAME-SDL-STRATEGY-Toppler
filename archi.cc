@@ -35,7 +35,7 @@
 
 #include <zlib.h>
 
-#define MAX_FILES 9
+#define FNAMELEN 12 /* 8.3 filename */
 
 static FILE *f;
 
@@ -43,11 +43,11 @@ static Uint32 bitbuffer;
 static Uint8 bitpos;
 
 typedef struct {
-  char name[8];
+  char name[FNAMELEN];
   Uint32 start, size, compress;
 } fileindex;
 
-static fileindex files[MAX_FILES];
+static fileindex *files;
 static Uint8 filecount;
 static Uint8 pos;
 
@@ -61,10 +61,12 @@ void arc_init(char *name) {
   assert(f != 0, "archive file could not be opened\n");
 
   fread(&filecount, 1, 1, f);
-  assert(filecount <= MAX_FILES, "too many files in archive");
+    
+  files = (fileindex *)malloc(filecount * sizeof(fileindex));
+  assert(files, "Failed to alloc memory\n");
 
   for (Uint8 file = 0; file < filecount; file++) {
-    for (Uint8 strpos = 0; strpos < 8; strpos++)
+    for (Uint8 strpos = 0; strpos < FNAMELEN; strpos++)
       fread(&files[file].name[strpos], 1, 1, f);
 
     Uint8 tmp;
@@ -111,6 +113,8 @@ void arc_closefile(void) {
 void arc_done(void) {
   arc_closefile();
 
+  free(files);
+    
   fclose(f);
 }
 
@@ -121,7 +125,7 @@ void arc_assign(char *name) {
   arc_closefile();
 
   for (Uint8 i = 0; i < filecount; i++)
-    if (strncmp(name, files[i].name, 8) == 0) {
+    if (strncmp(name, files[i].name, FNAMELEN) == 0) {
 
       buffer = new Uint8[files[i].size];
       Uint8 * b = new Uint8[files[i].compress];

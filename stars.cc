@@ -26,26 +26,34 @@
 #include "stdlib.h"
 
 #define starstep 5
-#define NUM_STARS 100
 
 static unsigned short starnr;
 
-static struct {
+struct _star {
   long x, y;
   int state;
   int size;
-} stars[NUM_STARS];
+};
+
+static int num_stars;
+static struct _star *stars = (struct _star *)0;
 
 void sts_draw(void)
 {
-  for (int t = 0; t < NUM_STARS; t++)
+  for (int t = 0; t < num_stars; t++)
     scr_blit(spr_spritedata((long)starnr + stars[t].size - stars[t].state), stars[t].x, stars[t].y);
 }
 
-void sts_init(int sn) {
-  for (int t = 0; t < NUM_STARS; t++) {
+void sts_init(int sn, int nstar) {
+  assert(!stars, "sts_init called twice!");
+  assert(nstar > 1, "sts_init with too few stars!");
+  
+  stars = (struct _star *)malloc(sizeof(struct _star)*nstar);
+  assert(stars, "Failed to alloc memory!");
+  num_stars = nstar;
+  
+  for (int t = 0; t < num_stars; t++) {
     stars[t].x = rand() / (RAND_MAX / SCREENWID) - SPR_STARWID;
-    stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
     stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
     stars[t].state = 0;
     stars[t].size = rand() / (RAND_MAX / 7);
@@ -54,10 +62,17 @@ void sts_init(int sn) {
   starnr = sn;
 }
 
+void
+sts_done(void)
+{
+    free(stars);
+    num_stars = 0;
+}
+
 void 
 sts_blink(void)
 {
-   for (int t = 0; t < NUM_STARS; t++) {
+   for (int t = 0; t < num_stars; t++) {
       if (stars[t].state > 0) stars[t].state = (stars[t].state + 1) % 4;
       else if (!(rand() & 0xff)) stars[t].state++;
    }
@@ -67,11 +82,11 @@ void sts_move(long x, long y)
 {
   int t;
 
-  for (t = 0; t < NUM_STARS; t++) {
+  for (t = 0; t < num_stars; t++) {
     stars[t].x += starstep * x;
     stars[t].y += y;
   }
-  for (t = 0; t < NUM_STARS; t++) {
+  for (t = 0; t < num_stars; t++) {
     if (stars[t].x > SCREENWID) {
       stars[t].x = rand() / (RAND_MAX / starstep) - SPR_STARWID;
       stars[t].y = rand() / (RAND_MAX / SCREENHEI);

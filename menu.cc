@@ -95,7 +95,7 @@ struct _menuoption {
    menuopt_callback_proc oproc;
    int  ostate;
    int  oflags;
-   char quickkey;
+   SDLKey quickkey;
 };
 
 struct _menusystem {
@@ -110,7 +110,7 @@ struct _menusystem {
    bool wraparound;
    bool activatedoption;
    int ystart;
-   char key;
+   SDLKey key;
 };
 
 struct _menusystem *
@@ -132,7 +132,7 @@ new_menu_system(char *title, menuopt_callback_proc pr, int molen = 0, int ystart
     ms->activatedoption = false;
     ms->hilited = 0;
     ms->ystart = ystart;
-    ms->key = 0;
+    ms->key = SDLK_UNKNOWN;
   }
 
   return ms;
@@ -142,7 +142,7 @@ struct _menusystem *
 add_menu_option(struct _menusystem *ms,
                 char *name,
                 menuopt_callback_proc pr,
-                char quickkey = '\0',
+                SDLKey quickkey = SDLK_UNKNOWN,
                 int flags = 0,
                 int state = 0) {
   struct _menuoption *tmp;
@@ -247,24 +247,24 @@ run_menu_system(struct _menusystem *ms)
 {
   if (!ms) return ms;
 
+  (void)key_sdlkey();
+
   do {
     draw_menu_system(ms);
 
-    ms->key = key_chartyped();
+    ms->key = key_sdlkey();
 
-    if (ms->key) {
-      key_readkey();
+    if (ms->key != SDLK_UNKNOWN) {
 
-      if (isalpha(ms->key))
-        for (int tmpz = 0; tmpz < ms->numoptions; tmpz++)
+      for (int tmpz = 0; tmpz < ms->numoptions; tmpz++)
           if (ms->moption[tmpz].quickkey == ms->key) {
             ms->hilited = tmpz;
-            ms->key = ' ';
+            ms->key = SDLK_UNKNOWN;
             break;
           }
 
       if ((ms->moption[ms->hilited].oflags & MOFLAG_PASSKEYS) &&
-          (ms->moption[ms->hilited].oproc) && (ms->key != '\0')) {
+          (ms->moption[ms->hilited].oproc) && (ms->key != SDLK_UNKNOWN)) {
         char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
         if (tmpbuf) {
           int olen = strlen(tmpbuf);
@@ -274,12 +274,12 @@ run_menu_system(struct _menusystem *ms)
 
           olen = scr_textlength(tmpbuf);
           if (ms->maxoptlen < olen) ms->maxoptlen = olen;
-          ms->key = '\0';
+          ms->key = SDLK_UNKNOWN;
         }
       }
 
-      switch (ms->key) {
-      case 2:
+      switch (key_sdlkey2conv(ms->key)) {
+      case down_key:
         if (ms->wraparound) {
           do {
             ms->hilited = (ms->hilited + 1) % ms->numoptions;
@@ -291,7 +291,7 @@ run_menu_system(struct _menusystem *ms)
           }
         }
         break;
-      case 1:
+      case up_key:
         if (ms->wraparound) {
           do {
             ms->hilited--;
@@ -304,8 +304,8 @@ run_menu_system(struct _menusystem *ms)
           }
         }
         break;
-      case ' ':
-      case '\r': if ((ms->hilited >= 0) && (ms->hilited < ms->numoptions) &&
+      case fire_key:
+	if ((ms->hilited >= 0) && (ms->hilited < ms->numoptions) &&
                      ms->moption[ms->hilited].oproc) {
         char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
         if (tmpbuf) {
@@ -318,7 +318,7 @@ run_menu_system(struct _menusystem *ms)
         }
         break;
       }
-      case 27 : ms->exitmenu = true; break;
+      case break_key : ms->exitmenu = true; break;
       default:
         break;
       }
@@ -333,6 +333,31 @@ men_yn_background_proc(void *ms)
   if (menu_background_proc) (*menu_background_proc) ();
   return "";
 }
+
+#ifdef GAME_DEBUG_KEYS
+static char *debug_menu_extralife(void *ms) {
+    if (ms) lives_add();
+    return "Extra Life";
+}
+
+static char *debug_menu_extrascore(void *ms) {
+    if (ms) pts_add(200);
+    return "+200 Points";
+}
+
+void run_debug_menu(void) {
+    struct _menusystem *ms = new_menu_system("DEBUG MENU", men_yn_background_proc, 0, SCREENHEI / 5);
+
+    ms = add_menu_option(ms, NULL, debug_menu_extralife);
+    ms = add_menu_option(ms, NULL, debug_menu_extrascore);
+    ms = add_menu_option(ms, NULL, NULL);
+    ms = add_menu_option(ms, "Back to Game", NULL);
+
+    ms = run_menu_system(ms);
+
+    free_menu_system(ms);
+}
+#endif /* GAME_DEBUG_KEYS */
 
 static char *
 men_yn_option_yes(void *tmp)
@@ -363,8 +388,8 @@ unsigned char men_yn(char *s, bool defchoice) {
 
   if (!ms) return defchoice;
 
-  ms = add_menu_option(ms, NULL, men_yn_option_no, 'N');
-  ms = add_menu_option(ms, NULL, men_yn_option_yes, 'Y');
+  ms = add_menu_option(ms, NULL, men_yn_option_no, SDLK_n);
+  ms = add_menu_option(ms, NULL, men_yn_option_yes, SDLK_y);
 
   ms->mstate = defchoice ? 1 : 0;
 
@@ -391,6 +416,7 @@ void men_info(char *s, long timeout, int fire) {
      else if ((fire == 2) && (key_chartyped() == ' ')) ende = true;
      else if ((fire != 2) && key_keypressed(fire_key)) ende = true;
   } while (!ende);
+  (void)key_sdlkey();
 }
 
 static char *
@@ -750,15 +776,14 @@ men_main_startgame_proc(void *ms)
   if (ms) {
     struct _menusystem *tms = (struct _menusystem *)ms;
     int missioncount = lev_missionnumber();
-    switch (tms->key) {
-    case ' ':
-    case '\r':
+    switch (key_sdlkey2conv(tms->key)) {
+    case fire_key:
       snd_stoptitle();
       main_game_loop();
       snd_playtitle();
       break;
-    case 3: currentmission = (currentmission + 1) % missioncount; break;
-    case 4: currentmission = (currentmission + missioncount - 1) % missioncount; break;
+    case right_key: currentmission = (currentmission + 1) % missioncount; break;
+    case left_key: currentmission = (currentmission + missioncount - 1) % missioncount; break;
     default: return NULL;
     }
   }
@@ -782,6 +807,7 @@ men_main_leveleditor_proc(void *ms)
   if (ms) {
     snd_stoptitle();
     le_edit();
+    (void)key_sdlkey();
 //    pal_colors(pal_menu);
     snd_playtitle();
   }
@@ -799,16 +825,16 @@ void men_main() {
 
   snd_playtitle();
 
-  ms = add_menu_option(ms, NULL, men_main_startgame_proc, '\0', MOFLAG_PASSKEYS);
+  ms = add_menu_option(ms, NULL, men_main_startgame_proc, SDLK_UNKNOWN, MOFLAG_PASSKEYS);
   ms = add_menu_option(ms, NULL, NULL);
-  ms = add_menu_option(ms, NULL, men_main_highscore_proc, 'H');
-  ms = add_menu_option(ms, NULL, men_options, 'O');
-  ms = add_menu_option(ms, NULL, men_main_leveleditor_proc, 'E');
+  ms = add_menu_option(ms, NULL, men_main_highscore_proc, SDLK_h);
+  ms = add_menu_option(ms, NULL, men_options, SDLK_o);
+  ms = add_menu_option(ms, NULL, men_main_leveleditor_proc, SDLK_e);
 #ifdef HUNT_THE_FISH
   ms = add_menu_option(ms, NULL, men_main_bonusgame_proc);
 #endif
   ms = add_menu_option(ms, NULL, NULL);
-  ms = add_menu_option(ms, "Quit", NULL, 'Q');
+  ms = add_menu_option(ms, "Quit", NULL, SDLK_q);
 
   ms->wraparound = true;
 
@@ -955,11 +981,13 @@ void men_highscore(unsigned long pt) {
     scores[t].name[0] = 0;
 #endif
 
+#ifndef GAME_DEBUG_KEYS
     men_input(scores[t].name, SCORENAMELEN);
 
     scores[t].points = pt;
 
     savescores();
+#endif /* GAME_DEBUG_KEYS */
   }
 
 #ifdef USE_LOCKING

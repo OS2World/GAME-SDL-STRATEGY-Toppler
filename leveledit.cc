@@ -35,7 +35,7 @@ static int bg_col;
 
 /* men_yn() background drawing callback proc */
 static void editor_background_proc(void) {
-   scr_drawedit(bg_row * 4, bg_col * 8);
+   scr_drawedit(bg_row * 4, bg_col * 8, false);
 }
 
 static bool really_quit(int row, int col) {
@@ -72,7 +72,7 @@ static bool edit_towercolor(int row, int col) {
 
   do {
 
-    scr_drawedit(row * 4, col * 8);
+    scr_drawedit(row * 4, col * 8, false);
     scr_writetext_center(22, "Tower Color");
 
     for (tmp = 0 ; tmp < 3; tmp++) {
@@ -170,7 +170,7 @@ static void edit_checktower(int &row, int &col) {
 
 static void createMission(void) {
 
-  scr_drawedit(0, 0);
+  scr_drawedit(0, 0, false);
   scr_writetext_center(30, "Mission creation");
   scr_writetext_center(70, "enter mission name");
   scr_writetext_center(85, "empty to abort");
@@ -186,7 +186,7 @@ static void createMission(void) {
 
   if (!lev_mission_new(missionname)) {
 
-    scr_drawedit(0, 0);
+    scr_drawedit(0, 0, false);
     scr_writetext_center(30, "Mission creation");
                               
     scr_writetext_center(70, "could not create file");
@@ -208,7 +208,7 @@ static void createMission(void) {
 
   while (true) {
 
-    scr_drawedit(0, 0);
+    scr_drawedit(0, 0, false);
     scr_writetext_center(30, "Mission creationg");
     scr_writetext_center(70, "enter name of");
 
@@ -289,72 +289,74 @@ const char *_ed_key_actions[NUMEDITORACTIONS] = {
 
 struct _ed_key {
    int action;
-   char key;
+   SDLKey key;
 } _ed_keys[] = {
-   {EDACT_QUIT,          27},
-   {EDACT_SHOWKEYHELP,   'h'},
-   {EDACT_MOVEUP,        1},
-   {EDACT_MOVEDOWN,      2},
-   {EDACT_MOVELEFT,      3},
-   {EDACT_MOVERIGHT,     4},
-   {EDACT_MOVEPAGEUP,    7},
-   {EDACT_MOVEPAGEDOWN,  8},
-   {EDACT_GOTOSTART,     9},
-   {EDACT_ROT180,        'y'},
-   {EDACT_INSROW,        5},
-   {EDACT_DELROW,        6},
-   {EDACT_PUTSPACE,      ' '},
-   {EDACT_PUTSTEP,       'w'},
-   {EDACT_PUTVANISHER,   's'},
-   {EDACT_PUTSLIDER,     'x'},
-   {EDACT_PUTDOOR,       'i'},
-   {EDACT_PUTGOAL,       'k'},
-   {EDACT_PUTROBOT1,     '1'},
-   {EDACT_PUTROBOT2,     '2'},
-   {EDACT_PUTROBOT3,     '3'},
-   {EDACT_PUTROBOT4,     '4'},
-   {EDACT_PUTROBOT5,     '5'},
-   {EDACT_PUTROBOT6,     '6'},
-   {EDACT_PUTROBOT7,     '7'},
-   {EDACT_PUTLIFT,       'c'},
-   {EDACT_PUTLIFTMID,    'd'},
-   {EDACT_PUTLIFTTOP,    'e'},
-   {EDACT_PUTSTICK,      'q'},
-   {EDACT_PUTBOX,        'a'},
-   {EDACT_CHECKTOWER,    'z'},
-   {EDACT_LOADTOWER,     'l'},
-   {EDACT_SAVETOWER,     'o'},
-   {EDACT_TESTTOWER,     'p'},
-   {EDACT_SETTOWERCOLOR, 'v'},
-   {EDACT_INCTIME,       'b'},
-   {EDACT_DECTIME,       'n'},
-   {EDACT_CREATEMISSION, 'm'},
-   {EDACT_NAMETOWER,     't'}
+   {EDACT_QUIT,          SDLK_ESCAPE},
+   {EDACT_SHOWKEYHELP,   SDLK_F1},
+   {EDACT_MOVEUP,        SDLK_UP},
+   {EDACT_MOVEDOWN,      SDLK_DOWN},
+   {EDACT_MOVELEFT,      SDLK_LEFT},
+   {EDACT_MOVERIGHT,     SDLK_RIGHT},
+   {EDACT_MOVEPAGEUP,    SDLK_PAGEUP},
+   {EDACT_MOVEPAGEDOWN,  SDLK_PAGEDOWN},
+   {EDACT_GOTOSTART,     SDLK_HOME},
+   {EDACT_ROT180,        SDLK_y},
+   {EDACT_INSROW,        SDLK_INSERT},
+   {EDACT_DELROW,        SDLK_DELETE},
+   {EDACT_PUTSPACE,      SDLK_SPACE},
+   {EDACT_PUTSTEP,       SDLK_w},
+   {EDACT_PUTVANISHER,   SDLK_s},
+   {EDACT_PUTSLIDER,     SDLK_x},
+   {EDACT_PUTDOOR,       SDLK_i},
+   {EDACT_PUTGOAL,       SDLK_k},
+   {EDACT_PUTROBOT1,     SDLK_1},
+   {EDACT_PUTROBOT2,     SDLK_2},
+   {EDACT_PUTROBOT3,     SDLK_3},
+   {EDACT_PUTROBOT4,     SDLK_4},
+   {EDACT_PUTROBOT5,     SDLK_5},
+   {EDACT_PUTROBOT6,     SDLK_6},
+   {EDACT_PUTROBOT7,     SDLK_7},
+   {EDACT_PUTLIFT,       SDLK_c},
+   {EDACT_PUTLIFTMID,    SDLK_d},
+   {EDACT_PUTLIFTTOP,    SDLK_e},
+   {EDACT_PUTSTICK,      SDLK_q},
+   {EDACT_PUTBOX,        SDLK_a},
+   {EDACT_CHECKTOWER,    SDLK_z},
+   {EDACT_LOADTOWER,     SDLK_l},
+   {EDACT_SAVETOWER,     SDLK_o},
+   {EDACT_TESTTOWER,     SDLK_p},
+   {EDACT_SETTOWERCOLOR, SDLK_v},
+   {EDACT_INCTIME,       SDLK_b},
+   {EDACT_DECTIME,       SDLK_n},
+   {EDACT_CREATEMISSION, SDLK_m},
+   {EDACT_NAMETOWER,     SDLK_t}
 };
 
 void le_showkeyhelp(int row, int col) {
   int c, k, offs = 0;
   bool ende = false;
-  int lines = ((SCREENHEI - 50) / FONTHEI);
+  int lines = ((SCREENHEI - 75) / FONTHEI);
   char point[2];
 
   point[0] = fontpoint;
   point[1] = 0;
 
   do {
-    scr_drawedit(row * 4, col * 8);
+    (void)key_readkey();
 
-    scr_writetext_center(22, "Editor Key Help");
+    scr_drawedit(row * 4, col * 8, false);
+
+    scr_writetext_center(5, "Editor Key Help");
 
     for (k = 0; k < lines; k++) {
-      char buf[80];
+      char *buf;
       int len;
-      buf[0] = '\0';
 
-      len = scr_textlength(key_name(_ed_keys[k+offs].key));
+      buf = SDL_GetKeyName(_ed_keys[k+offs].key);
 
-      scr_writetext(75 - len, k * FONTHEI + 50, key_name(_ed_keys[k+offs].key));
-      scr_writetext(75 + FONTWID, k * FONTHEI + 50, _ed_key_actions[_ed_keys[k+offs].action]);
+      len = scr_textlength(buf);
+      scr_writetext(185 - len, k * FONTHEI + 75, buf);
+      scr_writetext(185 + FONTWID, k * FONTHEI + 75, _ed_key_actions[_ed_keys[k+offs].action]);
     }
 
     if (offs > 0) scr_writetext(SCREENWID-FONTWID, 34, point);
@@ -388,20 +390,22 @@ void le_showkeyhelp(int row, int col) {
     }
 
   } while (!ende);
+
+  (void)key_readkey();
 }
 
 void le_edit(void) {
 
   bool ende = false;
   bool changed = false;
-  char inp;
+  SDLKey inp;
   int row = 0, col = 0;
   int tstep = 0;
   Uint8 blink_color = 0;
 
   lev_new();
 
-  inp = 0;
+  inp = SDLK_UNKNOWN;
 
   set_men_bgproc(editor_background_proc);
 
@@ -414,7 +418,7 @@ void le_edit(void) {
     bg_row = row;
     bg_col = col;
 
-    scr_drawedit(row * 4, col * 8);
+    scr_drawedit(row * 4, col * 8, true);
 
     char status[80];
 
@@ -433,10 +437,12 @@ void le_edit(void) {
     scr_swap();
     dcl_wait();
 
-    inp = key_chartyped();
+    inp = key_sdlkey();
 
-    if (inp) {
+    if (inp != SDLK_UNKNOWN) {
       int k, action = -1;
+
+      (void)key_sdlkey();
 
       for (k = 0; k < SIZE(_ed_keys); k++)
         if (_ed_keys[k].key == inp) {
