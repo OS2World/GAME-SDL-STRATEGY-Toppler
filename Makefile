@@ -4,6 +4,7 @@ GCC = g++ -W -Wimplicit -Wreturn-type -Wunused -Wformat -Wswitch -Wshadow -Wcast
 CFLAGS = -lz -lSDL -lSDL_image -lm -lpng -I/usr/include/SDL -I/usr/include/libpng
 
 POVRAY = povray
+GIMP = gimp-2.0
 
 TARGETDIR = ../toppler
 
@@ -72,8 +73,14 @@ font_colors.png: font_colors_rgb.png colorreduction
 font_mask.png: font_mask_rgb.png colorreduction
 	./colorreduction font_mask_rgb.png 256 font_mask.png
 
+font_mask_rgb.png: font.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"font_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+
+font_colors_rgb.png: font.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"font_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+
 font.clean:
-	rm -f font.dat font_colors.png font_mask.png font
+	rm -f font.dat font*.png font
 
 #----------------------------------------------------------#
 # rules to create the data files necesary for the graphics #
@@ -84,8 +91,14 @@ graphics.dat: graphics graphics_brick.png graphics_pinacle.png
 graphics: graphics.c colorreduction.h pngsaver.h
 	$(GCC) $(CFLAGS) graphics.c -o graphics
 
+graphics_brick.png: graphics_brick.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"graphics_brick.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"graphics_brick.png\" \"ttt\")(gimp-quit 1))"
+
+graphics_pinacle.png: graphics_pinacle.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"graphics_pinacle.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"graphics_pinacle.png\" \"ttt\")(gimp-quit 1))"
+
 graphics.clean:
-	rm -f graphics.dat graphics
+	rm -f graphics.dat graphics graphics_brick.png graphics_pinacle.png
 
 #-------------------------------------------------------#
 # rules to create the data files necesary for the mennu #
@@ -104,7 +117,7 @@ menu_rgb.png:
 
 menu.clean:
 	( cd menu_pov && make clean )
-	rm -f menu.dat menu
+	rm -f menu.dat menu menu_rgb.png menu.png
 
 #----------------------------------------------------------#
 # rules to create the data files necesary for the scroller #
@@ -290,8 +303,14 @@ titles_colors.png: titles_colors_rgb.png colorreduction
 titles_mask.png: titles_mask_rgb.png colorreduction
 	./colorreduction titles_mask_rgb.png 256 titles_mask.png
 
+titles_mask_rgb.png: titles.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"titles_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+
+titles_colors_rgb.png:  titles.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"titles_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+
 titles.clean:
-	rm -f titles.dat titles titles_colors.png titles_mask.png
+	rm -f titles.dat titles titles*.png
 
 #-------------------------------------------------------#
 # rules to create the data files necesary for the dude  #
@@ -308,8 +327,14 @@ dude_colors.png: dude_colors_rgb.png colorreduction
 dude_mask.png: dude_mask_rgb.png colorreduction
 	./colorreduction dude_mask_rgb.png 256 dude_mask.png
 
+dude_colors_rgb.png: dude.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"dude_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+
+dude_mask_rgb.png: dude.xcf
+	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"dude_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+
 dude.clean:
-	rm -f dude.dat dude dude_mask.png dude_colors.png
+	rm -f dude.dat dude dude*.png
 
 #-------------------------------------------------------#
 # rules to create the tool programs                     #
