@@ -67,6 +67,7 @@ sts_done(void)
 {
     free(stars);
     num_stars = 0;
+    stars = 0;
 }
 
 void 

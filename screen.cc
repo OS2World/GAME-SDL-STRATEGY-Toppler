@@ -112,7 +112,7 @@ scr_savedisplaybmp(char *fname)
   SDL_SaveBMP(display, fname);
 }
 
-unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal) {
+unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha) {
   Uint16 erg = 0;
   Uint8 b, a;
   SDL_Surface *z;
@@ -164,14 +164,17 @@ unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *
 }
 
 
-static unsigned short scr_gensprites(int num, int w, int h, bool sprite) {
+static unsigned short scr_gensprites(int num, int w, int h, bool sprite, bool use_alpha) {
   Uint16 erg = 0;
   SDL_Surface *z;
 
   for (int t = 0; t < num; t++) {
-    z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite) ? SDL_SRCALPHA : 0,
-                             w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite) ? 0xFF000000 : 0);
+    z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite && use_alpha) ? SDL_SRCALPHA : 0,
+                             w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite && use_alpha) ? 0xFF000000 : 0);
   
+    if (sprite & !use_alpha)
+      SDL_SetColorKey(z, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(z->format, 1, 1, 1));
+
     if (t == 0)
       erg = spr_savesprite(z);
     else
@@ -181,7 +184,7 @@ static unsigned short scr_gensprites(int num, int w, int h, bool sprite) {
   return erg;
 }
 
-static void scr_regensprites(Uint8 *data, SDL_Surface *z, int num, int w, int h, bool sprite, const Uint8 *pal) {
+static void scr_regensprites(Uint8 *data, SDL_Surface *z, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha) {
   Uint8 a, b;
   Uint32 datapos = 0;
 
@@ -245,8 +248,8 @@ static void loadgraphics(void) {
   battlementdata = (Uint8*)malloc(SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
   arc_read(battlementdata, SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI, &res);
 
-  slicestart = scr_gensprites(SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false);
-  battlementstart = scr_gensprites(SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false);
+  slicestart = scr_gensprites(SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false, false);
+  battlementstart = scr_gensprites(SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false, false);
 
   for (t = -36; t < 37; t++) {
 
@@ -255,7 +258,7 @@ static void loadgraphics(void) {
 
     for (int et = 0; et < 3; et++)
       if (doors[t+36].width != 0) {
-        doors[t+36].s[et] = scr_gensprites(1, doors[t+36].width, 16, false);
+        doors[t+36].s[et] = scr_gensprites(1, doors[t+36].width, 16, false, false);
         doors[t+36].data[et] = (Uint8*)malloc(doors[t+36].width*16);
         arc_read(doors[t+36].data[et], doors[t+36].width*16, &res);
       } else {
@@ -277,9 +280,9 @@ static void loadgraphics(void) {
     pal[3*t+2] = c2;
   }
 
-  step = scr_loadsprites(SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal);
-  elevatorsprite = scr_loadsprites(SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal);
-  stick = scr_loadsprites(1, SPR_STICKWID, SPR_STICKHEI, false, pal);
+  step = scr_loadsprites(SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal, false);
+  elevatorsprite = scr_loadsprites(SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal, false);
+  stick = scr_loadsprites(1, SPR_STICKWID, SPR_STICKHEI, false, pal, false);
 
   arc_closefile();
 
@@ -287,34 +290,34 @@ static void loadgraphics(void) {
   
   scr_read_palette(pal);
 
-  topplerstart = scr_loadsprites(74, SPR_HEROWID, SPR_HEROHEI, true, pal);
+  topplerstart = scr_loadsprites(74, SPR_HEROWID, SPR_HEROHEI, true, pal, use_alpha_sprites);
 
   arc_assign(spritedat);
 
   scr_read_palette(pal);
-  robotsst = scr_loadsprites(128, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal);
+  robotsst = scr_loadsprites(128, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites);
 
   scr_read_palette(pal);
-  ballst = scr_loadsprites(2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal);
+  ballst = scr_loadsprites(2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites);
 
   scr_read_palette(pal);
-  boxst = scr_loadsprites(16, SPR_BOXWID, SPR_BOXHEI, true, pal);
+  boxst = scr_loadsprites(16, SPR_BOXWID, SPR_BOXHEI, true, pal, use_alpha_sprites);
 
   scr_read_palette(pal);
-  snowballst = scr_loadsprites(1, SPR_AMMOWID, SPR_AMMOHEI, true, pal);
+  snowballst = scr_loadsprites(1, SPR_AMMOWID, SPR_AMMOHEI, true, pal, use_alpha_sprites);
 
   scr_read_palette(pal);
-  starst = scr_loadsprites(16, SPR_STARWID, SPR_STARHEI, true, pal);
+  starst = scr_loadsprites(16, SPR_STARWID, SPR_STARHEI, true, pal, use_alpha_sprites);
   sts_init(starst + 9, NUM_STARS);
 
   scr_read_palette(pal);
-  fishst = scr_loadsprites(32*2, SPR_FISHWID, SPR_FISHHEI, true, pal);
+  fishst = scr_loadsprites(32*2, SPR_FISHWID, SPR_FISHHEI, true, pal, use_alpha_sprites);
 
   scr_read_palette(pal);
-  subst = scr_loadsprites(31, SPR_SUBMWID, SPR_SUBMHEI, true, pal);
+  subst = scr_loadsprites(31, SPR_SUBMWID, SPR_SUBMHEI, true, pal, use_alpha_sprites);
 
   scr_read_palette(pal);
-  torb = scr_loadsprites(1, SPR_TORPWID, SPR_TORPHEI, true, pal);
+  torb = scr_loadsprites(1, SPR_TORPWID, SPR_TORPHEI, true, pal, use_alpha_sprites);
 
   arc_closefile();
 
@@ -331,7 +334,7 @@ static void loadgraphics(void) {
   crossdata = (Uint8*)malloc(120*SPR_CROSSWID*SPR_CROSSHEI*2);
   arc_read(crossdata, 120*SPR_CROSSWID*SPR_CROSSHEI*2, &res);
 
-  crossst = scr_gensprites(120, SPR_CROSSWID, SPR_CROSSHEI, true);
+  crossst = scr_gensprites(120, SPR_CROSSWID, SPR_CROSSHEI, true, use_alpha_sprites);
 
   arc_closefile();
 }
@@ -358,15 +361,15 @@ void scr_settowercolor(Uint8 r, Uint8 g, Uint8 b) {
   }
 
   for (t = 0; t < SPR_SLICESPRITES; t++)
-    scr_regensprites(slicedata + t*SPR_SLICEWID*SPR_SLICEHEI, spr_spritedata(slicestart + t), 1, SPR_SLICEWID, SPR_SLICEHEI, false, pal);
+    scr_regensprites(slicedata + t*SPR_SLICEWID*SPR_SLICEHEI, spr_spritedata(slicestart + t), 1, SPR_SLICEWID, SPR_SLICEHEI, false, pal, false);
 
   for (t = 0; t < SPR_BATTLFRAMES; t++)
-    scr_regensprites(battlementdata + t*SPR_BATTLWID*SPR_BATTLHEI, spr_spritedata(battlementstart + t), 1, SPR_BATTLWID, SPR_BATTLHEI, false, pal);
+    scr_regensprites(battlementdata + t*SPR_BATTLWID*SPR_BATTLHEI, spr_spritedata(battlementstart + t), 1, SPR_BATTLWID, SPR_BATTLHEI, false, pal, false);
 
   for (t = -36; t < 37; t++)
     for (int et = 0; et < 3; et++)
       if (doors[t+36].width != 0)
-        scr_regensprites(doors[t+36].data[et], spr_spritedata(doors[t+36].s[et]), 1, doors[t+36].width, SPR_SLICEHEI, false, pal);
+        scr_regensprites(doors[t+36].data[et], spr_spritedata(doors[t+36].s[et]), 1, doors[t+36].width, SPR_SLICEHEI, false, pal, false);
 }
 
 void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
@@ -395,7 +398,7 @@ void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
   }
 
   for (t = 0; t < 120; t++)
-    scr_regensprites(crossdata + t*SPR_CROSSWID*SPR_CROSSHEI*2, spr_spritedata(crossst+t), 1, SPR_CROSSWID, SPR_CROSSHEI, true, pal);
+    scr_regensprites(crossdata + t*SPR_CROSSWID*SPR_CROSSHEI*2, spr_spritedata(crossst+t), 1, SPR_CROSSWID, SPR_CROSSHEI, true, pal, use_alpha_sprites);
 }
 
 static void loadfont(void) {
@@ -416,17 +419,13 @@ static void loadfont(void) {
     if (!c || (c >= MAXCHARNUM)) break;
 
     fontchars[c].width = arc_getbyte();
-    fontchars[c].s = scr_loadsprites(1, fontchars[c].width, fontheight, true, pal);
+    fontchars[c].s = scr_loadsprites(1, fontchars[c].width, fontheight, true, pal, use_alpha_font);
   }
 
   arc_closefile();
 }
 
 static void loadscroller(void) {
-
-  bool alpha_sv = use_alpha;
-
-  use_alpha = false;
 
   arc_assign(scrollerdat);
 
@@ -458,19 +457,23 @@ static void loadscroller(void) {
 
     scr_read_palette(pal);
 
-    scroll_layers[l].image = scr_loadsprites(1, scroll_layers[l].width, 480, l != 0, pal);
+    scroll_layers[l].image = scr_loadsprites(1, scroll_layers[l].width, 480, l != 0, pal, use_alpha_layers);
   }
 
   arc_closefile();
+}
 
-  use_alpha = alpha_sv;
+void scr_reload_sprites(void) {
+  loadgraphics();
+  loadfont();
+  loadscroller();
 }
 
 void scr_init(void) {
   spr_init(1000);
-  loadgraphics();
-  loadfont();
-  loadscroller();
+
+  scr_reload_sprites();
+
   display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 32,
                              SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
 
@@ -499,6 +502,10 @@ static void cleardesk(void) {
 }
 
 void scr_darkenscreen(void) {
+
+  if (!use_alpha_darkening)
+    return;
+
   static SDL_Surface *s = NULL;
 
   if (!s) {

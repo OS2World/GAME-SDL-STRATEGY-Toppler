@@ -30,7 +30,12 @@ void scr_savedisplaybmp(char *fname);
 /* initializes the module, loads the graphics, sets up the display */
 void scr_init(void);
 
+/* call this when changing from windowed to fullscreen */
 void scr_reinit(void);
+
+/* call this when the sprited need to be reloaded */
+void scr_reload_sprites(void);
+
 
 /* frees graphics */
 void scr_done(void);
@@ -38,7 +43,7 @@ void scr_done(void);
 /* loads a number of sprite, enters it into the sprite collection
  and returns the index of the first sprite */
 void scr_read_palette(Uint8 *pal);
-unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal);
+unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal, bool usealpha);
 
 
 /* changes the colors of the slices, doors and battlement

@@ -29,6 +29,7 @@
 #include "level.h"
 #include "sound.h"
 #include "leveledit.h"
+#include "stars.h"
 
 #include <SDL_endian.h>
 
@@ -97,21 +98,24 @@ void set_men_bgproc(menubg_callback_proc proc) {
    menu_background_proc = proc;
 }
 
-void men_init(void) {
-
+void men_reload_sprites(void) {
   Uint8 pal[3*256];
 
   arc_assign(menudat);
 
   scr_read_palette(pal);
-  menupicture = scr_loadsprites(1, 640, 480, false, pal);
+  menupicture = scr_loadsprites(1, 640, 480, false, pal, use_alpha_font);
   arc_closefile();
 
   arc_assign(titledat);
 
   scr_read_palette(pal);
-  titledata = scr_loadsprites(1, SPR_TITLEWID, SPR_TITLEHEI, true, pal);
+  titledata = scr_loadsprites(1, SPR_TITLEWID, SPR_TITLEHEI, true, pal, use_alpha_font);
   arc_closefile();
+}
+
+void men_init(void) {
+  men_reload_sprites();
 }
 
 static char *
@@ -261,7 +265,7 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
         }
         scr_putbar((SCREENWID - ms->maxoptlen - 8) / 2, ms->yhilitpos - 3,
                    ms->maxoptlen + 8, FONTHEI + 3,
-                   color_r, color_g, color_b, 128);
+                   color_r, color_g, color_b, (use_alpha_darkening)?128:255);
       }
     }
   }
@@ -592,6 +596,84 @@ men_options_sounds(void *ms)
   else return "Sounds Off";
 }
 
+static void
+reload_graphics(void) {
+  spr_done();
+  sts_done();
+
+  spr_init(1000);
+  scr_reload_sprites();
+  men_reload_sprites();
+}
+
+static char *
+men_alpha_font(void *ms)
+{
+  if (ms) {
+    use_alpha_font = !use_alpha_font;
+    reload_graphics();
+  }
+  if (use_alpha_font) return "Font alpha  On";
+  else return "Font alpha Off";
+}
+
+static char *
+men_alpha_sprites(void *ms)
+{
+  if (ms) {
+    use_alpha_sprites = !use_alpha_sprites;
+    reload_graphics();
+  }
+  if (use_alpha_sprites) return "Sprites alpha  On";
+  else return "Sprites alpha Off";
+}
+
+static char *
+men_alpha_layer(void *ms)
+{
+  if (ms) {
+    use_alpha_layers = !use_alpha_layers;
+    reload_graphics();
+  }
+  if (use_alpha_layers) return "Scroller alpha  On";
+  else return "Scroller alpha Off";
+}
+
+static char *
+men_alpha_menu(void *ms)
+{
+  if (ms) {
+    use_alpha_darkening = !use_alpha_darkening;
+  }
+  if (use_alpha_darkening) return "Shadowing  On";
+  else return "Shadowing Off";
+}
+
+static char *
+men_options_graphic(void *mainmenu) {
+  static char s[20] = "Graphic";
+  if (mainmenu) {
+
+    struct _menusystem *ms = new_menu_system(s, men_options_background_proc, 0, spr_spritedata(titledata)->h+30);
+
+    if (!ms) return NULL;
+
+    ms = add_menu_option(ms, NULL, men_options_windowed);
+    ms = add_menu_option(ms, NULL, men_alpha_font);
+    ms = add_menu_option(ms, NULL, men_alpha_sprites);
+    ms = add_menu_option(ms, NULL, men_alpha_layer);
+    ms = add_menu_option(ms, NULL, men_alpha_menu);
+
+    ms = add_menu_option(ms, NULL, NULL);
+    ms = add_menu_option(ms, "Back", NULL);
+
+    ms = run_menu_system(ms);
+
+    free_menu_system(ms);
+  }
+  return s;
+}
+
 static char *
 men_options(void *mainmenu) {
   static char s[20] = "Options";
@@ -603,7 +685,7 @@ men_options(void *mainmenu) {
 
       
     ms = add_menu_option(ms, NULL, run_redefine_menu);
-    ms = add_menu_option(ms, NULL, men_options_windowed);
+    ms = add_menu_option(ms, NULL, men_options_graphic);
     ms = add_menu_option(ms, NULL, men_options_sounds);
 
     ms = add_menu_option(ms, NULL, NULL);
@@ -791,7 +873,7 @@ men_hiscores_background_proc(void *ms)
         int clen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20 + 10;
         scr_putbar(hiscores_xpos - 5,
                    (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45 - 3,
-                   clen, FONTHEI + 3, blink_r, blink_g, blink_b, 128);
+                   clen, FONTHEI + 3, blink_r, blink_g, blink_b, (use_alpha_darkening)?128:255);
       }
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, pos);
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 10 + hiscores_maxlen_points - scr_textlength(points) , (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, points);
@@ -973,12 +1055,12 @@ draw_input_box(int x, int y, int len, int cursor, char *txt)
 {
   static int col_r = 0, col_g = 200, col_b = 120;
 
-  scr_putbar(x, y, len * FONTMAXWID, FONTHEI, 0, 0, 0, 128);
+  scr_putbar(x, y, len * FONTMAXWID, FONTHEI, 0, 0, 0, (use_alpha_darkening)?128:255);
   scr_writetext(x+1,y, txt);
 
   if ((input_box_cursor_state & 4) && ((cursor >= 0) && (cursor < len)))
     scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI,
-               col_r, col_g, col_b, 128);
+               col_r, col_g, col_b, (use_alpha_darkening)?128:255);
   scr_putrect(x,y, len * FONTMAXWID, FONTHEI, col_r, col_g, col_b, 255);
   input_box_cursor_state++;
 

@@ -38,6 +38,13 @@ void spr_init(Uint16 maxsp) {
 
 void spr_done(void) {
 
+  Uint16 t = 0;
+
+  while ((sarray[t] != NULL) && (t < maxsprite)) {
+    SDL_FreeSurface(sarray[t]);
+    t++;
+  }
+
   delete [] sarray;
 
   sarray = NULL;

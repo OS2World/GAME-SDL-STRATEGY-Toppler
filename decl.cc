@@ -35,7 +35,10 @@
 bool fullscreen;
 bool nosound;
 bool use_water = true;
-bool use_alpha = true;
+bool use_alpha_sprites = false;
+bool use_alpha_layers = false;
+bool use_alpha_font = false;
+bool use_alpha_darkening = false;
 
 char editor_towername[TOWERNAMELEN+1] = "";
 
@@ -288,6 +291,14 @@ static void parse_config(FILE * in) {
         memcpy(editor_towername, param, strlen(param));
         editor_towername[len] = '\0';
       } else editor_towername[0] = '\0';
+    } else if (strstr(line, "use_alpha_sprites")) {
+      use_alpha_sprites = (atoi(param) == 1);
+    } else if (strstr(line, "use_alpha_font")) {
+      use_alpha_font = (atoi(param) == 1);
+    } else if (strstr(line, "use_alpha_layers")) {
+      use_alpha_layers = (atoi(param) == 1);
+    } else if (strstr(line, "use_alpha_darkening")) {
+      use_alpha_darkening = (atoi(param) == 1);
     }
   }
 }
@@ -318,6 +329,10 @@ void save_config(void) {
     fprintf(out, "fullscreen: %i\n", (fullscreen)?(1):(0));
     fprintf(out, "nosound: %i\n", (nosound)?(1):(0));
     fprintf(out, "editor_towername: %s\n", editor_towername);
+    fprintf(out, "use_alpha_sprites: %i\n", (use_alpha_sprites)?(1):(0));
+    fprintf(out, "use_alpha_font: %i\n", (use_alpha_font)?(1):(0));
+    fprintf(out, "use_alpha_layers: %i\n", (use_alpha_layers)?(1):(0));
+    fprintf(out, "use_alpha_darkening: %i\n", (use_alpha_darkening)?(1):(0));
 
     fclose(out);
   }

@@ -174,7 +174,11 @@ extern bool fullscreen;
 extern bool nosound;
 extern bool use_water;
 extern char editor_towername[TOWERNAMELEN+1];
-extern bool use_alpha;
+extern bool use_alpha_sprites;
+extern bool use_alpha_layers;
+extern bool use_alpha_font;
+extern bool use_alpha_darkening;
+
 
 void load_config(void);
 void save_config(void);
