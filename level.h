@@ -95,7 +95,7 @@ char *lev_get_passwd(void);
 bool lev_show_passwd(int levnum);
 /* Which tower does password allow entry to in the
    current mission? */
-int lev_tower_passwd_entry(char *passwd);
+int lev_tower_passwd_entry(const char *passwd);
 
 /* loads a mission from the file with the given name */
 void lev_loadmission(Uint16 num);
@@ -217,8 +217,8 @@ void lev_restore(int row, int col, unsigned char bg);
 /* --- the following commands are for the level editor ---  */
 
 /* load and save a tower in a human readable format */
-bool lev_loadtower(char *fname);
-bool lev_savetower(char *fname);
+bool lev_loadtower(const char *fname);
+bool lev_savetower(const char *fname);
 
 /* rotate row clock and counter clockwise */
 void lev_rotaterow(bool clockwise);

@@ -22,27 +22,31 @@
 #include "decl.h"
 #include "sound.h"
 #include "level.h"
+#include "configuration.h"
 
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
 
+archive dataarchive(open_data_file("toppler.dat"));
+configuration config(open_global_config_file(".toppler.rc"), open_local_config_file(".toppler.rc"));
+
 static void printhelp(void) {
   printf("\n\tOptions:\n\n");
   printf("  -f\tEnable fullscreen mode\n");
   printf("  -s\tSilence, disable all sound\n");
-  printf("  -dX\tSet debug level to X  (default: %i)\n", debug_level);
+  printf("  -dX\tSet debug level to X  (default: %i)\n", config.debug_level());
 }
 
 static bool parse_arguments(int argc, char *argv[]) {
   for (int t = 1; t < argc; t++) {
-    if (!strcmp(argv[t], "-f")) fullscreen = true;
-    else if (!strcmp(argv[t], "-s")) nosound = true;
+    if (!strcmp(argv[t], "-f")) config.fullscreen(true);
+    else if (!strcmp(argv[t], "-s")) config.nosound(true);
     else if (strstr(argv[t], "-d") == argv[t]) {
 	char parm = argv[t][2];
 	if (parm >= '0' && parm <= '9') {
 	    printf("Debug level is now %c.\n", parm);
-	    debug_level = (parm - '0');
+	    config.debug_level(parm - '0');
 	} else printf("Illegal debug level value, using default.\n");
     } else {
       printhelp();
@@ -54,7 +58,7 @@ static bool parse_arguments(int argc, char *argv[]) {
 
 static void startgame(void) {
 
-  arc_init("toppler.dat");
+//  arc_init("toppler.dat");
   lev_findmissions();
   gam_init();
   men_init();
@@ -63,12 +67,10 @@ static void startgame(void) {
   lev_done();
   snd_done();
   gam_done();
-  arc_done();
+//  arc_done();
 }
 
 int main(int argc, char *argv[]) {
-
-  load_config();
 
 #ifdef VERSION
   printf("Nebulous version " VERSION "\n");
@@ -80,9 +82,7 @@ int main(int argc, char *argv[]) {
     SDL_InitSubSystem(SDL_INIT_VIDEO);
     SDL_WM_SetCaption("Nebulous", NULL);
 
-    atexit(SDL_Quit);
-
-    int mouse = SDL_ShowCursor(fullscreen ? 0 : 1);
+    int mouse = SDL_ShowCursor(config.fullscreen() ? 0 : 1);
     tt_has_focus = true;
     atexit(SDL_Quit);
     srand(time(0));
@@ -92,7 +92,5 @@ int main(int argc, char *argv[]) {
     SDL_Quit();
   }
   
-  save_config();
-
   return 0;
 }

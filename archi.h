@@ -27,34 +27,91 @@
  all the data is organized inside a small archive that contains a
  header defining the start and size of the different files */
 
-/* opens the archive, the given name is the filename of
- the archive, no checks are done */
-void arc_init(char *name);
 
-/* closes the archive */
-void arc_done(void);
+#define FNAMELEN 12 /* 8.3 filename */
 
-/* opens one file inside the archive */
-void arc_assign(char *name);
+/* forward declaration */
+class file;
 
-/* closes one opened file in the archive */
-void arc_closefile(void);
 
-/* returns the size of the currently opened file */
-Uint32 arc_filesize(void);
+/*
+ * this class handles one archive, each archive can contain any number of
+ * files with names of up to FNAMELEN characters to open one file use assign
+ * and use the returned file class
+ */
 
-/* returns true if the current file is completely read */
-bool arc_eof(void);
+class archive {
 
-/* reads up to size bytes into the buffer, returning in result
- the real number read */
-void arc_read(void *buf, Uint32 size, Uint32 *result);
+public:
+  /* opens the archive, you must give the FILE handle to the
+   * file that is the archive to this constructor
+   */
+  archive(FILE *file);
 
-/* read one byte from currently opened file */
-Uint8 arc_getbyte(void);
+  /* closes the archive */
+  ~archive();
 
-/* read one word from currently opened file this read is endian save */
-Uint16 arc_getword(void);
+  /* opens one file inside the archive */
+  file * assign(char *name);
+
+private:
+
+  FILE *f;
+  
+  typedef struct {
+    char name[FNAMELEN];
+    Uint32 start, size, compress;
+  } fileindex;
+  
+  fileindex *files;
+  Uint8 filecount;
+};
+
+
+
+/*
+ * this class is used to handle the access to the different files inside
+ * the archive(s) internally it only handles one bich chunk of memory
+ * so take care that your files do not grow beyond all limits and
+ * do not forget to delete the files, otherwis you will have a memory
+ * leak
+ */
+
+class file {
+
+public:
+
+  /* close the file and free memory */
+  ~file();
+
+  /* returns the size of the currently opened file */
+  Uint32 size(void);
+
+  /* returns true if the current file is completely read */
+  bool eof(void);
+
+  /* reads up to size bytes into the buffer, returning in result
+   the real number read */
+  Uint32 read(void *buf, Uint32 size);
+
+  /* read one byte from currently opened file */
+  Uint8 getbyte(void);
+
+  /* read one word from currently opened file this read is endian save */
+  Uint16 getword(void);
+
+private:
+
+  Uint8* buffer;
+  Uint32 fsize, bufferpos;
+
+  file(Uint8 *buf, Uint32 sz) : buffer(buf), fsize(sz), bufferpos(0) {};
+
+  friend file * archive::assign(char *name);
+
+};
+
+extern archive dataarchive;
 
 #endif
 

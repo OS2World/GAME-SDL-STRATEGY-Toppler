@@ -28,6 +28,7 @@
 #include "level.h"
 #include "decl.h"
 #include "keyb.h"
+#include "configuration.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -44,11 +45,14 @@ static Uint8 *slicedata, *battlementdata, *crossdata;
 static int slicestart;
 static int battlementstart;
 
-static struct {
+static Uint8 robotcount;
+
+typedef struct {
   Uint8 count;            // how many pictures are in the animation of this robot
   unsigned short start;   // number of first robot
-} robots[8];              // currently there are only 8 robots, later on we need to
-                          // make this dynamic;
+} robot_data;
+
+robot_data * robots;      // array with robot data, robotcount contains size
 
 static unsigned short ballst, boxst, snowballst, starst, crossst,
          fishst, subst, torb;
@@ -85,11 +89,11 @@ static struct {
 } fontchars[MAXCHARNUM];
 
 /* bonus game scrolling layer */
-struct _scroll_layer {
+typedef struct  {
   long width;    // width of the layer
   int  num, den; // speed
   Uint16 image;
-};
+} _scroll_layer;
 
 /* # of scrolling layers in the bonus game */
 static int num_scrolllayers;
@@ -97,7 +101,7 @@ static int num_scrolllayers;
 static int sl_tower_depth,
            sl_tower_num,
            sl_tower_den;
-static struct _scroll_layer *scroll_layers;
+static _scroll_layer *scroll_layers;
 
 Uint8 towerpal[2*256];
 Uint8 crosspal[2*256];
@@ -127,7 +131,7 @@ scr_savedisplaybmp(char *fname)
   SDL_SaveBMP(display, fname);
 }
 
-unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha, bool screenformat) {
+unsigned short scr_loadsprites(file * fi, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha, bool screenformat) {
   Uint16 erg = 0;
   Uint8 b, a;
   SDL_Surface *z;
@@ -141,7 +145,7 @@ unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *
   
     for (int y = 0; y < h; y++)
       for (int x = 0; x < w; x++) {
-        b = arc_getbyte();
+        b = fi->getbyte();
 #if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 0] = pal[b*3 + 2];
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 1];
@@ -152,7 +156,7 @@ unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *
         ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 1] = pal[b*3 + 0];
 #endif
         if (sprite) {
-          a = arc_getbyte();
+          a = fi->getbyte();
           if (use_alpha)
 #if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
             ((Uint8 *)(z->pixels))[y*z->pitch+x*z->format->BytesPerPixel + 3] = a;
@@ -301,45 +305,44 @@ static void scr_regensprites(Uint8 *data, SDL_Surface *target, int num, int w, i
   }
 }
 
-void scr_read_palette(Uint8 *pal) {
+void scr_read_palette(file * fi, Uint8 *pal) {
   Uint8 b;
-  Uint32 res;
-  b = arc_getbyte();
+  b = fi->getbyte();
 
-  arc_read(pal, (Uint32)b*3+3, &res);
+  fi->read(pal, (Uint32)b*3+3);
 }
 
 
 /* loads all the graphics */
 static void loadgraphics(void) {
 
-  Uint32 res;
   unsigned char pal[3*256];
   int t;
+  file * fi;
 
-  arc_assign(grafdat);
+  fi = dataarchive.assign(grafdat);
 
-  arc_read(towerpal, 2*256, &res);
+  fi->read(towerpal, 2*256);
 
   slicedata = (Uint8*)malloc(SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
-  arc_read(slicedata, SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI, &res);
+  fi->read(slicedata, SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
 
   battlementdata = (Uint8*)malloc(SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
-  arc_read(battlementdata, SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI, &res);
+  fi->read(battlementdata, SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
 
   slicestart = scr_gensprites(SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false, false, true);
   battlementstart = scr_gensprites(SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false, false, true);
 
   for (t = -36; t < 37; t++) {
 
-    doors[t+36].xstart = arc_getword();
-    doors[t+36].width = arc_getword();
+    doors[t+36].xstart = fi->getword();
+    doors[t+36].width = fi->getword();
 
     for (int et = 0; et < 3; et++)
       if (doors[t+36].width != 0) {
         doors[t+36].s[et] = scr_gensprites(1, doors[t+36].width, 16, false, false, true);
         doors[t+36].data[et] = (Uint8*)malloc(doors[t+36].width*16);
-        arc_read(doors[t+36].data[et], doors[t+36].width*16, &res);
+        fi->read(doors[t+36].data[et], doors[t+36].width*16);
       } else {
         doors[t+36].s[et] = 0;
         doors[t+36].data[et] = NULL;
@@ -349,79 +352,83 @@ static void loadgraphics(void) {
   for (t = 0; t < 256; t++) {
     unsigned char c1, c2;
 
-    c1 = arc_getbyte();
-    c2 = arc_getbyte();
+    c1 = fi->getbyte();
+    c2 = fi->getbyte();
 
     pal[3*t] = c1;
     pal[3*t+1] = c2;
     pal[3*t+2] = c2;
   }
 
-  step = scr_loadsprites(SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal, false, true);
-  elevatorsprite = scr_loadsprites(SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal, false, true);
-  stick = scr_loadsprites(1, SPR_STICKWID, SPR_STICKHEI, false, pal, false, true);
+  step = scr_loadsprites(fi, SPR_STEPFRAMES, SPR_STEPWID, SPR_STEPHEI, false, pal, false, true);
+  elevatorsprite = scr_loadsprites(fi, SPR_ELEVAFRAMES, SPR_ELEVAWID, SPR_ELEVAHEI, false, pal, false, true);
+  stick = scr_loadsprites(fi, 1, SPR_STICKWID, SPR_STICKHEI, false, pal, false, true);
 
-  arc_closefile();
+  delete fi;
 
-  arc_assign(topplerdat);
+  fi = dataarchive.assign(topplerdat);
   
-  scr_read_palette(pal);
+  scr_read_palette(fi, pal);
 
-  topplerstart = scr_loadsprites(74, SPR_HEROWID, SPR_HEROHEI, true, pal, use_alpha_sprites, true);
+  topplerstart = scr_loadsprites(fi, 74, SPR_HEROWID, SPR_HEROHEI, true, pal, config.use_alpha_sprites(), true);
 
-  arc_assign(spritedat);
+  delete fi;
+  fi = dataarchive.assign(spritedat);
 
-  scr_read_palette(pal);
+  scr_read_palette(fi, pal);
 
-  t = arc_getbyte();
-  assert(t == 8, "currently only exactly 8 robots are supported");
+  robotcount = fi->getbyte();
+
+  robots = new robot_data[robotcount];
 
   for (t = 0; t < 8; t++) {
-    robots[t].count = arc_getbyte();
-    robots[t].start = scr_loadsprites(robots[t].count, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites, true);
+    robots[t].count = fi->getbyte();
+    robots[t].start = scr_loadsprites(fi, robots[t].count, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites(), true);
   }
 
-  scr_read_palette(pal);
-  ballst = scr_loadsprites(2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, use_alpha_sprites, true);
+  scr_read_palette(fi, pal);
+  ballst = scr_loadsprites(fi, 2, SPR_ROBOTWID, SPR_ROBOTHEI, true, pal, config.use_alpha_sprites(), true);
 
-  scr_read_palette(pal);
-  boxst = scr_loadsprites(16, SPR_BOXWID, SPR_BOXHEI, true, pal, use_alpha_sprites, true);
+  scr_read_palette(fi, pal);
+  boxst = scr_loadsprites(fi, 16, SPR_BOXWID, SPR_BOXHEI, true, pal, config.use_alpha_sprites(), true);
 
-  scr_read_palette(pal);
-  snowballst = scr_loadsprites(1, SPR_AMMOWID, SPR_AMMOHEI, true, pal, use_alpha_sprites, true);
+  scr_read_palette(fi, pal);
+  snowballst = scr_loadsprites(fi, 1, SPR_AMMOWID, SPR_AMMOHEI, true, pal, config.use_alpha_sprites(), true);
 
-  scr_read_palette(pal);
-  starst = scr_loadsprites(16, SPR_STARWID, SPR_STARHEI, true, pal, use_alpha_sprites, true);
+  scr_read_palette(fi, pal);
+  starst = scr_loadsprites(fi, 16, SPR_STARWID, SPR_STARHEI, true, pal, config.use_alpha_sprites(), true);
   sts_init(starst + 9, NUM_STARS);
 
-  scr_read_palette(pal);
-  fishst = scr_loadsprites(32*2, SPR_FISHWID, SPR_FISHHEI, true, pal, use_alpha_sprites, true);
+  scr_read_palette(fi, pal);
+  fishst = scr_loadsprites(fi, 32*2, SPR_FISHWID, SPR_FISHHEI, true, pal, config.use_alpha_sprites(), true);
 
-  scr_read_palette(pal);
-  subst = scr_loadsprites(31, SPR_SUBMWID, SPR_SUBMHEI, true, pal, use_alpha_sprites, true);
+  scr_read_palette(fi, pal);
+  subst = scr_loadsprites(fi, 31, SPR_SUBMWID, SPR_SUBMHEI, true, pal, config.use_alpha_sprites(), true);
 
-  scr_read_palette(pal);
-  torb = scr_loadsprites(1, SPR_TORPWID, SPR_TORPHEI, true, pal, use_alpha_sprites, true);
+  scr_read_palette(fi, pal);
+  torb = scr_loadsprites(fi, 1, SPR_TORPWID, SPR_TORPHEI, true, pal, config.use_alpha_sprites(), true);
 
-  arc_closefile();
+  delete fi;
+  fi = dataarchive.assign(crossdat);
 
-  arc_assign(crossdat);
-
-  Uint8 numcol = arc_getbyte();
+  Uint8 numcol = fi->getbyte();
 
   for (t = 0; t < numcol + 1; t++) {
-    crosspal[2*t] = arc_getbyte();
-    arc_getbyte();
-    crosspal[2*t+1] = arc_getbyte();
+    crosspal[2*t] = fi->getbyte();
+    fi->getbyte();
+    crosspal[2*t+1] = fi->getbyte();
   }
 
   crossdata = (Uint8*)malloc(120*SPR_CROSSWID*SPR_CROSSHEI*2);
-  arc_read(crossdata, 120*SPR_CROSSWID*SPR_CROSSHEI*2, &res);
+  fi->read(crossdata, 120*SPR_CROSSWID*SPR_CROSSHEI*2);
 
-  crossst = scr_gensprites(120, SPR_CROSSWID, SPR_CROSSHEI, true, use_alpha_sprites, false);
+  crossst = scr_gensprites(120, SPR_CROSSWID, SPR_CROSSHEI, true, config.use_alpha_sprites(), false);
 
-  arc_closefile();
+  delete fi;
 }
+
+Uint8 scr_numrobots(void) { return robotcount; }
+
 
 void scr_settowercolor(Uint8 r, Uint8 g, Uint8 b) {
 
@@ -492,7 +499,7 @@ void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
   for (t = 0; t < 120; t++) {
     scr_regensprites(crossdata + t*SPR_CROSSWID*SPR_CROSSHEI*2,
                      spr_spritedata(crossst+t),
-                     1, SPR_CROSSWID, SPR_CROSSHEI, true, pal, use_alpha_sprites, false);
+                     1, SPR_CROSSWID, SPR_CROSSHEI, true, pal, config.use_alpha_sprites(), false);
   }
 }
 
@@ -502,60 +509,60 @@ static void loadfont(void) {
   Uint8 c;
   int fontheight;
 
-  arc_assign(fontdat);
+  file * fi = dataarchive.assign(fontdat);
 
-  scr_read_palette(pal);
+  scr_read_palette(fi, pal);
 
-  fontheight = arc_getbyte();
+  fontheight = fi->getbyte();
 
-  while (!arc_eof()) {
-    c = arc_getbyte();
+  while (!fi->eof()) {
+    c = fi->getbyte();
 
     if (!c || (c >= MAXCHARNUM)) break;
 
-    fontchars[c].width = arc_getbyte();
-    fontchars[c].s = scr_loadsprites(1, fontchars[c].width, fontheight, true, pal, use_alpha_font, true);
+    fontchars[c].width = fi->getbyte();
+    fontchars[c].s = scr_loadsprites(fi, 1, fontchars[c].width, fontheight, true, pal, config.use_alpha_font(), true);
   }
 
-  arc_closefile();
+  delete fi;
 }
 
 static void loadscroller(void) {
 
-  arc_assign(scrollerdat);
+  file * fi = dataarchive.assign(scrollerdat);
 
   Uint8 layers;
   Uint8 towerpos;
   Uint8 pal[3*256];
 
-  layers = arc_getbyte();
+  layers = fi->getbyte();
 
   num_scrolllayers = layers;
 
   assert(num_scrolllayers > 1, "Must have at least 2 scroll layers!");
 
-  scroll_layers = (struct _scroll_layer *)malloc(sizeof(struct _scroll_layer)*layers);
+  scroll_layers = new _scroll_layer[layers];
   assert(scroll_layers, "Failed to alloc memory for bonus scroller!");
     
-  towerpos = arc_getbyte();
+  towerpos = fi->getbyte();
     
   sl_tower_depth = towerpos;
 
-  sl_tower_num = arc_getword();
-  sl_tower_den = arc_getword();
+  sl_tower_num = fi->getword();
+  sl_tower_den = fi->getword();
 
   for (int l = 0; l < layers; l++) {
 
-    scroll_layers[l].width = arc_getword();
-    scroll_layers[l].num = arc_getword();
-    scroll_layers[l].den = arc_getword();
+    scroll_layers[l].width = fi->getword();
+    scroll_layers[l].num = fi->getword();
+    scroll_layers[l].den = fi->getword();
 
-    scr_read_palette(pal);
+    scr_read_palette(fi, pal);
 
-    scroll_layers[l].image = scr_loadsprites(1, scroll_layers[l].width, 480, l != 0, pal, use_alpha_layers, true);
+    scroll_layers[l].image = scr_loadsprites(fi, 1, scroll_layers[l].width, 480, l != 0, pal, config.use_alpha_layers(), true);
   }
 
-  arc_closefile();
+  delete fi;
 }
 
 static void load_sprites(void) {
@@ -567,11 +574,13 @@ static void load_sprites(void) {
 static void free_memory(void) {
   int t;
 
-  free(scroll_layers);
 
   free(slicedata);
   free(battlementdata);
   free(crossdata);
+
+  delete [] robots;
+  delete [] scroll_layers;
 
   for (t = -36; t < 37; t++)
     for (int et = 0; et < 3; et++)
@@ -588,7 +597,7 @@ void scr_reload_sprites() {
 void scr_init(void) {
   spr_init(1000);
 
-  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (fullscreen) ? (SDL_FULLSCREEN) : (0));
+  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (config.fullscreen()) ? (SDL_FULLSCREEN) : (0));
 
   load_sprites();
 
@@ -606,7 +615,7 @@ void scr_init(void) {
 }
 
 void scr_reinit() {
-  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (fullscreen) ? (SDL_FULLSCREEN) : (0));
+  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (config.fullscreen()) ? (SDL_FULLSCREEN) : (0));
 }
 
 void scr_done(void) {
@@ -644,7 +653,7 @@ static void cleardesk(long height) {
 
 void scr_darkenscreen(void) {
 
-  if (!use_alpha_darkening)
+  if (!config.use_alpha_darkening())
     return;
 
   scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 128);
@@ -709,9 +718,9 @@ static void putwater(long height) {
 
   if (height < (SCREENHEI / 2)) {
 
-    switch(waves_type) {
+    switch(config.waves_type()) {
 
-    case waves_expensive:
+    case configuration::waves_expensive:
       {
         int source_line = (SCREENHEI / 2) + height - 1;
 
@@ -742,7 +751,7 @@ static void putwater(long height) {
         }
       }
       break;
-    case waves_simple:
+    case configuration::waves_simple:
       {
         int horizontal_shift;
 
@@ -789,7 +798,7 @@ static void putwater(long height) {
         }
       }
       break;
-    case waves_nonreflecting:
+    case configuration::waves_nonreflecting:
       for (int y = 0; y < (SCREENHEI / 2) - height; y++)
         scr_putbar(0, SCREENHEI/2 + height + y, SCREENWID, 1, 0, 0, 30 + y/2, 255);
       break;
@@ -867,7 +876,6 @@ scr_putrect(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb, Uin
 
 /* exchange active and inactive page */
 void scr_swap(void) {
-  if (key_keypressed(quit_action)) return;
   if (!tt_has_focus) {
       scr_darkenscreen();
       SDL_UpdateRect(display, 0, 0, 0, 0);
@@ -1035,7 +1043,7 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
     break;
   case TB_STEP_VANISHER:
-    if (use_alpha_sprites) {
+    if (config.use_alpha_sprites()) {
       SDL_Surface *s = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, SPR_STEPWID, SPR_STEPHEI, 24, 0xff, 0xff00, 0xff0000, 0);
       SDL_Rect r;
       r.w = SPR_STEPWID;
@@ -1385,7 +1393,7 @@ static void draw_data(int time, screenflag flags)
 {
   char s[256];
   int t;
-  int y = status_top ? 5 : SCREENHEI - FONTHEI;
+  int y = config.status_top() ? 5 : SCREENHEI - FONTHEI;
 
   if (time > 0) {
     sprintf(s, "%u", time);
@@ -1402,7 +1410,7 @@ static void draw_data(int time, screenflag flags)
   else sprintf(s, "%ix%c", pts_lifes(), fonttoppler);
   scr_writetext(SCREENWID - scr_textlength(s) - 5, y, s);
 
-  y = status_top ? SCREENHEI - FONTHEI : 5;
+  y = config.status_top() ? SCREENHEI - FONTHEI : 5;
   switch (flags) {
     case SF_REC:  if (!(boxstate & 8)) scr_writetext_center(y, "REC"); break;
     case SF_DEMO: scr_writetext_center(y, "DEMO"); break;
@@ -1458,6 +1466,9 @@ void scr_drawall(long vert,
   putwater(vert);
 
   draw_data(time, flags);
+
+  if (dcl_wait_overflow())
+    scr_putbar(0, 0, 5, 5, 255, 0, 0, 255);
 
   boxstate = (boxstate + 1) & 0xf;
 }
@@ -1535,7 +1546,7 @@ static void put_scrollerlayer(long horiz, int layer) {
 void scr_draw_bonus1(long horiz, long towerpos) {
   int l;
 
-  if (use_full_scroller)
+  if (config.use_full_scroller())
     for (l = 0; (l < num_scrolllayers) && (l < sl_tower_depth); l++)
       put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
   else
@@ -1547,7 +1558,7 @@ void scr_draw_bonus1(long horiz, long towerpos) {
 void scr_draw_bonus2(long horiz, long towerpos) {
   int l;
 
-  if (use_full_scroller)
+  if (config.use_full_scroller())
     for (l = sl_tower_depth; l < num_scrolllayers; l++)
       put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
   else

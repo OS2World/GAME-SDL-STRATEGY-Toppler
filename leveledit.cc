@@ -28,6 +28,7 @@
 #include "snowball.h"
 #include "menu.h"
 #include "txtsys.h"
+#include "configuration.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -83,6 +84,7 @@ typedef enum {
   EDACT_GOTOEND,
   EDACT_CUTROW,
   EDACT_PASTEROW,
+  EDACT_TOGGLEROBOT,
   
   NUMEDITORACTIONS    
 } key_actions;
@@ -109,7 +111,7 @@ const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Decrease time", "Create mission", "Move page up",    "Move page down",
    "Go to start",   "Show this help", "Name the tower",  "Set tower time",
    "Record demo",   "Play demo",      "Adjust tower height", "Go to end",
-   "Cut row",       "Paste row"
+   "Cut row",       "Paste row",      "Change robot type"
 };
 
 const struct _ed_key _ed_keys[] = {
@@ -143,6 +145,7 @@ const struct _ed_key _ed_keys[] = {
    {EDACT_PUTROBOT5,     SDLK_5},
    {EDACT_PUTROBOT6,     SDLK_6},
    {EDACT_PUTROBOT7,     SDLK_7},
+   {EDACT_TOGGLEROBOT,   SDLK_8},
    {EDACT_PUTLIFT,       SDLK_c},
    {EDACT_PUTLIFTMID,    SDLK_d},
    {EDACT_PUTLIFTTOP,    SDLK_e},
@@ -246,8 +249,6 @@ static bool edit_towercolor(int row, int col) {
     scr_swap();
     dcl_wait();
       
-    if (key_keypressed(quit_action)) break;
-
     c = key_sdlkey();
 
     switch (c) {
@@ -405,7 +406,7 @@ static void createMission(void) {
   lev_findmissions();
 }
 
-void le_showkeyhelp(int row, int col) {
+static void le_showkeyhelp(int row, int col) {
   int k;
   int maxkeylen = 0;
   textsystem *ts = new textsystem("Editor Key Help", editor_background_menu_proc);
@@ -440,7 +441,7 @@ void le_showkeyhelp(int row, int col) {
 
       sprintf(tmpb, "~T%s%%s~T%s%%s", tabbuf2, tabbuf1);
       sprintf(buf, tmpb, knam, _ed_key_actions[_ed_keys[k].action]);
-	      
+
       ts->addline(buf);
   }
   bg_darken = true;
@@ -492,15 +493,16 @@ void le_edit(void) {
   int towerstarthei;
   int pagesize;
 
-  if (editor_towerstarthei < 0) 
-      towerstarthei = TOWERSTARTHEI + (rand() % abs(editor_towerstarthei));
-  else towerstarthei = TOWERSTARTHEI + editor_towerstarthei;
+  if (config.editor_towerstarthei() < 0)
+      towerstarthei = TOWERSTARTHEI + (rand() % abs(config.editor_towerstarthei()));
+  else towerstarthei = TOWERSTARTHEI + config.editor_towerstarthei();
 
   lev_new(towerstarthei % 256);
     
-  if (editor_towerpagesize < 1) {
-      editor_towerpagesize = pagesize = TOWERPAGESIZE;
-  } else pagesize = editor_towerpagesize;
+  if (config.editor_towerpagesize() < 1) {
+    config.editor_towerpagesize(TOWERPAGESIZE);
+    pagesize = TOWERPAGESIZE;
+  } else pagesize = config.editor_towerpagesize();
 
   set_men_bgproc(editor_background_proc);
 
@@ -515,8 +517,6 @@ void le_edit(void) {
   lev_set_towerdemo(0, NULL);
 
   while (!ende) {
-
-    if (key_keypressed(quit_action)) break;
 
     bg_row = row;
     bg_col = col;
@@ -690,11 +690,16 @@ void le_edit(void) {
             break;
         bg_text = "Load tower:";
 	bg_darken = true;
-	key_wait_for_none(editor_background_proc);
-        while (!men_input(editor_towername, TOWERNAMELEN)) ;
+        key_wait_for_none(editor_background_proc);
+        {
+          char name[TOWERNAMELEN+1];
+          strncpy(name, config.editor_towername(), TOWERNAMELEN);
+          while (!men_input(name, TOWERNAMELEN)) ;
+          config.editor_towername(name);
+        }
         bg_text = NULL;
-	if ((strlen(editor_towername) > 0) &&
-	    lev_loadtower(editor_towername)) {
+	if ((strlen(config.editor_towername()) > 0) &&
+	    lev_loadtower(config.editor_towername())) {
 	    scr_settowercolor(lev_towercol_red(),
 			      lev_towercol_green(),
 			      lev_towercol_blue());
@@ -705,10 +710,15 @@ void le_edit(void) {
       case EDACT_SAVETOWER:
         bg_text = "Save tower:";
 	bg_darken = true;
-	key_wait_for_none(editor_background_proc);
-        while (!men_input(editor_towername, TOWERNAMELEN)) ;
+        key_wait_for_none(editor_background_proc);
+        {
+          char name[TOWERNAMELEN+1];
+          strncpy(name, config.editor_towername(), TOWERNAMELEN);
+          while (!men_input(name, TOWERNAMELEN)) ;
+          config.editor_towername(name);
+        }
         bg_text = NULL;
-        lev_savetower(editor_towername);
+        lev_savetower(config.editor_towername());
         changed = false;
         break;
 
@@ -719,7 +729,7 @@ void le_edit(void) {
 	    unsigned char *p;
 	    int demolen = -1;
 	    Uint16 *demobuf = NULL;
-            int speed = dcl_update_speed(game_speed);
+            int speed = dcl_update_speed(config.game_speed());
 	    lev_set_towerdemo(0, NULL);
 	    lev_save(p);
 	    gam_newgame();
@@ -744,7 +754,7 @@ void le_edit(void) {
 		Uint8 dummy1;
 		Uint16 dummy2;
 		unsigned char *p;
-	        int speed = dcl_update_speed(game_speed);
+	        int speed = dcl_update_speed(config.game_speed());
 		lev_save(p);
 		gam_newgame();
 		rob_initialize();
@@ -767,7 +777,7 @@ void le_edit(void) {
           Uint8 dummy1;
           Uint16 dummy2;
 	  int dummy3 = 0;
-	  int speed = dcl_update_speed(game_speed);
+	  int speed = dcl_update_speed(config.game_speed());
 	  Uint16 *dummybuf = NULL;
           unsigned char *p;
           lev_save(p);
@@ -907,7 +917,12 @@ void le_edit(void) {
         bg_text = NULL;
         changed = true;
         break;
-      case EDACT_SHOWKEYHELP: le_showkeyhelp(row, col); break;
+      case EDACT_SHOWKEYHELP:
+        le_showkeyhelp(row, col);
+        break;
+      case EDACT_TOGGLEROBOT:
+        lev_set_robotnr((lev_robotnr() + 1) % scr_numrobots());
+        break;
       default: break;
       }
     }

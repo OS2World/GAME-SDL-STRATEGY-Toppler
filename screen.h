@@ -19,6 +19,8 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include "archi.h"
+
 #include <SDL.h>
 
 /* this module handles nearly all the output onto the screen */
@@ -51,8 +53,8 @@ void scr_done(void);
 
 /* loads a number of sprites, enters them into the sprite collection
  and returns the index of the first sprite */
-void scr_read_palette(Uint8 *pal);
-unsigned short scr_loadsprites(int num, int w, int h, bool sprite, const Uint8 *pal,
+void scr_read_palette(file * fi, Uint8 *pal);
+unsigned short scr_loadsprites(file * fi, int num, int w, int h, bool sprite, const Uint8 *pal,
                                bool usealpha, bool usescreenformat);
 
 
@@ -122,6 +124,9 @@ void scr_draw_bonus2(long horiz, long towerpos);
 void scr_draw_submarine(long vert, long x, long number);
 void scr_draw_fish(long vert, long x, long number);
 void scr_draw_torpedo(long vert, long x);
+
+/* returns the number of robots in the currently loaded data set */
+Uint8 scr_numrobots(void);
 
 #endif
 

@@ -18,6 +18,7 @@
 
 #include "decl.h"
 #include "keyb.h"
+#include "configuration.h"
 
 #include <SDL.h>
 
@@ -25,7 +26,6 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <stdarg.h>
 
 #if (SYSTEM != SYS_WINDOWS)
 
@@ -34,78 +34,11 @@
 
 #endif
 
-bool fullscreen;
-bool nosound;
-bool use_water = true;
-bool use_alpha_sprites = false;
-bool use_alpha_layers = false;
-bool use_alpha_font = false;
-bool use_alpha_darkening = false;
-bool use_full_scroller = true;
-int  waves_type = waves_nonreflecting;
-bool status_top = true;  /* is status line top or bottom of screen? */
-int  editor_towerpagesize = -1;
-int  editor_towerstarthei = -5;
-char curr_password[PASSWORD_LEN+1] = "";
-int  start_lives = 3;
-bool use_unicode_input = true;
-char editor_towername[TOWERNAMELEN+1] = "";
-int  debug_level = 0;
-int  game_speed = DEFAULT_GAME_SPEED;
+static bool wait_overflow = false;
+
 
 /* Not read from config file */
 int  curr_scr_update_speed = MENU_DCLSPEED;
-
-typedef enum {
-    CT_BOOL,
-    CT_STRING,
-    CT_INT,
-    CT_KEY
-} cnf_type;
-
-struct _config_data {
-    char     *cnf_name;
-    cnf_type  cnf_typ;
-    void     *cnf_var;
-    long      maxlen;
-};
-
-#define CNF_BOOL(a,b) {a, CT_BOOL, b, 0}
-#define CNF_CHAR(a,b,c) {a, CT_STRING, b, c}
-#define CNF_INT(a,b) {a, CT_INT, b, 0}
-#define CNF_KEY(a,b) {a, CT_KEY, NULL, b}
-
-static const struct _config_data config_data[] = {
-    CNF_BOOL( "fullscreen",          &fullscreen ),
-    CNF_BOOL( "nosound",             &nosound ),
-    CNF_CHAR( "editor_towername",    &editor_towername, TOWERNAMELEN ),
-    CNF_BOOL( "use_alpha_sprites",   &use_alpha_sprites ),
-    CNF_BOOL( "use_alpha_font",      &use_alpha_font ),
-    CNF_BOOL( "use_alpha_layers",    &use_alpha_layers ),
-    CNF_BOOL( "use_alpha_darkening", &use_alpha_darkening ),
-    CNF_BOOL( "use_full_scroller",   &use_full_scroller ),
-    CNF_BOOL( "status_top",          &status_top ),
-    CNF_INT(  "editor_pagesize",     &editor_towerpagesize ),
-    CNF_INT(  "editor_towerstarthei",&editor_towerstarthei ),
-    CNF_INT(  "waves_type",          &waves_type ),
-    CNF_KEY(  "key_fire",             fire_key ),
-    CNF_KEY(  "key_up",               up_key ),
-    CNF_KEY(  "key_down",             down_key ),
-    CNF_KEY(  "key_left",             left_key ),
-    CNF_KEY(  "key_right",            right_key ),
-    CNF_CHAR( "password",            &curr_password, PASSWORD_LEN ),
-    CNF_INT(  "start_lives",         &start_lives ),
-    CNF_BOOL( "use_unicode_input",   &use_unicode_input),
-    CNF_INT(  "game_speed",          &game_speed),
-};
-
-bool str2bool(char *s) {
-    if (s) {
-	if (!strcmp("yes", s) || !strcmp("true", s)) return true;
-	else return (atoi(s) != 0);
-    }
-    return false;
-}
 
 int dcl_update_speed(int spd) {
     int tmp = curr_scr_update_speed;
@@ -114,15 +47,24 @@ int dcl_update_speed(int spd) {
 }
 
 void dcl_wait(void) {
-  if (!key_keypressed(quit_action)) {
-      static Uint32 last;
-      while ((SDL_GetTicks() - last) < (Uint32)(55-(curr_scr_update_speed*5)) ) SDL_Delay(2);
-      last = SDL_GetTicks();
+  static Uint32 last;
+
+  if (SDL_GetTicks() >= last + (Uint32)(55-(curr_scr_update_speed*5))) {
+    wait_overflow = true;
+    last = SDL_GetTicks();
+    return;
   }
+
+  wait_overflow = false;
+  printf("%i\n", last);
+  while ((SDL_GetTicks() - last) < (Uint32)(55-(curr_scr_update_speed*5)) ) SDL_Delay(2);
+  last = SDL_GetTicks();
 }
 
+bool dcl_wait_overflow(void) { return wait_overflow; }
+
 void debugprintf(int lvl, char *fmt, ...) {
-    if (lvl <= debug_level) {
+    if (lvl <= config.debug_level()) {
         va_list args;
         va_start(args, fmt);
         vprintf(fmt, args);
@@ -131,7 +73,7 @@ void debugprintf(int lvl, char *fmt, ...) {
 }
 
 /* returns true, if file exists */
-static bool dcl_fileexists(char *n) {
+static bool dcl_fileexists(const char *n) {
   FILE *f = fopen(n, "r");
 
   if (f) {
@@ -182,7 +124,7 @@ static void checkdir(void) {
 
 }
 
-FILE *open_data_file(char *name) {
+FILE *open_data_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
@@ -209,7 +151,7 @@ FILE *open_data_file(char *name) {
 #endif
 }
 
-FILE *open_global_config_file(char *name) {
+FILE *open_global_config_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
@@ -224,7 +166,7 @@ FILE *open_global_config_file(char *name) {
   return NULL;
 }
 
-FILE *open_local_config_file(char *name) {
+FILE *open_local_config_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
@@ -248,7 +190,7 @@ FILE *open_local_config_file(char *name) {
 #endif
 }
 
-FILE *create_local_config_file(char *name) {
+FILE *create_local_config_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
@@ -268,7 +210,7 @@ FILE *create_local_config_file(char *name) {
 
 }
 
-FILE *open_highscore_file(char *name) {
+FILE *open_highscore_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
@@ -295,7 +237,7 @@ FILE *open_highscore_file(char *name) {
 
 }
 
-FILE *create_highscore_file(char *name) {
+FILE *create_highscore_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
@@ -316,7 +258,7 @@ FILE *create_highscore_file(char *name) {
 }
 
 
-FILE *open_local_data_file(char *name) {
+FILE *open_local_data_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
@@ -336,7 +278,7 @@ FILE *open_local_data_file(char *name) {
 
 }
 
-FILE *create_local_data_file(char *name) {
+FILE *create_local_data_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX)
 
@@ -354,92 +296,6 @@ FILE *create_local_data_file(char *name) {
 
 #endif
 
-}
-
-
-static void parse_config(FILE * in) {
-  char line[201], param[201];
-
-  while (!feof(in)) {
-    if (fscanf(in, "%200s%*[\t ]%200s\n", line, param) == 2) {
-      for (int idx = 0; idx < SIZE(config_data); idx++) {
-	if (strstr(line, config_data[idx].cnf_name)) {
-	  switch (config_data[idx].cnf_typ) {
-	    case CT_BOOL:
-	      *(bool *)config_data[idx].cnf_var = str2bool(param);
-	      break;
-	    case CT_STRING:
-	      if (strlen(param) > 1) {
-		param[strlen(param)-1] = '\0';
-		strncpy((char *)config_data[idx].cnf_var, param+1, config_data[idx].maxlen);
-	      }
-	      break;
-	    case CT_INT:
-	      *(int *)config_data[idx].cnf_var = atoi(param);
-	      break;
-	    case CT_KEY:
-	      if (atoi(param) > 0)
-		key_redefine((ttkey)config_data[idx].maxlen, (SDLKey)atoi(param));
-	      break;
-	    default: assert(0, "Unknown config data type.");
-	  }
-	  break;
-	} //if (strstr(...
-      } //for
-    } //if (fscanf(...
-  } //while (!feof(in))
-}
-
-void load_config(void) {
-  fullscreen = false;
-  nosound = false;
-
-  FILE * in = open_global_config_file(".toppler.rc");
-  
-  if (in) {
-    parse_config(in);
-    fclose(in);
-  }
-  
-  in = open_local_config_file(".toppler.rc");
-  
-  if (in) {
-    parse_config(in);
-    fclose(in);
-  }
-    
-  if (start_lives < 1) start_lives = 1;
-  else if (start_lives > 3) start_lives = 3;
-    
-  if (game_speed < 0) game_speed = 0;
-  else if (game_speed > MAX_GAME_SPEED) game_speed = MAX_GAME_SPEED;
-}
-
-void save_config(void) {
-  FILE * out = create_local_config_file(".toppler.rc");
-
-  if (out) {
-    for (int idx = 0; idx < SIZE(config_data); idx++) {
-	fprintf(out, "%s: ", config_data[idx].cnf_name);
-	switch (config_data[idx].cnf_typ) {
-	    case CT_BOOL: 
-	      fprintf(out, "%s", (*(bool *)config_data[idx].cnf_var)?("yes"):("no"));
-	      break;
-	    case CT_STRING:
-	      fprintf(out, "\"%s\"", (char *)(config_data[idx].cnf_var));
-	      break;
-	    case CT_INT:
-	      fprintf(out, "%i", *(int *)config_data[idx].cnf_var);
-	      break;
-	    case CT_KEY:
-	      fprintf(out, "%i", (int)key_conv2sdlkey((ttkey)config_data[idx].maxlen, true));
-	      break;
-	    default: assert(0, "Unknown config data type.");
-	}
-	fprintf(out, "\n");
-    }
-    fclose(out);
-  }
 }
 
 static int sort_by_name(const void *a, const void *b) {

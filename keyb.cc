@@ -24,11 +24,11 @@
 static ttkey keydown, keytyped;
 static char chartyped;
 static SDLKey sdlkeytyped;
-static long numkeydown;
-static bool received_kill;
 static Uint16 mouse_x, mouse_y;
 static bool mouse_moved;
 static Uint16 mouse_button;
+
+class quit_action_class {};
 
 bool tt_has_focus;
 
@@ -44,9 +44,9 @@ struct _ttkeyconv {
    {fire_key, SDLK_RETURN},
    {break_key, SDLK_ESCAPE},
    {pause_key, SDLK_p},
-   {mousebttn1, SDLK_SPACE},
+/*   {mousebttn1, SDLK_SPACE},
    {mousebttn4, SDLK_UP},
-   {mousebttn5, SDLK_DOWN},
+   {mousebttn5, SDLK_DOWN},*/
 
    {up_key, SDLK_UP},
    {down_key, SDLK_DOWN},
@@ -68,122 +68,69 @@ void key_redefine(ttkey code, SDLKey key) {
 }
 
 void key_init(void) {
-  SDL_EnableKeyRepeat(0, 0);
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL);
   SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_IGNORE);
   SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
 
-  SDL_EnableUNICODE(use_unicode_input ? 1 : 0);
+  SDL_EnableUNICODE(1);
 
-  numkeydown = chartyped = 0;
+  chartyped = 0;
   keytyped = keydown = no_key;
   sdlkeytyped = SDLK_UNKNOWN;
-  received_kill = false;
   mouse_button = mouse_x = mouse_y = 0;
   mouse_moved = false;
 }
 
 static void handleEvents(void) {
   SDL_Event e;
-  ttkey key = no_key;
-  int tmpk;
 
   while (SDL_PollEvent(&e)) {
-    mouse_moved = false;
-    mouse_button = 0;
-    if (e.type == SDL_ACTIVEEVENT) {
-	if ((e.active.state == SDL_APPINPUTFOCUS) ||
-	    (e.active.state == SDL_APPACTIVE))
-	  tt_has_focus = (e.active.gain == 1);
-    } else
-    if (e.type == SDL_MOUSEMOTION) {
+
+    switch (e.type) {
+    case SDL_ACTIVEEVENT:
+      if ((e.active.state == SDL_APPINPUTFOCUS) || (e.active.state == SDL_APPACTIVE))
+        tt_has_focus = (e.active.gain == 1);
+      break;
+    case SDL_MOUSEMOTION:
       mouse_x = e.motion.x;
       mouse_y = e.motion.y;
       mouse_moved = true;
-    } else
-      if (e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP) {
-        mouse_x = e.button.x;
-        mouse_y = e.button.y;
-        mouse_button = e.button.button;
-      } else
-        if (e.type == SDL_QUIT) {
-          keydown = (ttkey)(keydown | quit_action);
-          keytyped = (ttkey)(keytyped | quit_action);
-          received_kill = true;
-          fprintf(stderr, "Wheee!!\n");
-        } else
-          if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP)) {
-            if (e.key.state == SDL_RELEASED) {
-	      if (use_unicode_input && ((e.key.keysym.unicode & 0xff80) == 0)) {
-		  chartyped = e.key.keysym.unicode & 0x7f;
-	      } else {
-		  /* else we don't have UNICODE in use, 
-		     or it's international char */
-              if ((e.key.keysym.sym >= SDLK_a) && (e.key.keysym.sym <= SDLK_z)) {
-                if (e.key.keysym.mod & (KMOD_LSHIFT | KMOD_RSHIFT))
-                  chartyped = e.key.keysym.sym - SDLK_a + 'A';
-                else
-                  chartyped = e.key.keysym.sym - SDLK_a + 'a';
-              }
-              if ((e.key.keysym.sym >= SDLK_0) && (e.key.keysym.sym <= SDLK_9))
-                chartyped = e.key.keysym.sym - SDLK_0 + '0';
-              if (e.key.keysym.sym == SDLK_SPACE)
-                chartyped = ' ';
-              if (e.key.keysym.sym == SDLK_RETURN)
-                chartyped = 13;
-              if (e.key.keysym.sym == SDLK_BACKSPACE)
-                chartyped = 8;
-              if (e.key.keysym.sym == SDLK_UP)
-                chartyped = 1;
-              if (e.key.keysym.sym == SDLK_DOWN)
-                chartyped = 2;
-              if (e.key.keysym.sym == SDLK_LEFT)
-                chartyped = 3;
-              if (e.key.keysym.sym == SDLK_RIGHT)
-                chartyped = 4;
-              if (e.key.keysym.sym == SDLK_ESCAPE)
-                chartyped = 27;
-              if (e.key.keysym.sym == SDLK_GREATER)
-                chartyped = '>';
-              if (e.key.keysym.sym == SDLK_EXCLAIM)
-                chartyped = '!';
-              if (e.key.keysym.sym == SDLK_HASH)
-                chartyped = '#';
-              if (e.key.keysym.sym == SDLK_MINUS)
-                chartyped = '-';
-              if (e.key.keysym.sym == SDLK_PERIOD)
-                chartyped = '.';
-              if (e.key.keysym.sym == SDLK_INSERT)
-                chartyped = 5;
-              if (e.key.keysym.sym == SDLK_DELETE)
-                chartyped = 6;
-              if (e.key.keysym.sym == SDLK_PAGEUP)
-                chartyped = 7;
-              if (e.key.keysym.sym == SDLK_PAGEDOWN)
-                chartyped = 8;
-              if (e.key.keysym.sym == SDLK_HOME)
-                chartyped = 9;
+      break;
+    case SDL_MOUSEBUTTONDOWN:
+    case SDL_MOUSEBUTTONUP:
+      mouse_x = e.button.x;
+      mouse_y = e.button.y;
+      mouse_button = e.button.button;
+      break;
+    case SDL_QUIT:
+      fprintf(stderr, "Wheee!!\n");
+      throw new quit_action_class;
+      break;
+    case SDL_KEYDOWN:
+    case SDL_KEYUP:
 
-	     }
-            }
+      ttkey key = no_key;
+      for (int tmpk = 0; tmpk < SIZE(ttkeyconv); tmpk++)
+        if (ttkeyconv[tmpk].key == e.key.keysym.sym) {
+          key = ttkeyconv[tmpk].outval;
+          break;
+        }
 
-            for (tmpk = 0; tmpk < SIZE(ttkeyconv); tmpk++)
-              if (ttkeyconv[tmpk].key == e.key.keysym.sym) {
-                key = ttkeyconv[tmpk].outval;
-                break;
-              }
+      if (e.key.state == SDL_PRESSED) {
 
-            if (e.key.state == SDL_PRESSED) {
-              keydown = (ttkey)(keydown | key);
-              keytyped = (ttkey)(keytyped | key);
+        if ((e.key.keysym.unicode & 0xff80) == 0) {
+          chartyped = e.key.keysym.unicode & 0x7f;
+        }
+        sdlkeytyped = e.key.keysym.sym;
 
-              sdlkeytyped = e.key.keysym.sym;
-              numkeydown++;
-            } else {
-	      keydown = (ttkey)(keydown & ~key);
-              sdlkeytyped = SDLK_UNKNOWN;
-              if (numkeydown > 0) numkeydown--;
-            }
-          }
+        keydown = (ttkey)(keydown | key);
+        keytyped = (ttkey)(keytyped | key);
+
+      } else {
+        keydown = (ttkey)(keydown & ~key);
+      }
+      break;
+    }
   }
 }
 
@@ -197,8 +144,7 @@ Uint16 key_keystat(void) {
 
 bool key_keypressed(ttkey key) {
   handleEvents();
-  if (((key | quit_action)) && received_kill) return true;
-    return (keytyped & key) != 0;
+  return (keytyped & key) != 0;
 }
 
 SDLKey key_sdlkey(void) {
@@ -211,13 +157,13 @@ SDLKey key_sdlkey(void) {
 }
 
 void key_keydatas(SDLKey &sdlkey, ttkey &tkey, char &ch) {
-    handleEvents();
-    sdlkey = sdlkeytyped;
-    tkey = keytyped;
-    ch = chartyped;
-    sdlkeytyped = SDLK_UNKNOWN;
-    keytyped = no_key;
-    chartyped = 0;
+  handleEvents();
+  sdlkey = sdlkeytyped;
+  tkey = keytyped;
+  ch = chartyped;
+  sdlkeytyped = SDLK_UNKNOWN;
+  keytyped = no_key;
+  chartyped = 0;
 }
 
 
@@ -269,9 +215,9 @@ ttkey key_readkey(void) {
 
 void wait_for_focus(void) {
 
-  while (!tt_has_focus && !received_kill) {
-      handleEvents();
-      if (!tt_has_focus && !received_kill) SDL_Delay(200);
+  while (!tt_has_focus) {
+    SDL_Delay(200);
+    handleEvents();
   }
 
   keytyped = no_key;
@@ -291,7 +237,8 @@ void key_wait_for_none(keyb_wait_proc bg) {
   do {
     handleEvents();
     if (bg) (*bg)();
-  } while (numkeydown && !received_kill);
+  } while (keydown);
+
   keytyped = no_key;
   chartyped = 0;
   sdlkeytyped = SDLK_UNKNOWN;
@@ -302,11 +249,11 @@ bool key_mouse(Uint16 *x, Uint16 *y, ttkey *bttn) {
   handleEvents();
   switch (mouse_button) {
   default: *bttn = no_key; break;
-  case 1: *bttn = mousebttn1; break;
+/*  case 1: *bttn = mousebttn1; break;
   case 2: *bttn = mousebttn2; break;
   case 3: *bttn = mousebttn3; break;
   case 4: *bttn = mousebttn4; break;
-  case 5: *bttn = mousebttn5; break;
+  case 5: *bttn = mousebttn5; break;*/
   }
   mouse_moved = false;
   mouse_button = 0;

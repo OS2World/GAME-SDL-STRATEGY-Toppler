@@ -82,18 +82,6 @@ typedef enum {
 } menuoptflags;
 
 /* create a new menu */
-struct _menusystem *new_menu_system(char *title, menuopt_callback_proc pr, 
-				    int molen = 0, int ystart = 25);
-
-/* add an option to the menu */
-struct _menusystem *add_menu_option(struct _menusystem *ms, char *name, menuopt_callback_proc pr,
-                SDLKey quickkey = SDLK_UNKNOWN, menuoptflags flags = MOF_NONE, int state = 0);
-
-/* run the menu */
-struct _menusystem *run_menu_system(struct _menusystem *ms);
-
-/* free the menu */
-void free_menu_system(struct _menusystem *ms);
 
 /* sets the function that gets called whenever the background
    needs to be drawn in men_yn(), and men_info() */

@@ -142,8 +142,6 @@
 #define HUNT_THE_FISH
 #endif
 
-#define TOWERNAMELEN 19
-
 /* names of the different data files */
 #define grafdat         "graphics.dat"
 #define fontdat         "font.dat"
@@ -167,7 +165,6 @@
 #define FDECL(f,p) f p
 #define SIZE(x) (int)(sizeof(x) / sizeof(x[0]))
 
-#define PASSWORD_LEN 5
 #define PASSWORD_CHARS "abcdefghijklmnopqrstuvwxyz0123456789"
 
 void debugprintf(int lvl, char *fmt, ...);
@@ -175,43 +172,18 @@ void debugprintf(int lvl, char *fmt, ...);
 /* waits around 1/18 of a second */
 void dcl_wait(void);
 
+/* returns true, if the last wait didn't have enough time */
+bool dcl_wait_overflow(void);
+
 /* opens files looking into the right directories */
-FILE *open_data_file(char *name);
-FILE *open_global_config_file(char *name);
-FILE *open_local_config_file(char *name);
-FILE *create_local_config_file(char *name);
-FILE *open_highscore_file(char *name);
-FILE *create_highscore_file(char *name);
-FILE *open_local_data_file(char *name);
-FILE *create_local_data_file(char *name);
-
-/* the different types of waves used in waves_type */
-enum {
-  waves_nonreflecting,
-  waves_simple,
-  waves_expensive,
-  num_waves
-};
-
-/* GAME PARAMETERS */
-extern bool fullscreen;
-extern bool nosound;
-extern bool use_water;
-extern char editor_towername[TOWERNAMELEN+1];
-extern bool use_alpha_sprites;
-extern bool use_alpha_layers;
-extern bool use_alpha_font;
-extern bool use_alpha_darkening;
-extern bool use_full_scroller;
-extern int  waves_type;
-extern bool status_top;
-extern int  editor_towerpagesize;
-extern int  editor_towerstarthei;
-extern int  start_lives;
-extern char curr_password[PASSWORD_LEN+1];
-extern bool use_unicode_input;
-extern int  debug_level;
-extern int  game_speed;
+FILE *open_data_file(const char *name);
+FILE *open_global_config_file(const char *name);
+FILE *open_local_config_file(const char *name);
+FILE *create_local_config_file(const char *name);
+FILE *open_highscore_file(const char *name);
+FILE *create_highscore_file(const char *name);
+FILE *open_local_data_file(const char *name);
+FILE *create_local_data_file(const char *name);
 
 /* Is the TT window active? */
 extern bool tt_has_focus;
@@ -221,9 +193,6 @@ extern bool tt_has_focus;
 #define MAX_GAME_SPEED 3  /* from 0 to this; bigger == faster */
 /* set dcl_wait() delay, and return the previous delay */
 int dcl_update_speed(int spd);
-
-void load_config(void);
-void save_config(void);
 
 /* for errorchecking */
 #define assert(cond,text) if (!(cond)) { printf("Assertion failure: "text"\n"); exit(1); }

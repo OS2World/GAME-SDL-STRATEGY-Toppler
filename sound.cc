@@ -19,6 +19,7 @@
 #include "sound.h"
 
 #include "decl.h"
+#include "configuration.h"
 
 #include <SDL.h>
 
@@ -52,7 +53,7 @@ static Mix_Chunk *LoadWAV(char *name) {
 #endif
 
 void snd_init(void) {
-  if (nosound) return;
+  if (config.nosound()) return;
 
 #ifdef SDL_MIXER
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
@@ -96,7 +97,7 @@ void snd_init(void) {
 }
 
 void snd_done(void) {
-  if (nosound || nosoundinit) return;
+  if (config.nosound() || nosoundinit) return;
 
 #ifdef SDL_MIXER
   while (Mix_Playing(-1)) dcl_wait();
@@ -134,7 +135,7 @@ void snd_fall(void) {          play |= 0x20000; }
 
 void snd_play(void) {
 
-  if (nosound || nosoundinit) return;
+  if (config.nosound() || nosoundinit) return;
 
 #ifdef SDL_MIXER
   if (play & 0x01)
@@ -180,36 +181,36 @@ void snd_play(void) {
 }
 
 void snd_wateron(void) {
-  if (nosound || nosoundinit) return;
+  if (config.nosound() || nosoundinit) return;
 #ifdef SDL_MIXER
-  if (use_water)
+  if (config.use_water())
     waterchannel = Mix_PlayChannel(-1, sounds[0], -1);
 #endif
 }
 void snd_wateroff(void) {
-  if (nosound || nosoundinit) return;
+  if (config.nosound() || nosoundinit) return;
 #ifdef SDL_MIXER
-  if (use_water)
+  if (config.use_water())
     Mix_HaltChannel(waterchannel);
 #endif
 }
 void snd_watervolume(int v) {
-  if (nosound || nosoundinit) return;
+  if (config.nosound() || nosoundinit) return;
 #ifdef SDL_MIXER
-  if (use_water)
+  if (config.use_water())
     Mix_Volume(waterchannel, v);
 #endif
 }
 
 void snd_playtitle(void) {
-  if (nosound || nosoundinit) return;
+  if (config.nosound() || nosoundinit) return;
 #ifdef SDL_MIXER
   Mix_PlayMusic(title, -1);
 #endif
 }
 
 void snd_stoptitle(void) {
-  if (nosound || nosoundinit) return;
+  if (config.nosound() || nosoundinit) return;
 #ifdef SDL_MIXER
   Mix_FadeOutMusic(1000);
 
@@ -218,14 +219,14 @@ void snd_stoptitle(void) {
 }
 
 void snd_playtgame(void) {
-  if (nosound || nosoundinit) return;
+  if (config.nosound() || nosoundinit) return;
 #ifdef SDL_MIXER
   Mix_PlayMusic(tgame, -1);
 #endif
 }
 
 void snd_stoptgame(void) {
-  if (nosound || nosoundinit) return;
+  if (config.nosound() || nosoundinit) return;
 #ifdef SDL_MIXER
   Mix_FadeOutMusic(1000);
 

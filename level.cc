@@ -21,6 +21,7 @@
 #include "points.h"
 #include "archi.h"
 #include "decl.h"
+#include "configuration.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -433,7 +434,7 @@ void lev_selecttower(Uint8 number) {
         Uint16 ofs = 2;
 
         if (tmpbuf_len) {
-          tmpbuf = (Uint16 *)malloc(tmpbuf_len*sizeof(Uint16));
+          tmpbuf = new Uint16[tmpbuf_len];
           Uint16 idx = 0;
           while (idx < tmpbuf_len) {
             Uint8 run = mission[towerstart + ofs++];
@@ -501,7 +502,7 @@ bool lev_show_passwd(int levnum) {
           ((levnum % 3) == 0));
 }
 
-int lev_tower_passwd_entry(char *passwd) {
+int lev_tower_passwd_entry(const char *passwd) {
   int i;
   if (!passwd) return 0;
   for (i = 0; i < lev_towercount(); i++) {
@@ -552,7 +553,7 @@ char * lev_towername(void) {
 }
 
 void lev_set_towerdemo(int demolen, Uint16 *demobuf) {
-    if (towerdemo) free(towerdemo);
+    if (towerdemo) delete [] towerdemo;
     towerdemo = demobuf;
     towerdemo_len = demolen;
 }
@@ -785,7 +786,7 @@ void lev_restore(int row, int col, unsigned char bg) {
 
 
 /* load and save a tower */
-bool lev_loadtower(char *fname) {
+bool lev_loadtower(const char *fname) {
   FILE *in = open_local_data_file(fname);
   char line[200];
 
@@ -842,7 +843,7 @@ bool lev_loadtower(char *fname) {
           sscanf(line, "%i\n", &towerdemo_len);
     
           if (towerdemo_len > 0) {
-              towerdemo = (Uint16 *)malloc(towerdemo_len*sizeof(Uint16));
+              towerdemo = new Uint16[towerdemo_len];
     
               for (int idx = 0; idx < towerdemo_len; idx++) {
                   fgets(line, 200, in);
@@ -864,7 +865,7 @@ bool lev_loadtower(char *fname) {
   return true;
 }
 
-bool lev_savetower(char *fname) {
+bool lev_savetower(const char *fname) {
   FILE *out = create_local_data_file(fname);
 
   if (out == NULL) return false;

@@ -27,15 +27,15 @@
 
 #define starstep 5
 
-struct _star {
+typedef struct {
   long x, y;
   int state;
   int size;
-};
+} _star;
 
 static unsigned short star_spr_nr;
 static int num_stars;
-static struct _star *stars = (struct _star *)0;
+static _star *stars = (_star *)0;
 
 void sts_draw(void)
 {
@@ -53,7 +53,7 @@ void sts_init(int sn, int nstar) {
   }
   assert(nstar > 1, "sts_init with too few stars!");
   
-  stars = (struct _star *)malloc(sizeof(struct _star)*nstar);
+  stars = new _star[nstar];
   assert(stars, "Failed to alloc memory!");
   num_stars = nstar;
   
@@ -70,7 +70,7 @@ void sts_init(int sn, int nstar) {
 void
 sts_done(void)
 {
-    if (stars) free(stars);
+    if (stars) delete [] stars;
     num_stars = 0;
     stars = 0;
 }

@@ -24,9 +24,9 @@
 
 #include <stdlib.h>
 
-#define MAX_ELE 4
+#define MAX_ELE 10
 
-/* elevators are handled in a quite complicated manner: while
+/* elevators are handled in a quite complicated way: while
  the toppler is moving on the elevator the platform is invisible
  and drawn together with the toppler. The stick below the elevator
  is always drawn in such a way that the last one will appear or disappear

@@ -100,7 +100,6 @@ static void pause(Sint32 time, Uint32 x) {
   men_info("Pause", -1, 1);
 }
 
-
 bool bns_game(void) {
 
   static Uint32 xpos = 0;
@@ -131,8 +130,6 @@ bool bns_game(void) {
 
   do {
       
-    if (key_keypressed(quit_action)) break; /* kill */
-
     if (torpedox >= 0) {
       torpedox += 8;
       if (torpedox > (SCREENWID+SPR_TORPWID))

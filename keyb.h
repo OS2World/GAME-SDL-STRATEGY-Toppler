@@ -33,12 +33,11 @@ typedef enum {
   fire_key     =  0x0010,
   break_key    =  0x0020,
   pause_key    =  0x0040,
-  quit_action  =  0x0080, /* Not a key, but received on kill */
-  mousebttn1   =  0x0100,
+/*  mousebttn1   =  0x0100,
   mousebttn2   =  0x0200,
   mousebttn3   =  0x0400,
   mousebttn4   =  0x0800,
-  mousebttn5   =  0x1000,
+  mousebttn5   =  0x1000,*/
   any_key      =  0xFFFF
 } ttkey;
 

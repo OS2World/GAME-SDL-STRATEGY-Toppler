@@ -346,9 +346,9 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
   do {
      writebonus(tower_position, tower_angle, zeit, tec, extra, time);
      dcl_wait();
-  } while ((delay++ < 80) && !key_keypressed(fire_key) && !key_keypressed(quit_action));
+  } while ((delay++ < 80) && !key_keypressed(fire_key));
 
-  while ((zeit > 0) && !key_keypressed(quit_action)) {
+  while (zeit > 0) {
     dcl_wait();
     countdown(zeit);
     snd_score();
@@ -356,7 +356,7 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
 
-  while ((tec > 0) && !key_keypressed(quit_action)) {
+  while (tec > 0) {
     dcl_wait();
     countdown(tec);
     snd_score();
@@ -364,7 +364,7 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
 
-  while ((extra > 0) && !key_keypressed(quit_action)) {
+  while (extra > 0) {
     dcl_wait();
     countdown(extra);
     snd_score();
@@ -377,7 +377,7 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
   do {
      writebonus(tower_position, tower_angle, zeit, tec, extra, time);
      dcl_wait();
-  } while ((delay++ < 30) && (!key_keypressed(fire_key) || !key_keypressed(quit_action)));
+  } while ((delay++ < 30) && (!key_keypressed(fire_key)));
 }
 
 /* update the time */
@@ -463,13 +463,13 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   bool space;
 
   gam_states state = STATE_PLAYING;
-    
+
   int demolen = 0, demo_alloc = 0;
   Uint16 demokeys = 0;
   Uint16 *dbuf = *(Uint16 **)demobuf;
-    
+
   screenflag drawflags = SF_NONE;
-    
+
   /* the maximal reached height for this tower */
   int reached_height;
 
@@ -487,7 +487,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   else if (demo > 0) drawflags = SF_DEMO;
 
   assert(!(demo && !demobuf), "Trying to play or record a null demo.");
-    
+
   set_men_bgproc(game_background_proc);
 
   top_init();
@@ -503,7 +503,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
     bg_tower_pos = tower_position;
     bg_tower_angle = tower_angle;
     bg_time = time;
-      
+
     if ((demo > 0) && (demolen < demo) && dbuf) {
       demokeys = dbuf[demolen++];
       get_keys(left_right, up_down, space, demokeys);
@@ -512,22 +512,22 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
       demokeys = key_keystat();
       get_keys(left_right, up_down, space, demokeys);
     }
-      
+
     if (demo < 0) {
       if ((demolen >= demo_alloc) || (dbuf == NULL)) {
         demo_alloc += 200;
-        Uint16 *tmp = (Uint16 *)malloc((demo_alloc)*sizeof(Uint16));
+        Uint16 *tmp = new Uint16[demo_alloc];
         if (demolen && (dbuf)) {
           (void)memcpy(tmp, dbuf, demolen*sizeof(Uint16));
-          free(dbuf);
+          delete [] dbuf;
         }
         dbuf = tmp;
         *(Uint16 **)demobuf = tmp;
       }
       dbuf[demolen++] = demokeys;
     }
-      
-    if (key_keypressed(quit_action) || ((demo >= 0) && (demolen > demo))) {
+
+    if ((demo >= 0) && (demolen > demo)) {
       state = STATE_ABORTED;
       break;
     }
@@ -535,13 +535,13 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
     if (key_keypressed(break_key)) {
       if (demo) state = STATE_ABORTED;
       else
-      escape(state, tower_position, tower_angle, time);
+        escape(state, tower_position, tower_angle, time);
     }
 
     if (key_keypressed(pause_key)) {
       if (demo) state = STATE_ABORTED;
       else
-      pause(tower_position, tower_angle, time);
+        pause(tower_position, tower_angle, time);
     }
 
     if (!demo) key_readkey();
@@ -579,7 +579,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
       dcl_wait();
     }
 
-    while ((tower_position > 8) && !key_keypressed(quit_action)) {
+    while (tower_position > 8) {
 
       if (top_verticalpos() > 8) {
         lev_removelayer(top_verticalpos() / 4 - 2);
@@ -604,9 +604,9 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   key_readkey();
 
   if (demo < 0) {
-      demo = demolen;
+    demo = demolen;
   }
-  if (key_keypressed(quit_action) || demo) state = STATE_ABORTED;
+  if (demo) state = STATE_ABORTED;
 
   switch (state) {
 
