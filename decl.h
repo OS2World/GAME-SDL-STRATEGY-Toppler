@@ -63,21 +63,21 @@
 
 /* size of platform sprite */
 #define SPR_STEPWID 40
-#define SPR_STEPHEI 14
+#define SPR_STEPHEI 15
 #define SPR_STEPFRAMES 1
 
 /* size of elevator sprite */
 #define SPR_ELEVAWID 32
-#define SPR_ELEVAHEI 14
+#define SPR_ELEVAHEI 15
 #define SPR_ELEVAFRAMES 1
 
 /* size of elevator stick / wall */
 #define SPR_STICKWID 16
-#define SPR_STICKHEI 14
+#define SPR_STICKHEI 15
 
 /* size of shootable flashing box */
-#define SPR_BOXWID 8
-#define SPR_BOXHEI 8
+#define SPR_BOXWID 16
+#define SPR_BOXHEI 16
 
 /* size of our hero */
 #define SPR_HEROWID 40
@@ -88,12 +88,12 @@
 #define SPR_AMMOHEI 16
 
 /* size of robot sprite */
-#define SPR_ROBOTWID 16
+#define SPR_ROBOTWID 32
 #define SPR_ROBOTHEI 32
 
 /* cross sprite size */
-#define SPR_CROSSWID 16
-#define SPR_CROSSHEI 16
+#define SPR_CROSSWID 32
+#define SPR_CROSSHEI 32
 
 /* size of the bonus game fish */
 #define SPR_FISHWID  20
@@ -118,7 +118,7 @@
 #define grafdat         "graphics"
 #define fontdat         "font"
 #define spritedat       "sprites"
-#define topplerdat      "toppler"
+#define topplerdat      "dude"
 #define menudat         "menu"
 #define crossdat        "cross"
 #define titledat        "titles"

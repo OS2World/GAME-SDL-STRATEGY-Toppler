@@ -902,17 +902,17 @@ congrats_background_proc(void)
   scr_blit(spr_spritedata(menupicture), 0, 0);
   scr_blit(spr_spritedata(titledata), (SCREENWID / 2) - (SPR_TITLEWID / 2), 20);
 
-  scr_writetext_center(70, "Congratulations");
+  scr_writetext_center(130, "Congratulations");
   if (congrats_placement == 0) {
-    scr_writetext_center(90, "You got the");
-    scr_writetext_center(110, "highest score");
+    scr_writetext_center(170, "You got the");
+    scr_writetext_center(210, "highest score");
   } else {
     char buf[40];
     sprintf(buf, "%i best players", NUMHISCORES);
-    scr_writetext_center(90, "You are one of the");
-    scr_writetext_center(110, buf);
+    scr_writetext_center(170, "You are one of the");
+    scr_writetext_center(210, buf);
   }
-  scr_writetext_center(140, "Please enter your name");
+  scr_writetext_center(270, "Please enter your name");
 }
   
 void men_highscore(unsigned long pt) {
