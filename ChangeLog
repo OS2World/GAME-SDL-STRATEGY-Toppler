@@ -1,8 +1,9 @@
-Version 1.0.0
+Version 1.0.0 8.Mar.2004
 
 - check for the existence of the datafile
 - merge the 2 READMEs the have somehow appeared
 - some soundeffects for the bonusgame
+- GLP header for files
 
 Version 0.99.2
 
