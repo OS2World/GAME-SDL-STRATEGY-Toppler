@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
     SDL_InitSubSystem(SDL_INIT_VIDEO);
     SDL_WM_SetCaption("Nebulous", NULL);
     int mouse = SDL_ShowCursor(fullscreen ? 0 : 1);
+    tt_has_focus = true;
     atexit(SDL_Quit);
     srand(time(0));
     startgame();

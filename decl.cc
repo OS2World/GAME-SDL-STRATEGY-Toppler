@@ -40,6 +40,7 @@ bool use_alpha_layers = false;
 bool use_alpha_font = false;
 bool use_alpha_darkening = false;
 bool use_waves = false;
+bool status_top = true;  /* is status line top or bottom of screen? */
 
 char editor_towername[TOWERNAMELEN+1] = "";
 
@@ -66,8 +67,17 @@ static const struct _config_data config_data[] = {
     CNF_BOOL( "use_alpha_font",      &use_alpha_font ),
     CNF_BOOL( "use_alpha_layers",    &use_alpha_layers ),
     CNF_BOOL( "use_alpha_darkening", &use_alpha_darkening ),
-    CNF_BOOL( "use_waves",           &use_waves )
+    CNF_BOOL( "use_waves",           &use_waves ),
+    CNF_BOOL( "status_top",          &status_top )
 };
+
+bool str2bool(char *s) {
+    if (s) {
+	if (!strcmp("yes", s) || !strcmp("true", s)) return true;
+	else return (atoi(s) != 0);
+    }
+    return false;
+}
 
 void dcl_wait(void) {
   static Uint32 last;
@@ -303,26 +313,29 @@ FILE *create_local_data_file(char *name) {
 
 
 static void parse_config(FILE * in) {
-  char line[200], param[200];
+  char line[201], param[201];
 
   while (!feof(in)) {
-    fscanf(in, "%s %s\n", line, param);
-      
-    for (int idx = 0; idx < SIZE(config_data); idx++) {
-      if (strstr(line, config_data[idx].cnf_name)) {
-        switch (config_data[idx].cnf_typ) {
-        case CT_BOOL:
-          *(bool *)config_data[idx].cnf_var = (atoi(param) == 1);
-          break;
-        case CT_STRING:
-          strncpy((char *)config_data[idx].cnf_var, param, config_data[idx].maxlen);
-          break;
-        default: assert(0, "Unknown config data type.");
-        }
-        break;
-      }
-    }
-  }
+    if (fscanf(in, "%200s%*[\t ]%200s\n", line, param) == 2) {
+      for (int idx = 0; idx < SIZE(config_data); idx++) {
+	if (strstr(line, config_data[idx].cnf_name)) {
+	  switch (config_data[idx].cnf_typ) {
+	    case CT_BOOL:
+	      *(bool *)config_data[idx].cnf_var = str2bool(param);
+	      break;
+	    case CT_STRING:
+	      if (strlen(param) > 1) {
+		param[strlen(param)-1] = '\0';
+		strncpy((char *)config_data[idx].cnf_var, param+1, config_data[idx].maxlen);
+	      }
+	      break;
+	    default: assert(0, "Unknown config data type.");
+	  }
+	  break;
+	} //if (strstr(...
+      } //for
+    } //if (fscanf(...
+  } //while (!feof(in))
 }
 
 void load_config(void) {
@@ -355,7 +368,7 @@ void save_config(void) {
 	      fprintf(out, "%i", (*(bool *)config_data[idx].cnf_var)?(1):(0));
 	      break;
 	    case CT_STRING:
-	      fprintf(out, "%s", (char *)(config_data[idx].cnf_var));
+	      fprintf(out, "\"%s\"", (char *)(config_data[idx].cnf_var));
 	      break;
 	    default: assert(0, "Unknown config data type.");
 	}

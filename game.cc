@@ -79,7 +79,7 @@ void gam_arrival(void) {
   key_readkey();
 
   do {
-    scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart, 0);
+    scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart, SF_NONE);
     scr_darkenscreen();
        scr_writetext_center((SCREENHEI / 5), "You are entering the");
     if (strlen(lev_towername()))
@@ -168,7 +168,7 @@ void gam_pick_up(Uint8 anglepos, Uint16 time) {
   key_readkey();
 
   do {
-    scr_drawall(8, (4 - anglepos) & 0x7f, time, svisible, subshape, substart, 0);
+    scr_drawall(8, (4 - anglepos) & 0x7f, time, svisible, subshape, substart, SF_NONE);
     scr_swap();
 
     switch (b) {
@@ -275,7 +275,7 @@ static int bg_time = 0;
 /* men_yn() background drawing callback proc */
 static void game_background_proc(void) {
   scr_drawall(towerpos(top_verticalpos(), bg_tower_pos,
-                       top_anglepos(), bg_tower_angle), (4 - top_anglepos()) & 0x7f, bg_time, false, 0, 0, 0);
+                       top_anglepos(), bg_tower_angle), (4 - top_anglepos()) & 0x7f, bg_time, false, 0, 0, SF_NONE);
 
   scr_darkenscreen();
 }
@@ -293,7 +293,7 @@ static void writebonus(int &tower_position, int tower_anglepos, int zeit, int te
   char s[30];
 
   scr_drawall(towerpos(top_verticalpos(), tower_position,
-                       top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, 0);
+                       top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, SF_NONE);
 
   scr_darkenscreen();
 
@@ -376,7 +376,7 @@ static void akt_time(int &time, int &timecount, gam_states &state) {
     if (timecount == 5) {
       timecount = 0;
       time--;
-      if (time <= 20 || (time <= 40 && (time % 2)))
+      if ((time >= 0) && (time <= 20 || (time <= 40 && (time % 2))))
         snd_alarm();
       if (time == 0)
         state = STATE_TIMEOUT;
@@ -457,7 +457,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   Uint16 demokeys = 0;
   Uint16 *dbuf = *(Uint16 **)demobuf;
     
-  int drawflags = 0;
+  screenflag drawflags = SF_NONE;
     
   /* the maximal reached height for this tower */
   int reached_height;
@@ -472,8 +472,8 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   /* time left for the player to reach the tower */
   int time = lev_towertime();
 
-  if (demo < 0) drawflags = 1;
-  else if (demo > 0) drawflags = 2;
+  if (demo < 0) drawflags = SF_REC;
+  else if (demo > 0) drawflags = SF_DEMO;
 
   assert(!(demo && !demobuf), "Trying to play or record a null demo.");
     

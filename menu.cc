@@ -49,15 +49,12 @@
 #define MENUTITLELEN  ((SCREENWID / FONTMINWID) + 1)
 #define MENUOPTIONLEN MENUTITLELEN
 
-/* Menu option flags */
-#define MOFLAG_PASSKEYS 0x01  /* Do keys get passed onto this option? */
-
 /* menu option */
 struct _menuoption {
    char oname[MENUOPTIONLEN];    /* text shown to user */
    menuopt_callback_proc oproc;  /* callback proc, supplies actions and the name */
    int  ostate;                  /* callback proc can use this */
-   int  oflags;                  /* MOFLAG_foo */
+   menuoptflags  oflags;         /* MOF_foo */
    SDLKey quickkey;              /* quick jump key; if user presses this key,
                                   * this menu option is hilited.
                                   */
@@ -78,7 +75,6 @@ struct _menusystem {
                                   */
    bool exitmenu;                /* if true, the menu exits */
    bool wraparound;              /* if true, the hilite bar wraps around */
-   bool activatedoption;         
    int ystart;                   /* y pos where this menu begins, in pixels */
    int yhilitpos;                /* y pos of the hilite bar, in pixels */
    int opt_steal_control;        /* if >= 0, that option automagically gets
@@ -151,7 +147,6 @@ new_menu_system(char *title, menuopt_callback_proc pr, int molen, int ystart)
     ms->maxoptlen = molen;
     ms->exitmenu = false;
     ms->wraparound = false;
-    ms->activatedoption = false;
     ms->curr_mtime = ms->hilited = 0;
     ms->ystart = ystart;
     ms->key = SDLK_UNKNOWN;
@@ -167,7 +162,7 @@ add_menu_option(struct _menusystem *ms,
                 char *name,
                 menuopt_callback_proc pr,
                 SDLKey quickkey,
-                int flags,
+                menuoptflags flags,
                 int state) {
   struct _menuoption *tmp;
   int olen = 0;
@@ -304,7 +299,10 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
   for (y = 0; y < maxy; y++) {
     if (strlen(ms->moption[y+offs].oname)) {
       miny = ms->ystart + (y + titlehei)*FONTHEI;
-      scr_writetext_center(miny, ms->moption[y+offs].oname);
+      if (!(ms->moption[y+offs].oflags & MOF_NOCENTER))
+	  scr_writetext_center(miny, ms->moption[y+offs].oname);
+      else scr_writetext((SCREENWID - ms->maxoptlen) / 2 + 4, miny,
+			 ms->moption[y+offs].oname);
     }
   }
 
@@ -336,17 +334,24 @@ menu_system_caller(struct _menusystem *ms)
 struct _menusystem *
 run_menu_system(struct _menusystem *ms)
 {
-  Uint16 x,y, bttn;
+  Uint16 x,y;
+  ttkey bttn;
   bool stolen = false;
 
   if (!ms) return ms;
+
+  /* find the first option with text */
+  if (!strlen(ms->moption[ms->hilited].oname))
+      do {
+	  ms->hilited = (ms->hilited + 1) % ms->numoptions;
+      } while (!strlen(ms->moption[ms->hilited].oname));
 
   (void)key_sdlkey();
 
   do {
 
     stolen = false;
-    bttn = false;
+    bttn = no_key;
     x = y = 0;
 
     ms->key = SDLK_UNKNOWN;
@@ -387,7 +392,7 @@ run_menu_system(struct _menusystem *ms)
           }
       }
 
-      if ((((ms->moption[ms->hilited].oflags & MOFLAG_PASSKEYS)) || stolen) &&
+      if ((((ms->moption[ms->hilited].oflags & MOF_PASSKEYS)) || stolen) &&
           (ms->moption[ms->hilited].oproc) && ((ms->key != SDLK_UNKNOWN) || stolen)) {
         menu_system_caller(ms);
       }
@@ -412,9 +417,15 @@ run_menu_system(struct _menusystem *ms)
               if (ms->hilited < 0) ms->hilited = ms->numoptions - 1;
             } while (!strlen(ms->moption[ms->hilited].oname));
           } else {
+	    int tmpz = ms->hilited;
             if (ms->hilited > 0) {
-              ms->hilited--;
-              if (!strlen(ms->moption[ms->hilited].oname)) ms->hilited--;
+	      do {
+		  if (ms->hilited < 0) {
+		      ms->hilited = tmpz;
+		      break;
+		  }
+		  ms->hilited--;
+              } while (!strlen(ms->moption[ms->hilited].oname));
             }
           }
           break;
@@ -546,7 +557,8 @@ static char *redefine_menu_up(void *tms) {
   const char *code[REDEFINEREC] = {"Up", "Down", "Left", "Right", "Fire"};
   char *keystr;
   static int blink, times_called;
-  const Uint16 key[REDEFINEREC] = {up_key, down_key, left_key, right_key, fire_key};
+  const ttkey key[REDEFINEREC] = {up_key, down_key, left_key, right_key, fire_key};
+  const char *redef_fmt = "%s:  %s";
   buf[0] = '\0';
   if (ms) {
     switch (ms->mstate) {
@@ -572,11 +584,11 @@ static char *redefine_menu_up(void *tms) {
     }
     if ((blink & 4) || (ms->mstate != 1))
       keystr = SDL_GetKeyName(key_conv2sdlkey(key[ms->hilited % REDEFINEREC], true));
-    else keystr = "????";
-    sprintf(buf, "%s: %s", code[ms->hilited % REDEFINEREC], keystr);
+    else keystr = "";
+    sprintf(buf, redef_fmt, code[ms->hilited % REDEFINEREC], keystr);
   } else {
     keystr = SDL_GetKeyName(key_conv2sdlkey(key[times_called], true));
-    sprintf(buf, "%s: %s", code[times_called], keystr);
+    sprintf(buf, redef_fmt, code[times_called], keystr);
     times_called = (times_called + 1) % REDEFINEREC;
   }
   return buf;
@@ -588,11 +600,11 @@ static char *run_redefine_menu(void *prevmenu) {
 
     times_called = 0;
 
-    ms = add_menu_option(ms, NULL, redefine_menu_up);
-    ms = add_menu_option(ms, NULL, redefine_menu_up);
-    ms = add_menu_option(ms, NULL, redefine_menu_up);
-    ms = add_menu_option(ms, NULL, redefine_menu_up);
-    ms = add_menu_option(ms, NULL, redefine_menu_up);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
+    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_NOCENTER);
     ms = add_menu_option(ms, "Back", NULL);
 
     ms = run_menu_system(ms);
@@ -870,7 +882,7 @@ get_hiscores_string(int p, char **pos, char **points, char **name)
   static char buf2[SCORENAMELEN + 5];
   static char buf3[SCORENAMELEN + 5];
   buf1[0] = buf2[0] = buf3[0] = '\0';
-  sprintf(buf1, "%i", p + 1);
+  sprintf(buf1, "%i.", p + 1);
   sprintf(buf2, "%i", scores[p].points);
   sprintf(buf3, "%s", scores[p].name);
 
@@ -922,7 +934,7 @@ men_hiscores_background_proc(void *ms)
         break;
       } else hiscores_state = 2;
     case 2: /* move the scores out */
-      if (hiscores_xpos > -hiscores_maxlen) {
+      if (hiscores_xpos > -(hiscores_maxlen + 40)) {
         hiscores_timer = 0;
         hiscores_xpos -= 10;
         break;
@@ -935,28 +947,27 @@ men_hiscores_background_proc(void *ms)
     }
     for (int t = 0; t < HISCORES_PER_PAGE; t++) {
       int cs = t + (hiscores_pager * HISCORES_PER_PAGE);
+      int ypos = (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + FONTHEI*2;
       char *pos, *points, *name;
       get_hiscores_string(cs, &pos, &points, &name);
       if (cs == hiscores_hilited) {
-        int clen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20 + 10;
-        scr_putbar(hiscores_xpos - 5,
-                   (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45 - 3,
+        int clen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20 * 2 + 20;
+        scr_putbar(hiscores_xpos - 5, ypos - 3,
                    clen, FONTHEI + 3, blink_r, blink_g, blink_b, (use_alpha_darkening)?128:255);
       }
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, pos);
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 10 + hiscores_maxlen_points - scr_textlength(points) , (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, points);
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points, (t*(FONTHEI+1)) + spr_spritedata(titledata)->h + 45, name);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), ypos, pos);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points - scr_textlength(points), ypos, points);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + 20 + hiscores_maxlen_points, ypos, name);
     }
     scr_color_ramp(&blink_r, &blink_g, &blink_b);
-
-    return NULL;
   }
   return "HighScores";
 }
 
 static void show_scores(bool back = true, int mark = -1) {
-
-  struct _menusystem *ms = new_menu_system("", men_hiscores_background_proc, 0, SCREENHEI-(3*FONTHEI));
+  static char buf[50];
+  sprintf(buf, "Scores for %s", lev_missionname(currentmission));
+  struct _menusystem *ms = new_menu_system(buf, men_hiscores_background_proc, 0, spr_spritedata(titledata)->h + 30);
 
   if (!ms) return;
 
@@ -972,6 +983,9 @@ static void show_scores(bool back = true, int mark = -1) {
   hiscores_maxlen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20;
   hiscores_xpos = SCREENWID;
   hiscores_hilited = mark;
+
+  /* fake options; the empty lines are used by the background proc */
+  for (int tmpz = 0; tmpz < HISCORES_PER_PAGE; tmpz++) ms = add_menu_option(ms, NULL, NULL);
 
   if (back)
     ms = add_menu_option(ms, "Back", NULL);
@@ -1012,11 +1026,11 @@ main_game_loop()
       gam_pick_up(anglepos, resttime);
 
       snd_wateroff();
+      tower++;
 
       if (tower < lev_towercount()) {
 
         // load next tower, because its colors will be needed for bonus game
-        tower++;
         gam_loadtower(tower);
 
         if (!bns_game())
@@ -1025,7 +1039,7 @@ main_game_loop()
     } else {
       snd_wateroff();
     }
-  } while (pts_lifesleft() && (tower != 8) && (gameresult != GAME_ABORTED));
+  } while (pts_lifesleft() && (tower < lev_towercount()) && (gameresult != GAME_ABORTED));
 
   men_highscore(pts_points());
 }
@@ -1037,8 +1051,8 @@ men_main_bonusgame_proc(void *ms)
   if (ms) {
     snd_stoptitle();
     gam_newgame();
-    lev_set_towercol(rand() % 256, rand() % 256, rand() % 256);
     scr_settowercolor(rand() % 256, rand() % 256, rand() % 256);
+    lev_set_towercol(rand() % 256, rand() % 256, rand() % 256);
     bns_game();
     snd_playtitle();
   }
@@ -1093,11 +1107,9 @@ static char *
 men_main_timer_proc(void *ms)
 {
     if (ms) {
-	Uint8 idx;
 	Uint8 num_demos = 0;
 	Uint8 demos[256];
 	Uint16 miss = rand() % lev_missionnumber();
-	Uint16 tmiss;
 	Uint8 num_towers;
 
 	int demolen;
@@ -1106,12 +1118,12 @@ men_main_timer_proc(void *ms)
 	Uint16 resttime;
 
 	for (int tmpm = 0; (tmpm < lev_missionnumber()) && (num_demos == 0); tmpm++) {
-	    tmiss = (miss + tmpm) % lev_missionnumber();
+	    Uint16 tmiss = (miss + tmpm) % lev_missionnumber();
 	    lev_loadmission(tmiss);
 
 	    num_towers = lev_towercount();
 
-	    for (idx = 0; (idx < num_towers) && (num_demos < 256); idx++) {
+	    for (Uint8 idx = 0; (idx < num_towers) && (num_demos < 256); idx++) {
 		lev_selecttower(idx);
 		lev_get_towerdemo(demolen, demobuf);
 		if (demolen) demos[num_demos++] = idx;
@@ -1150,7 +1162,7 @@ void men_main() {
 
   ms = set_menu_system_timeproc(ms, 700, men_main_timer_proc);
     
-  ms = add_menu_option(ms, NULL, men_main_startgame_proc, SDLK_s, MOFLAG_PASSKEYS);
+  ms = add_menu_option(ms, NULL, men_main_startgame_proc, SDLK_s, MOF_PASSKEYS);
   ms = add_menu_option(ms, NULL, NULL);
   ms = add_menu_option(ms, NULL, men_main_highscore_proc, SDLK_h);
   ms = add_menu_option(ms, NULL, men_options, SDLK_o);
@@ -1222,14 +1234,41 @@ void
 draw_input_box(int x, int y, int len, int cursor, char *txt)
 {
   static int col_r = 0, col_g = 200, col_b = 120;
+  int nlen = len, slen = len;
+  int arrows = 0;
 
-  scr_putbar(x, y, len * FONTMAXWID, FONTHEI, 0, 0, 0, (use_alpha_darkening)?128:255);
-  scr_writetext(x+1,y, txt);
+  if ((len+3)*FONTMAXWID > SCREENWID)
+      nlen = (SCREENWID / FONTMAXWID) - 3;
 
-  if ((input_box_cursor_state & 4) && ((cursor >= 0) && (cursor < len)))
+  if (x < 0) x = (SCREENWID / 2) - nlen * (FONTMAXWID / 2);
+  if (x < 0) x = 0;
+  if (y < 0) y = (SCREENHEI / 2) - (FONTHEI / 2);
+
+  scr_putbar(x, y, nlen * FONTMAXWID, FONTHEI, 0, 0, 0, (use_alpha_darkening)?128:255);
+
+  if (scr_textlength(txt) >= nlen*FONTMAXWID) {
+      while ((cursor >= 0) &&
+	     (scr_textlength(txt, cursor+(nlen/2)) >= (nlen)*FONTMAXWID)) {
+	  cursor--;
+	  txt++;
+	  arrows = 1;
+      }
+  }
+  if (scr_textlength(txt) >= nlen*FONTMAXWID) {
+      arrows |= 2;
+      while ((slen > 0) && (scr_textlength(txt, slen) >= nlen*FONTMAXWID)) slen--;
+  }
+
+  scr_writetext(x+1,y, txt, slen);
+
+  if ((input_box_cursor_state & 4) && (cursor >= 0))
     scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI,
                col_r, col_g, col_b, (use_alpha_darkening)?128:255);
-  scr_putrect(x,y, len * FONTMAXWID, FONTHEI, col_r, col_g, col_b, 255);
+  scr_putrect(x,y, nlen * FONTMAXWID, FONTHEI, col_r, col_g, col_b, 255);
+
+  if ((arrows & 1)) scr_writetext(x-FONTMAXWID,y, "\x08"); //fontptrright
+  if ((arrows & 2)) scr_writetext(x+(nlen*FONTMAXWID),y, "\x06"); //fontptrleft
+    
   input_box_cursor_state++;
 
   scr_color_ramp(&col_r, &col_g, &col_b);
@@ -1247,11 +1286,7 @@ void men_input(char *s, int max_len, int xpos, int ypos, const char *allowed) {
   int ztmp;
   bool ende = false;
 
-  if (xpos < 0) xpos = (SCREENWID / 2) - max_len * (FONTMAXWID / 2);
-  if (xpos < 0) xpos = 0;
-
-  if (ypos < 0) ypos = (SCREENHEI / 2) - (FONTHEI / 2);
-
+  (void)key_readkey();
   key_wait_for_none(men_input_wait_proc);
 
   do {

@@ -27,6 +27,7 @@
 #include "snowball.h"
 #include "level.h"
 #include "decl.h"
+#include "keyb.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -91,6 +92,9 @@ static struct _scroll_layer *scroll_layers;
 
 Uint8 towerpal[2*256];
 Uint8 crosspal[2*256];
+
+Uint8 last_towercol_r, last_towercol_g, last_towercol_b;
+
 
 void color_ramp1(int *c, int *adj, int min, int max) {
   *c = *c + *adj;
@@ -268,8 +272,6 @@ static void loadgraphics(void) {
       }
   }
 
-  scr_settowercolor(255, 0, 0);
-
   for (t = 0; t < 256; t++) {
     unsigned char c1, c2;
 
@@ -371,6 +373,14 @@ void scr_settowercolor(Uint8 r, Uint8 g, Uint8 b) {
     for (int et = 0; et < 3; et++)
       if (doors[t+36].width != 0)
         scr_regensprites(doors[t+36].data[et], spr_spritedata(doors[t+36].s[et]), 1, doors[t+36].width, SPR_SLICEHEI, false, pal, false);
+
+  last_towercol_r = r;
+  last_towercol_g = g;
+  last_towercol_b = b;
+}
+
+void resettowercolor(void) {
+  scr_settowercolor(last_towercol_r, last_towercol_g, last_towercol_b);
 }
 
 void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
@@ -488,6 +498,7 @@ static void free_memory(void) {
 void scr_reload_sprites() {
   free_memory();
   load_sprites();
+  resettowercolor();
 }
 
 void scr_init(void) {
@@ -739,10 +750,10 @@ void scr_writetext_center(long y, const char *s) {
   scr_writetext ((SCREENWID - scr_textlength(s)) / 2, y, s);
 }
 
-void scr_writetext(long x, long y, const char *s) {
+void scr_writetext(long x, long y, const char *s, int maxchars) {
   int t = 0;
   unsigned char c;
-  while (s[t]) {
+  while (s[t] && (maxchars-- != 0)) {
     if (s[t] == ' ') {
       x += FONTMINWID;
       t++;
@@ -831,6 +842,11 @@ scr_putrect(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb, Uin
 
 /* exchange active and inactive page */
 void scr_swap(void) {
+  if (!tt_has_focus) {
+      scr_darkenscreen();
+      SDL_UpdateRect(display, 0, 0, 0, 0);
+      wait_for_focus();
+  }
   SDL_UpdateRect(display, 0, 0, 0, 0);
 }
 
@@ -925,32 +941,32 @@ static void putcase(unsigned char w, long x, long h) {
   long angle = 0;
   switch (w) {
 
-  case 0:
+  case TB_EMPTY:
     /* blank case */
     break;
 
-  case 0x85:
-  case 0x89:
-  case 0x8d:
+  case TB_ELEV_BOTTOM:
+  case TB_ELEV_TOP:
+  case TB_ELEV_MIDDLE:
     scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h);
 
     break;
 
-  case 0x81:
-  case 0x91:
-  case 0xb1:
+  case TB_STEP:
+  case TB_STEP_VANISHER:
+  case TB_STEP_LSLIDER:
     scr_blit(spr_spritedata((angle % SPR_STEPFRAMES) + step), x - (SPR_STEPWID / 2), h);
 
     break;
 
-  case 0x80:
-  case 0x84:
-  case 0x8c:
+  case TB_STICK:
+  case TB_STICK_BOTTOM:
+  case TB_STICK_MIDDLE:
     scr_blit(spr_spritedata(stick), x - (SPR_STICKWID / 2), h);
 
     break;
 
-  case 0x82:
+  case TB_BOX:
     scr_blit(spr_spritedata(boxst + boxstate), x - (SPR_BOXWID / 2), h);
 
     break;
@@ -961,57 +977,57 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
   long angle = 0;
   switch (w) {
 
-  case 0:
+  case TB_EMPTY:
     /* blank case */
     break;
 
-  case 0x85:
+  case TB_ELEV_BOTTOM:
     scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - (state % 4));
     break;
-  case 0x0c:
+  case TB_STATION_MIDDLE:
     scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - SPR_SLICEHEI/2 + abs(state - 8));
     break;
-  case 0x08:
+  case TB_STATION_TOP:
     scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h + (state % 4));
     break;
-  case 0x81:
+  case TB_STEP:
     scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
     break;
-  case 0x91:
+  case TB_STEP_VANISHER:
     if (state & 1)
       scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
     break;
-  case 0xb1:
+  case TB_STEP_LSLIDER:
     scr_blit(spr_spritedata(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) + state % 4, h);
     break;
 
-  case 0x80:
+  case TB_STICK:
     scr_blit(spr_spritedata(stick), x - (SPR_STICKWID / 2), h);
     break;
 
-  case 0x82:
+  case TB_BOX:
     scr_blit(spr_spritedata(boxst + boxstate), x - (SPR_BOXWID / 2), h);
     break;
 
-  case 0x10:
+  case TB_ROBOT1:
     scr_blit(spr_spritedata(ballst + 1), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
     break;
-  case 0x20:
+  case TB_ROBOT2:
     scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2) + state / 2, h - SPR_ROBOTHEI/2);
     break;
-  case 0x30:
+  case TB_ROBOT3:
     scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
     break;
-  case 0x40:
+  case TB_ROBOT4:
     scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
     break;
-  case 0x50:
+  case TB_ROBOT5:
     scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
     break;
-  case 0x60:
+  case TB_ROBOT6:
     scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
     break;
-  case 0x70:
+  case TB_ROBOT7:
     scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
     break;
   }
@@ -1189,25 +1205,34 @@ static void putkreuz(long vert)
 }
 
 /* draws the points, time and lifes left */
-static void draw_data(int time)
+static void draw_data(int time, screenflag flags)
 {
   char s[256];
   int t;
+  int y = status_top ? 5 : SCREENHEI - FONTHEI;
 
   if (time > 0) {
     sprintf(s, "%u", time);
-    scr_writetext_center(5L, s);
+    scr_writetext_center(y, s);
   }
 
   sprintf(s, "%u", pts_points());
-  scr_writetext(5L, 5L, s);
+  scr_writetext(5L, y, s);
 
   *s = '\0';
   if (pts_lifes() < 4)
     for (t = 0; t < pts_lifes(); t++)
       sprintf(s + strlen(s), "%c", fonttoppler);
   else sprintf(s, "%ix%c", pts_lifes(), fonttoppler);
-  scr_writetext(SCREENWID - scr_textlength(s) - 5, 5, s);
+  scr_writetext(SCREENWID - scr_textlength(s) - 5, y, s);
+
+  y = status_top ? SCREENHEI - FONTHEI : 5;
+  switch (flags) {
+    case SF_REC:  if (!(boxstate & 8)) scr_writetext_center(y, "REC"); break;
+    case SF_DEMO: scr_writetext_center(y, "DEMO"); break;
+    case SF_NONE:
+    default:      break;
+  }
 }
 
 void scr_drawall(long vert,
@@ -1216,7 +1241,7 @@ void scr_drawall(long vert,
                  bool svisible,
                  int subshape,
                  int substart,
-                 int flags
+                 screenflag flags
                 ) {
 
   cleardesk();
@@ -1257,15 +1282,9 @@ void scr_drawall(long vert,
 
   putwater(vert);
 
-  draw_data(time);
+  draw_data(time, flags);
 
   boxstate = (boxstate + 1) & 0xf;
-
-  if (flags) {
-      int y = SCREENHEI - FONTHEI;
-      if ((flags == 1) && !(boxstate & 8)) scr_writetext_center(y, "REC");
-      else if (flags == 2) scr_writetext_center(y, "DEMO");
-  }
 }
 
 void scr_drawedit(long vpos, long apos, bool showtime) {
@@ -1353,7 +1372,7 @@ void scr_draw_bonus2(long horiz, long towerpos) {
   for (l = sl_tower_depth; l < num_scrolllayers; l++) 
       put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
 
-  draw_data(-1);
+  draw_data(-1, SF_NONE);
 }
 
 void scr_draw_submarine(long vert, long x, long number) {

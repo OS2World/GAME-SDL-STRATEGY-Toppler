@@ -24,6 +24,36 @@
 /* handles one mission with towers and the necessary manipulations
  on the towerlayout when the game is going on */
 
+/* tower blocks.
+   if you change these, also change towerblockdata[] in level.cc */
+typedef enum {
+    TB_EMPTY,
+    TB_STATION_TOP,
+    TB_STATION_MIDDLE,
+    TB_STATION_BOTTOM,
+    TB_ROBOT1,
+    TB_ROBOT2,
+    TB_ROBOT3,
+    TB_ROBOT4,
+    TB_ROBOT5,
+    TB_ROBOT6,
+    TB_ROBOT7,
+    TB_STICK,
+    TB_STEP,
+    TB_STEP_VANISHER,
+    TB_STEP_LSLIDER,
+    TB_BOX,
+    TB_DOOR,
+    TB_DOOR_TARGET,
+    TB_STICK_TOP,
+    TB_STICK_MIDDLE,
+    TB_STICK_BOTTOM,
+    TB_ELEV_TOP,
+    TB_ELEV_MIDDLE,
+    TB_ELEV_BOTTOM,
+    NUM_TBLOCKS
+} towerblock;
+
 /* lev_is_consistent() returns one of these.
  * If you add to these, also add to problemstr[] in leveledit.cc */
 
@@ -106,6 +136,9 @@ bool lev_is_door_upperend(int row, int col);
 
 // returns true, if the given positions contains a level of a door
 bool lev_is_door(int row, int col);
+
+// returns true, if block in tower pos is a robot
+bool lev_is_robot(int row, int col);
 
 // returns true, if the given coordinates contains a layer of a target door
 bool lev_is_targetdoor(int row, int col);

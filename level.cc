@@ -25,58 +25,46 @@
 #include <string.h>
 #include <stdlib.h>
 
-
-/*
-  bitmasks for the levelfield
-
-  0 == empty
-
-  $08 00001000 top station (marker)
-  $0c 00001100 middle station (marker)
-  $04 00000100 bottom station (marker)
-
-  $10 00010000 robot
-  $20          robot
-  $30          robot
-  $40          robot
-  $50          robot
-  $60          robot
-  $70          robot
-  $40          robot
-
-  $80 10000000 stick (normal)
-  $81 10000001 step
-  $82 10000010 box
-  $83 10000011 normal door
-  $84 10000100 stick (at the bottom station)
-  $85 10000101 platform (at the bottom station)
-  $88 10001000 stick (at the top station) (not used)
-  $89 10001001 platform (at the top station)
-  $8c 10001100 stick (at middle station)
-  $8d 10001101 platform (at middle station)
-  $91 10010001 vanishing step
-  $B1 10110001 sliding step
-  $C3 11000011 target door
-      ||||||||
-      |||||||+--\ 0 = stick, 1 = step or platform, 2 = box, 3 = door
-      |||||||   >
-      ||||||+---/
-      ||||||
-      |||||+----\ 
-      |||||     > elevator one bit for each possible movin direction
-      ||||+-----/
-      ||||
-      |||+------\
-      |||       > modifier for steps 1 = disappering, 3 = sliding, 2 = unused
-      ||+-------/
-      ||
-      |+-------- = 1 means targetdoor
-      |
-      +--------- = 1 means the corresponding field contains a tower element
-
-*/
-
 #define TOWERWID 16
+
+/* tower block flags */
+#define TBF_NONE     0x0000
+#define TBF_EMPTY    0x0001 /* block is not solid */
+#define TBF_PLATFORM 0x0002 /* block is a platform */
+#define TBF_STATION  0x0004 /* block is a lift station */
+#define TBF_DEADLY   0x0008 /* block is deadly */
+#define TBF_ROBOT    0x0010 /* block is a robot */
+
+struct _tblockdata {
+    const char *nam; /* name */
+    char       ch;   /* representation in saved tower file */
+    Uint16     tf;   /* flags; TBF_foo */
+} static towerblockdata[NUM_TBLOCKS] = {
+    { "space",            ' ', TBF_EMPTY },
+    { "lift top stop",    'v', TBF_EMPTY|TBF_STATION },
+    { "lift middle stop", '+', TBF_EMPTY|TBF_STATION },
+    { "lift bottom stop",  0,  TBF_EMPTY|TBF_STATION },
+    { "robot 1",          '1', TBF_EMPTY|TBF_DEADLY|TBF_ROBOT },
+    { "robot 2",          '2', TBF_EMPTY|TBF_DEADLY|TBF_ROBOT },
+    { "robot 3",          '3', TBF_EMPTY|TBF_DEADLY|TBF_ROBOT },
+    { "robot 4",          '4', TBF_EMPTY|TBF_DEADLY|TBF_ROBOT },
+    { "robot 5",          '5', TBF_EMPTY|TBF_DEADLY|TBF_ROBOT },
+    { "robot 6",          '6', TBF_EMPTY|TBF_DEADLY|TBF_ROBOT },
+    { "robot 7",          '7', TBF_EMPTY|TBF_DEADLY|TBF_ROBOT },
+    { "stick",            '!', TBF_PLATFORM },
+    { "step",             '-', TBF_PLATFORM },
+    { "vanisher step",    '.', TBF_PLATFORM },
+    { "slider > step",    '>', TBF_PLATFORM },
+    { "box",              'b', TBF_NONE },
+    { "door",             '#', TBF_EMPTY },
+    { "target door",      'T', TBF_EMPTY },
+    { "stick top",         0,  TBF_STATION|TBF_PLATFORM },
+    { "stick middle",      0,  TBF_STATION|TBF_PLATFORM },
+    { "stick bottom",      0,  TBF_STATION|TBF_PLATFORM },
+    { "lift top",          0,  TBF_STATION|TBF_PLATFORM },
+    { "lift middle",       0,  TBF_STATION|TBF_PLATFORM },
+    { "lift bottom",      '^', TBF_STATION|TBF_PLATFORM },
+};
 
 static Uint8 * mission = NULL;
 static Uint8 towerheight;
@@ -87,30 +75,6 @@ static Uint8 towercolor_red, towercolor_green, towercolor_blue;
 static Uint16 towertime;
 static Uint16 *towerdemo = NULL;
 static int towerdemo_len = 0;
-
-struct _towercharconv {
-   Uint8 dat;
-   char  ch;
-} static towerchar_conv[] = {
-     {0x00, ' '},
-     {0x10, '1'},
-     {0x20, '2'},
-     {0x30, '3'},
-     {0x40, '4'},
-     {0x50, '5'},
-     {0x60, '6'},
-     {0x70, '7'},
-     {0x80, '!'},
-     {0x81, '-'},
-     {0x82, 'b'},
-     {0x83, '#'},
-     {0xc3, 'T'},
-     {0x85, '^'},
-     {0x08, 'v'},
-     {0x0c, '+'},
-     {0x91, '.'},
-     {0xb1, '>'},
-};
 
 typedef struct mission_node {
   char name[30];
@@ -124,23 +88,24 @@ static int missionfiles (const struct dirent *file)
 {
   int len = strlen(file->d_name);
 
-  return ((file->d_name[len - 1] == 'm') &&
+  return ((len > 4) &&
+	  (file->d_name[len - 1] == 'm') &&
           (file->d_name[len - 2] == 't') &&
           (file->d_name[len - 3] == 't') &&
           (file->d_name[len - 4] == '.'));
 }
 
-
 Uint8 conv_char2towercode(char ch) {
-  for (int x = 0; x < SIZE(towerchar_conv); x++)
-    if (ch == towerchar_conv[x].ch) return towerchar_conv[x].dat;
-  return 0x00;
+  if (ch)
+    for (int x = 0; x < NUM_TBLOCKS; x++)
+      if (ch == towerblockdata[x].ch) return x;
+  return TB_EMPTY;
 }
 
 char conv_towercode2char(Uint8 code) {
-  for (int x = 0; x < SIZE(towerchar_conv); x++)
-    if (code == towerchar_conv[x].dat) return towerchar_conv[x].ch;
-  return ' ';
+  if ((code < NUM_TBLOCKS) && (towerblockdata[code].ch)) 
+      return towerblockdata[code].ch;
+  return towerblockdata[TB_EMPTY].ch;
 }
 
 static void add_mission(char *fname) {
@@ -172,7 +137,7 @@ static void add_mission(char *fname) {
     }
 
     /* we have passed your target, the current mission must
-     * be inserted bevore this mission
+     * be inserted before this mission
      */
     if (erg > 0) {
       mission_node * n = new mission_node;
@@ -418,6 +383,7 @@ void lev_selecttower(Uint8 number) {
     }
   }
 
+  // get tower demo
   tmp = bytestart + wpos;
   tmpbuf_len = mission[tmp++];
   tmpbuf_len += long(mission[tmp++]) << 8;
@@ -441,7 +407,7 @@ void lev_selecttower(Uint8 number) {
 }
 
 void lev_clear_tower(void) {
-    memset(&tower, 0, 2048L);
+    memset(&tower, TB_EMPTY, 256*TOWERWID);
 }
 
 void lev_set_towercol(Uint8 r, Uint8 g, Uint8 b) {
@@ -514,14 +480,14 @@ void lev_removelayer(Uint8 layer) {
 
 /* empties a cell in the tower */
 void lev_clear(int row, int col) {
-  tower[row][col] = 0;
+  tower[row][col] = TB_EMPTY;
 }
 
 
 /* if the given position contains a vanishing step, remove it */
 void lev_removevanishstep(int row, int col) {
-  if (tower[row][col] == 0x91)
-    tower[row][col] = 0;
+  if (tower[row][col] == TB_STEP_VANISHER)
+    tower[row][col] = TB_EMPTY;
 }
 
 /********** everything for doors ********/
@@ -536,69 +502,99 @@ bool lev_is_door_upperend(int row, int col) {
 
 /* returns true if the given position contains a door */
 bool lev_is_door(int row, int col) {
-  return (tower[row][col] & 0x83) == 0x83;
+  return (tower[row][col] == TB_DOOR ||
+          tower[row][col] == TB_DOOR_TARGET);
 }
 
 /* returns true, if the given fiels contains a target door */
 bool lev_is_targetdoor(int row, int col) {
-  return tower[row][col] == 0xc3;
+  return tower[row][col] == TB_DOOR_TARGET;
 }
 
 /**************** everything for elevators ******************/
 
 bool lev_is_station(int row, int col) {
-  return (tower[row][col] & 0x0c) != 0;
+  return ((towerblockdata[tower[row][col]].tf & TBF_STATION));
 }
 bool lev_is_up_station(int row, int col) {
-  return (tower[row][col] & 0x85) == 0x85;
+   return ((tower[row][col] == TB_ELEV_BOTTOM) ||
+	   (tower[row][col] == TB_ELEV_MIDDLE));
 }
 bool lev_is_down_station(int row, int col) {
-  return (tower[row][col] & 0x89) == 0x89;
+   return ((tower[row][col] == TB_ELEV_TOP) ||
+	   (tower[row][col] == TB_ELEV_MIDDLE));
 }
 bool lev_is_bottom_station(int row, int col) {
-  return (tower[row][col] & 0x8d) == 0x85;
+   return (tower[row][col] == TB_ELEV_BOTTOM);
 }
 
 bool lev_is_platform(int row, int col) {
-  return (tower[row][col] & 0x83) == 0x81;
+  return ((towerblockdata[tower[row][col]].tf & TBF_PLATFORM));
 }
 bool lev_is_stick(int row, int col) {
-  return (tower[row][col] & 0x83) == 0x80;
+  return ((tower[row][col] == TB_STICK) ||
+	  (tower[row][col] == TB_STICK_TOP) ||
+	  (tower[row][col] == TB_STICK_MIDDLE) ||
+	  (tower[row][col] == TB_STICK_BOTTOM));
 }
 
 bool lev_is_elevator(int row, int col) {
-  return ((tower[row][col] & 0x80) &&
-    (tower[row][col] & 0x0c));
+  return ((tower[row][col] == TB_STICK_BOTTOM) ||
+	  (tower[row][col] == TB_STICK_MIDDLE) ||
+	  (tower[row][col] == TB_STICK_TOP) ||
+	  (tower[row][col] == TB_ELEV_BOTTOM) ||
+	  (tower[row][col] == TB_ELEV_MIDDLE) ||
+	  (tower[row][col] == TB_ELEV_TOP));
 }
 
 void lev_platform2stick(int row, int col) {
-  tower[row][col] &= 0xfe;
+  if (tower[row][col] == TB_ELEV_TOP) tower[row][col] = TB_STICK_TOP;
+  else if (tower[row][col] == TB_ELEV_MIDDLE) tower[row][col] = TB_STICK_MIDDLE;
+  else if (tower[row][col] == TB_ELEV_BOTTOM) tower[row][col] = TB_STICK_BOTTOM;
+  else if (tower[row][col] == TB_STEP) tower[row][col] = TB_STICK;
 }
 void lev_stick2platform(int row, int col) {
-  tower[row][col] |= 0x01;
+  if (tower[row][col] == TB_STICK_TOP) tower[row][col] = TB_ELEV_TOP;
+  else if (tower[row][col] == TB_STICK_MIDDLE) tower[row][col] = TB_ELEV_MIDDLE;
+  else if (tower[row][col] == TB_STICK_BOTTOM) tower[row][col] = TB_ELEV_BOTTOM;
+  else if (tower[row][col] == TB_STICK) tower[row][col] = TB_STEP;
 }
 void lev_stick2empty(int row, int col) {
-  tower[row][col] &= ~0x80;
+  if (tower[row][col] == TB_STICK_TOP) tower[row][col] = TB_STATION_TOP;
+  else if (tower[row][col] == TB_STICK_MIDDLE) tower[row][col] = TB_STATION_MIDDLE;
+  else if (tower[row][col] == TB_STICK_BOTTOM) tower[row][col] = TB_STATION_BOTTOM;
+  else if (tower[row][col] == TB_STICK) tower[row][col] = TB_EMPTY;
 }
 void lev_empty2stick(int row, int col) {
-  tower[row][col] |= 0x80;
+  if (tower[row][col] == TB_STATION_TOP) tower[row][col] = TB_STICK_TOP;
+  else if (tower[row][col] == TB_STATION_MIDDLE) tower[row][col] = TB_STICK_MIDDLE;
+  else if (tower[row][col] == TB_STATION_BOTTOM) tower[row][col] = TB_STICK_BOTTOM;
+  else if (tower[row][col] == TB_EMPTY) tower[row][col] = TB_STICK;
 }
 void lev_platform2empty(int row, int col) {
-  tower[row][col] &= ~0x83;
+  if (tower[row][col] == TB_ELEV_TOP) tower[row][col] = TB_STATION_TOP;
+  else if (tower[row][col] == TB_ELEV_MIDDLE) tower[row][col] = TB_STATION_MIDDLE;
+  else if (tower[row][col] == TB_ELEV_BOTTOM) tower[row][col] = TB_STATION_BOTTOM;
+  else if (tower[row][col] == TB_STEP) tower[row][col] = TB_EMPTY;
 }
 
 /* misc questions */
 bool lev_is_empty(int row, int col) {
-  return (tower[row][col] & 0x80) == 0;
+  return ((towerblockdata[tower[row][col]].tf & TBF_EMPTY));
 }
 
 bool lev_is_box(int row, int col) {
-  return tower[row][col] == 0x82;
+  return tower[row][col] == TB_BOX;
 }
 
 bool lev_is_sliding(int row, int col) {
-  return (tower[row][col] & 0x30) == 0x30;
+  return tower[row][col] == TB_STEP_LSLIDER;
 }
+
+bool lev_is_robot(int row, int col) {
+  return ((towerblockdata[tower[row][col]].tf & TBF_ROBOT));
+}
+
 
 /* returns true, if the given figure can be at the given position
  without kolliding with fixed objects of the tower */
@@ -694,7 +690,7 @@ int lev_testuntergr(int verticalpos, int anglepos, bool look_left) {
 unsigned char lev_putplatform(int row, int col) {
   unsigned char erg = tower[row][col];
 
-  tower[row][col] = 0x85;
+  tower[row][col] = TB_ELEV_BOTTOM;
 
   return erg;
 }
@@ -710,6 +706,8 @@ bool lev_loadtower(char *fname) {
   char line[200];
 
   if (in == NULL) return false;
+    
+  lev_clear_tower();
 
   fgets(towername, TOWERNAMELEN+1, in);
 
@@ -853,59 +851,59 @@ void lev_putspace(int row, int col) {
   if (lev_is_door(row, col)) {
     int r = row - 1;
     while (lev_is_door(r, col)) {
-      tower[r][col] = 0x00;
+      tower[r][col] = TB_EMPTY;
       r--;
     }
     r = row + 1;
     while (lev_is_door(r, col)) {
-      tower[r][col] = 0x00;
+      tower[r][col] = TB_EMPTY;
       r++;
     }
   }
-  tower[row][col] = 0x00;
+  tower[row][col] = TB_EMPTY;
 }
-void lev_putrobot1(int row, int col) { tower[row][col] = 0x10; }
-void lev_putrobot2(int row, int col) { tower[row][col] = 0x20; }
-void lev_putrobot3(int row, int col) { tower[row][col] = 0x30; }
-void lev_putrobot4(int row, int col) { tower[row][col] = 0x40; }
-void lev_putrobot5(int row, int col) { tower[row][col] = 0x50; }
-void lev_putrobot6(int row, int col) { tower[row][col] = 0x60; }
-void lev_putrobot7(int row, int col) { tower[row][col] = 0x70; }
-void lev_putstep(int row, int col) { tower[row][col] = 0x81; }
-void lev_putvanishingstep(int row, int col) { tower[row][col] = 0x91; }
-void lev_putslidingstep(int row, int col) { tower[row][col] = 0xb1; }
+void lev_putrobot1(int row, int col) { tower[row][col] = TB_ROBOT1; }
+void lev_putrobot2(int row, int col) { tower[row][col] = TB_ROBOT2; }
+void lev_putrobot3(int row, int col) { tower[row][col] = TB_ROBOT3; }
+void lev_putrobot4(int row, int col) { tower[row][col] = TB_ROBOT4; }
+void lev_putrobot5(int row, int col) { tower[row][col] = TB_ROBOT5; }
+void lev_putrobot6(int row, int col) { tower[row][col] = TB_ROBOT6; }
+void lev_putrobot7(int row, int col) { tower[row][col] = TB_ROBOT7; }
+void lev_putstep(int row, int col) { tower[row][col] = TB_STEP; }
+void lev_putvanishingstep(int row, int col) { tower[row][col] = TB_STEP_VANISHER; }
+void lev_putslidingstep(int row, int col) { tower[row][col] = TB_STEP_LSLIDER; }
 
 void lev_putdoor(int row, int col) {
 
   if (row + 2 < towerheight) {
 
-    tower[row][col] = 0x83;
-    tower[row + 1][col] = 0x83;
-    tower[row + 2][col] = 0x83;
+    tower[row][col] = TB_DOOR;
+    tower[row + 1][col] = TB_DOOR;
+    tower[row + 2][col] = TB_DOOR;
 
-    if ((tower[row][(col + 8) & 0xf] == 0) &&
-        (tower[row + 1][(col + 8) & 0xf] == 0) &&
-        (tower[row + 2][(col + 8) & 0xf] == 0)) {
-      tower[row][(col + 8) & 0xf] = 0x83;
-      tower[row + 1][(col + 8) & 0xf] = 0x83;
-      tower[row + 2][(col + 8) & 0xf] = 0x83;
+    if ((tower[row][(col + (TOWERWID/2)) % TOWERWID] == 0) &&
+        (tower[row + 1][(col + (TOWERWID/2)) % TOWERWID] == 0) &&
+        (tower[row + 2][(col + (TOWERWID/2)) % TOWERWID] == 0)) {
+      tower[row][(col + (TOWERWID/2)) % TOWERWID] = TB_DOOR;
+      tower[row + 1][(col + (TOWERWID/2)) % TOWERWID] = TB_DOOR;
+      tower[row + 2][(col + (TOWERWID/2)) % TOWERWID] = TB_DOOR;
     }
   }
 }
 
 void lev_puttarget(int row, int col) {
   if (row + 2 < towerheight) {
-    tower[row][col] = 0xc3;
-    tower[row + 1][col] = 0xc3;
-    tower[row + 2][col] = 0xc3;
+    tower[row][col] = TB_DOOR_TARGET;
+    tower[row + 1][col] = TB_DOOR_TARGET;
+    tower[row + 2][col] = TB_DOOR_TARGET;
   }
 }
 
-void lev_putstick(int row, int col) { tower[row][col] = 0x80; }
-void lev_putbox(int row, int col) { tower[row][col] = 0x82; }
-void lev_putelevator(int row, int col) { tower[row][col] = 0x85; }
-void lev_putmiddlestation(int row, int col) { tower[row][col] = 0x0c; }
-void lev_puttopstation(int row, int col) { tower[row][col] = 0x08; }
+void lev_putstick(int row, int col) { tower[row][col] = TB_STICK; }
+void lev_putbox(int row, int col) { tower[row][col] = TB_BOX; }
+void lev_putelevator(int row, int col) { tower[row][col] = TB_ELEV_BOTTOM; }
+void lev_putmiddlestation(int row, int col) { tower[row][col] = TB_STATION_MIDDLE; }
+void lev_puttopstation(int row, int col) { tower[row][col] = TB_STATION_TOP; }
 
 
 void lev_save(unsigned char *&data) {
@@ -928,18 +926,19 @@ lev_problem lev_is_consistent(int &row, int &col) {
   bool has_exit = false;
   // check first, if the starting point is correctly organized
   // so that there is no obstacle and we can survive there
-  if (((tower[1][0] != 0x80) && (tower[1][0] != 0x81) &&
-       (tower[1][0] != 0x82) && (tower[1][0] != 0x85) &&
-       (tower[1][0] != 0xb1) && (tower[0][0] != 0x80) &&
-       (tower[0][0] != 0x81) && (tower[0][0] != 0x82) &&
-       (tower[0][0] != 0x85) && (tower[0][0] != 0xb1))) {
+  if ((tower[1][0] != TB_STICK) && (tower[1][0] != TB_STEP) &&
+       (tower[1][0] != TB_STEP_LSLIDER) && (tower[1][0] != TB_BOX) &&
+       (tower[1][0] != TB_ELEV_BOTTOM) &&
+       (tower[0][0] != TB_STICK) && (tower[0][0] != TB_STEP) &&
+       (tower[0][0] != TB_STEP_LSLIDER) && (tower[0][0] != TB_BOX) &&
+       (tower[0][0] != TB_ELEV_BOTTOM)) {
     row = 1;
     col = 0;
     return TPROB_NOSTARTSTEP;
   }
   for (y = 2; y < 5; y++)
-    if ((tower[y][0] >= 0x10) && (tower[y][0] != 0xc3) &&
-        (tower[y][0] != 0x83)) {
+    if ((towerblockdata[tower[y][0]].tf & TBF_DEADLY) ||
+	!(towerblockdata[tower[y][0]].tf & TBF_EMPTY)) {
       row = y;
       col = 0;
       return TPROB_STARTBLOCKED;
@@ -948,51 +947,30 @@ lev_problem lev_is_consistent(int &row, int &col) {
   if (towerheight < 4) return TPROB_SHORTTOWER;
 
   for (int r = 0; r < towerheight; r++)
-    for (int c = 0; c < TOWERWID; c++) {
-
+    for (int c = 0; c < TOWERWID; c++) { 
       // check for undefined symbols
-      if ((tower[r][c] != 0x00) &&
-          (tower[r][c] != 0x10) &&
-          (tower[r][c] != 0x20) &&
-          (tower[r][c] != 0x30) &&
-          (tower[r][c] != 0x40) &&
-          (tower[r][c] != 0x50) &&
-          (tower[r][c] != 0x60) &&
-          (tower[r][c] != 0x70) &&
-          (tower[r][c] != 0x80) &&
-          (tower[r][c] != 0x81) &&
-          (tower[r][c] != 0x82) &&
-          (tower[r][c] != 0x83) &&
-          (tower[r][c] != 0xc3) &&
-          (tower[r][c] != 0x85) &&
-          (tower[r][c] != 0x08) &&
-          (tower[r][c] != 0x0c) &&
-          (tower[r][c] != 0x91) &&
-          (tower[r][c] != 0xb1) &&
-          (tower[r][c] != 0x00) &&
-          (tower[r][c] != 0x00) &&
-          (tower[r][c] != 0x00)) {
-        row = r;
-        col = c;
-        return TPROB_UNDEFBLOCK;
+      if (tower[r][c] >= NUM_TBLOCKS) {
+	  row = r;
+	  col = c;
+	  return TPROB_UNDEFBLOCK;
       }
 
       // check if elevators always have an opposing end without unremovable
       // obstacles
-      if (tower[r][c] == 0x85) {
+      if (tower[r][c] == TB_ELEV_BOTTOM) {
         int d = r + 1;
-        while ((tower[d][c] != 0x08) && (d < towerheight)) {
-          if ((tower[d][c] != 0x00) &&
-              (tower[d][c] != 0x10) &&
-              (tower[d][c] != 0x20) &&
-              (tower[d][c] != 0x30) &&
-              (tower[d][c] != 0x40) &&
-              (tower[d][c] != 0x50) &&
-              (tower[d][c] != 0x60) &&
-              (tower[d][c] != 0x70) &&
-              (tower[d][c] != 0x82) &&
-              (tower[d][c] != 0x0c) &&
-              (tower[d][c] != 0x91)) {
+        while ((tower[d][c] != TB_STATION_TOP) && (d < towerheight)) {
+          if ((tower[d][c] != TB_EMPTY) &&
+              (tower[d][c] != TB_ROBOT1) &&
+              (tower[d][c] != TB_ROBOT2) &&
+              (tower[d][c] != TB_ROBOT3) &&
+              (tower[d][c] != TB_ROBOT4) &&
+              (tower[d][c] != TB_ROBOT5) &&
+              (tower[d][c] != TB_ROBOT6) &&
+              (tower[d][c] != TB_ROBOT7) &&
+              (tower[d][c] != TB_BOX) &&
+              (tower[d][c] != TB_STATION_MIDDLE) &&
+              (tower[d][c] != TB_STEP_VANISHER)) {
             row = r;
             col = c;
             return TPROB_ELEVATORBLOCKED;
@@ -1006,20 +984,20 @@ lev_problem lev_is_consistent(int &row, int &col) {
         }
       }
 
-      if (tower[r][c] == 0x0c) {
+      if (tower[r][c] == TB_STATION_MIDDLE) {
         int d = r + 1;
-        while ((tower[d][c] != 0x08) && (d < towerheight)) {
-          if ((tower[d][c] != 0x00) &&
-              (tower[d][c] != 0x10) &&
-              (tower[d][c] != 0x20) &&
-              (tower[d][c] != 0x30) &&
-              (tower[d][c] != 0x40) &&
-              (tower[d][c] != 0x50) &&
-              (tower[d][c] != 0x60) &&
-              (tower[d][c] != 0x70) &&
-              (tower[d][c] != 0x82) &&
-              (tower[d][c] != 0x0c) &&
-              (tower[d][c] != 0x91)) {
+        while ((tower[d][c] != TB_STATION_TOP) && (d < towerheight)) {
+          if ((tower[d][c] != TB_EMPTY) &&
+              (tower[d][c] != TB_ROBOT1) &&
+              (tower[d][c] != TB_ROBOT2) &&
+              (tower[d][c] != TB_ROBOT3) &&
+              (tower[d][c] != TB_ROBOT4) &&
+              (tower[d][c] != TB_ROBOT5) &&
+              (tower[d][c] != TB_ROBOT6) &&
+              (tower[d][c] != TB_ROBOT7) &&
+              (tower[d][c] != TB_BOX) &&
+              (tower[d][c] != TB_STATION_MIDDLE) &&
+              (tower[d][c] != TB_STEP_VANISHER)) {
             row = r;
             col = c;
             return TPROB_ELEVATORBLOCKED;
@@ -1032,18 +1010,18 @@ lev_problem lev_is_consistent(int &row, int &col) {
           return TPROB_NOELEVATORSTOP;
         }
         d = r - 1;
-        while ((tower[d][c] != 0x85) && (d >= 0)) {
-          if ((tower[d][c] != 0x00) &&
-              (tower[d][c] != 0x10) &&
-              (tower[d][c] != 0x20) &&
-              (tower[d][c] != 0x30) &&
-              (tower[d][c] != 0x40) &&
-              (tower[d][c] != 0x50) &&
-              (tower[d][c] != 0x60) &&
-              (tower[d][c] != 0x70) &&
-              (tower[d][c] != 0x82) &&
-              (tower[d][c] != 0x0c) &&
-              (tower[d][c] != 0x91)) {
+        while ((tower[d][c] != TB_ELEV_BOTTOM) && (d >= 0)) {
+          if ((tower[d][c] != TB_EMPTY) &&
+              (tower[d][c] != TB_ROBOT1) &&
+              (tower[d][c] != TB_ROBOT2) &&
+              (tower[d][c] != TB_ROBOT3) &&
+              (tower[d][c] != TB_ROBOT4) &&
+              (tower[d][c] != TB_ROBOT5) &&
+              (tower[d][c] != TB_ROBOT6) &&
+              (tower[d][c] != TB_ROBOT7) &&
+              (tower[d][c] != TB_BOX) &&
+              (tower[d][c] != TB_STATION_MIDDLE) &&
+              (tower[d][c] != TB_STEP_VANISHER)) {
             row = r;
             col = c;
             return TPROB_ELEVATORBLOCKED;
@@ -1057,20 +1035,20 @@ lev_problem lev_is_consistent(int &row, int &col) {
         }
       }
 
-      if (tower[r][c] == 0x08) {
+      if (tower[r][c] == TB_STATION_TOP) {
         int d = r - 1;
-        while ((tower[d][c] != 0x85) && (d >= 0)) {
-          if ((tower[d][c] != 0x00) &&
-              (tower[d][c] != 0x10) &&
-              (tower[d][c] != 0x20) &&
-              (tower[d][c] != 0x30) &&
-              (tower[d][c] != 0x40) &&
-              (tower[d][c] != 0x50) &&
-              (tower[d][c] != 0x60) &&
-              (tower[d][c] != 0x70) &&
-              (tower[d][c] != 0x82) &&
-              (tower[d][c] != 0x0c) &&
-              (tower[d][c] != 0x91)) {
+        while ((tower[d][c] != TB_ELEV_BOTTOM) && (d >= 0)) {
+          if ((tower[d][c] != TB_EMPTY) &&
+              (tower[d][c] != TB_ROBOT1) &&
+              (tower[d][c] != TB_ROBOT2) &&
+              (tower[d][c] != TB_ROBOT3) &&
+              (tower[d][c] != TB_ROBOT4) &&
+              (tower[d][c] != TB_ROBOT5) &&
+              (tower[d][c] != TB_ROBOT6) &&
+              (tower[d][c] != TB_ROBOT7) &&
+              (tower[d][c] != TB_BOX) &&
+              (tower[d][c] != TB_STATION_MIDDLE) &&
+              (tower[d][c] != TB_STEP_VANISHER)) {
             row = r;
             col = c;
             return TPROB_ELEVATORBLOCKED;
@@ -1085,7 +1063,7 @@ lev_problem lev_is_consistent(int &row, int &col) {
       }
 
       /* check for exit, and that it's reachable */
-      if (tower[r][c] == 0xc3) {
+      if (tower[r][c] == TB_DOOR_TARGET) {
         int d = r - 1;
 
         if (d < 0) {
@@ -1094,11 +1072,11 @@ lev_problem lev_is_consistent(int &row, int &col) {
           return TPROB_UNREACHABLEEXIT;
         }
 
-        while ((d >= 0) && (tower[d][c] == 0xc3))  d--;
+        while ((d >= 0) && (tower[d][c] == TB_DOOR_TARGET))  d--;
         if (d >= 0) {
-          if ((tower[d][c] != 0x80) && (tower[d][c] != 0x81) &&
-              (tower[d][c] != 0x82) && (tower[d][c] != 0x85) &&
-              (tower[d][c] != 0x80)) {
+          if ((tower[d][c] != TB_STICK) && (tower[d][c] != TB_STEP) &&
+              (tower[d][c] != TB_BOX) && (tower[d][c] != TB_ELEV_BOTTOM) &&
+              (tower[d][c] != TB_STICK)) {
             row = r;
             col = c;
             return TPROB_UNREACHABLEEXIT;
@@ -1108,13 +1086,13 @@ lev_problem lev_is_consistent(int &row, int &col) {
       }
 
       // check doors
-      if ((tower[r][c] == 0x83) &&
-          ((tower[r][(c + (TOWERWID/2)) % TOWERWID] & 0x83) != 0x83)) {
+      if ((tower[r][c] == TB_DOOR) &&
+          !lev_is_door(r, (c + (TOWERWID/2)) % TOWERWID)) {
         row = r;
         col = c;
         return TPROB_NOOTHERDOOR;
       }
-      if ((tower[r][c] & 0x83) == 0x83) {
+      if (lev_is_door(r,c)) {
         bool A = (r > 0) && (tower[r-1][c] == tower[r][c]);
         bool B = (r > 1) && (tower[r-2][c] == tower[r][c]);
         bool D = (r + 1 < towerheight) && (tower[r+1][c] == tower[r][c]);

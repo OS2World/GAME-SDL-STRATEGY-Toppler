@@ -135,7 +135,7 @@
 
 /*   define this if you want the bonus game to be accessible 
      from the main menu. */
-/*#define HUNT_THE_FISH*/
+#define HUNT_THE_FISH
 
 #define TOWERNAMELEN 19
 
@@ -149,7 +149,7 @@
 #define titledat        "titles.dat"
 #define scrollerdat     "scroller.dat"
 
-/* the two special characters in the font */
+/* the special characters in the font */
 #define fonttoppler     '\x01'
 #define fontpoint       '\x02'
 #define fontemptytagbox '\x03'
@@ -185,7 +185,10 @@ extern bool use_alpha_layers;
 extern bool use_alpha_font;
 extern bool use_alpha_darkening;
 extern bool use_waves;
+extern bool status_top;
 
+/* Is the TT window active? */
+extern bool tt_has_focus;
 
 void load_config(void);
 void save_config(void);

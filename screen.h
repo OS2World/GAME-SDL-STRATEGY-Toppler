@@ -23,6 +23,13 @@
 
 /* this modules handles nearly all the output onto the screen */
 
+/* screen flags for scr_drawall() */
+typedef enum {
+    SF_NONE,
+    SF_REC,     /* display blinking "REC" */
+    SF_DEMO     /* display "DEMO" */
+} screenflag;
+
 void scr_color_ramp(int *r, int *g, int *b);
 
 void scr_savedisplaybmp(char *fname);
@@ -33,7 +40,7 @@ void scr_init(void);
 /* call this when changing from windowed to fullscreen */
 void scr_reinit(void);
 
-/* call this when the sprited need to be reloaded */
+/* call this when the sprites need to be reloaded */
 void scr_reload_sprites(void);
 
 
@@ -52,10 +59,10 @@ void scr_settowercolor(Uint8 red, Uint8 green, Uint8 blue);
 void scr_setcrosscolor(Uint8 red, Uint8 green, Uint8 blue);
 
 /* all paint routines paint onto an invisible surface, to show this surface
- call swap */
+ call scr_swap() */
 
 /* writes some text onto the screen */
-void scr_writetext(long x, long y, const char *s);
+void scr_writetext(long x, long y, const char *s, int maxchars = -1);
 
 /* centers the text horizontally */
 void scr_writetext_center(long y, const char *s);
@@ -64,20 +71,20 @@ void scr_writetext_center(long y, const char *s);
  have the from ~ followed by letter followed by a fixed set of parameters.
  currently the following command(s) are defined:
 
- t###: moves the x position to the given coordinate, ther number must
+ t###: moves the x position to the given coordinate, the number must
        have 3 digits
  */
 void scr_writeformattext(long x, long y, const char *s);
 
 /* returns the number of pixels the first chars characters in
- text needs in the display (if the sting is only n chars long
- then only n chars are claculated */
+ text needs in the display (if the string is only n chars long
+ then only n chars are calculated) */
 int scr_textlength(const char *s, int chars = 32000);
 
-/* draws a filles rectangle with color col */
+/* draws a filled rectangle with color col */
 void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 col, Uint8 alpha);
 
-/* darkens all the pixel on the screen a bit */
+/* darkens all the pixels on the screen a bit */
 void scr_darkenscreen(void);
 
 /* draws a rectangle */
@@ -89,8 +96,8 @@ void scr_swap(void);
 /* blits a sprite onto the invisible surface */
 void scr_blit(SDL_Surface *s, int x, int y);
 
-/* draws anything neccessary for the towergame */
-void scr_drawall(long vert, long angle, long time, bool svisible, int subshape, int substart, int flags);
+/* draws everything necessary for the towergame */
+void scr_drawall(long vert, long angle, long time, bool svisible, int subshape, int substart, screenflag flags);
 
 /* draws everything for the edit mode */
 void scr_drawedit(long vert, long angle, bool showtime);

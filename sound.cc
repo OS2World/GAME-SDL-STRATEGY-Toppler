@@ -56,7 +56,7 @@ void snd_init(void) {
 
 #ifdef SDL_MIXER
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
-    printf("couldn't init the sound system, muting\n");
+    printf("Couldn't init the sound system, muting.\n");
     nosoundinit = true;
     return;
   }
@@ -64,7 +64,7 @@ void snd_init(void) {
   nosoundinit = false;
 
   if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
-    printf("could not open audio, muting\n");
+    printf("Could not open audio, muting.\n");
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
     nosoundinit = true;
     return;

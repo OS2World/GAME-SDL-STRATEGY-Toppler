@@ -24,46 +24,51 @@
 #include <SDL_types.h>
 #include <SDL_keyboard.h>
 
-#define no_key          0x0000
-#define up_key          0x0001
-#define down_key        0x0002
-#define left_key        0x0004
-#define right_key       0x0008
-#define fire_key        0x0010
-#define break_key       0x0020
-#define pause_key       0x0040
-#define quit_action     0x0080  /* Not a key, but received on kill */
-#define mousebttn1      0x0100
-#define mousebttn2      0x0200
-#define mousebttn3      0x0400
-#define mousebttn4      0x0800
-#define mousebttn5      0x1000
-#define any_key         0x1FFF
+typedef enum {
+  no_key       =  0x0000,
+  up_key       =  0x0001,
+  down_key     =  0x0002,
+  left_key     =  0x0004,
+  right_key    =  0x0008,
+  fire_key     =  0x0010,
+  break_key    =  0x0020,
+  pause_key    =  0x0040,
+  quit_action  =  0x0080, /* Not a key, but received on kill */
+  mousebttn1   =  0x0100,
+  mousebttn2   =  0x0200,
+  mousebttn3   =  0x0400,
+  mousebttn4   =  0x0800,
+  mousebttn5   =  0x1000,
+  any_key      =  0xFFFF
+} ttkey;
 
 typedef void FDECL((*keyb_wait_proc), (void));
 
 void key_init(void);
 void key_done(void);
 
+/* waits until the game window gets focus */
+void wait_for_focus(void);
+
 /* returns bitmask with currently pressed keys */
 Uint8 key_keystat(void);
 
 /* true, if key is pressed */
-bool key_keypressed(Uint16 key);
+bool key_keypressed(ttkey key);
 
 /* returns if a key has been pushed and released (typed) but only for the keys in
  the list */
-Uint16 key_readkey(void);
+ttkey key_readkey(void);
 
 /* Returns the last pressed key, in SDLKey format */
 SDLKey key_sdlkey(void);
 
 /* Converts sdlkey to internal key representation, or returns no_key
    if SDLKey cannot be converted. */
-Uint16 key_sdlkey2conv(SDLKey k, bool game);
+ttkey key_sdlkey2conv(SDLKey k, bool game);
 
 /* Converts internal key to sdlkey, or returns SDLK_UNKNOWN. */
-SDLKey key_conv2sdlkey(Uint16 k, bool game);
+SDLKey key_conv2sdlkey(ttkey k, bool game);
 
 /* returns a types character */
 char key_chartyped(void);
@@ -72,10 +77,10 @@ char key_chartyped(void);
 void key_wait_for_none(keyb_wait_proc bg);
 
 /* returns the current mouse coordinate and button pressed. */
-bool key_mouse(Uint16 *x, Uint16 *y, Uint16 *bttn);
+bool key_mouse(Uint16 *x, Uint16 *y, ttkey *bttn);
 
 /* redefine a key, so that it returns code  */
-void key_redefine(Uint16 code, SDLKey key);
+void key_redefine(ttkey code, SDLKey key);
 
 #endif
 

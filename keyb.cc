@@ -21,7 +21,7 @@
 
 #include <SDL.h>
 
-static Uint16 keydown, keytyped;
+static ttkey keydown, keytyped;
 static char chartyped;
 static SDLKey sdlkeytyped;
 static long numkeydown;
@@ -30,8 +30,10 @@ static Uint16 mouse_x, mouse_y;
 static bool mouse_moved;
 static Uint16 mouse_button;
 
+bool tt_has_focus;
+
 struct _ttkeyconv {
-   Uint8 outval;
+   ttkey outval;
    SDLKey key;
 } static ttkeyconv[] = {
    {up_key, SDLK_UP},
@@ -55,7 +57,7 @@ struct _ttkeyconv {
    {pause_key, SDLK_p},
 };
 
-void key_redefine(Uint16 code, SDLKey key) {
+void key_redefine(ttkey code, SDLKey key) {
   int i;
 
   for (i = SIZE(ttkeyconv) - 1; i >= 0; i--)
@@ -68,10 +70,10 @@ void key_redefine(Uint16 code, SDLKey key) {
 void key_init(void) {
   SDL_EnableKeyRepeat(0, 0);
   SDL_EventState(SDL_MOUSEBUTTONDOWN, SDL_IGNORE);
-  SDL_EventState(SDL_ACTIVEEVENT, SDL_IGNORE);
   SDL_EventState(SDL_SYSWMEVENT, SDL_IGNORE);
 
-  numkeydown = keydown = keytyped = chartyped = 0;
+  numkeydown = chartyped = 0;
+  keytyped = keydown = no_key;
   sdlkeytyped = SDLK_UNKNOWN;
   received_kill = false;
   mouse_button = mouse_x = mouse_y = 0;
@@ -80,12 +82,17 @@ void key_init(void) {
 
 static void handleEvents(void) {
   SDL_Event e;
-  Uint16 key = 0;
+  ttkey key = no_key;
   int tmpk;
 
   while (SDL_PollEvent(&e)) {
     mouse_moved = false;
     mouse_button = 0;
+    if (e.type == SDL_ACTIVEEVENT) {
+	if ((e.active.state == SDL_APPINPUTFOCUS) ||
+	    (e.active.state == SDL_APPACTIVE))
+	  tt_has_focus = (e.active.gain == 1);
+    } else
     if (e.type == SDL_MOUSEMOTION) {
       mouse_x = e.motion.x;
       mouse_y = e.motion.y;
@@ -97,14 +104,13 @@ static void handleEvents(void) {
         mouse_button = e.button.button;
       } else
         if (e.type == SDL_QUIT) {
-          keydown |= quit_action;
-          keytyped |= quit_action;
+          keydown = (ttkey)(keydown | quit_action);
+          keytyped = (ttkey)(keytyped | quit_action);
           received_kill = true;
           fprintf(stderr, "Wheee!!\n");
         } else
           if ((e.type == SDL_KEYDOWN) || (e.type == SDL_KEYUP)) {
             if (e.key.state == SDL_RELEASED) {
-              numkeydown--;
               if ((e.key.keysym.sym >= SDLK_a) && (e.key.keysym.sym <= SDLK_z)) {
                 if (e.key.keysym.mod & (KMOD_LSHIFT | KMOD_RSHIFT))
                   chartyped = e.key.keysym.sym - SDLK_a + 'A';
@@ -158,14 +164,15 @@ static void handleEvents(void) {
               }
 
             if (e.key.state == SDL_PRESSED) {
-              keydown |= key;
-              keytyped |= key;
+              keydown = (ttkey)(keydown | key);
+              keytyped = (ttkey)(keytyped | key);
 
               sdlkeytyped = e.key.keysym.sym;
               numkeydown++;
             } else {
-              keydown &= ~key;
+	      keydown = (ttkey)(keydown & ~key);
               sdlkeytyped = SDLK_UNKNOWN;
+              if (numkeydown > 0) numkeydown--;
             }
           }
   }
@@ -179,7 +186,7 @@ Uint8 key_keystat(void) {
   return keydown;
 }
 
-bool key_keypressed(Uint16 key) {
+bool key_keypressed(ttkey key) {
   handleEvents();
   if (((key | quit_action)) && received_kill) return true;
     return (keytyped & key) != 0;
@@ -189,12 +196,12 @@ SDLKey key_sdlkey(void) {
   handleEvents();
   SDLKey tmp = sdlkeytyped;
   sdlkeytyped = SDLK_UNKNOWN;
-  keytyped = 0;
+  keytyped = no_key;
   chartyped = 0;
   return tmp;
 }
 
-SDLKey key_conv2sdlkey(Uint16 k, bool game) {
+SDLKey key_conv2sdlkey(ttkey k, bool game) {
   register int i;
 
   if (game) {
@@ -210,7 +217,7 @@ SDLKey key_conv2sdlkey(Uint16 k, bool game) {
   return SDLK_UNKNOWN;
 }
 
-Uint16 key_sdlkey2conv(SDLKey k, bool game) {
+ttkey key_sdlkey2conv(SDLKey k, bool game) {
   register int i;
 
   if (k != SDLK_UNKNOWN) {
@@ -228,16 +235,28 @@ Uint16 key_sdlkey2conv(SDLKey k, bool game) {
   return no_key;
 }
 
-Uint16 key_readkey(void) {
+ttkey key_readkey(void) {
   handleEvents();
 
-  Uint16 i = keytyped;
+  ttkey i = keytyped;
 
-  keytyped = 0;
+  keytyped = no_key;
   chartyped = 0;
   sdlkeytyped = SDLK_UNKNOWN;
 
   return i;
+}
+
+void wait_for_focus(void) {
+
+  while (!tt_has_focus) {
+      handleEvents();
+      SDL_Delay(100);
+  }
+
+  keytyped = no_key;
+  chartyped = 0;
+  sdlkeytyped = SDLK_UNKNOWN;
 }
 
 char key_chartyped(void) {
@@ -248,20 +267,21 @@ char key_chartyped(void) {
 }
 
 void key_wait_for_none(keyb_wait_proc bg) {
+
   do {
     handleEvents();
     if (bg) (*bg)();
   } while (numkeydown && !received_kill);
-  keytyped = 0;
+  keytyped = no_key;
   chartyped = 0;
   sdlkeytyped = SDLK_UNKNOWN;
 }
 
-bool key_mouse(Uint16 *x, Uint16 *y, Uint16 *bttn) {
+bool key_mouse(Uint16 *x, Uint16 *y, ttkey *bttn) {
   bool tmp = mouse_moved;
   handleEvents();
   switch (mouse_button) {
-  default: *bttn = 0; break;
+  default: *bttn = no_key; break;
   case 1: *bttn = mousebttn1; break;
   case 2: *bttn = mousebttn2; break;
   case 3: *bttn = mousebttn3; break;

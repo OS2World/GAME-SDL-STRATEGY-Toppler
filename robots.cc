@@ -323,55 +323,57 @@ void rob_new(int verticalpos) {
         snd_cross();
 
       } else {
+	bool is_robo = false;
 
         /* find next robot */
         do {
           b = lev_tower(robots_ready, robots_angle);
+	  is_robo = lev_is_robot(robots_ready, robots_angle);
           a = robots_angle;
           h = robots_ready;
           robots_angle = (robots_angle + 1) & 0xf;
-        } while (((b & 0x80) != 0 || (b & 0x70) == 0) && robots_angle != 0);
+        } while ((!is_robo) && robots_angle != 0);
   
         if (robots_angle == 0)
           robots_ready++;
   
         /* no robot found */
-        if ((b & 0x80) != 0 || (b & 0x70) == 0) return;
+        if (!is_robo) return;
 
         /* fill in data for robot */
         switch (b) {
 
-          case 0x10:
+          case TB_ROBOT1:
             object[t].subKind = 1;
             object[t].futureKind = OBJ_KIND_FREEZEBALL;
             break;
 
-          case 0x20:
+          case TB_ROBOT2:
             object[t].subKind = 1;
             object[t].futureKind = OBJ_KIND_JUMPBALL;
             break;
 
-          case 0x30:
+          case TB_ROBOT3:
             object[t].subKind = 0;
             object[t].futureKind = OBJ_KIND_JUMPBALL;
             break;
 
-          case 0x40:
+          case TB_ROBOT4:
             object[t].subKind = 1;
             object[t].futureKind = OBJ_KIND_ROBOT_VERT;
             break;
 
-          case 0x50:
+          case TB_ROBOT5:
             object[t].subKind = 2;
             object[t].futureKind = OBJ_KIND_ROBOT_VERT;
             break;
 
-          case 0x60:
+          case TB_ROBOT6:
             object[t].subKind = 1;
             object[t].futureKind = OBJ_KIND_ROBOT_HORIZ;
             break;
 
-          case 0x70:
+          case TB_ROBOT7:
             object[t].subKind = 2;
             object[t].futureKind = OBJ_KIND_ROBOT_HORIZ;
             break;

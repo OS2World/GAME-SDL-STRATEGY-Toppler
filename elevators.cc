@@ -40,7 +40,7 @@ static struct {
   /* time until the elevator falls down */
   Sint8 time;
 
-  /* backgound value necesary because in between the stations it
+  /* background value necessary because in between the stations it
    is impossible to show a platform so we save the actual value
    there and force a station at the position, when the elevator moves
    further down we restore the value there */

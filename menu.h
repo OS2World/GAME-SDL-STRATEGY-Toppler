@@ -67,12 +67,20 @@ void men_info(char *s, long timeout = -1, int fire = 0);
 void run_debug_menu(void);
 #endif
 
+/* Menu option flags */
+typedef enum {
+  MOF_NONE     = 0x00,
+  MOF_PASSKEYS = 0x01,  /* Do keys get passed onto this option? */
+  MOF_NOCENTER = 0x02   /* Do _not_ center this option txt */
+} menuoptflags;
+
 /* create a new menu */
-struct _menusystem *new_menu_system(char *title, menuopt_callback_proc pr, int molen = 0, int ystart = 25);
+struct _menusystem *new_menu_system(char *title, menuopt_callback_proc pr, 
+				    int molen = 0, int ystart = 25);
 
 /* add an option to the menu */
 struct _menusystem *add_menu_option(struct _menusystem *ms, char *name, menuopt_callback_proc pr,
-                SDLKey quickkey = SDLK_UNKNOWN, int flags = 0, int state = 0);
+                SDLKey quickkey = SDLK_UNKNOWN, menuoptflags flags = MOF_NONE, int state = 0);
 
 /* run the menu */
 struct _menusystem *run_menu_system(struct _menusystem *ms);

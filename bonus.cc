@@ -104,9 +104,12 @@ static void pause(Sint32 time, Uint32 x) {
 bool bns_game(void) {
 
   static Uint32 xpos = 0;
-  
+
+  Uint32 xpos_ofs = 0;
+
   Uint32 time, nextfish;
   bool automatic = false;
+  bool newtowercol = false;
   Sint32 towerpos;
 
   Uint8 b;
@@ -252,15 +255,18 @@ bool bns_game(void) {
     scr_draw_bonus2(xpos, towerpos);
 
     scr_swap();
-
-    if (xpos == 600)
-      scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
+      
+    if ((xpos_ofs > 600) && !newtowercol) {
+	scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
+	newtowercol = true;
+    }
 
     if (time == gametime) {
       automatic = true;
       if ((subposx == SUBM_TARGET_X) && (subposy == SUBM_TARGET_Y)) break;
     } else {
       xpos +=4;
+      xpos_ofs += 4;
       time++;
     }
     dcl_wait();

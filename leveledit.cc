@@ -464,7 +464,7 @@ void le_edit(void) {
     scr_drawedit(row * 4, col * 8, true);
 
     status[0] = '\0';
-    sprintf(status, "%c  X%d  Y%d",
+    sprintf(status, "%c~t050X%d~t150Y%d",
             changed ? '*' : ' ', -col & 0xf, row);
 
     scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(),
@@ -473,7 +473,7 @@ void le_edit(void) {
 
     scr_color_ramp(&blink_r, &blink_g, &blink_b);
 
-    scr_writetext(0, SCREENHEI-FONTHEI, status);
+    scr_writeformattext(0, SCREENHEI-FONTHEI, status);
 
     scr_swap();
     dcl_wait();
@@ -601,11 +601,13 @@ void le_edit(void) {
         bg_text = "Load Tower:";
         men_input(editor_towername, TOWERNAMELEN);
         bg_text = NULL;
-        lev_loadtower(editor_towername);
-        scr_settowercolor(lev_towercol_red(),
-                          lev_towercol_green(),
-                          lev_towercol_blue());
-        changed = false;
+	if ((strlen(editor_towername) > 0) &&
+	    lev_loadtower(editor_towername)) {
+	    scr_settowercolor(lev_towercol_red(),
+			      lev_towercol_green(),
+			      lev_towercol_blue());
+	    changed = false;
+	}
         break;
       case EDACT_SAVETOWER:
         bg_text = "Save Tower:";
