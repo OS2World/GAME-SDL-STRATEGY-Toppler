@@ -59,7 +59,6 @@ static void savescores(FILE *f) {
         fseek(f, ftell(f), SEEK_SET);
 
         fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
-        fclose(f);
         return;
       }
     } else

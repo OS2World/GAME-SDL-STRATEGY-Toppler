@@ -1082,6 +1082,59 @@ static void show_scores(bool back = true, int mark = -1) {
   free_menu_system(ms);
 }
 
+static void
+congrats_background_proc(void)
+{
+  scr_blit(restsprites.data(menupicture), 0, 0);
+  scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
+
+  scr_writetext_center(130, "Congratulations! You are");
+  scr_writetext_center(170, "probably good enough to");
+  scr_writetext_center(210, "enter the highscore table!");
+
+  scr_writetext_center(270, "Please enter your name");
+}
+
+/* highscores, after the game
+ * pt = points, 
+ * twr = tower reached, -1 = mission finished
+ */
+static void men_highscore(unsigned long pt, int twr) {
+
+  Uint8 pos = 0xff;
+
+#ifndef GAME_DEBUG_KEYS
+
+  hsc_select(lev_missionname(currentmission));
+
+  /* check, if there is a chance at all to get into the list,
+   * if not we don't need to lock the highscoretable
+   */
+  if (hsc_canEnter(pt)) {
+
+    set_men_bgproc(congrats_background_proc);
+
+    char name[SCORENAMELEN+1];
+
+#if (SYSTEM == SYS_LINUX)
+    /* copy the login name into the name entered into the highscore table */
+    strncpy(name, getenv("LOGNAME"), SCORENAMELEN);
+    name[SCORENAMELEN] = 0; // to be sure we have a terminated string
+#else
+    /* on systems without login we have no name */
+    name[0] = 0;
+#endif
+
+    while (!men_input(name, SCORENAMELEN)) ;
+
+    pos = hsc_enter(pt, twr, name);
+  }
+
+#endif /* GAME_DEBUG_KEYS */
+
+  show_scores(false, pos);
+}
+
 void
 main_game_loop()
 {
@@ -1466,58 +1519,6 @@ bool men_input(char *origs, int max_len, int xpos, int ypos, const char *allowed
   return ende;
 }
 
-static void
-congrats_background_proc(void)
-{
-  scr_blit(restsprites.data(menupicture), 0, 0);
-  scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
-
-  scr_writetext_center(130, "Congratulations! You are");
-  scr_writetext_center(170, "probably good enough to");
-  scr_writetext_center(210, "enter the highscore table!");
-
-  scr_writetext_center(270, "Please enter your name");
-}
-  
-/* highscores, after the game
- * pt = points, 
- * twr = tower reached, -1 = mission finished
- */
-static void men_highscore(unsigned long pt, int twr) {
-
-  Uint8 pos = 0xff;
-
-#ifndef GAME_DEBUG_KEYS
-
-  hsc_select(lev_missionname(currentmission));
-
-  /* check, if there is a chance at all to get into the list,
-   * if not we don't need to lock the highscoretable
-   */
-  if (hsc_canEnter(pt)) {
-
-    set_men_bgproc(congrats_background_proc);
-
-    char name[SCORENAMELEN+1];
-
-#if (SYSTEM == SYS_LINUX)
-    /* copy the login name into the name entered into the highscore table */
-    strncpy(name, getenv("LOGNAME"), SCORENAMELEN);
-    name[SCORENAMELEN] = 0; // to be sure we have a terminated string
-#else
-    /* on systems without login we have no name */
-    name[0] = 0;
-#endif
-
-    while (!men_input(name, SCORENAMELEN)) ;
-
-    pos = hsc_enter(pt, twr, name);
-  }
-
-#endif /* GAME_DEBUG_KEYS */
-
-  show_scores(false, pos);
-}
 
 void men_done(void) {
 }
