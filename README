@@ -37,8 +37,8 @@ item to start the game.
 
 The animal is controlled by the cursor keys and space (or return).
 Left and Right make the animal walk. Up and down make the elevators
-move if you are on one. The elevator platforms are a little bit
-smaller than the normal platforms.  If you are in front of a door
+move if you are on one. (The elevator platforms are a little bit
+smaller than the normal platforms.)  If you are in front of a door
 press up to enter it.  Pressing the space key will either throw a
 snowball if you are standing still or make the animal jump if you are
 walking.
