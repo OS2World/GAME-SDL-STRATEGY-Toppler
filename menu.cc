@@ -104,13 +104,13 @@ void men_init(void) {
   arc_assign(menudat);
 
   scr_read_palette(pal);
-  menupicture = scr_loadsprites_new(1, 640, 480, false, pal);
+  menupicture = scr_loadsprites(1, 640, 480, false, pal);
   arc_closefile();
 
   arc_assign(titledat);
 
   scr_read_palette(pal);
-  titledata = scr_loadsprites_new(1, SPR_TITLEWID, SPR_TITLEHEI, true, pal);
+  titledata = scr_loadsprites(1, SPR_TITLEWID, SPR_TITLEHEI, true, pal);
   arc_closefile();
 }
 
@@ -256,8 +256,8 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
         if (ms->yhilitpos == -1) {
           ms->yhilitpos = miny;
         } else {
-          if (ms->yhilitpos < miny) ms->yhilitpos += (miny - ms->yhilitpos) / 4;
-          else if (ms->yhilitpos > miny) ms->yhilitpos -= (ms->yhilitpos - miny) / 4;
+          if (ms->yhilitpos < miny) ms->yhilitpos += (miny - ms->yhilitpos + 3) / 4;
+          else if (ms->yhilitpos > miny) ms->yhilitpos -= (ms->yhilitpos - miny + 3) / 4;
         }
         scr_putbar((SCREENWID - ms->maxoptlen - 8) / 2, ms->yhilitpos - 3,
                    ms->maxoptlen + 8, FONTHEI + 3,
