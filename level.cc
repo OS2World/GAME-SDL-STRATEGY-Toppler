@@ -69,7 +69,7 @@ void lev_loadmission(char *filename) {
   arc_closefile();
 }
 
-int lev_selecttower(int number) {
+void lev_selecttower(int number) {
 
   int towerstart;
 
@@ -111,8 +111,6 @@ int lev_selecttower(int number) {
         tower[row][col] = 0;
       bpos++;
   }
-
-  return number * 50 + 500;
 }
 
 
@@ -321,7 +319,9 @@ int lev_testuntergr(int verticalpos, int anglepos, bool look_left) {
     return erg & 0xf;
 }
 
-int lev_towertime() { return  towernumber * 50 + 500; }
+int lev_towertime() {
+  return  towernumber * 50 + 500;
+}
 
 unsigned char lev_putplatform(int row, int col) {
   unsigned char erg = tower[row][col];

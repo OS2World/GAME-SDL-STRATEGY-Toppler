@@ -18,7 +18,7 @@ static struct {
 
 
 void arc_init(char *name) {
-  f = fopen(name, "rb");
+  f = file_open(name, "rb");
 
   assert(f != 0, "archive file not opened\n");
 
@@ -88,4 +88,8 @@ long arc_filesize() {
 bool arc_eof() {
   return ftell(f) > files[pos].start + files[pos].size;
 }
+
+SDL_RWops *arc_getRWops() {
+}
+
 

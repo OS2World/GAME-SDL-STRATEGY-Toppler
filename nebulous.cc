@@ -52,9 +52,10 @@ static void startgame() {
   int gameresult;
   int resttime;
 
-  arc_init(DATADIR"/nebulous.dat");
+  arc_init("toppler.dat");
   gam_init();
   men_init();
+  snd_init();
   stat = men_main(true);
   while (stat > 0) {
     pts_reset();
@@ -89,6 +90,7 @@ static void startgame() {
     men_highscore(pts_points(), true);
     stat = men_main(false);
   }
+  snd_done();
   gam_done();
   arc_done();
 }

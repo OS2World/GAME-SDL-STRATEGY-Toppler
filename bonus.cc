@@ -123,15 +123,9 @@ bool bns_game(unsigned char ncr, unsigned char ncg, unsigned char ncb) {
   void *p;
 
   pal_savepal(&p);
-
-  pal_setpal(16 + 1,  67,  71,  12);
-  pal_setpal(16 + 2,  11,  40,  66);
-  pal_setpal(16 + 3,  39,  76, 132);
-  pal_setpal(16 + 4,  99,  95,  22);
-  pal_setpal(16 + 5,  58, 103, 158);
-  pal_setpal(16 + 6, 145, 114,  61);
-  pal_setpal(16 + 7,  58, 158,  93);
-  pal_setpal(16 + 8,  34, 150,  38);
+  
+  for (int i = 0; i < 152; i++)
+    pal_setpal(16 + i, scrollerpalette[i*3+2], scrollerpalette[i*3+1], scrollerpalette[i*3+0]);
   pal_colors();
 
   key_readkey();

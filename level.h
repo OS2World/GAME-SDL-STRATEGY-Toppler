@@ -8,7 +8,7 @@
 void lev_loadmission(char *filename);
 
 /* selects one of the towers in this mission */
-int lev_selecttower(int number);
+void lev_selecttower(int number);
 
 /* returns the value at this position in the level array */
 unsigned char lev_tower(int row, int column);

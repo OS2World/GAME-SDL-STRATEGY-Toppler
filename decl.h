@@ -73,6 +73,11 @@
 /* waits around 1/18 of a second */
 extern void dcl_wait();
 
+bool dcl_fileexists(char *n);
+
+/* opens a file looking into the right directories */
+FILE *file_open(char *name, char *par);
+
 /* GAME PARAMETERS */
 extern bool fullscreen;
 extern bool nosound;

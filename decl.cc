@@ -13,6 +13,27 @@ void dcl_wait() {
 }
 
 bool dcl_fileexists(char *n) {
-  return true;
+  FILE *f = fopen(n, "r");
+
+  if (f) {
+    fclose(f);
+    return true;
+  } else
+    return false;
 }
 
+FILE *file_open(char *name, char *par) {
+
+  /* look into actual diractory */
+  if (dcl_fileexists(name))
+    return fopen(name, par);
+
+  /* look into the data dir */
+  char n[200];
+
+  sprintf(n, DATADIR"/%s", name);
+  if (dcl_fileexists(n))
+    return fopen(n, par);
+
+  assert(false, "could not open file");
+}

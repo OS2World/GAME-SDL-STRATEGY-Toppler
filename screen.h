@@ -45,6 +45,7 @@ void scr_draw_submarine(long vert, long x, long number);
 void scr_draw_fish(long vert, long x, long number);
 void scr_draw_torpedo(long vert, long x);
 
+extern char scrollerpalette[168*3];
 
 #endif
 

@@ -248,3 +248,17 @@ void pal_calcdark() {
 }
 
 unsigned char pal_dark(unsigned char p) { return dark[p]; }
+
+char pal_red(unsigned char i) {
+  return pal[i].r;
+}
+
+char pal_green(unsigned char i) {
+  return pal[i].g;
+}
+
+char pal_blue(unsigned char i) {
+  return pal[i].b;
+}
+
+

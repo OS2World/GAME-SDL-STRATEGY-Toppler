@@ -50,4 +50,10 @@ void pal_calcdark();
  the given color */
 unsigned char pal_dark(unsigned char p);
 
+/* returns the red green and blue values of the given color
+ in the current palette */
+char pal_red(unsigned char i);
+char pal_green(unsigned char i);
+char pal_blue(unsigned char i);
+
 #endif

@@ -1,26 +1,26 @@
 #include "points.h"
 
-static unsigned short points;
+static unsigned int points;
+static unsigned long nextlife;
 static int lifes;
 
+#define LIFE_INCREMENT 5000
 
 void pts_reset() {
   points = 0;
   lifes = 3;
+  nextlife = LIFE_INCREMENT;
 }
 
 void pts_add(int add) {
-  unsigned short t;
-
-  t = points / 1000 % 10;
   points += add;
 
-  if ((t != 4) && (t != 9) || (t == points / 1000 % 10))
-    return;
-
-  lifes++;
-  if (lifes == 9)
-    lifes = 8;
+  while (points > nextlife) {
+    lifes++;
+    nextlife += LIFE_INCREMENT;
+    if (lifes > 8)
+      lifes = 8;
+  }
 }
 
 unsigned int pts_points() {

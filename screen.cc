@@ -63,10 +63,12 @@ static SDL_Surface *fontchars[59];  //32..90
 
 static long layerwidth[scrolllayers];
 static SDL_Surface *layerimage[scrolllayers];
+char scrollerpalette[168*3];
 
-/* this functions are so compex because the graphics are save in a way that allowed easy
- loading into the video memory in a tricky vga graphics mode in ols times, now we need
- to sort the pixels in an orderly manner */
+/* this functions are so complex because the graphics are save in a
+ way that allowed easy loading into the video memory in a tricky vga
+ graphics mode in old times, now we need to sort the pixels in an
+ orderly manner */
 static void decomp(unsigned char *src, SDL_Surface *dst, int add, int count, bool sprite, bool descramble) {
 
   int pos = 0;
@@ -323,30 +325,33 @@ static void loadfont() {
 }
 
 static void loadscroller() {
-  FILE *in = fopen(DATADIR"/layer1.tga", "rb");
+  FILE *in = file_open("layer1.tga", "rb");
   layerimage[0] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
                                640, 240, 8, 0, 0, 0, 0);
     SDL_SetColorKey(layerimage[0], SDL_SRCCOLORKEY, 0);
     pal_setstdpalette(layerimage[0]);
-  fread((layerimage[0]->pixels), 71, 1, in);
+  fread((layerimage[0]->pixels), 500, 1, in);
   fread((layerimage[0]->pixels), 640*240, 1, in);
   fclose(in);
   
-  in = fopen(DATADIR"/layer2.tga", "rb");
+  in = file_open("layer2.tga", "rb");
   layerimage[1] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
                                640, 240, 8, 0, 0, 0, 0);
     SDL_SetColorKey(layerimage[1], SDL_SRCCOLORKEY, 0);
     pal_setstdpalette(layerimage[1]);
-  fread((layerimage[1]->pixels), 71, 1, in);
+  fread((layerimage[1]->pixels), 18, 1, in);
+  fread(scrollerpalette, 152*3, 1, in);
+  fread((layerimage[1]->pixels), 26, 1, in);
+  
   fread((layerimage[1]->pixels), 640*240, 1, in);
   fclose(in);
   
-  in = fopen(DATADIR"/layer3.tga", "rb");
+  in = file_open("layer3.tga", "rb");
   layerimage[2] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
                                640, 240, 8, 0, 0, 0, 0);
     SDL_SetColorKey(layerimage[2], SDL_SRCCOLORKEY, 0);
     pal_setstdpalette(layerimage[2]);
-  fread((layerimage[2]->pixels), 71, 1, in);
+  fread((layerimage[2]->pixels), 500, 1, in);
   fread((layerimage[2]->pixels), 640*240, 1, in);
   fclose(in);
   
@@ -509,15 +514,39 @@ void scr_putbar(int x, int y, int br, int h) {
 void scr_swap() {
   int p = 0;
   int q = 0;
+  unsigned char i = ((unsigned char *)(second->pixels))[0];
   for (int y = 0; y < 240; y++) {
-    for (int x = 0; x < 640; x++) {
-      ((char *)(display->pixels))[p++] = ((char *)(second->pixels))[q];
-      if (x & 1) q++;
+    for (int x = 0; x < 320; x++) {
+      ((char *)(display->pixels))[p++] = i;
+      ((char *)(display->pixels))[p++] = i;
+      q++;
+      i = ((unsigned char *)(second->pixels))[q];
     }
     memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - 640], 640);
     p += 640;
   }
-
+/*
+  int p = 0;
+  int q = 0;
+  unsigned char i = ((unsigned char *)(second->pixels))[0];
+  for (int y = 0; y < 240; y++) {
+    for (int x = 0; x < 320; x++) {
+      ((char *)(display->pixels))[p++] = pal_blue(i);
+      ((char *)(display->pixels))[p++] = pal_green(i);
+      ((char *)(display->pixels))[p++] = pal_red(i);
+      ((char *)(display->pixels))[p++] = ((char *)(display->pixels))[p-3];
+      ((char *)(display->pixels))[p++] = ((char *)(display->pixels))[p-3];
+      ((char *)(display->pixels))[p++] = ((char *)(display->pixels))[p-3];
+      q++;
+      i = ((unsigned char *)(second->pixels))[q];
+    }
+    memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - 640*3], 640*3);
+    p += 640*3;
+  }*/
+/*
+  pal_setpalette(second);
+  SDL_BlitSurface(second, NULL, display, NULL);
+  pal_setstdpalette(second);*/
   SDL_UpdateRect(display, 0, 0, 0, 0);
 }
 
@@ -558,8 +587,7 @@ static void draw_tower(long vert, long angle, long hs, long he) {
 }
 
 /* draws something of the environment */
-static void putcase(unsigned char w, long x, long h)
-{
+static void putcase(unsigned char w, long x, long h) {
   switch (w) {
 
   case 0:
@@ -811,7 +839,7 @@ void scr_draw_bonus1(long horiz, long towerpos) {
   put_scrollerlayer(horiz/2, 0);
   put_scrollerlayer(horiz  , 1);
 
-  puttower(1, 60, 200, towerpos);
+  puttower(1, 60, 240, towerpos);
 }
 void scr_draw_bonus2(long horiz, long towerpos) {
   put_scrollerlayer(horiz*2, 2);

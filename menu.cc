@@ -7,8 +7,14 @@
 #include "palette.h"
 #include "decl.h"
 #include "level.h"
+#include "sound.h"
 
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
 
 static unsigned short menupicture, titledata;
 static unsigned char currentmission = 0;
@@ -18,7 +24,7 @@ static unsigned char currentmission = 0;
 static unsigned char menupicpalette[3*240];
 
 static struct {
-  unsigned short points;
+  unsigned int points;
   char name[10];
 } scores[10];
 
@@ -76,9 +82,7 @@ unsigned char men_main(bool fade) {
   scr_blit(spr_spritedata(titledata), 8, 20);
   scr_swap();
 
-  if (fade) {
-//    pal_fade_in();
-  }
+  snd_playtitle();
 
   pal_colors();
 
@@ -162,6 +166,8 @@ unsigned char men_main(bool fade) {
   pal_restorepal(oldpal);
   pal_colors();
 
+  snd_stoptitle();
+
   return main;
 }
 
@@ -173,10 +179,8 @@ static void emptyscoretable() {
 }
 
 static void getscores() {
-  char n[300];
 
-  sprintf(n, "%s/nebulous.hsc", getenv("HOME"));
-  FILE *f = fopen(n, "rb");
+  FILE *f = fopen(SCOREFILE, "rb");
 
   if (f) {
 
@@ -193,14 +197,11 @@ static void getscores() {
 }
 
 static void savescores() {
-  char n[300];
 
-  sprintf(n, "%s/nebulous.hsc", getenv("HOME"));
-
-  FILE *f = fopen(n, "r+b");
+  FILE *f = fopen(SCOREFILE, "r+b");
 
   if (!f)
-    f = fopen(n, "a+b");
+    f = fopen(SCOREFILE, "a+b");
 
   fseek(f, currentmission * sizeof(scores), SEEK_SET);
 
@@ -212,6 +213,19 @@ static void savescores() {
 void men_highscore(long pt, bool pal) {
 
   void *oldpal;
+  int lockfd;
+
+  scr_writetext(160-6*16, 90,"SCOREFILE LOCKED");
+  scr_writetext(160-6*11, 110,"PLEASE WAIT");
+  scr_swap();
+
+  if (pt > 0){ 
+    while (lockfd = open(SCOREFILE ".lck", O_CREAT | O_RDWR | O_EXCL) == -1) {
+      sleep(1);
+      scr_swap();
+    }
+    close(lockfd);
+  }
 
   if (pal) {
     pal_savepal(&oldpal);
@@ -236,8 +250,14 @@ void men_highscore(long pt, bool pal) {
 
   if (t < 10) {
     scr_writetext(160-6*15, 70,"CONGRATULATIONS");
-    scr_writetext(160-6*18, 90,"YOU ARE ONE OF THE");
-    scr_writetext(160-6*15,110,"10 BEST PLAYERS");
+    if (t == 0) {
+      scr_writetext(160-6*18, 90,"YOU GOT THE");
+      scr_writetext(160-6*15,110,"HIGH SCORE");
+    }
+    else {
+      scr_writetext(160-6*18, 90,"YOU ARE ONE OF THE");
+      scr_writetext(160-6*15,110,"10 BEST PLAYERS");
+    }
     scr_writetext(160-6*22,140,"PLEASE ENTER YOUR NAME");
 
     scr_putbar(100, 160, 120, 16);
@@ -247,7 +267,15 @@ void men_highscore(long pt, bool pal) {
     if (pal) pal_colors();
     char inp;
     char pos = 0;
+    int defName = 1;
     scores[t].name[pos] = 0;
+
+    strncpy(scores[t].name,getenv("LOGNAME"),8);
+    scores[t].name[8]=0; //to be sure
+
+    scr_putbar(100, 160, 120, 16);
+    scr_writetext(160 - 6 * strlen(scores[t].name), 160, scores[t].name);
+    scr_swap();
 
     key_readkey();
 
@@ -255,10 +283,20 @@ void men_highscore(long pt, bool pal) {
 
       while ((inp = key_chartyped()) == 0) dcl_wait();
 
-      if ((inp == 8) && (pos > 0)) {
-        pos--;
-        scores[t].name[pos] = 0;
-      } else if ((inp != 13) && (pos < 9)) {
+      if (defName) {
+	defName=0;
+#if 0
+	if (inp==' ') inp='\b'; /* Is this right? */
+#endif
+	if (inp!='\r') scores[t].name[pos] = 0;
+      }
+
+      if (inp == '\b') {
+	if (pos > 0) {
+          pos--;
+          scores[t].name[pos] = 0;
+	} //else do nothing!
+      } else if ((inp != '\r') && (pos < 9)) {
         scores[t].name[pos] = inp;
         pos++;
         scores[t].name[pos] = 0;
@@ -268,7 +306,7 @@ void men_highscore(long pt, bool pal) {
       scr_writetext(160 - 6 * pos, 160, scores[t].name);
       scr_swap();
 
-    } while (inp != 13);
+    } while (inp != '\r');
 
     scores[t].points = pt;
     savescores();
@@ -277,6 +315,8 @@ void men_highscore(long pt, bool pal) {
     scr_blit(spr_spritedata(titledata), 8, 0);
   }
 
+  if (pt > 0) unlink(SCOREFILE ".lck");
+
   char s[30];
 
   for (int t = 0; t < 9; t++) {
@@ -284,7 +324,7 @@ void men_highscore(long pt, bool pal) {
     scr_writetext(10, 52 + t * 17, s);
   }
 
-  sprintf(s, "%i MISSION", currentmission + 1);
+  sprintf(s, "MISSION %i", currentmission + 1);
 
   char sx[2];
   sx[1] = 0;

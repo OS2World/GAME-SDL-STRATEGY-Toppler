@@ -1,3 +1,12 @@
+- Use autoconf to control installaton directory
+- made the program mute automatically, if audio could not be opened
+- tried to incorporate c64 sound effects
+- fixed too small data type for score, makes highscore list unusable,
+  delete it
+- fixed bug that allowed robots to throw you down when you were invisible
+- more sound effects (timeout, bonus points)
+- file open looks in actual directory as well as in data directory
+
 03.08.2001 Version 0.71
 
 - moved score table into home directory

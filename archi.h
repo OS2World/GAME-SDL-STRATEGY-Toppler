@@ -1,6 +1,8 @@
 #ifndef ARCHI_H
 #define ARCHI_H
 
+#include <SDL.h>
+
 /* this module contains all file acces functions necessary
  except the ones for the highscore file
 
@@ -33,6 +35,9 @@ void arc_read(void *buf, int size, int *result);
 /* returns the specified number of bits on the lower bits of the retuned
  value, dont use arc_read and arc_getbits on the same file */
 unsigned short arc_getbits(int anz);
+
+/* returns a SDL_RWops for the currently opened file */
+SDL_RWops *arc_getRWops();
 
 #endif
 

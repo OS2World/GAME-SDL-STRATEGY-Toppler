@@ -22,13 +22,11 @@
 #define STATE_FINISHED 4
 
 void gam_init() {
-  snd_init();
   scr_init();
   key_init();
 }
 
 void gam_done() {
-  snd_done();
   key_done();
   scr_done();
 }
@@ -42,7 +40,7 @@ void gam_loadtower(int tow) {
 }
 
 void gam_arrival() {
-  int b, toppler;
+  int b, toppler, delay;
 
   rob_initialize();
   snb_init();
@@ -51,9 +49,10 @@ void gam_arrival() {
   int substart = 0;
   int subshape = 0;
 
-  b = 0;
+  b = 5;
   toppler = 1;
 
+  snd_start();
   top_hide();
 
   key_readkey();
@@ -69,8 +68,23 @@ void gam_arrival() {
     scr_writetext(40L, 40L, "you are entering the");
     scr_writetext(160 - strlen(lev_towername()) * 6L, 70L, lev_towername());
     scr_swap();
+    snd_play();
 
     switch (b) {
+
+    case 5:
+      snd_start();
+      b = 6;
+      delay = 0;
+      break;
+
+    case 6:
+      delay++;
+      if (delay == 30) {
+        b = 0;
+        snd_sub_raise();
+      }
+      break;
 
     case 0:
       substart++;
@@ -95,8 +109,10 @@ void gam_arrival() {
 
     case 3:
       subshape--;
-      if (subshape == 0)
+      if (subshape == 0) {
         b = 4;
+        snd_sub_down();
+      }
       break;
 
     case 4:
@@ -290,18 +306,24 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
   while (zeit > 0) {
     dcl_wait();
     countdown(zeit);
+    snd_score();
+    snd_play();
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
 
   while (tec > 0) {
     dcl_wait();
     countdown(tec);
+    snd_score();
+    snd_play();
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
 
   while (extra > 0) {
     dcl_wait();
     countdown(extra);
+    snd_score();
+    snd_play();
     writebonus(tower_position, tower_angle, zeit, tec, extra, time);
   }
 }
@@ -313,6 +335,8 @@ static void akt_time(int &time, int &timecount, int &state) {
     if (timecount == 5) {
       timecount = 0;
       time--;
+      if ((time <= 50) && (time & 1) || (time <= 25))
+        snd_alarm();
       if (time == 0)
         state = STATE_TIMEOUT;
     }
@@ -413,6 +437,7 @@ int gam_towergame(int &anglepos, int &resttime) {
   /* time left for the player to reach the tower */
   int time = lev_towertime();
   
+//      return GAME_FINISHED;
   top_init();
 
   reached_height = tower_position = top_verticalpos();
@@ -469,6 +494,7 @@ int gam_towergame(int &anglepos, int &resttime) {
 
       if (top_verticalpos() > 8) {
         lev_removelayer(top_verticalpos() / 4 - 2);
+        snd_crumble();
         top_drop1layer();
       }
 
@@ -476,6 +502,7 @@ int gam_towergame(int &anglepos, int &resttime) {
       scr_drawall(towerpos(top_verticalpos(), tower_position,
                            top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
       scr_swap();
+      snd_play();
       dcl_wait();
     }
 

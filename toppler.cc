@@ -90,6 +90,7 @@ static void falling(int nr) {
 
   state = STATE_FALLING;
   substate = 0;
+  snd_fall();
 
   switch (nr) {
     case 0:
@@ -444,6 +445,8 @@ void top_aktualtoppler(int left_right, int up_down, bool space) {
     break;
 
   case STATE_DOOR:
+
+
     switch (substate) {
 
     case 0:
@@ -457,6 +460,7 @@ void top_aktualtoppler(int left_right, int up_down, bool space) {
         movetoppler(-1L, 0L);
       else
         movetoppler(1L, 0L);
+
       break;
 
     case 4:
@@ -510,9 +514,14 @@ void top_aktualtoppler(int left_right, int up_down, bool space) {
 
     default:
       if (substate >= 13 && substate <= 28) {
+        if (((substate -13) & 0x7) == 0)
+          snd_doortap();
+
         tvisible = false;
-        if (targetdoor) state = STATE_FINISHED;
-        else {
+        if (targetdoor) {
+          state = STATE_FINISHED;
+          snd_fanfare();
+        } else {
           if (look_left)
             anglepos += 2;
           else
@@ -625,7 +634,8 @@ void top_testkollision() {
 
   if ((state == STATE_TOPPLING) ||
       (state == STATE_DROWN) ||
-      (state == STATE_DOOR) && (substate >= 0xa) && (substate < 0x1f))
+      (state == STATE_DOOR) && (substate >= 10) && (substate < 31) ||
+      (!tvisible))
     return;
 
   if (topple_delay) {
