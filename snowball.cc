@@ -61,7 +61,7 @@ void snb_movesnowball(void) {
   if (nr == -1)
     return;
   else {
-    snd_hit();
+    TTSound->startsound(SND_HIT);
     pts_add(rob_gothit(nr));
     time = -1;
   }

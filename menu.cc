@@ -272,9 +272,9 @@ men_options_sounds(_menusystem *ms)
       config.nosound(false);
       snd_init();
     } else {
-      snd_stoptitle();
-      snd_stoptgame();
-      snd_done();
+      //snd_stoptitle();
+      //snd_stoptgame();
+      TTSound->stop();
       config.nosound(true);
     }
   }
@@ -688,23 +688,23 @@ main_game_loop()
 
   gam_newgame();
   bns_restart();
-
+    
   do {
-    snd_wateron();
+    TTSound->startsound(SND_WATER);
     do {
       gam_loadtower(tower);
       scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
-      snd_watervolume(128);
-      snd_playtgame();
+      TTSound->setsoundvol(SND_WATER, 128);
+      //snd_playtgame();
       gam_arrival();
       gameresult = gam_towergame(anglepos, resttime, demo, &tmpbuf);
-      snd_stoptgame();
+      //snd_stoptgame();
     } while ((gameresult == GAME_DIED) && pts_lifesleft());
 
     if (gameresult == GAME_FINISHED) {
       gam_pick_up(anglepos, resttime);
 
-      snd_wateroff();
+      TTSound->stopsound(SND_WATER);
       tower++;
 
       if (tower < lev_towercount()) {
@@ -716,7 +716,7 @@ main_game_loop()
           gameresult = GAME_ABORTED;
       }
     } else {
-      snd_wateroff();
+      TTSound->stopsound(SND_WATER);
     }
   } while (pts_lifesleft() && (tower < lev_towercount()) && (gameresult != GAME_ABORTED));
 
@@ -729,12 +729,12 @@ static char *
 men_main_bonusgame_proc(_menusystem *ms)
 {
   if (ms) {
-    snd_stoptitle();
+    //snd_stoptitle();
     gam_newgame();
     scr_settowercolor(rand() % 256, rand() % 256, rand() % 256);
     lev_set_towercol(rand() % 256, rand() % 256, rand() % 256);
     bns_game();
-    snd_playtitle();
+    //snd_playtitle();
   }
   return "Hunt the Fish";
 }
@@ -748,9 +748,9 @@ men_main_startgame_proc(_menusystem *ms)
     switch (key_sdlkey2conv(ms->key, false)) {
     case fire_key:
       dcl_update_speed(config.game_speed());
-      snd_stoptitle();
+      //snd_stoptitle();
       main_game_loop();
-      snd_playtitle();
+      //snd_playtitle();
       dcl_update_speed(MENU_DCLSPEED);
       break;
     case right_key: currentmission = (currentmission + 1) % missioncount; break;
@@ -776,10 +776,10 @@ static char *
 men_main_leveleditor_proc(_menusystem *ms)
 {
   if (ms) {
-    snd_stoptitle();
+    //snd_stoptitle();
     le_edit();
     (void)key_sdlkey();
-    snd_playtitle();
+    //snd_playtitle();
   }
   return "Level Editor";
 }
@@ -818,19 +818,19 @@ men_main_timer_proc(_menusystem *ms)
     lev_get_towerdemo(demolen, demobuf);
 
     dcl_update_speed(config.game_speed());
-    snd_stoptitle();
+    //snd_stoptitle();
     gam_newgame();
-    snd_wateron();
+    TTSound->startsound(SND_WATER);
     scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
-    snd_watervolume(128);
-    snd_playtgame();
+    TTSound->setsoundvol(SND_WATER, 128);
+    //snd_playtgame();
     rob_initialize();
     (void)gam_towergame(anglepos, resttime, demolen, &demobuf);
-    snd_stoptgame();
-    snd_wateroff();
+    //snd_stoptgame();
+    TTSound->stopsound(SND_WATER);
     dcl_update_speed(MENU_DCLSPEED);
 
-    snd_playtitle();
+    //snd_playtitle();
   }
   return NULL;
 }
@@ -883,7 +883,7 @@ void men_main() {
 
   if (!ms) return;
 
-  snd_playtitle();
+  //snd_playtitle();
 
   ms = set_menu_system_timeproc(ms, 200, men_main_timer_proc);
 
@@ -904,7 +904,7 @@ void men_main() {
 
   free_menu_system(ms);
 
-  snd_stoptitle();
+  //snd_stoptitle();
 }
 
 bool men_game() {

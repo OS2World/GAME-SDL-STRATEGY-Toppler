@@ -145,7 +145,7 @@ static void falling(int nr) {
 
   state = STATE_FALLING;
   substate = 0;
-  snd_fall();
+  //TTSound->startsound(SND_FALL);
 
   switch (nr) {
     case 0:
@@ -202,7 +202,7 @@ static void shooting(void) {
   state = STATE_SHOOTING;
   substate = 0;
   topplershape = 0;
-  snd_shoot();
+  TTSound->startsound(SND_SHOOT);
 }
 
 static void door(void) {
@@ -241,7 +241,8 @@ static void drown(void) {
   substate = 0;
   verticalpos = 0;
 
-  snd_splash(128);
+  TTSound->setsoundvol(SND_SPLASH, 128);
+  TTSound->startsound(SND_SPLASH);
 }
 
 static void topple(void) {
@@ -365,7 +366,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
             topplershape = 0xc;
           }
         } else {
-          if ((substate == 2) || (substate == 6)) snd_tap();
+          if ((substate == 2) || (substate == 6)) TTSound->startsound(SND_TAP);
           if (left_right == -1) {
             if (look_left)
               turn();
@@ -442,7 +443,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
       } while (!((inh == 0) || movetoppler(0L, inh)));
       if (b < 0) {
         walking();
-        snd_tap();
+        TTSound->startsound(SND_TAP);
       } else {
         substate++;
         if (substate >= jumping_howlong) {
@@ -470,7 +471,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
         do {
           falling_howmuch--;
         } while (falling_howmuch && !movetoppler(0, -falling_howmuch));
-        snd_tap();
+        TTSound->startsound(SND_TAP);
         if (falling_howmuch != 0) {
           falling_howmuch++;
           if (falling_howmuch > 4)
@@ -501,7 +502,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
   case STATE_TURNING:
     topplershape = umdreh[substate];
     substate++;
-    if ((substate == 4) || (substate == 7)) snd_tap();
+    if ((substate == 4) || (substate == 7)) TTSound->startsound(SND_TAP);
     if (substate == 4) look_left = !look_left;
     if (substate == 7) walking();
     break;
@@ -577,12 +578,12 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
     default:
       if (substate >= 13 && substate <= 28) {
         if ((door_turner % 4) == 0)
-          snd_doortap();
+          TTSound->startsound(SND_DOORTAP);
 
         tvisible = false;
         if (targetdoor) {
           state = STATE_FINISHED;
-          snd_fanfare();
+          TTSound->startsound(SND_FANFARE);
         } else {
           if (look_left)
             anglepos += 2;
@@ -626,7 +627,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
       substate++;
       on_elevator = true;
       ele_activate((Sint8)elevator_direction);
-      snd_tick();
+      TTSound->startsound(SND_TICK);
       return;
     }
     verticalpos += elevator_direction;
@@ -639,7 +640,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
         walking();
       } else {
         ele_move();
-        snd_tick();
+        TTSound->startsound(SND_TICK);
       }
     }
     break;
@@ -670,7 +671,7 @@ void top_updatetoppler(int left_right, int up_down, bool space) {
     break;
 
   case STATE_DROWN:
-    if (substate == 0x8) snd_drown();
+    if (substate == 0x8) TTSound->startsound(SND_DROWN);
     if (substate < 0x18) {
       topplershape = substate / 4 + 31;
       substate++;

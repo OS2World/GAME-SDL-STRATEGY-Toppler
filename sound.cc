@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#include <string.h>
 #include "sound.h"
 
 #include "decl.h"
@@ -29,19 +30,13 @@
 
 #include <stdlib.h>
 
-#ifdef HAVE_LIBSDL_MIXER
-static Mix_Chunk *sounds[20];
-static Mix_Music *title, *tgame;
-#endif
-static int waterchannel;
-static int boinkmax = 0;
-static int splashmax = 0;
+#define DEBUG
 
-static int torpedochannel;
+//#ifdef HAVE_LIBSDL_MIXER
+//static Mix_Music *title, *tgame;
+//#endif
 
-static long play;
-
-static bool nosoundinit;
+//static bool nosoundinit;
 
 #ifdef HAVE_LIBSDL_MIXER
 static Mix_Chunk *LoadWAV(char *name) {
@@ -55,6 +50,36 @@ static Mix_Chunk *LoadWAV(char *name) {
 #endif
 
 void snd_init(void) {
+  if (TTSound) delete TTSound;
+  TTSound = new ttsounds();
+  TTSound->addsound("water.wav",    SND_WATER,     128, -1);
+  TTSound->addsound("tap.wav",      SND_TAP,       MIX_MAX_VOLUME, 0);
+  TTSound->addsound("boing.wav",    SND_BOINK,     0,    0);
+  TTSound->addsound("hit.wav",      SND_HIT,       MIX_MAX_VOLUME, 0);
+  TTSound->addsound("honk.wav",     SND_CROSS,     MIX_MAX_VOLUME, 0);
+  TTSound->addsound("tick.wav",     SND_TICK,      MIX_MAX_VOLUME, 0);
+  TTSound->addsound("bubbles.wav",  SND_DROWN,     MIX_MAX_VOLUME, 2);
+  TTSound->addsound("splash.wav",   SND_SPLASH,    0,    0);
+  TTSound->addsound("swoosh.wav",   SND_SHOOT,     MIX_MAX_VOLUME, 0);
+  TTSound->addsound("alarm.wav",    SND_ALARM,     MIX_MAX_VOLUME, 0);
+  TTSound->addsound("score.wav",    SND_SCORE,     MIX_MAX_VOLUME, 0);
+  TTSound->addsound("rumble.wav",   SND_CRUMBLE,   MIX_MAX_VOLUME, 0);
+  TTSound->addsound("fanfare.wav",  SND_FANFARE,   MIX_MAX_VOLUME, 0);
+  TTSound->addsound("sonar.wav",    SND_SONAR,     MIX_MAX_VOLUME/6, 0);
+  TTSound->addsound("torpedo.wav",  SND_TORPEDO,   MIX_MAX_VOLUME, 0);
+  //TTSound->addsound("subfall.wav",  SND_SUB_DOWN,  MIX_MAX_VOLUME, 0);
+  //TTSound->addsound("subraise.wav", SND_SUB_RAISE, MIX_MAX_VOLUME, 0);
+  //TTSound->addsound("start.wav",    SND_START,     MIX_MAX_VOLUME, 0);
+  //TTSound->addsound("timeout.wav",  SND_TIMEOUT,   MIX_MAX_VOLUME, 0);
+  //TTSound->addsound("fall.wav",     SND_FALL,      MIX_MAX_VOLUME, 0);
+}
+
+void snd_done(void) {
+  TTSound->stop();
+  delete TTSound;
+}
+
+/*void snd_init(void) {
   if (config.nosound()) return;
 
 #ifdef HAVE_LIBSDL_MIXER
@@ -73,152 +98,12 @@ void snd_init(void) {
     return;
   }
 
-  sounds[0] = LoadWAV("water.wav");
-  sounds[1] = LoadWAV("tap.wav");
-  sounds[2] = LoadWAV("hit.wav");
-  sounds[3] = LoadWAV("honk.wav");
-  sounds[4] = LoadWAV("tick.wav");
-  sounds[5] = LoadWAV("boing.wav");
-  sounds[6] = LoadWAV("bubbles.wav");
-  sounds[7] = LoadWAV("splash.wav");
-  sounds[8] = LoadWAV("swoosh.wav");
-  sounds[9] = LoadWAV("alarm.wav");
-  sounds[10] = LoadWAV("score.wav");
-  sounds[11] = LoadWAV("rumble.wav");
-  sounds[12] = LoadWAV("fanfare.wav");
-  sounds[13] = LoadWAV("fall.wav");
-
-  sounds[14] = LoadWAV("start.wav");
-  sounds[15] = LoadWAV("subfall.wav");
-  sounds[16] = LoadWAV("subraise.wav");
-  sounds[17] = LoadWAV("timeout.wav");
-  sounds[18] = LoadWAV("sonar.wav");
-  sounds[19] = LoadWAV("torpedo.wav");
-
   title = Mix_LoadMUS("title.xm");
   tgame = Mix_LoadMUS("tower.xm");
 #endif
-}
+}*/
 
-void snd_done(void) {
-  if (config.nosound() || nosoundinit) return;
-
-#ifdef HAVE_LIBSDL_MIXER
-  while (Mix_Playing(-1)) dcl_wait();
-
-  for (int t = 0; t < 18; t++)
-    if (sounds[t])
-      Mix_FreeChunk(sounds[t]);
-
-  Mix_FreeMusic(title);
-
-  Mix_CloseAudio();
-
-  SDL_QuitSubSystem(SDL_INIT_AUDIO);
-#endif
-}
-
-void snd_tap(void) {       play |=     0x1; }
-void snd_boink(int vol) {  play |=     0x2; if (vol > boinkmax) boinkmax = vol; }
-void snd_hit(void) {       play |=     0x4; }
-void snd_cross(void) {     play |=     0x8; }
-void snd_tick(void) {      play |=    0x10; }
-void snd_drown(void) {     play |=    0x20; }
-void snd_splash(int vol) { play |=    0x40; if (vol > splashmax) splashmax = vol; }
-void snd_shoot(void) {     play |=    0x80; }
-void snd_alarm(void) {     play |=   0x100; }
-void snd_score(void) {     play |=   0x200; }
-void snd_crumble(void) {   play |=   0x400; }
-void snd_fanfare(void) {   play |=   0x800; }
-void snd_doortap(void) {   play |=  0x1000; }
-void snd_sub_raise(void) { play |=  0x2000; }
-void snd_sub_down(void) {  play |=  0x4000; }
-void snd_start(void) {     play |=  0x8000; }
-void snd_timeout(void) {   play |= 0x10000; }              
-void snd_fall(void) {      play |= 0x20000; }              
-void snd_sonar(void) {     play |= 0x40000; }
-void snd_torpedo(void) {   play |= 0x80000; }
-
-void snd_torpedoStop(void) {
-  Mix_HaltChannel(torpedochannel);
-}
-
-void snd_play(void) {
-
-  if (config.nosound() || nosoundinit) return;
-
-#ifdef HAVE_LIBSDL_MIXER
-  if (play & 0x01)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[1], 0), MIX_MAX_VOLUME);
-  if (play & 0x02)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[5], 0), boinkmax);
-  if (play & 0x04)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[2], 0), MIX_MAX_VOLUME);
-  if (play & 0x08)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[3], 0), MIX_MAX_VOLUME);
-  if (play & 0x10)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[4], 0), MIX_MAX_VOLUME);
-  if (play & 0x20)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[6], 2), MIX_MAX_VOLUME);
-  if (play & 0x40)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[7], 0), splashmax);
-  if (play & 0x80)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[8], 0), MIX_MAX_VOLUME);
-  if (play & 0x100)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[9], 0), MIX_MAX_VOLUME);
-  if (play & 0x200)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[10], 0), MIX_MAX_VOLUME);
-  if (play & 0x400)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[11], 0), MIX_MAX_VOLUME);
-  if (play & 0x800)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[12], 0), MIX_MAX_VOLUME);
-  if (play & 0x1000)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[1], 0), MIX_MAX_VOLUME);
-  if (play & 0x2000)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[16], 0), MIX_MAX_VOLUME);
-  if (play & 0x4000)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[15], 0), MIX_MAX_VOLUME);
-  if (play & 0x8000)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[14], 0), MIX_MAX_VOLUME);
-  if (play & 0x10000)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[17], 0), MIX_MAX_VOLUME);
-  if (play & 0x20000)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[13], 0), MIX_MAX_VOLUME);
-  if (play & 0x40000)
-    Mix_Volume(Mix_PlayChannel(-1, sounds[18], 0), MIX_MAX_VOLUME / 6);
-  if (play & 0x80000) {
-    torpedochannel = Mix_PlayChannel(-1, sounds[19], 0);
-    Mix_Volume(torpedochannel, MIX_MAX_VOLUME);
-  }
-#endif
-
-  play = 0;
-  splashmax = boinkmax = 0;
-}
-
-void snd_wateron(void) {
-  if (config.nosound() || nosoundinit) return;
-#ifdef HAVE_LIBSDL_MIXER
-  if (config.use_water())
-    waterchannel = Mix_PlayChannel(-1, sounds[0], -1);
-#endif
-}
-void snd_wateroff(void) {
-  if (config.nosound() || nosoundinit) return;
-#ifdef HAVE_LIBSDL_MIXER
-  if (config.use_water())
-    Mix_HaltChannel(waterchannel);
-#endif
-}
-void snd_watervolume(int v) {
-  if (config.nosound() || nosoundinit) return;
-#ifdef HAVE_LIBSDL_MIXER
-  if (config.use_water())
-    Mix_Volume(waterchannel, v);
-#endif
-}
-
-void snd_playtitle(void) {
+/*void snd_playtitle(void) {
   if (config.nosound() || nosoundinit) return;
 #ifdef HAVE_LIBSDL_MIXER
   Mix_PlayMusic(title, -1);
@@ -248,5 +133,203 @@ void snd_stoptgame(void) {
 
   while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
 #endif
+}*/
+
+ttsounds::ttsounds(void)
+{
+    nosoundinit = true;
+    n_sounds = 0;
+    sounds = NULL;
+
+    if (config.nosound()) return;
+
+    //FIXME: the SDL audio init stuff should be moved out of this class
+#ifdef HAVE_LIBSDL_MIXER
+    if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
+	debugprintf(0,"Couldn't init the sound system, muting.\n");
+	nosoundinit = true;
+	return;
+    }
+
+    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
+	printf("Could not open audio, muting.\n");
+	SDL_QuitSubSystem(SDL_INIT_AUDIO);
+	nosoundinit = true;
+	return;
+    }
+#endif
+
+    nosoundinit = false;
+#ifdef DEBUG
+    debugprintf(9, "ttsounds::ttsounds\n");
+#endif
 }
 
+ttsounds::~ttsounds(void)
+{
+    if (config.nosound() || nosoundinit) return;
+
+#ifdef HAVE_LIBSDL_MIXER
+    while (Mix_Playing(-1)) dcl_wait();
+
+    for (int t = 0; t < n_sounds; t++)
+      if (sounds[t].sound) 
+	Mix_FreeChunk(sounds[t].sound);
+#endif
+
+    delete [] sounds;
+    
+    //Maybe music should be in somewhere else?
+    //Or maybe we should extend this class to handle music too?
+    //Mix_FreeMusic(title);
+
+    //FIXME: these should be moved out of here
+#ifdef HAVE_LIBSDL_MIXER
+    Mix_CloseAudio();
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+#endif
+#ifdef DEBUG
+    debugprintf(9, "ttsounds::~ttsounds\n");
+#endif
+}
+
+void ttsounds::addsound(char *fname, int id, int vol, int loops)
+{
+    struct ttsnddat *tmp;
+    bool need_add = true;
+    int add_pos = n_sounds;
+
+    if (config.nosound() || nosoundinit) return;
+
+    if (sounds && n_sounds)
+      for (int t = 0; t < n_sounds; t++)
+	if (!sounds[t].in_use) {
+	    need_add = false;
+	    add_pos = t;
+	    break;
+	}
+
+    if (need_add) {
+	tmp = new struct ttsnddat [n_sounds + 1];
+
+	if (!tmp) return;
+
+	if (n_sounds) {
+	    memcpy(tmp, sounds, sizeof(struct ttsnddat) * n_sounds);
+	    delete [] sounds;
+	}
+	sounds = tmp;
+    }
+
+#ifdef HAVE_LIBSDL_MIXER
+    sounds[add_pos].sound = LoadWAV(fname);
+#endif
+    if (sounds[add_pos].sound) {
+	sounds[add_pos].in_use = true;
+	sounds[add_pos].play = false;
+	sounds[add_pos].id_num = id;
+	sounds[add_pos].channel = -1;
+	sounds[add_pos].volume = vol;
+	sounds[add_pos].loops = loops;
+#ifdef DEBUG
+	debugprintf(8,"ttsounds::addsound(\"%s\", %i, %i) = %i\n", fname, vol, loops, add_pos);
+    } else debugprintf(0,"ttsounds::addsound(): No such file as '%s'\n", fname);
+#else
+    }
+#endif
+
+    n_sounds++;
+
+    //return add_pos;
+    return;
+}
+
+/*
+void ttsounds::delsound(int snd)
+{
+    if (config.nosound() || nosoundinit) return;
+
+    if ((snd >= 0) && (snd < n_sounds) && 
+	(sounds[snd].sound || sounds[snd].in_use)) {
+	stopsound(snd);
+#ifdef HAVE_LIBSDL_MIXER
+	if (sounds[snd].sound) 
+	  Mix_FreeChunk(sounds[snd].sound);
+#endif
+	sounds[snd].in_use = false;
+	sounds[snd].play = false;
+    }
+#ifdef DEBUG
+    debugprintf(9, "ttsounds::delsound(%i)\n", snd);
+#endif
+}
+*/
+
+void ttsounds::play(void)
+{
+    if (config.nosound() || nosoundinit) return;
+    
+    for (int t = 0; t < n_sounds; t++)
+      if (sounds[t].in_use && sounds[t].play) {
+#ifdef HAVE_LIBSDL_MIXER
+	  sounds[t].channel = Mix_PlayChannel(-1, sounds[t].sound, sounds[t].loops);
+	  Mix_Volume(sounds[t].channel, sounds[t].volume);
+#endif
+	  sounds[t].play = false;
+      }
+#ifdef DEBUG
+    debugprintf(9,"ttsounds::play()\n");
+#endif
+}
+
+void ttsounds::stop(void)
+{
+    for (int t = 0; t < n_sounds; t++) stopsound(t);
+}
+
+void ttsounds::stopsound(int snd)
+{
+    if (config.nosound() || nosoundinit) return;
+
+    if ((snd >= 0) && (snd < n_sounds)) {
+	if (/*sounds[snd].play &&*/ (sounds[snd].channel != -1)) {
+#ifdef HAVE_LIBSDL_MIXER
+	    Mix_HaltChannel(sounds[snd].channel);
+#endif
+	    sounds[snd].channel = -1;
+	}
+	sounds[snd].play = false;
+    }
+#ifdef DEBUG
+    debugprintf(9,"ttsounds::stopsound(%i)\n", snd);
+#endif
+}
+
+void ttsounds::startsound(int snd)
+{
+    if (config.nosound() || nosoundinit) return;
+
+    if ((snd >= 0) && (snd < n_sounds)) sounds[snd].play = true;
+#ifdef DEBUG
+    debugprintf(9,"ttsounds::startsound(%i)\n", snd);
+#endif
+}
+
+void ttsounds::setsoundvol(int snd, int vol)
+{
+    if (config.nosound() || nosoundinit) return;
+
+    if ((snd >= 0) && (snd < n_sounds)) {
+	if (/*sounds[snd].play &&*/ (sounds[snd].channel != -1)) {
+#ifdef HAVE_LIBSDL_MIXER
+	    Mix_Volume(sounds[snd].channel, vol);
+#endif
+	}
+	sounds[snd].volume = vol;
+    }
+#ifdef DEBUG
+    debugprintf(9,"ttsounds::setsoundvol(%i, %i)\n", snd, vol);
+#endif
+}
+
+ttsounds *TTSound;

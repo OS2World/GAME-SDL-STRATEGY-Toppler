@@ -1,7 +1,7 @@
 #!/bin/sh
 
 for i in config.sub config.guess; do
-	if test ! -e "$i"; then ln -s "/usr/share/automake/$i" .; fi
+	if test ! -e "$i"; then ln -s "/usr/share/automake-1.6/$i" .; fi
 done
 
 aclocal

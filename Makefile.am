@@ -9,7 +9,7 @@ configuration.h highscore.h menusys.h
 
 scoredir = $(localstatedir)/@PACKAGE@
 scorefile = $(scoredir)/@PACKAGE@.hsc
-CPPFLAGS = @CPPFLAGS@ -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(scoredir)\" -DVERSION=\"@TOPPLER_VERSION@\"
+CPPFLAGS = @CPPFLAGS@ -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(scoredir)\" 
 
 bin_PROGRAMS = toppler
 toppler_SOURCES = archi.cc bonus.cc decl.cc elevators.cc game.cc keyb.cc level.cc menu.cc \
