@@ -30,12 +30,14 @@
 #include <stdlib.h>
 
 #ifdef SDL_MIXER
-static Mix_Chunk *sounds[19];
+static Mix_Chunk *sounds[20];
 static Mix_Music *title, *tgame;
 #endif
 static int waterchannel;
 static int boinkmax = 0;
 static int splashmax = 0;
+
+static int torpedochannel;
 
 static long play;
 
@@ -91,6 +93,7 @@ void snd_init(void) {
   sounds[16] = LoadWAV("subraise.wav");
   sounds[17] = LoadWAV("timeout.wav");
   sounds[18] = LoadWAV("sonar.wav");
+  sounds[19] = LoadWAV("torpedo.wav");
 
   title = Mix_LoadMUS("title.xm");
   tgame = Mix_LoadMUS("tower.xm");
@@ -115,25 +118,30 @@ void snd_done(void) {
 #endif
 }
 
-void snd_tap(void) {       play |= 0x1; }
-void snd_boink(int vol) {  play |= 0x2; if (vol > boinkmax) boinkmax = vol; }
-void snd_hit(void) {       play |= 0x4; }
-void snd_cross(void) {     play |= 0x8; }
-void snd_tick(void) {      play |= 0x10; }
-void snd_drown(void) {     play |= 0x20; }
-void snd_splash(int vol) { play |= 0x40; if (vol > splashmax) splashmax = vol; }
-void snd_shoot(void) {     play |= 0x80; }                 
-void snd_alarm(void) {     play |= 0x100; }                
-void snd_score(void) {     play |= 0x200; }                
-void snd_crumble(void) {   play |= 0x400; }                
-void snd_fanfare(void) {   play |= 0x800; }                
-void snd_doortap(void) {   play |= 0x1000; }               
-void snd_sub_raise(void) { play |= 0x2000; }               
-void snd_sub_down(void) {  play |= 0x4000; }               
-void snd_start(void) {     play |= 0x8000; }               
+void snd_tap(void) {       play |=     0x1; }
+void snd_boink(int vol) {  play |=     0x2; if (vol > boinkmax) boinkmax = vol; }
+void snd_hit(void) {       play |=     0x4; }
+void snd_cross(void) {     play |=     0x8; }
+void snd_tick(void) {      play |=    0x10; }
+void snd_drown(void) {     play |=    0x20; }
+void snd_splash(int vol) { play |=    0x40; if (vol > splashmax) splashmax = vol; }
+void snd_shoot(void) {     play |=    0x80; }
+void snd_alarm(void) {     play |=   0x100; }
+void snd_score(void) {     play |=   0x200; }
+void snd_crumble(void) {   play |=   0x400; }
+void snd_fanfare(void) {   play |=   0x800; }
+void snd_doortap(void) {   play |=  0x1000; }
+void snd_sub_raise(void) { play |=  0x2000; }
+void snd_sub_down(void) {  play |=  0x4000; }
+void snd_start(void) {     play |=  0x8000; }
 void snd_timeout(void) {   play |= 0x10000; }              
 void snd_fall(void) {      play |= 0x20000; }              
 void snd_sonar(void) {     play |= 0x40000; }
+void snd_torpedo(void) {   play |= 0x80000; }
+
+void snd_torpedoStop(void) {
+  Mix_HaltChannel(torpedochannel);
+}
 
 void snd_play(void) {
 
@@ -178,6 +186,10 @@ void snd_play(void) {
     Mix_Volume(Mix_PlayChannel(-1, sounds[13], 0), MIX_MAX_VOLUME);
   if (play & 0x40000)
     Mix_Volume(Mix_PlayChannel(-1, sounds[18], 0), MIX_MAX_VOLUME / 4);
+  if (play & 0x80000) {
+    torpedochannel = Mix_PlayChannel(-1, sounds[19], 0);
+    Mix_Volume(torpedochannel, MIX_MAX_VOLUME);
+  }
 #endif
 
   play = 0;

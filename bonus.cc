@@ -154,6 +154,7 @@ bool bns_game(void) {
               (torpedoy + SPR_TORPHEI > fish[b].y) && (torpedoy < fish[b].y + SPR_FISHHEI)) {
             torpedox = -1;
             fish[b].state -= 32;
+            snd_torpedoStop();
           }
         }
       }
@@ -165,6 +166,7 @@ bool bns_game(void) {
         if (torpedox == -1) {
           torpedox = subposx + TORPEDO_OFS_X;
           torpedoy = subposy + TORPEDO_OFS_Y;
+          snd_torpedo();
         }
       }
 
@@ -267,7 +269,7 @@ bool bns_game(void) {
       time++;
     }
 
-    if (!(time & 0x1f)) snd_sonar();
+    if (!((time + 20) & 0x1f)) snd_sonar();
 
     /* display screen and wait */
     show();

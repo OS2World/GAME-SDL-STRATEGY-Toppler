@@ -67,7 +67,10 @@ void snd_timeout(void);
 void snd_fall(void);
 /* sonar pling for submarine game */
 void snd_sonar(void);
-
+/* torpedo start for submarine game */
+void snd_torpedo(void);
+/* stops the torpedo snd, if it's still running */
+void snd_torpedoStop(void);
 
 void snd_play(void);
 

@@ -172,7 +172,8 @@ void hsc_init(void) {
 
   /* asume we use local highscore table */ 
   globalHighscore = false;
-  snprintf(highscoreName, 200, "%s/.toppler/%s", homedir(), SCOREFNAME);
+  snprintf(highscoreName, 199, "%s/.toppler/%s", homedir(), SCOREFNAME);
+  printf("%i\n", strlen(highscoreName));
 
   /* now check if wen have access to a global highscore table */
 

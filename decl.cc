@@ -106,7 +106,7 @@ static void checkdir(void) {
 
   char n[200];
 
-  snprintf(n, 200, "%s/.toppler", homedir());
+  snprintf(n, 199, "%s/.toppler", homedir());
 
   DIR *d = opendir(n);
 
@@ -153,7 +153,7 @@ FILE *open_local_config_file(const char *name) {
 
   char n[200];
 
-  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
+  snprintf(n, 199, "%s/.toppler/%s", homedir(), name);
   if (dcl_fileexists(n))
     return fopen(n, "r+");
 
@@ -177,7 +177,7 @@ FILE *create_local_config_file(const char *name) {
 
   char n[200];
 
-  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
+  snprintf(n, 199, "%s/.toppler/%s", homedir(), name);
 
   return fopen(n, "w");
 
@@ -199,7 +199,7 @@ FILE *open_local_data_file(const char *name) {
 
   char n[200];
 
-  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
+  snprintf(n, 199, "%s/.toppler/%s", homedir(), name);
 
   return fopen(n, "r");
 
@@ -219,7 +219,7 @@ FILE *create_local_data_file(const char *name) {
 
   char n[200];
 
-  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
+  snprintf(n, 199, "%s/.toppler/%s", homedir(), name);
   return fopen(n, "w+");
 
 #else
