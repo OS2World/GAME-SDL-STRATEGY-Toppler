@@ -729,8 +729,8 @@ bool lev_is_box(int row, int col) {
 
 int lev_is_sliding(int row, int col) {
     return ((tower[row][col] == TB_STEP_LSLIDER) ? 1 :
-	    (tower[row][col] == TB_STEP_RSLIDER) ? -1 : 
-	    0);
+            (tower[row][col] == TB_STEP_RSLIDER) ? -1 : 
+            0);
 }
 
 bool lev_is_robot(int row, int col) {
@@ -1082,7 +1082,7 @@ lev_problem lev_is_consistent(int &row, int &col) {
   }
   for (y = 2; y < 5; y++)
     if ((towerblockdata[tower[y][0]].tf & TBF_DEADLY) ||
-	!(towerblockdata[tower[y][0]].tf & TBF_EMPTY)) {
+        !(towerblockdata[tower[y][0]].tf & TBF_EMPTY)) {
       row = y;
       col = 0;
       return TPROB_STARTBLOCKED;
@@ -1094,9 +1094,9 @@ lev_problem lev_is_consistent(int &row, int &col) {
     for (int c = 0; c < TOWERWID; c++) { 
       // check for undefined symbols
       if (tower[r][c] >= NUM_TBLOCKS) {
-	  row = r;
-	  col = c;
-	  return TPROB_UNDEFBLOCK;
+          row = r;
+          col = c;
+          return TPROB_UNDEFBLOCK;
       }
 
       // check if elevators always have an opposing end without unremovable
