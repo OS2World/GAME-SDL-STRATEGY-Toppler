@@ -1,4 +1,4 @@
-TOPPLERDIR = ../toppler_highres
+TOPPLERDIR = ../toppler
 HOME = /home/andy
 
 all: m1.ttm m2.ttm ball1.ttm
