@@ -1,3 +1,76 @@
+- Added a new config option "status_top"; this tells whether
+  the status line is on top or bottom of screen.
+  Currently this option is not in the menus. (OK, so this is
+  a new feature =)
+  
+- Fixed some typos.
+  
+- Don't play alarm-sound if time < 0
+  (This should never happen, but just in case...)
+  
+- Fixed a bug that made mouse clicks not activate menu options.
+  I noticed this one too =)
+  
+- Changed the key definitions from #defines to enum ttkey.
+  
+- Allow setting menu option centering individually for each menu option.
+   |
+   V
+- Key redefinition menu now looks slightly better; the options
+  do not move around.
+  
+- Hiscore-screen now shows the mission name.
+  
+- In hiscore screen, doubled the empty spaces between
+  rank, score and playername, and added '.' to the
+  rank number.
+  
+- Fixed a bug in the menu system, which allowed highlighting
+  illegal options, with no text.
+  
+- Use enum for towerblocks, instead of hardwired bitmask values.
+  (Now we have lots of room for new blocks!)
+  You need to remake the missions.
+  
+- Fixed a bug in the config parser, which would cause strange crashes,
+  if any string variable ('editor_towername') had empty string as param.
+  (This is the bug that caused TT to crash when the 2nd satellite tried
+   to come on screen)
+  
+- Config file parser now also accepts "yes" or "true"
+  for boolean values.
+  
+- Config parser is now more tolerant of malformed config file, and
+  fscanf() cannot overrun the char buffers.
+  
+- Fixed 2 bugs in main_game_loop():
+  1) Don't try to load a tower for bonusgame after the last tower
+     in a mission is finished.
+  2) End mission when the last tower is finished, instead of
+     after 8 towers.
+  
+- Fixed a bug in the bonus game that prevented the next tower color
+  being set.
+  
+- Fixed the line input routine to work with the variable width font
+  by showing arrows at the end of the input area if the string is
+  longer than what can be seen.
+  
+- When the window loses focus, darken the window, and wait, giving
+  timeslices away, until it regains focus.
+
+me
+
+- enclose debug settings inside TESTER compiler variable to prevent
+  ever releasing a version with falst setings again
+- added arrows to the left and right of the start menu entry to show
+  what to do
+- levels contain priority that orders them
+- workaround for SDL RLEAccel bug
+
+
+Version 0.98.0 18.11.2002
+
 pasi
 
 - max. # of characters in the charset changed to 128.

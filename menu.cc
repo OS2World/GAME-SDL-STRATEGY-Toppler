@@ -1078,7 +1078,7 @@ men_main_startgame_proc(void *ms)
     }
   }
   static char s[30];
-  sprintf(s, "Start: %s", lev_missionname(currentmission));
+  sprintf(s, "%c Start: %s %c", fontptrleft, lev_missionname(currentmission), fontptrright);
   return s;
 }
 

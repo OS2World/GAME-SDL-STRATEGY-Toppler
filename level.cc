@@ -79,6 +79,7 @@ static int towerdemo_len = 0;
 typedef struct mission_node {
   char name[30];
   char fname[100];
+  Uint8 prio;         // the lower prio, the further in front the mission will be in the list
   mission_node *next;
 } mission_node;
 
@@ -111,6 +112,7 @@ char conv_towercode2char(Uint8 code) {
 static void add_mission(char *fname) {
 
   char mname[30];
+  Uint8 prio;
 
   FILE * f = fopen(fname, "rb");
 
@@ -123,10 +125,14 @@ static void add_mission(char *fname) {
 
   fread(mname, mnamelength, 1, f);
   mname[mnamelength] = 0;
+  fread(&prio, 1, 1, f);
+
+  printf("mission: %s prio: %i\n", mname, prio);
 
   mission_node * m = missions;
   mission_node * l = NULL;
 
+  /* first check if the mission is already there */
   while (m) {
 
     int erg = strcmp(m->name, mname);
@@ -135,14 +141,23 @@ static void add_mission(char *fname) {
       fclose(f);
       return;
     }
+    l = m;
+    m = m->next;
+  }
 
-    /* we have passed your target, the current mission must
+  m = missions;
+  l = NULL;
+
+  while (m) {
+
+    /* we have passed our target, the current mission must
      * be inserted before this mission
      */
-    if (erg > 0) {
+    if (m->prio > prio) {
       mission_node * n = new mission_node;
       strcpy(n->name, mname);
       strcpy(n->fname, fname);
+      n->prio = prio;
       n->next = m;
 
       if (l)
@@ -153,7 +168,6 @@ static void add_mission(char *fname) {
       fclose(f);
       return;
     }
-
     l = m;
     m = m->next;
   }
@@ -162,6 +176,7 @@ static void add_mission(char *fname) {
   m = new mission_node;
   strcpy(m->name, mname);
   strcpy(m->fname, fname);
+  m->prio = prio;
   m->next = NULL;
 
   if (l)
@@ -333,10 +348,10 @@ void lev_selecttower(Uint8 number) {
   {
     Uint32 idxpos = 0;
 
-    idxpos += mission[mission[0] + 2];
-    idxpos += long(mission[mission[0] + 3]) << 8;
-    idxpos += long(mission[mission[0] + 4]) << 16;
-    idxpos += long(mission[mission[0] + 5]) << 24;
+    idxpos += mission[mission[0] + 3];
+    idxpos += long(mission[mission[0] + 4]) << 8;
+    idxpos += long(mission[mission[0] + 5]) << 16;
+    idxpos += long(mission[mission[0] + 6]) << 24;
 
     towerstart = mission[idxpos + 4 * number];
     towerstart += long(mission[idxpos + 4 * number + 1]) << 8;
@@ -1121,7 +1136,7 @@ static FILE * fmission = NULL;
 static Uint8 nmission = 0;
 static Uint32 missionidx[256];
 
-bool lev_mission_new(char * name) {
+bool lev_mission_new(char * name, Uint8 prio) {
   assert(!fmission, "called mission_finish twice");
 
   char fname[200];
@@ -1136,6 +1151,8 @@ bool lev_mission_new(char * name) {
   /* write out name */
   fwrite(&tmp, 1 ,1, fmission);
   fwrite(name, 1, tmp, fmission);
+
+  fwrite(&prio, 1, 1, fmission);
 
   /* placeholders for towernumber and indexstart */
   fwrite(&tmp, 1, 1, fmission);
@@ -1265,7 +1282,7 @@ void lev_mission_finish() {
   fseek(fmission, 0, SEEK_SET);
   fread(&c, 1, 1, fmission);
 
-  fseek(fmission, c + 1, SEEK_SET);
+  fseek(fmission, c + 2, SEEK_SET);
   fwrite(&nmission, 1, 1, fmission);
 
   /* write out index position */

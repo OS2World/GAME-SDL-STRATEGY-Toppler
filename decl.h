@@ -131,11 +131,15 @@
 /* define this if you want debugging keys during game.
    (press up+down+left+right at the same time.)
    debuggers don't get their name on hiscore table.  */
+#ifdef TESTER
 /*#define GAME_DEBUG_KEYS*/
+#endif
 
 /*   define this if you want the bonus game to be accessible 
-     from the main menu. */
+ from the main menu. */
+#ifdef TESTER
 #define HUNT_THE_FISH
+#endif
 
 #define TOWERNAMELEN 19
 

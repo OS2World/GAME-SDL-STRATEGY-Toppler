@@ -180,7 +180,8 @@ static unsigned short scr_gensprites(int num, int w, int h, bool sprite, bool us
                              w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite && use_alpha) ? 0xFF000000 : 0);
   
     if (sprite & !use_alpha)
-      SDL_SetColorKey(z, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(z->format, 1, 1, 1));
+      SDL_SetColorKey(z, SDL_SRCCOLORKEY/* | SDL_RLEACCEL*/, SDL_MapRGB(z->format, 1, 1, 1));
+    /* FIXME: SDL_RLEACCEL was buggy in my version of SDL, maybe it can be reincluded later on */
 
     if (t == 0)
       erg = spr_savesprite(z);
@@ -408,8 +409,11 @@ void scr_setcrosscolor(Uint8 rk, Uint8 gk, Uint8 bk) {
     pal[3*t+2] = b;
   }
 
-  for (t = 0; t < 120; t++)
-    scr_regensprites(crossdata + t*SPR_CROSSWID*SPR_CROSSHEI*2, spr_spritedata(crossst+t), 1, SPR_CROSSWID, SPR_CROSSHEI, true, pal, use_alpha_sprites);
+  for (t = 0; t < 120; t++) {
+    scr_regensprites(crossdata + t*SPR_CROSSWID*SPR_CROSSHEI*2,
+                     spr_spritedata(crossst+t),
+                     1, SPR_CROSSWID, SPR_CROSSHEI, true, pal, use_alpha_sprites);
+  }
 }
 
 static void loadfont(void) {
