@@ -501,6 +501,14 @@ int main() {
   brick = IMG_LoadPNG_RW(SDL_RWFromFile("graphics_brick.png", "rb"));
   zinne = IMG_LoadPNG_RW(SDL_RWFromFile("graphics_pinacle.png", "rb"));
 
+  for (int ii = 0; ii < zinne->w * zinne->h; ii++)
+    *(Uint32*)((Uint8*)zinne->pixels + ii * zinne->format->BytesPerPixel) =
+      *(Uint32*)((Uint8*)zinne->pixels + ii * zinne->format->BytesPerPixel) & 0xffffff;
+
+  for (int ii = 0; ii < brick->w * brick->h; ii++)
+    *(Uint32*)((Uint8*)brick->pixels + ii * brick->format->BytesPerPixel) =
+      *(Uint32*)((Uint8*)brick->pixels + ii * brick->format->BytesPerPixel) & 0xffffff;
+
   SDL_Rect r;
   r.w = 640;
   r.h = img_height;
