@@ -59,8 +59,15 @@ void dcl_wait(void) {
 
 bool dcl_wait_overflow(void) { return wait_overflow; }
 
+static int current_debuglevel;
+
+void dcl_setdebuglevel(int level) {
+  current_debuglevel = level;
+}
+
+
 void debugprintf(int lvl, char *fmt, ...) {
-    if (lvl <= config.debug_level()) {
+    if (lvl <= current_debuglevel) {
         va_list args;
         va_start(args, fmt);
         vprintf(fmt, args);

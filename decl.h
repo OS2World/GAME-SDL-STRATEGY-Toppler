@@ -167,6 +167,7 @@
 
 #define PASSWORD_CHARS "abcdefghijklmnopqrstuvwxyz0123456789"
 
+void dcl_setdebuglevel(int level);
 void debugprintf(int lvl, char *fmt, ...);
 
 /* waits around 1/18 of a second */

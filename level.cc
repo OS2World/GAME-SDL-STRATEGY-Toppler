@@ -16,16 +16,20 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+#ifndef CREATOR
+
 #include "level.h"
 
 #include "points.h"
 #include "archi.h"
-#include "decl.h"
 #include "configuration.h"
 #include "screen.h"
 
-#include <string.h>
+#endif
+
+#include "decl.h"
 #include <stdlib.h>
+#include <string.h>
 
 #define TOWERWID 16
 
@@ -111,16 +115,20 @@ typedef struct mission_node {
 
 mission_node * missions;
 
+#ifndef CREATOR
+
 static int missionfiles (const struct dirent *file)
 {
   int len = strlen(file->d_name);
 
   return ((len > 4) &&
-	  (file->d_name[len - 1] == 'm') &&
+          (file->d_name[len - 1] == 'm') &&
           (file->d_name[len - 2] == 't') &&
           (file->d_name[len - 3] == 't') &&
           (file->d_name[len - 4] == '.'));
 }
+
+#endif
 
 Uint8 conv_char2towercode(wchar_t ch) {
   if (ch)
@@ -135,6 +143,7 @@ char conv_towercode2char(Uint8 code) {
       return towerblockdata[code].ch;
   return towerblockdata[TB_EMPTY].ch;
 }
+
 
 static void add_mission(char *fname) {
 
@@ -212,6 +221,7 @@ static void add_mission(char *fname) {
   fclose(f);
 }
 
+#ifndef CREATOR
 
 void lev_findmissions() {
 
@@ -292,6 +302,8 @@ void lev_findmissions() {
 #endif
 
 }
+
+#endif
 
 void lev_done() {
   if (mission) {
@@ -737,6 +749,7 @@ bool lev_is_robot(int row, int col) {
   return ((towerblockdata[tower[row][col]].tf & TBF_ROBOT));
 }
 
+#ifndef CREATOR
 
 /* returns true, if the given figure can be at the given position
  without colliding with fixed objects of the tower */
@@ -792,6 +805,8 @@ bool lev_testfigure(long angle, long vert, long back,
 
   return true;
 }
+
+#endif
 
 unsigned char lev_putplatform(int row, int col) {
   unsigned char erg = tower[row][col];
@@ -890,6 +905,8 @@ bool lev_loadtower(const char *fname) {
   return true;
 }
 
+#ifndef CREATOR
+
 bool lev_savetower(const char *fname) {
   FILE *out = create_local_data_file(fname);
 
@@ -932,6 +949,8 @@ bool lev_savetower(const char *fname) {
 
   return true;
 }
+
+#endif
 
 /* rotate row clock and counter clockwise */
 void lev_rotaterow(int row, bool clockwise) {
