@@ -47,7 +47,7 @@ static unsigned char currentmission = 0;
 #define SCORENAMELEN 9
 
 static struct {
-  unsigned int points;
+  Uint32 points;
   char name[SCORENAMELEN+1];
 } scores[NUMHISCORES];
 
@@ -205,7 +205,7 @@ draw_menu_system(struct _menusystem *ms)
   if (!ms) return;
 
   int y, offs = 0, len;
-  bool has_title = strlen(ms->title);
+  bool has_title = (strlen(ms->title) != 0);
 
   if (ms->wraparound) {
     if (ms->hilited < 0)
@@ -318,7 +318,7 @@ run_menu_system(struct _menusystem *ms)
         }
         break;
       }
-      case '\e': ms->exitmenu = true; break;
+      case 27 : ms->exitmenu = true; break;
       default:
         break;
       }
@@ -370,7 +370,7 @@ unsigned char men_yn(char *s, bool defchoice) {
 
   ms = run_menu_system(ms);
 
-  doquit = ms->mstate;
+  doquit = (ms->mstate != 0);
 
   free_menu_system(ms);
 
@@ -858,7 +858,7 @@ void men_input(char *s, int max_len, int xpos, int ypos) {
     switch (inp) {
     case 4: if ((unsigned)pos < strlen(s)) pos++; break;
     case 3: if (pos > 0) pos--; break;
-    case '\e': s[0] = '\0'; pos = 0; break;
+    case 27: s[0] = '\0'; pos = 0; break;
     case '\r': break;
     case 6:
       if (strlen(s) >= (unsigned)pos) {
@@ -948,8 +948,12 @@ void men_highscore(unsigned long pt) {
     congrats_placement = t;
     set_men_bgproc(congrats_background_proc);
 
+#if (SYSTEM == SYS_LINUX) 
     strncpy(scores[t].name, getenv("LOGNAME"), SCORENAMELEN);
     scores[t].name[SCORENAMELEN] = 0; //to be sure
+#else
+    scores[t].name[0] = 0;
+#endif
 
     men_input(scores[t].name, SCORENAMELEN);
 

@@ -32,23 +32,22 @@
 #define scrollerspeed   2
 
 static struct {
-   long x;
-   long y;
-   long state;
-   long ydir;
+   Sint32 x;
+   Sint32 y;
+   Sint32 state;
+   Sint32 ydir;
 } fish[fishcnt + 1];
 
-static long torpedox, torpedoy, subposx, subposy;
+static Sint32 torpedox, torpedoy, subposx, subposy;
 
-static long callback_time;
-static long callback_x;
+static Sint32 callback_time;
+static Sint32 callback_x;
 
 /* callback proc for men_yn() */
 static void
 bonus_background_proc(void)
 {
-  long towerpos;
-  int b;
+  Sint32 towerpos;
 
   scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 255);
 
@@ -63,7 +62,7 @@ bonus_background_proc(void)
     scr_draw_torpedo(torpedoy, torpedox);
   scr_draw_submarine(subposy - 20, subposx, callback_time & 3);
 
-  for (b = 0; b <= fishcnt; b++) {
+  for (Uint8 b = 0; b <= fishcnt; b++) {
     if (fish[b].x >= -SPR_FISHWID)
       scr_draw_fish(fish[b].y, fish[b].x, fish[b].state);
 
@@ -72,7 +71,7 @@ bonus_background_proc(void)
 }
 
 static bool 
-escape(long time, long x)
+escape(Sint32 time, Uint32 x)
 {
   key_wait_for_any();
 
@@ -87,7 +86,7 @@ escape(long time, long x)
   return false;
 }
 
-static void pause(long time, long x) {
+static void pause(Sint32 time, Uint32 x) {
    
   callback_time = time;
   callback_x = x;
@@ -99,14 +98,13 @@ static void pause(long time, long x) {
 
 bool bns_game(void) {
 
-  static unsigned short x;
+  static Uint32 xpos = 0;
   
-
-  unsigned short time, nextfish;
+  Uint32 time, nextfish;
   bool automatic = false;
-  long towerpos;
+  Sint32 towerpos;
 
-  int b;
+  Uint8 b;
 
   subposx = (SCREENWID / 2) - 30;
   subposy = 60;
@@ -119,8 +117,6 @@ bool bns_game(void) {
   time = 0;
   nextfish = 30;
 
-  x = 0;
-
   set_men_bgproc(NULL);
 
   key_readkey();
@@ -128,7 +124,7 @@ bool bns_game(void) {
   do {
     
     if (torpedox >= 0) {
-      torpedox += 4;
+      torpedox += 8;
       if (torpedox > (SCREENWID+10))
         torpedox = -1;
       for (b = 0; b <= fishcnt; b++) {
@@ -145,50 +141,47 @@ bool bns_game(void) {
     if (!automatic) {
       if (key_keypressed(fire_key)) {
         if (torpedox == -1) {
-          torpedox = subposx + 50;
-          torpedoy = subposy + 5;
+          torpedox = subposx + 80;
+          torpedoy = subposy + 30;
         }
       }
   
-      if ((bool)(key_keystat() & down_key)) {
-        if (subposy < 130)
-          subposy += 2;
+      if ((key_keystat() & down_key) != 0) {
+        if (subposy < 260)
+          subposy += 4;
       } else {
-        if ((bool)(key_keystat() & up_key)) {
-          if (subposy > 60)
-            subposy -= 2;
+        if ((key_keystat() & up_key) != 0) {
+          if (subposy > 120)
+            subposy -= 4;
         }
       }
   
-      if ((bool)(key_keystat() & left_key)) {
+      if ((key_keystat() & left_key) != 0) {
         if (subposx > 0)
-          subposx -= 4;
+          subposx -= 8;
       } else {
-        if ((bool)(key_keystat() & right_key)) {
-          if (subposx < 100)
-            subposx += 2;
-        } else {
-          if ((subposx & 1) == 1)
-            subposx++;
+        if ((key_keystat() & right_key) != 0) {
+          if (subposx < SCREENWID/2)
+            subposx += 4;
         }
       }
     } else {
       if (subposx > (SCREENWID / 2) - 30)
-        subposx -= 4;
+        subposx -= 8;
       else if (subposx < (SCREENWID / 2) - 30)
-        subposx += 2;
+        subposx += 4;
 
       if (subposy > 60)
-        subposy -= 2;
+        subposy -= 4;
     }
 
     if (key_keypressed(break_key))
-      if (escape(time, x)) {
+      if (escape(time, xpos)) {
         return false;
       }
 
     if (key_keypressed(pause_key))
-      pause(time, x);
+      pause(time, xpos);
 
     key_readkey();
 
@@ -196,7 +189,7 @@ bool bns_game(void) {
       if (fish[b].x >= -SPR_FISHWID) {
         fish[b].x -= 2;
         fish[b].y += fish[b].ydir;
-        if (fish[b].y > 150 || fish[b].y < 40)
+        if (fish[b].y > 300 || fish[b].y < 80)
           fish[b].ydir = -fish[b].ydir;
 
         if (fish[b].state >= 8)
@@ -205,10 +198,10 @@ bool bns_game(void) {
           fish[b].state = (fish[b].state + 1) & 7;
 
         if ((fish[b].state < 8) &&
-            (fish[b].x > subposx - 20) &&
-            (fish[b].x < subposx + 60) &&
-            (fish[b].y > subposy - 20) &&
-            (fish[b].y < subposy + 20)) {
+            (fish[b].x > subposx - 40) &&
+            (fish[b].x < subposx + 120) &&
+            (fish[b].y > subposy - 40) &&
+            (fish[b].y < subposy + 40)) {
           pts_add(50);
           fish[b].x = - (SPR_FISHWID + 1);
         }
@@ -221,10 +214,10 @@ bool bns_game(void) {
       for (b = 0; b <= fishcnt; b++) {
         if (fish[b].x < -SPR_FISHWID) {
           fish[b].x = SCREENWID;
-          fish[b].y = rand() / (RAND_MAX / 70) + 60;
+          fish[b].y = rand() / (RAND_MAX / 140) + 120;
           fish[b].state = 8;
           do {
-            fish[b].ydir = rand() / (RAND_MAX / 5) - 2;
+            fish[b].ydir = rand() / (RAND_MAX / 10) - 5;
           } while (fish[b].ydir == 0);
           nextfish = rand() / (RAND_MAX / 20) + 5;
           break;
@@ -232,14 +225,14 @@ bool bns_game(void) {
       }
     }
 
-    scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 255);
+//    scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 255);
 
     if (time < 300)
       towerpos = -(2*time);
     else
       towerpos = gametime * scrollerspeed - 2*time;
 
-    scr_draw_bonus1(x, towerpos);
+    scr_draw_bonus1(xpos, towerpos);
 
     if (torpedox != -1)
       scr_draw_torpedo(torpedoy, torpedox);
@@ -250,18 +243,18 @@ bool bns_game(void) {
         scr_draw_fish(fish[b].y, fish[b].x, fish[b].state);
 
     }
-    scr_draw_bonus2(x, towerpos);
+    scr_draw_bonus2(xpos, towerpos);
 
     scr_swap();
 
-    if (x == 300)
+    if (xpos == 600)
       scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
 
     if (time == gametime) {
       automatic = true;
       if ((subposx == (SCREENWID / 2) - 30) && (subposy == 60)) break;
     } else {
-      x +=2;
+      xpos +=4;
       time++;
     }
     dcl_wait();

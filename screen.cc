@@ -455,6 +455,8 @@ static void loadfont(void) {
 
 static void loadscroller(void) {
 
+  use_alpha = false;
+
   arc_assign(scrollerdat);
 
   Uint8 layers;
@@ -463,7 +465,7 @@ static void loadscroller(void) {
   Uint16 towersp_den;
   unsigned char c;
   Uint32 res;
-  Uint8 pal[3*151];
+  Uint8 pal[3*256];
 
   arc_read(&layers, 1, &res);
   arc_read(&towerpos, 1, &res);
@@ -477,9 +479,6 @@ static void loadscroller(void) {
   towersp_den = ((Uint16)c) << 8;
   arc_read(&c, 1, &res);
   towersp_den += c;
-
-  arc_read(pal, 3, &res);
-  arc_read(pal, 3*151, &res);
 
   assert(layers == 3, "another value than 3 is not yet supported");
 
@@ -496,9 +495,9 @@ static void loadscroller(void) {
     arc_read(&c, 1, &res);
     arc_read(&c, 1, &res);
 
-    layerimage[l] = scr_loadsprites(1, layerwidth[l], 240, 8, l != 0, pal);
+    read_palette(pal);
 
-    layerwidth[l] *= 2;
+    layerimage[l] = scr_loadsprites_new(1, layerwidth[l], 480, l != 0, pal);
   }
 
   arc_closefile();
@@ -843,7 +842,7 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - (state % 4));
     break;
   case 0x0c:
-    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - 4 + abs(state - 8));
+    scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - SPR_SLICEHEI/2 + abs(state - 8));
     break;
   case 0x08:
     scr_blit(spr_spritedata((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h + (state % 4));
@@ -868,25 +867,25 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     break;
 
   case 0x10:
-    scr_blit(spr_spritedata(ballst + 1), x - (SPR_ROBOTWID / 2), h - 8);
+    scr_blit(spr_spritedata(ballst + 1), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
     break;
   case 0x20:
-    scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2) + state / 2, h - 8);
+    scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2) + state / 2, h - SPR_ROBOTHEI/2);
     break;
   case 0x30:
-    scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2), h - 8);
+    scr_blit(spr_spritedata(ballst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
     break;
   case 0x40:
-    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2), h - 4 + abs(state - 8));
+    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
     break;
   case 0x50:
-    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2), h - 8 + abs(state - 8) * 2);
+    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
     break;
   case 0x60:
-    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2) + abs(state - 8), h);
+    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
     break;
   case 0x70:
-    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h);
+    scr_blit(spr_spritedata(robotsst), x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
     break;
   }
 }
@@ -1202,9 +1201,9 @@ static void put_scrollerlayer(long horiz, int layer) {
 
 void scr_draw_bonus1(long horiz, long towerpos) {
   put_scrollerlayer(1*horiz/2, 0);
-//  put_scrollerlayer(1*horiz/1  , 1);
+  put_scrollerlayer(1*horiz/1  , 1);
 
-  puttower(1, 60, SCREENHEI, towerpos);
+  puttower(0, SCREENHEI/2, SCREENHEI, towerpos);
 }
 void scr_draw_bonus2(long horiz, long towerpos) {
   put_scrollerlayer(2*horiz/1, 2);

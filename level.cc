@@ -164,8 +164,10 @@ static void add_mission(char *fname) {
 
     int erg = strcmp(m->name, mname);
     /* no two missions with the same name */
-    if (erg == 0)
+    if (erg == 0) {
+      fclose(f);
       return;
+    }
 
     /* we have passed your target, the current mission must
      * be inserted bevore this mission
@@ -181,6 +183,7 @@ static void add_mission(char *fname) {
       else
         missions = n;
 
+      fclose(f);
       return;
     }
 
@@ -218,7 +221,7 @@ void lev_findmissions() {
     delete n;
   }
 
-#if SYSTEM == SYS_WINDOWS
+#if (SYSTEM == SYS_WINDOWS)
   {
     char n[100];
     GetCurrentDirectory(100, n);
@@ -238,10 +241,14 @@ void lev_findmissions() {
       sprintf(fname, "%s%s", pathname, eps[i]->d_name);
 
       add_mission(fname);
+
+      free(eps[i]);
     }
   }
   free(eps);
   eps = NULL;
+
+#if (SYSTEM != SYS_WINDOWS)
 
   sprintf(pathname, "%s/.toppler/", getenv("HOME"));
   n = alpha_scandir(pathname, &eps, missionfiles);
@@ -274,6 +281,9 @@ void lev_findmissions() {
   }
   free(eps);
   eps = NULL;
+
+#endif
+
 }
 
 void lev_done() {
@@ -423,7 +433,7 @@ Uint8 lev_towercol_blue() {
   return towercolor_blue;
 }
 
-unsigned char lev_tower(Uint8 row, Uint8 column) {
+Uint8 lev_tower(Uint16 row, Uint8 column) {
   return tower[row][column];
 }
 
@@ -492,7 +502,7 @@ bool lev_is_targetdoor(int row, int col) {
 /**************** everything for elevators ******************/
 
 bool lev_is_station(int row, int col) {
-  return (tower[row][col] & 0x0c);
+  return (tower[row][col] & 0x0c) != 0;
 }
 bool lev_is_up_station(int row, int col) {
   return (tower[row][col] & 0x85) == 0x85;
@@ -657,6 +667,18 @@ bool lev_loadtower(char *fname) {
   if (in == NULL) return false;
 
   fgets(towername, TOWERNAMELEN+1, in);
+
+  /* remove not allowed characters */
+  {
+    int inp = 0;
+    int outp = 0;
+    while(towername[inp]) {
+      if ((towername[inp] >= 32) && (towername[inp] < 128))
+        towername[outp++] = towername[inp];
+      inp++;
+    }
+    towername[outp] = 0;
+  }
 
   fgets(line, 200, in);
   sscanf(line, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);

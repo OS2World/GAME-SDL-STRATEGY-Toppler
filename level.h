@@ -64,7 +64,7 @@ Uint8 lev_towercol_blue(void);
 void lev_set_towercol(Uint8 r, Uint8 g, Uint8 b);
 
 /* returns the value at this position in the level array */
-unsigned char lev_tower(Uint8 row, Uint8 column);
+Uint8 lev_tower(Uint16 row, Uint8 column);
 
 /* returns the height of the tower */
 Uint8 lev_towerrows(void);

@@ -22,7 +22,10 @@
 #include "config.h"
 
 #include <stdio.h>
+
+#if (SYSTEM != SYS_WINDOWS)
 #include <dirent.h>
+#endif
 
 /* screen width and height, in pixels. */
 #define SCREENWID 640
@@ -214,6 +217,18 @@ void save_config(void);
 
 #define CONFIGDIR "/etc"
 #define HISCOREDIR "/var/games/toppler"
+
+#if (SYSTEM == SYS_WINDOWS)
+
+#include "windows.h"
+
+typedef struct dirent {
+  char d_name[200];
+} dirent;
+
+#define strcasecmp stricmp
+
+#endif
 
 int alpha_scandir(const char *dir, struct dirent ***namelist,
             int (*select)(const struct dirent *));

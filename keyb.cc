@@ -130,7 +130,7 @@ Uint8 key_keystat(void) {
 
 bool key_keypressed(Uint8 key) {
   handleEvents();
-  return (keytyped & key);
+  return (keytyped & key) != 0;
 }
 
 Uint8 key_readkey(void) {

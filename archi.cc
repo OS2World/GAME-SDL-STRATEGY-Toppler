@@ -28,8 +28,6 @@
 
 #if (SYSTEM == SYS_WINDOWS)
 
-#include "afx.h"
-
 #define _WINDOWS
 #define ZLIB_DLL
 
@@ -50,7 +48,7 @@ typedef struct {
 } fileindex;
 
 static fileindex files[MAX_FILES];
-static unsigned char filecount;
+static Uint8 filecount;
 static Uint8 pos;
 
 static Uint8 * buffer = 0;

@@ -153,7 +153,7 @@ static void elevator(long dir) {
   substate = 0;
   state = STATE_ELEVATOR;
 
-  ele_select(verticalpos, anglepos);
+  ele_select((Uint16)verticalpos, anglepos);
 }
 
 static void shooting(void) {
@@ -581,7 +581,7 @@ void top_aktualtoppler(int left_right, int up_down, bool space) {
       }
       substate++;
       on_elevator = true;
-      ele_activate(elevator_direction);
+      ele_activate((Sint8)elevator_direction);
       snd_tick();
       return;
     }

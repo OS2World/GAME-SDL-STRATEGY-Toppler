@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     SDL_WM_SetCaption("Nebulous", NULL);
     int mouse = SDL_ShowCursor(0);
     atexit(SDL_Quit);
-    printf("Nebulous version "VERSION"\n");
+    printf("Nebulous version 0.97.1\n");
     srand(time(0));
     startgame();
     printf("thanks for playing\n");

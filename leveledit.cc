@@ -113,7 +113,7 @@ static bool edit_towercolor(int row, int col) {
     case 'G': activecol = 1; break;
     case 'b':
     case 'B': activecol = 2; break;
-    case '\e': ende = true; oldpal = true; break;
+    case 27: ende = true; oldpal = true; break;
     case ' ':
     case '\r': ende = true;
     default: break;
