@@ -14,7 +14,7 @@
 
 #define steprad         20
 #define elevatorrad     16
-#define stickrad        8
+#define stickrad        7
 
 #define zinnenrad       (radius + 48)
 
