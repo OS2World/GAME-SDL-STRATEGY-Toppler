@@ -9,7 +9,7 @@
 /* initializes the module, loads the graphics, sets up the display */
 void scr_init(void);
 
-void scr_toggle_fullscreen(void);
+void scr_reinit(void);
 
 /* frees graphics */
 void scr_done(void);

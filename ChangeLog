@@ -1,10 +1,14 @@
-Version 0.74
+06.02.2002 Version 0.74
 
 - changes to compile successfully on sparc
 - change some datatypes to Uintxx and Sintxx (from SDL)
 - improved configure script a bit
+- move the "quit" entry in main menu to the bottom
+- added an option for scaling in the options menu (for slow computers)
+- small buglet in leveleditor output routine that made robots flip from in front
+  to behind the tower
 
-Version 0.73
+26.01.2002 Version 0.73
 
 - fixed bug with wrong loops in robots that overwrote some global variables on windows
 - fixed bug in archive that made the font loader load one char too much

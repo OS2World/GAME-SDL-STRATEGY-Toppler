@@ -10,6 +10,7 @@
 
 bool fullscreen;
 bool nosound;
+bool doublescale;
 
 void dcl_wait(void) {
   static Uint32 last;
@@ -225,6 +226,8 @@ static void parse_config(FILE * in) {
       fullscreen = (i == 1);
     } else if (strstr(line, "nosound")){
       nosound = (i == 1);
+    } else if (strstr(line, "scale2x")){
+      doublescale = (i == 1);
     }
   }
 }
@@ -232,6 +235,7 @@ static void parse_config(FILE * in) {
 void load_config(void) {
   fullscreen = false;
   nosound = false;
+  doublescale = false;
 
   FILE * in = open_global_config_file(".toppler.rc");
   
@@ -250,6 +254,7 @@ void save_config(void) {
   if (out) {
     fprintf(out, "fullscreen: %i\n", (fullscreen)?(1):(0));
     fprintf(out, "nosound: %i\n", (nosound)?(1):(0));
+    fprintf(out, "scale2x: %i\n", (doublescale)?(1):(0));
   
     fclose(out);
   }

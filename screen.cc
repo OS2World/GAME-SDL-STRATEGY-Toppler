@@ -27,8 +27,6 @@ static int topplerstart;
 
 unsigned short  step, elevatorsprite, stick;
 
-#define SCALE2
-
 /* table used to calculate the distance of an object from the center of the
  tower that is at x degrees on the tower */
 static long sintab[189] = {
@@ -396,26 +394,23 @@ void scr_init(void) {
   loadgraphics();
   loadfont();
   loadscroller();
-#ifdef SCALE2
-  display = SDL_SetVideoMode(640, 480, 8,
-                             SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
-#else
-  display = SDL_SetVideoMode(320, 240, 8,
-                             SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
-#endif
+  if (doublescale)
+    display = SDL_SetVideoMode(640, 480, 8,
+                               SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
+  else
+    display = SDL_SetVideoMode(320, 240, 8,
+                               SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
   second = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 8, 0, 0, 0, 0);
   pal_setstdpalette(second);
 }
 
-void scr_toggle_fullscreen() {
-  fullscreen = !fullscreen;
-#ifdef SCALE2
-  display = SDL_SetVideoMode(640, 480, 8,
-                             SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
-#else
-  display = SDL_SetVideoMode(320, 240, 8,
-                             SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
-#endif
+void scr_reinit() {
+  if (doublescale)
+    display = SDL_SetVideoMode(640, 480, 8,
+                               SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
+  else
+    display = SDL_SetVideoMode(320, 240, 8,
+                               SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
   pal_colors(pal_menu);
 }
 
@@ -556,30 +551,30 @@ void scr_putbar(int x, int y, int br, int h, unsigned char col = 0) {
 
 /* exchange active and inactive page */
 void scr_swap(void) {
-#ifdef SCALE2
+  if (doublescale) {
 
-  int p = 0;
-  int q = 0;
-  unsigned char i = ((unsigned char *)(second->pixels))[0];
-  for (int y = 0; y < 240; y++) {
-    for (int x = 0; x < 320; x++) {
-      ((char *)(display->pixels))[p++] = i;
-      ((char *)(display->pixels))[p++] = i;
-      q++;
-      i = ((unsigned char *)(second->pixels))[q];
+    int p = 0;
+    int q = 0;
+    unsigned char i = ((unsigned char *)(second->pixels))[0];
+    for (int y = 0; y < 240; y++) {
+      for (int x = 0; x < 320; x++) {
+        ((char *)(display->pixels))[p++] = i;
+        ((char *)(display->pixels))[p++] = i;
+        q++;
+        i = ((unsigned char *)(second->pixels))[q];
+      }
+      memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - 640], 640);
+      p += 640;
     }
-    memmove(&((char *)(display->pixels))[p], &((char *)(display->pixels))[p - 640], 640);
-    p += 640;
+  } else {
+    int d = 0;
+    int s = 0;
+    for (int y = 0; y < 240; y++) {
+      memmove(&((char *)(display->pixels))[d], &((char *)(second->pixels))[s], 320);
+      d += display->pitch;
+      s += second->pitch;
+    }
   }
-#else
-  int d = 0;
-  int s = 0;
-  for (int y = 0; y < 240; y++) {
-    memmove(&((char *)(display->pixels))[d], &((char *)(second->pixels))[s], 320);
-    d += display->pitch;
-    s += second->pitch;
-  }
-#endif
   SDL_UpdateRect(display, 0, 0, 0, 0);
 }
 

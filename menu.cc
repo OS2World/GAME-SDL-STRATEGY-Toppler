@@ -22,7 +22,6 @@
 static unsigned short menupicture, titledata;
 static unsigned char currentmission = 0;
 
-
 static struct {
   unsigned int points;
   char name[10];
@@ -73,7 +72,10 @@ static void men_options(void) {
 
   int p = 0, palt, t;
   bool ende = false;
+  int c;
 
+  c = key_chartyped();
+  palt = p + 1;
   do {
 
     if (p != palt) {
@@ -85,12 +87,18 @@ static void men_options(void) {
         scr_writetext_center(130, "windowed");
       else
         scr_writetext_center(130, "fullscreen");
-      
+
+      if (doublescale)
+        scr_writetext_center(150, "do not scale");
+      else
+        scr_writetext_center(150, "scale 2x");
+
       scr_writetext_center(190, "main");
 
       switch(p) {
         case 0: t = 130; break;
-        case 1: t = 190; break;
+        case 1: t = 150; break;
+        case 2: t = 190; break;
       }
 
       scr_writetext_center(t, "*                   *");
@@ -99,28 +107,42 @@ static void men_options(void) {
       palt = p;
     }
 
-    key_readkey();
-    while (!key_keypressed(any_key)) dcl_wait();
+    do {
+      c = key_chartyped();
+    } while (!c);
 
-    if (key_keypressed(up_key))
-      if (p > 0) p--; else p = 1;
-    if (key_keypressed(down_key))
-      if (p < 1) p++; else p = 0;
-    if ((key_keypressed(left_key) || key_keypressed(right_key)) && (p == 0)) {
-      scr_toggle_fullscreen();
+    if (c == 1)
+      if (p > 0) p--; else p = 2;
+    if (c == 2)
+      if (p < 2) p++; else p = 0;
+    if (((c == 3) || (c == 4)) && (p == 0)) {
+      fullscreen = !fullscreen;
+      scr_reinit();
+      palt = p + 1;
+    }
+    if (((c == 3) || (c == 4)) && (p == 1)) {
+      doublescale = !doublescale;
+      scr_reinit();
       palt = p + 1;
     }
 
-    if (key_keypressed(fire_key))
+    if (c == ' ')
       switch(p) {
         case 0:
-          scr_toggle_fullscreen();
+          fullscreen = !fullscreen;
+          scr_reinit();
           palt = p + 1;
           break;
         case 1:
+          doublescale = !doublescale;
+          scr_reinit();
+          palt = p + 1;
+          break;
+        case 2:
           ende = true;
           break;
       }
+
   } while (!ende);
 
   key_readkey();
@@ -248,7 +270,7 @@ static void show_scores(int mark = 10) {
 }
 
 
-unsigned char men_main(bool fade) {
+unsigned char men_main() {
 
   pal_colors(pal_menu);
   
@@ -267,6 +289,8 @@ unsigned char men_main(bool fade) {
   int main;
   int missioncount = lev_missionnumber();
 
+  int c = key_chartyped();
+
   do {
 
     if ((p != palt) || (m != malt)) {
@@ -277,9 +301,9 @@ unsigned char men_main(bool fade) {
       sprintf(s, "start %s", lev_missionname(m));
       scr_writetext_center(100, s);
       scr_writetext_center(130, "highscore");
-      scr_writetext_center(150, "quit");
-      scr_writetext_center(170, "options");
-      scr_writetext_center(190, "level editor");
+      scr_writetext_center(150, "options");
+      scr_writetext_center(170, "level editor");
+      scr_writetext_center(200, "quit");
       
 
       switch(p) {
@@ -287,7 +311,7 @@ unsigned char men_main(bool fade) {
         case 1: t = 130; break;
         case 2: t = 150; break;
         case 3: t = 170; break;
-        case 4: t = 190; break;
+        case 4: t = 200; break;
       }
 
       scr_writetext_center(t, "*                   *");
@@ -297,19 +321,20 @@ unsigned char men_main(bool fade) {
       malt = m;
     }
 
-    key_readkey();
-    while (!key_keypressed(any_key)) dcl_wait();
+    do {
+      c = key_chartyped();
+    } while (!c);
 
-    if (key_keypressed(up_key))
+    if (c == 1)
       if (p > 0) p--; else p = 4;
-    if (key_keypressed(down_key))
+    if (c == 2)
       if (p < 4) p++; else p = 0;
-    if (key_keypressed(left_key) && (p == 0))
+    if ((c == 3) && (p == 0))
       m = (m + 1) % missioncount;
-    if (key_keypressed(right_key) && (p == 0))
+    if ((c == 4) && (p == 0))
       m = (m + missioncount - 1) % missioncount;
 
-    if (key_keypressed(fire_key))
+    if (c == ' ')
       switch(p) {
         case 0:
           currentmission = m;
@@ -322,16 +347,16 @@ unsigned char men_main(bool fade) {
           palt = p + 1;
           break;
         case 2:
-          ende = true;
-          break;
-        case 3:
           men_options();
           palt = p + 1;
           break;
-        case 4:
+        case 3:
           le_edit();
           pal_colors(pal_menu);
           palt = p + 1;
+          break;
+        case 4:
+          ende = true;
           break;
       }
   } while (!ende);

@@ -8,7 +8,7 @@ void men_init(void);
 
 /* the main menu, return 0 for quit and
  bigger values for the missions */
-unsigned char men_main(bool fade);
+unsigned char men_main(void);
 
 /* highscores, after the game */
 void men_highscore(unsigned long pt);

@@ -41,7 +41,7 @@ static void startgame(void) {
   gam_init();
   men_init();
   snd_init();
-  stat = men_main(true);
+  stat = men_main();
   while (stat > 0) {
     gam_newgame();
     tower = 0;
@@ -77,7 +77,7 @@ static void startgame(void) {
     } while (pts_lifesleft() && (tower != 8) && (gameresult != GAME_ABBORTED));
 
     men_highscore(pts_points());
-    stat = men_main(false);
+    stat = men_main();
   }
   snd_done();
   gam_done();
