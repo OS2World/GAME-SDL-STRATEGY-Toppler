@@ -5,12 +5,16 @@ bin_PROGRAMS = toppler
 toppler_SOURCES =                  \
   archi.cc         archi.h         \
   bonus.cc         bonus.h         \
+  configuration.cc configuration.h \
   decl.cc          decl.h          \
   elevators.cc     elevators.h     \
   game.cc          game.h          \
+  highscore.cc     highscore.h     \
   keyb.cc          keyb.h          \
   level.cc         level.h         \
+  leveledit.cc     leveledit.h     \
   menu.cc          menu.h          \
+  menusys.cc       menusys.h       \
   main.cc          config.h        \
   points.cc        points.h        \
   robots.cc        robots.h        \
@@ -20,10 +24,7 @@ toppler_SOURCES =                  \
   sprites.cc       sprites.h       \
   stars.cc         stars.h         \
   toppler.cc       toppler.h       \
-  leveledit.cc     leveledit.h     \
-  txtsys.cc        txtsys.h        \
-  configuration.cc configuration.h \
-  highscore.cc     highscore.h
+  txtsys.cc        txtsys.h
 
 pkgdata_DATA = \
   toppler.dat \
