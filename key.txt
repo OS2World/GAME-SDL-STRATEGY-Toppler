@@ -14,5 +14,6 @@ v  top elevator station
 b  flashing box
 #  normal door
 .  vanishng platform
->  slippery platform
+>  slippery platform (slip right)
+<  slippery platform (slip left)
 T  target door
