@@ -7,12 +7,8 @@ clean:
 	rm -f *.ttm cremission
 
 cremission: cremission.cc level.o
-	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/keyb.o level.o \
-    ${TOPPLERDIR}/points.o ${TOPPLERDIR}/decl.o ${TOPPLERDIR}/configuration.o \
-    -lSDL -lSDL_mixer -lz -o cremission
-
-level.o: ${TOPPLERDIR}/level.cc ${TOPPLERDIR}/level.h
-	g++ ${TOPPLERDIR}/level.cc -I${TOPPLERDIR} -I/usr/include/SDL -D CREATOR -D TOP_DATADIR=\"./\" -c -o level.o
+	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/decl.o \
+    -lSDL -o cremission
 
 # RULE FOR MISSION 1
 

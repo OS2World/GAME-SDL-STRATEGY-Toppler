@@ -1,4 +1,13 @@
+#define CREATOR
+
+#define NULL 0
+#define TOP_DATADIR "./"
+
+#include <configuration.h>
+
 #include "level.h"
+#include "level.cc"
+
 #include <stdio.h>
 #include <stdlib.h>
 
