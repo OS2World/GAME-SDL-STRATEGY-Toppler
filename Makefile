@@ -6,7 +6,7 @@ all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm
 clean:
 	rm -f *.ttm cremission
 
-cremission: cremission.cc level.o
+cremission: cremission.cc
 	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/decl.o \
     -lSDL -o cremission
 
