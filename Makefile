@@ -1,6 +1,6 @@
 TOPPLERDIR = ../toppler
 
-all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm
+all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm
 	cp *.ttm ${TOPPLERDIR}
 
 clean:
@@ -49,6 +49,16 @@ ball2.ttm: ball2/lev1 ball2/lev2 ball2/lev3 ball2/lev4 \
 	./cremission "Ball 2" 14 t/lev1 t/lev2 t/lev3 t/lev4 t/lev5 t/lev6 t/lev7 t/lev8
 	rm ${HOME}/.toppler/t
 	mv "${HOME}/.toppler/Ball 2.ttm" ball2.ttm
+
+# RULE FOR CLARENCE MISSION 3
+
+ball2.ttm: ball3/lev1 ball3/lev2 ball3/lev3 ball3/lev4 \
+           ball3/lev5 ball3/lev6 ball3/lev7 ball3/lev8 \
+           cremission
+	ln -s `pwd`/ball3 ${HOME}/.toppler/t
+	./cremission "Ball 3" 14 t/lev1 t/lev2 t/lev3 t/lev4 t/lev5 t/lev6 t/lev7 t/lev8
+	rm ${HOME}/.toppler/t
+	mv "${HOME}/.toppler/Ball 3.ttm" ball3.ttm
 
 # RULE FOR PASIS MISSION 1
 
