@@ -6,6 +6,7 @@ CFLAGS = -lz -lSDL -lSDL_image -lm -lpng -I/usr/include/SDL -I/usr/include/libpn
 POVRAY = povray
 GIMP = gimp-2.0
 
+
 TARGETDIR = ../toppler
 
 TOPPLERDAT = toppler.dat
@@ -76,10 +77,10 @@ font_mask.png: font_mask_rgb.png colorreduction
 	./colorreduction font_mask_rgb.png 256 font_mask.png
 
 font_mask_rgb.png: font.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"font_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"font_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 font_colors_rgb.png: font.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"font_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"font_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 font.clean:
 	rm -f font.dat font*.png font
@@ -94,10 +95,10 @@ graphics: graphics.c colorreduction.h pngsaver.h
 	$(GCC) $(CFLAGS) graphics.c -o graphics
 
 graphics_brick.png: graphics_brick.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"graphics_brick.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"graphics_brick.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"graphics_brick.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"graphics_brick.png\" \"ttt\")(gimp-quit 1))"
 
 graphics_pinacle.png: graphics_pinacle.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"graphics_pinacle.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"graphics_pinacle.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"graphics_pinacle.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"graphics_pinacle.png\" \"ttt\")(gimp-quit 1))"
 
 graphics.clean:
 	rm -f graphics.dat graphics graphics_brick.png graphics_pinacle.png
@@ -162,22 +163,22 @@ scroller3_mask.png: colorreduction scroller3_mask_rgb.png
 	./colorreduction scroller3_mask_rgb.png 256 scroller3_mask.png
 
 scroller1_colors_rgb.png: scroller.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"scroller1_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"scroller1_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 scroller2_colors_rgb.png: scroller.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"scroller2_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"scroller2_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 scroller3_colors_rgb.png: scroller.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 2) \"scroller3_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 2) \"scroller3_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 scroller1_mask_rgb.png: scroller.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 3) \"scroller1_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 3) \"scroller1_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 scroller2_mask_rgb.png: scroller.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 4) \"scroller2_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 4) \"scroller2_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 scroller3_mask_rgb.png: scroller.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 5) \"scroller3_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 5) \"scroller3_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 #---------------------------------------------------------#
 # rules to create the data files necesary for the sprites #
@@ -327,10 +328,10 @@ titles_mask.png: titles_mask_rgb.png colorreduction
 	./colorreduction titles_mask_rgb.png 256 titles_mask.png
 
 titles_mask_rgb.png: titles.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"titles_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"titles_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 titles_colors_rgb.png:  titles.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"titles_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"titles_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 titles.clean:
 	rm -f titles.dat titles titles*.png
@@ -351,10 +352,10 @@ dude_mask.png: dude_mask_rgb.png colorreduction
 	./colorreduction dude_mask_rgb.png 256 dude_mask.png
 
 dude_colors_rgb.png: dude.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"dude_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"dude_colors_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 dude_mask_rgb.png: dude.xcf
-	gimp-2.0 -i -b "(let* ((image (car(gimp-xcf-load 1 \"dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"dude_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
+	$(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"dude_mask_rgb.png\" \"ttt\")(gimp-quit 1))"
 
 dude.clean:
 	rm -f dude.dat dude dude*.png
