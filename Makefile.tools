@@ -1,0 +1,246 @@
+#
+#  Makefile Tools - some useful scripts to distribute your software
+#  ================================================================
+#
+#  Version: 0.9.2
+#
+#
+#  Usage: add to each "Makefile.am" the following line:
+#
+#     include $(top_srcdir)/Makefile.tools
+#
+#
+#  Requires: automake >= 1.8
+#
+#
+#  Copyright (C) 2003-2005  Volker Grabsch <volker-mt@v.notjusthosting.com>
+#
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+
+
+#
+#  additional variables
+#
+
+distname = $(PACKAGE)-$(VERSION)
+disttargetname = $(distname)-$(target_triplet)
+
+docdir = @docdir@
+pkgdocdir = $(docdir)/$(PACKAGE)
+
+dllfiles = @DLL_FILES@
+cygwin_dllfiles = @DLL_FILES_CYGWIN@
+
+abs_builddir = @abs_builddir@
+abs_top_builddir = @abs_top_builddir@
+abs_srcdir = @abs_srcdir@
+abs_top_srcdir = @abs_top_srcdir@
+
+build_triplet = @build@
+build_cpu = @build_cpu@
+build_vendor = @build_vendor@
+build_os = @build_os@
+host_triplet = @host@
+host_cpu = @host_cpu@
+host_vendor = @host_vendor@
+host_os = @host_os@
+target_triplet = @target@
+target_cpu = @target_cpu@
+target_vendor = @target_vendor@
+target_os = @target_os@
+
+
+#
+#  include directories and directory symbols
+#
+
+INCLUDES = -I$(top_srcdir)/src -DPKGDATADIR=\"$(pkgdatadir)/\"
+
+
+#
+#  additional commands and options
+#
+
+BZIP2_ENV = -9
+ENSCRIPT = enscript --landscape --columns=2 --font=Courier8 --color --highlight
+PS2PDF = ps2pdf
+NSIS = makensis
+SU = su -c
+RPM = rpm
+DPKG_BUILDPACKAGE = dpkg-buildpackage -rfakeroot
+UNIX2DOS = awk '{print $$0"\r"}'
+
+
+#
+#  run the main program with the data directory as pwd
+#
+
+run:
+	$(MAKE) $(AM_MAKEFLAGS) -C "$(abs_top_srcdir)" \
+		all
+	cd "$(abs_top_srcdir)/data" \
+		&& "$(abs_top_srcdir)/src/$(PACKAGE)"
+
+
+#
+#  printed source distribution
+#
+
+PRINTDIR =
+distprintdir = $(distname)-print
+printlist = print.list
+printtypes = ps pdf html rtf
+
+print-add:
+	for file in $(PRINT_FILES); do \
+		echo "$(PRINTDIR)$$file" >>"$(top_srcdir)/$(printlist)"; \
+		done
+	-for subdir in $(SUBDIRS); do \
+		$(MAKE) $(AM_MAKEFLAGS) -C "$$subdir" \
+			PRINTDIR="$(PRINTDIR)$$subdir/" \
+			print-add; \
+		done
+
+print-list:
+	-rm -f $(abs_top_srcdir)/$(printlist)
+	$(MAKE) $(AM_MAKEFLAGS) -C "$(abs_top_srcdir)" \
+		print-add
+
+dist-print-pdf: dist-print-ps
+	-rm -f "$(distprintdir).pdf"
+	$(PS2PDF) "$(distprintdir).ps" "$(distprintdir).pdf"
+
+dist-print-%: print-list
+	-rm -f "$(distprintdir).$*"
+	cd "$(abs_top_srcdir)" \
+		&& case "$*" in \
+			ps) elang="PostScript" ;; \
+			*) elang="$*" ;; \
+			esac \
+		&& $(ENSCRIPT) \
+			--language="$$elang" \
+			--output="$(abs_srcdir)/$(distprintdir).$*" \
+			`cat $(printlist)` </dev/null
+
+dist-print: $(addprefix dist-print-,$(printtypes))
+
+
+#
+#  flat binary packaging support
+#
+
+distflatdir = $(disttargetname)-flat
+nsisscript = $(PACKAGE).nsi
+
+dist-flatdir:
+	-rm -rf "$(distflatdir)"
+	$(MAKE) $(AM_MAKEFLAGS) -C "$(abs_top_srcdir)" \
+		DESTDIR="$(abs_builddir)/$(distflatdir)" \
+		prefix= \
+		exec_prefix= \
+		bindir= \
+		sbindir= \
+		libexecdir= \
+		datadir= \
+		sysconfdir= \
+		sharedstatedir= \
+		localstatedir= \
+		libdir= \
+		infodir= \
+		mandir= \
+		includedir= \
+		oldincludedir= \
+		pkgdatadir= \
+		pkglibdir= \
+		pkgincludedir= \
+		docdir= \
+		pkgdocdir= \
+		install-strip
+	@cd "$(distflatdir)" \
+		&& case "$(target_os)" in \
+			*mingw*) convert="x"; dllfiles="$(dllfiles)" ;; \
+			*cygwin*) convert="x"; dllfiles="$(dllfiles) $(cygwin_dllfiles)" ;; \
+			*) convert=""; dllfiles="" ;; \
+			esac \
+		&& if test "$$convert"; then \
+			echo "converting text files"; \
+			find ! -type d ! -name '*.*' | while read file; do \
+				echo " $$file -> $$file.txt"; \
+				$(UNIX2DOS) <"$$file" >"$$file.txt"; \
+				rm -f "$$file"; \
+				done; \
+			fi \
+		&& if test "$$dllfiles"; then \
+			echo "copying DLL files"; \
+			for file in $$dllfiles; do \
+				echo " $$file"; \
+				cp -p "$$file" .; \
+				done; \
+			fi
+
+dist-flat: dist-flatdir
+	-chmod -R a+r "$(distflatdir)"
+	GZIP=$(GZIP_ENV) $(AMTAR) chovvzf "$(distflatdir).tar.gz" "$(distflatdir)"
+	-BZIP2=$(BZIP2_ENV) $(AMTAR) chovvjf "$(distflatdir).tar.bz2" "$(distflatdir)"
+	-$(ZIP) "$(distflatdir).zip" "$(distflatdir)"
+	-cd "$(distflatdir)" \
+		&& $(NSIS) "$(abs_top_srcdir)/$(nsisscript)"
+	-rm -rf "$(distflatdir)"
+
+
+#
+#  RPM packaging support
+#
+
+dist-rpm: dist-gzip
+	$(SU) "$(RPM) -ta \"$(distdir).tar.gz\""
+
+
+#
+#  DEB packaging support
+#
+
+dist-deb: distdir
+	cd "$(distdir)" && $(DPKG_BUILDPACKAGE)
+	$(am__remove_distdir)
+
+
+#
+#  all dists useful for source distribution
+#
+
+dist-src: distdir
+	$(AMTAR) chof - $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
+	-$(AMTAR) chof - $(distdir) | bzip2 -9 -c >$(distdir).tar.bz2
+	-$(AMTAR) chof - $(distdir) | compress -c >$(distdir).tar.Z
+	-shar $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).shar.gz
+	-rm -f $(distdir).zip
+	-zip -rq $(distdir).zip $(distdir)
+	$(am__remove_distdir)
+
+
+#
+#  all dists useful for linux environments
+#
+
+dist-linux: dist-flat dist-rpm dist-deb
+
+
+#
+#  all dists useful for win32 environments
+#
+
+dist-win32: dist-flat

@@ -1,0 +1,14 @@
+Name "@FULLNAME@"
+
+InstallDir $PROGRAMFILES\Toppler
+OutFile "@PACKAGE@-@VERSION@-@target@-flat.exe"
+
+Page directory
+Page instfiles
+
+Section ""
+
+  SetOutPath $INSTDIR
+  File @PACKAGE@.exe
+
+SectionEnd

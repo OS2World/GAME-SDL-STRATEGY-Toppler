@@ -31,6 +31,8 @@ toppler_SOURCES =                  \
   toppler.cc       toppler.h       \
   txtsys.cc        txtsys.h
 
+pkgdoc_DATA = AUTHORS COPYING ChangeLog NEWS README
+
 pkgdata_DATA = \
   toppler.dat \
   m1.ttm m2.ttm ball1.ttm ball2.ttm ball3.ttm abc.ttm pasi2.ttm \
@@ -38,7 +40,14 @@ pkgdata_DATA = \
 
 man_MANS = toppler.6
 
-EXTRA_DIST = config.rpath mkinstalldirs $(man_MANS) $(pkgdata_DATA) $(PACKAGE).spec VERSION toppler.xpm
+CONFIG_CLEAN_FILES = toppler.spec toppler.nsi toppler.desktop
+
+EXTRA_DIST = \
+  config.rpath mkinstalldirs Makefile.tools \
+  $(pkgdoc_DATA) $(pkgdata_DATA) $(man_MANS) \
+  $(PACKAGE).spec \
+  debian/changelog debian/control debian/copyright debian/menu debian/rules \
+  VERSION toppler.xpm levelnames.txt
 
 scoredir = $(localstatedir)/@PACKAGE@
 scorefile = $(scoredir)/@PACKAGE@.hsc
