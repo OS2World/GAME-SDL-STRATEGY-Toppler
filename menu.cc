@@ -1177,7 +1177,7 @@ bool men_game() {
 
   ms = run_menu_system(ms);
 
-  do_quit = (bool)ms->mstate;
+  do_quit = ms->mstate != 0;
 
   free_menu_system(ms);
 

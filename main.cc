@@ -63,7 +63,11 @@ int main(int argc, char *argv[]) {
 
   load_config();
 
+#ifdef VERSION
   printf("Nebulous version " VERSION "\n");
+#else
+  printf("Nebulous\n");
+#endif
 
   if (parse_arguments(argc, argv)) {
     SDL_InitSubSystem(SDL_INIT_VIDEO);

@@ -423,11 +423,18 @@ void lev_selecttower(Uint8 number) {
   tmpbuf_len += long(mission[tmp++]) << 8;
     
   if (tmpbuf_len) {
-      tmpbuf = (Uint16 *)malloc(tmpbuf_len*sizeof(Uint16));
-      for (int idx = 0; idx < tmpbuf_len; idx++) {
-	  tmpbuf[idx] = mission[tmp++];
-	  tmpbuf[idx] += Uint16(mission[tmp++]) << 8;
+    tmpbuf = (Uint16 *)malloc(tmpbuf_len*sizeof(Uint16));
+    Uint16 idx = 0;
+    while (idx < tmpbuf_len) {
+      Uint8 run = mission[tmp++];
+      Uint16 data = mission[tmp++];
+      data += Uint16(mission[tmp++]) << 8;
+
+      while (run) {
+        tmpbuf[idx++] = data;
+        run--;
       }
+    }
   }
 
   lev_set_towerdemo(tmpbuf_len, tmpbuf);
@@ -741,12 +748,12 @@ bool lev_loadtower(char *fname) {
       sscanf(line, "%i\n", &towerdemo_len);
 
       if (towerdemo_len > 0) {
-	  towerdemo = (Uint16 *)malloc(towerdemo_len*sizeof(Uint16));
+          towerdemo = (Uint16 *)malloc(towerdemo_len*sizeof(Uint16));
 
-	  for (int idx = 0; idx < towerdemo_len; idx++) {
-	      fgets(line, 200, in);
-	      sscanf(line, "%hu\n", &towerdemo[idx]);
-	  }
+          for (int idx = 0; idx < towerdemo_len; idx++) {
+              fgets(line, 200, in);
+              sscanf(line, "%hu\n", &towerdemo[idx]);
+          }
       } else towerdemo = NULL;
   }
 
@@ -777,9 +784,9 @@ bool lev_savetower(char *fname) {
 
   fprintf(out, "%i\n", towerdemo_len);
   if (towerdemo && (towerdemo_len > 0)) {
-      for (int idx = 0; idx < towerdemo_len; idx++) {
-	  fprintf(out, "%hu\n", towerdemo[idx]);
-      }
+    for (int idx = 0; idx < towerdemo_len; idx++) {
+      fprintf(out, "%hu\n", towerdemo[idx]);
+    }
   }
 
   fclose(out);
@@ -1172,7 +1179,7 @@ void lev_mission_addtower(char * name) {
 
   missionidx[nmission] = ftell(fmission);
   nmission++;
-    
+
   if (!lev_loadtower(name)) return;
     
   namelen = strlen(towername);
@@ -1215,18 +1222,46 @@ void lev_mission_addtower(char * name) {
       if (tower[row][col])
         fwrite(&tower[row][col], 1, 1, fmission);
 
+  /* output towerdemo */
+
+  /* output length */
   tmp = towerdemo_len & 0xff;
   fwrite(&tmp, 1, 1, fmission);
   tmp = (towerdemo_len >> 8) & 0xff;
   fwrite(&tmp, 1, 1, fmission);
 
-  if (towerdemo && (towerdemo_len > 0))
-      for (int idx = 0; idx < towerdemo_len; idx++) {
-	  tmp = towerdemo[idx] & 0xff;
-	  fwrite(&tmp, 1, 1, fmission);
-	  tmp = (towerdemo[idx] >> 8) & 0xff;
-	  fwrite(&tmp, 1, 1, fmission);
-      }
+  /* output data using a simple runlength encoder */
+
+  if (towerdemo && (towerdemo_len > 0)) {
+
+    Uint8 run;
+    Uint16 data;
+  
+    run = 1;
+    data = towerdemo[0];
+
+    for (int idx = 1; idx < towerdemo_len; idx++) {
+      if ((data != towerdemo[idx]) || (run == 0xff)) {
+        fwrite(&run, 1, 1, fmission);
+        tmp = data & 0xff;
+        fwrite(&tmp, 1, 1, fmission);
+        tmp = (data >> 8) & 0xff;
+        fwrite(&tmp, 1, 1, fmission);
+
+        data = towerdemo[idx];
+        run = 1;
+      } else
+        run ++;
+    }
+
+    if (run) {
+      fwrite(&run, 1, 1, fmission);
+      tmp = data & 0xff;
+      fwrite(&tmp, 1, 1, fmission);
+      tmp = (data >> 8) & 0xff;
+      fwrite(&tmp, 1, 1, fmission);
+    }
+  }
 }
 
 void lev_mission_finish() {

@@ -240,8 +240,6 @@ static void loadgraphics(void) {
 
   arc_read(towerpal, 2*256, &res);
 
-  for (t = 0; t < 4; t++)
-
   slicedata = (Uint8*)malloc(SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI);
   arc_read(slicedata, SPR_SLICESPRITES * SPR_SLICEWID * SPR_SLICEHEI, &res);
 
@@ -463,16 +461,36 @@ static void loadscroller(void) {
   arc_closefile();
 }
 
-void scr_reload_sprites(void) {
+static void load_sprites(void) {
   loadgraphics();
   loadfont();
   loadscroller();
 }
 
+static void free_memory(void) {
+  int t;
+
+  free(scroll_layers);
+
+  free(slicedata);
+  free(battlementdata);
+  free(crossdata);
+
+  for (t = -36; t < 37; t++)
+    for (int et = 0; et < 3; et++)
+      if (doors[t+36].data[et])
+        free(doors[t+36].data[et]);
+}
+
+void scr_reload_sprites() {
+  free_memory();
+  load_sprites();
+}
+
 void scr_init(void) {
   spr_init(1000);
 
-  scr_reload_sprites();
+  load_sprites();
 
   display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 32,
                              SDL_HWPALETTE | ((fullscreen) ? (SDL_FULLSCREEN) : (0)));
@@ -489,7 +507,7 @@ void scr_reinit() {
 
 void scr_done(void) {
   spr_done();
-  free(scroll_layers);
+  free_memory();
   sts_done();
 }
 
@@ -615,10 +633,10 @@ static void putwater(long height) {
         int right_idx = target_line * display->pitch + (SCREENWID - 10) * display->format->BytesPerPixel;
         int left_idx = target_line * display->pitch;
         for (int x = 0; x < 10; x++) {
-          ((Uint8 *)(display->pixels))[right_idx + 0] = 30;
+          ((Uint8 *)(display->pixels))[right_idx + 0] = 30 + y/2;
           ((Uint8 *)(display->pixels))[right_idx + 1] = 0;
           ((Uint8 *)(display->pixels))[right_idx + 2] = 0;
-          ((Uint8 *)(display->pixels))[left_idx + 0] = 30;
+          ((Uint8 *)(display->pixels))[left_idx + 0] = 30 + y/2;
           ((Uint8 *)(display->pixels))[left_idx + 1] = 0;
           ((Uint8 *)(display->pixels))[left_idx + 2] = 0;
           right_idx += display->format->BytesPerPixel;
@@ -631,9 +649,9 @@ static void putwater(long height) {
         int source_idx = source_line * display->pitch;
         for (int x = 0; x < SCREENWID; x++) {
           if ((x + horizontal_shift > 0) && (x + horizontal_shift < SCREENWID)) {
-            ((Uint8 *)(display->pixels))[target_idx + 0] = ((long)((Uint8 *)(display->pixels))[source_idx + 0]) * 8 / 12 + 30;
-            ((Uint8 *)(display->pixels))[target_idx + 1] = ((long)((Uint8 *)(display->pixels))[source_idx + 1]) * 8 / 12;
-            ((Uint8 *)(display->pixels))[target_idx + 2] = ((long)((Uint8 *)(display->pixels))[source_idx + 2]) * 8 / 12;
+            ((Uint8 *)(display->pixels))[target_idx + 0] = ((long)((Uint8 *)(display->pixels))[source_idx + 0]) * (340-y) / 512 + (y/2) + 30;
+            ((Uint8 *)(display->pixels))[target_idx + 1] = ((long)((Uint8 *)(display->pixels))[source_idx + 1]) * (340-y) / 512;
+            ((Uint8 *)(display->pixels))[target_idx + 2] = ((long)((Uint8 *)(display->pixels))[source_idx + 2]) * (340-y) / 512;
           }
           target_idx += display->format->BytesPerPixel;
           source_idx += display->format->BytesPerPixel;
@@ -1147,7 +1165,7 @@ void scr_drawall(long vert,
                  bool svisible,
                  int subshape,
                  int substart,
-		 int flags
+                 int flags
                 ) {
 
   cleardesk();
@@ -1249,7 +1267,7 @@ void scr_drawedit(long vpos, long apos, bool showtime) {
 
   if (boxstate & 1) {
     scr_putrect((SCREENWID / 2) - (32 / 2), (SCREENHEI / 2) - 16, 32, 16, 
-		boxstate * 0xf, boxstate *0xf, boxstate *0xf, 128);
+                boxstate * 0xf, boxstate *0xf, boxstate *0xf, 128);
   }
 
   if (showtime) {
