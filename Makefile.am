@@ -34,10 +34,12 @@ pkgdata_DATA = \
 
 man_MANS = toppler.6
 
-EXTRA_DIST = $(man_MANS) $(pkgdata_DATA) VERSION toppler.spec toppler.xpm
+EXTRA_DIST = config.rpath  $(man_MANS) $(pkgdata_DATA) VERSION toppler.spec toppler.xpm
 
 scoredir = $(localstatedir)/@PACKAGE@
 scorefile = $(scoredir)/@PACKAGE@.hsc
+
+SUBDIRS = m4  po
 
 install_exec_local:
 	-(chgrp games $(DESTDIR)$(bindir)/toppler; chmod g+s $(DESTDIR)$(bindir)/toppler)
@@ -49,3 +51,6 @@ install_exec_local:
 uninstall_local:
 	rm $(scoredir)/@PACKAGE@.hsc
 	rmdir $(scoredir)
+
+
+ACLOCAL_AMFLAGS = -I m4

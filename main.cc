@@ -75,7 +75,8 @@ int main(int argc, char *argv[]) {
 
   setlocale(LC_MESSAGES, "");
   setlocale(LC_CTYPE, "");
-#ifdef USE_INTERNATIONALISATION
+
+#if ENABLE_NLS == 1
   bindtextdomain("toppler", LOCALEDIR"/locale");
 //  bindtextdomain("toppler", "po");
   textdomain("toppler");

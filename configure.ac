@@ -49,6 +49,8 @@ AC_FUNC_MALLOC
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit memmove memset mkdir strcasecmp strchr strstr])
 
+AM_GNU_GETTEXT([external])
+
 # Output.
-AC_CONFIG_FILES([Makefile toppler.spec toppler.desktop])
+AC_CONFIG_FILES([Makefile toppler.spec toppler.desktop po/Makefile.in m4/Makefile ])
 AC_OUTPUT

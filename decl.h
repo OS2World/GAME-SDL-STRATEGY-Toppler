@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#ifdef USE_INTERNATIONALISATION
+#if ENABLE_NLS == 1
 #include <libintl.h>
 #endif
 
@@ -225,7 +225,8 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
 
 /* for internationalisation */
 
-#ifdef USE_INTERNATIONALISATION
+#if ENABLE_NLS == 1
+
 #define _(x) gettext(x)
 #define N_(x) x
 #else
