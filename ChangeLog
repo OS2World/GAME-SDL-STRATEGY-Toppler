@@ -4,6 +4,10 @@ dthurston:
 - Changed extra life logic to be more robust/flexible.
 
 roever:
+- mark new entry in highscore table view
+- added configuration file
+- changed palette handling
+- added options and leveleditor to main menu, changed working of main menu
 - introduced unified opening scheme for files
 - made the program mute automatically, if audio could not be opened
 - tried to incorporate c64 sound effects
