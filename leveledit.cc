@@ -179,7 +179,7 @@ static void editor_background_proc(void) {
    if (bg_text) scr_writetext_center(5, bg_text);
 }
 
-static char *editor_background_menu_proc(void *ms) {
+static char *editor_background_menu_proc(_menusystem *ms) {
     editor_background_proc();
     return 0;
 }

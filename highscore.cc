@@ -293,7 +293,7 @@ Uint8 hsc_enter(Uint32 points, Uint8 tower, char *name) {
   
         /* local highscore: this one might require creating the file */
         fclose(fopen(highscoreName, "a+"));
-        f = fopen(highscoreName, "r+");
+        f = fopen(highscoreName, "r+b");
       }
   
       savescores(f);

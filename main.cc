@@ -70,14 +70,6 @@ static void startgame(void) {
 }
 
 static void QuitFunction(void) {
-
-  /* because of the extreme importance, of the deletion of
-   the locking file, we have a quit function that tries to delete
-   it again
-   */
-
-  printf("exit function\n");
-
   SDL_Quit();
 }
 
