@@ -37,5 +37,14 @@ void men_done(void);
 /* input line */
 void men_input(char *s, int max_len, int ypos);
 
+/* asks a yes/no question; return 0 if "no",
+   1 if "yes" */
+unsigned char men_yn(char *s, bool defchoice);
+
+#define FDECL(f,p) f p
+
+typedef void FDECL((*callback_proc), (void));
+
+void set_men_bgproc(callback_proc proc);
 
 #endif

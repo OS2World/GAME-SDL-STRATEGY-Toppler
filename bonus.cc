@@ -19,6 +19,7 @@
 #include "bonus.h"
 #include "keyb.h"
 #include "screen.h"
+#include "menu.h"
 #include "decl.h"
 #include "points.h"
 #include "sprites.h"
@@ -39,7 +40,6 @@ static bool escape(long time, long x) {
   long towerpos;
   int b;
 
-  key_readkey();
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
 
   scr_putbar(0, 0, 320, 240);
@@ -62,23 +62,12 @@ static bool escape(long time, long x) {
   }
   scr_draw_bonus2(x, towerpos);
 
-  scr_writetext_center(61, "REALLY QUIT?");
-  scr_writetext_center(95,  "  ESC: YES, QUIT");
-  scr_writetext_center(112, "OTHER: NO PLAY");
-
-  scr_swap();
-
-  Uint8 inp = key_chartyped();
-
-  do {
-    inp = key_chartyped();
-  } while (!inp);
-
-  if (inp == 27)
-    return true;
-  else
-    pal_colors(pal_bonusgame);
-
+  key_wait_for_any();
+   
+  if (men_yn("Really quit", false)) {
+     return true;
+  } else pal_colors(pal_bonusgame);
+   
   return false;
 }
 
@@ -145,6 +134,8 @@ bool bns_game(void) {
   x = 0;
 
   pal_colors(pal_bonusgame);
+   
+  set_men_bgproc(NULL);
 
   key_readkey();
 

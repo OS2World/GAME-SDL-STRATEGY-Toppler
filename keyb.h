@@ -50,5 +50,11 @@ Uint8 key_readkey(void);
 /* returns a types character */
 char key_chartyped(void);
 
+/* waits for any keypress */
+void key_wait_for_any(void);
+
+/* return name of char */
+char *key_name(char c);
+
 #endif
 

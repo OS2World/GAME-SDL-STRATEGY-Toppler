@@ -151,3 +151,34 @@ char key_chartyped(void) {
   return erg;
 }
 
+void key_wait_for_any(void) {
+  int c;
+
+  c = key_chartyped();
+  do {
+     c = key_chartyped();
+  } while (!c);
+  key_readkey();
+}
+
+char *key_name(char c) { 
+   static char buf[10];
+   switch (c) {
+    case ' ': return "space";
+    case 1:   return "up";
+    case 2:   return "down";
+    case 3:   return "left";
+    case 4:   return "right";
+    case 5:   return "ins";
+    case 6:   return "del";
+    case 7:   return "pgup";
+    case 8:   return "pgdwn";
+    case 9:   return "home";
+    case 13:  return "enter";
+    case 27:  return "esc";
+    default:  
+      buf[0] = c;
+      buf[1] = '\0';
+      return buf;
+   }
+}

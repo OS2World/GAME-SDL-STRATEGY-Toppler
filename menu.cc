@@ -64,6 +64,55 @@ void men_init(void) {
   arc_closefile();
 }
 
+static callback_proc menu_background_proc = NULL;
+
+void set_men_bgproc(callback_proc proc) {
+   menu_background_proc = proc;
+}
+
+unsigned char men_yn(char *s, bool defchoice) {
+  bool ende = false;
+  int p = defchoice ? 1 : 0;
+  int c;
+  char retval = 0;
+  int color = 0;
+   
+  scr_putbar(160 - 4 * 6, 95, 4 * 12, 32, 0);
+  
+  do {
+     if (menu_background_proc) (*menu_background_proc) ();
+     scr_writetext_center(60, s);
+
+     scr_putbar(160 - 4 * 6, p ? 95 : 112, 4 * 12, 16, 0);
+     scr_putbar(160 - 4 * 6, p ? 112 : 95, 4 * 12, 16, color);
+     color = (color + 1) & 0x1f;
+
+     scr_writetext_center(95,  "No");
+     scr_writetext_center(112, "Yes");
+
+     scr_swap();
+     dcl_wait();
+
+     c = key_chartyped();
+    
+     switch (c) {
+      case 1:    if (p > 0) p--; break;
+      case 2:    if (p < 1) p++; break;
+      case ' ':
+      case '\r': retval = p;         ende = true; break;
+      case '\e': retval = defchoice; ende = true; break;
+      case 'y':
+      case 'Y':  retval = 1;         ende = true; break; 
+      case 'n':
+      case 'N':  retval = 0;         ende = true; break;
+      default: break;
+     }
+     
+  } while (!ende);
+   
+  return retval;
+}
+
 static void men_options(void) {
 
   int p = 0, palt, t;

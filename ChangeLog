@@ -1,4 +1,12 @@
-- make compilable on windows
+work from pasi
+
+- more user-friendly Yes/No -menu, where user can select with keyboard.
+- interactive tower color changer in level editor.
+- status line in level editor.
+- interactive key help in level editor accessed with the 'h' key
+
+my work
+
 - include compression in the datafile (zlib)
 - change layers data to use data file too (remove layer?.tga)
 - get rid of this terrible page wise saving of data, so I could finally remove

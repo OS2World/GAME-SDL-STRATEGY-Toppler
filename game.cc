@@ -24,6 +24,7 @@
 #include "palette.h"
 #include "screen.h"
 #include "keyb.h"
+#include "menu.h"
 #include "level.h"
 #include "elevators.h"
 #include "robots.h"
@@ -263,6 +264,15 @@ static unsigned short towerpos(int verticalpos, int &tower_position, int anglepo
   return tower_position;
 }
 
+static int bg_tower_pos = 0;
+static int bg_tower_angle = 0;
+static int bg_time = 0;
+
+/* men_yn() background drawing callback proc */
+static void game_background_proc(void) {
+  scr_drawall(towerpos(top_verticalpos(), bg_tower_pos,
+                       top_anglepos(), bg_tower_angle), (4 - top_anglepos()) & 0x7f, bg_time, false, 0, 0);
+}
 
 static void timeout(int &tower_position, int &tower_anglepos) {
   int t;
@@ -388,36 +398,15 @@ static void get_keys(Sint8 &left_right, Sint8 &up_down, bool &space) {
 
 static void escape(Uint8 &state, int &tower_position, int &tower_anglepos, int time) {
 
-  key_readkey();
-
-  Uint8 inp = key_chartyped();
-
-  do {
-    inp = key_chartyped();
-  } while (!inp);
-
-  key_readkey();
-
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
-  scr_drawall(towerpos(top_verticalpos(), tower_position,
-                       top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
-  scr_writetext_center(61, "REALLY QUIT?");
-  scr_writetext_center(95,  "  ESC: YES, QUIT");
-  scr_writetext_center(112, "OTHER: NO PLAY");
-
+  
   snd_wateroff();
 
-  scr_swap();
+  key_wait_for_any();
 
-  inp = key_chartyped();
-
-  do {
-    inp = key_chartyped();
-  } while (!inp);
-  if (inp == 27) {
-    state = STATE_ABBORTED;
-  }else
-    pal_colors(pal_towergame);
+  if (men_yn("Really quit", false)) {
+     state = STATE_ABBORTED;
+  } else pal_colors(pal_towergame);
 
   snd_wateron();
   towerpos(top_verticalpos(), tower_position,
@@ -469,6 +458,8 @@ int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
   /* time left for the player to reach the tower */
   int time = lev_towertime();
   
+  set_men_bgproc(game_background_proc);
+
   top_init();
 
   reached_height = tower_position = top_verticalpos();
@@ -478,8 +469,13 @@ int gam_towergame(Uint8 &anglepos, Uint16 &resttime) {
   key_readkey();
 
   do {
+
     get_keys(left_right, up_down, space);
 
+    bg_tower_pos = tower_position;
+    bg_tower_angle = tower_angle;
+    bg_time = time;
+     
     if (key_keypressed(break_key))
       escape(state, tower_position, tower_angle, time);
 
