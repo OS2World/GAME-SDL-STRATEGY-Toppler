@@ -171,6 +171,10 @@ Uint16 arc_getbits(Uint8 anz) {
   return result;
 }
 
+void arc_bytealign(void) {
+  bitpos = (bitpos + 7) & ~7;
+}
+
 Uint32 arc_filesize(void) {
   return files[pos].size;
 }

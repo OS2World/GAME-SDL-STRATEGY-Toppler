@@ -54,5 +54,9 @@ void arc_read(void *buf, Uint32 size, Uint32 *result);
  value, dont use arc_read and arc_getbits on the same file */
 Uint16 arc_getbits(Uint8 anz);
 
+
+/* drops the rest of the bits in the currently started byte */
+void arc_bytealign(void);
+
 #endif
 

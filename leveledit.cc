@@ -338,11 +338,13 @@ void le_showkeyhelp(int row, int col) {
 
     for (k = 0; k < lines; k++) {
       char buf[80];
+      int len;
       buf[0] = '\0';
-      sprintf(buf, "%5s  %.20s", key_name(_ed_keys[k+offs].key),
-              _ed_key_actions[_ed_keys[k+offs].action]);
 
-      scr_writetext(0, k * FONTHEI + 50, buf);
+      len = scr_textlength(key_name(_ed_keys[k+offs].key));
+
+      scr_writetext(75 - len, k * FONTHEI + 50, key_name(_ed_keys[k+offs].key));
+      scr_writetext(75 + FONTWID, k * FONTHEI + 50, _ed_key_actions[_ed_keys[k+offs].action]);
     }
 
     if (offs > 0) scr_writetext(SCREENWID-FONTWID, 34, "*");

@@ -628,7 +628,7 @@ static void show_scores(bool back = true, int mark = -1) {
 void
 main_game_loop()
 {
-  unsigned char tower = 0;
+  unsigned char tower = 6;
   Uint8 anglepos;
   Uint16 resttime;
   int gameresult;
@@ -790,6 +790,8 @@ void men_input(char *s, int max_len, int xpos = -1, int ypos = (SCREENHEI  * 2) 
   if (xpos < 0) xpos = (SCREENWID / 2) - max_len * (FONTWID / 2);
   if (ypos < 0) ypos = (SCREENHEI / 2) - (FONTHEI / 2);
 
+  s[0] = 0;
+
   do {
     if (menu_background_proc) (*menu_background_proc) ();
 
@@ -822,7 +824,7 @@ void men_input(char *s, int max_len, int xpos = -1, int ypos = (SCREENHEI  * 2) 
       }
       break;
     default:
-      if (isalnum(inp) && (pos < max_len) &&
+      if ((isalnum(inp) || (inp == ' ')) && (pos < max_len) &&
           (strlen(s) >= (unsigned)pos) && (strlen(s) < (unsigned)max_len)) {
         int ztmp;
         for (ztmp = max_len-1; ztmp >= pos; ztmp--) s[ztmp+1] = s[ztmp];

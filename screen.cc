@@ -75,13 +75,16 @@ static long sintab[189] = {
 /* the state of the flashing boxes */
 static int boxstate;
 
-struct {
+static struct {
   int xs;
   int br;
   unsigned short s[3];
 } doors[73];
 
-static unsigned short fontchars[59];  //32..90
+static struct {
+  unsigned short s;
+  unsigned char width;
+} fontchars[91];  //32..122
 
 #define scrolllayers 3
 
@@ -257,7 +260,10 @@ static void loadfont(void) {
   while (!arc_eof()) {
     arc_read(&c, 1, &res);
     if (!c) break;
-    fontchars[c-32] = scr_loadsprites(1, FONTWID, FONTHEI, 4, fontcol, true);
+
+    arc_read(&fontchars[c-32].width, 1, &res);
+    printf("%i\n", fontchars[c-32].width);
+    fontchars[c-32].s = scr_loadsprites(1, fontchars[c-32].width, 20, 4, fontcol, true);
   }
   arc_closefile();
 }
@@ -327,7 +333,7 @@ static void loadscroller(void) {
 }
 
 void scr_init(void) {
-  spr_init(700);
+  spr_init(800);
   loadgraphics();
   loadfont();
   loadscroller();
@@ -454,21 +460,44 @@ static void putwater(long height) {
   wavetime++;
 }
 
+int scr_textlength(const char *s) {
+  int len = 0;
+  int pos = 0;
+  unsigned char c;
+
+  while (s[pos]) {
+    if (s[pos] == ' ') {
+      len += FONTWID;
+    } else {
+      c = s[pos] - 32;
+      if ((c < 91) && (fontchars[c].s != 0))
+        len += fontchars[c].width + 1;
+    }
+    pos++;
+  }
+
+  return len - 1;
+}
+
 void scr_writetext_center(long y, const char *s) {
-  scr_writetext ((SCREENWID / 2) - ((FONTWID / 2) * strlen(s)), y, s);
+  scr_writetext ((SCREENWID / 2) - (scr_textlength(s) / 2), y, s);
 }
 
 void scr_writetext(long x, long y, const char *s) {
   int t = 0;
   unsigned char c;
   while (s[t] != 0) {
-    if ((s[t] >= 'a') && (s[t] <= 'z'))
-      c = s[t] - 'a' + 'A' -32;
-    else
-      c = s[t] - 32;
-    if ((c < 59) && (fontchars[c] != 0))
-      scr_blit(spr_spritedata(fontchars[c]), x, y);
-    x += FONTWID;
+    if (s[t] == ' ') {
+      x += FONTWID;
+      t++;
+      continue;
+    }
+
+    c = s[t] - 32;
+    if ((c < 91) && (fontchars[c].s != 0)) {
+      scr_blit(spr_spritedata(fontchars[c].s), x, y);
+      x += fontchars[c].width + 1;
+    }
     t++;
   }
 }
