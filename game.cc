@@ -95,7 +95,7 @@ void gam_arrival(void) {
 
     case 6:
       delay++;
-      if (delay == 30) {
+      if (delay == 10) {
         b = 0;
         snd_sub_raise();
       }
@@ -103,15 +103,17 @@ void gam_arrival(void) {
 
     case 0:
       substart++;
-      if (substart == 28) {
+      if (substart == 48) {
         b = 1;
         top_show(0, toppler, 4);
+        delay = 0;
       }
       break;
 
     case 1:
-      subshape++;
-      if (subshape == 20)
+      delay++;
+      subshape = 4 + delay / 2;
+      if (delay == 6)
         b = 2;
       break;
 
@@ -150,7 +152,7 @@ void gam_pick_up(Uint8 anglepos, Uint16 time) {
   /* the shapes of the toppler when it turns after leaving a door*/
   static unsigned char door4[4] = { 0xa, 0x9, 0x8, 0x0 };
 
-  int toppler, b, u;
+  int toppler, b, u, delay;
 
   b = u = 0;
   toppler = 8;
@@ -180,13 +182,16 @@ void gam_pick_up(Uint8 anglepos, Uint16 time) {
 
     case 1:
       substart++;
-      if (substart == 28)
+      if (substart == 48) {
+        delay = 0;
         b = 2;
+      }
       break;
 
     case 2:
-      subshape++;
-      if (subshape == 20)
+      delay++;
+      subshape = 4 + delay / 2;
+      if (delay == 6)
         b = 3;
       break;
 
@@ -277,11 +282,11 @@ static void timeout(int &tower_position, int &tower_anglepos) {
   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
 
   do {
-     scr_drawall(towerpos(top_verticalpos(), tower_position,
-			  top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, 0, false, 0, 0);
-     scr_writetext_center((SCREENHEI / 4), "Time over");
-     scr_swap();
-     dcl_wait();
+    scr_drawall(towerpos(top_verticalpos(), tower_position,
+                         top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, 0, false, 0, 0);
+    scr_writetext_center((SCREENHEI / 4), "Time over");
+    scr_swap();
+    dcl_wait();
   } while (!(key_keypressed(fire_key) || (t++ > 90)));
   pal_colors(pal_towergame);
 }
@@ -427,13 +432,13 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
   snd_wateroff();
 
   do {
-     scr_drawall(towerpos(top_verticalpos(), tower_position,
-			  top_anglepos(), tower_anglepos), 
-		 (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
-     scr_writetext_center((SCREENHEI / 5), "Pause");
-     scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, "Press space");
-     dcl_wait();
-     scr_swap();
+    scr_drawall(towerpos(top_verticalpos(), tower_position,
+                         top_anglepos(), tower_anglepos),
+                (4 - top_anglepos()) & 0x7f, time, false, 0, 0);
+    scr_writetext_center((SCREENHEI / 5), "Pause");
+    scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, "Press space");
+    dcl_wait();
+    scr_swap();
   } while (!key_keypressed(fire_key));
   pal_colors(pal_towergame);
 

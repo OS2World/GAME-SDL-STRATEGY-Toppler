@@ -34,7 +34,6 @@
 
 static long fish[fishcnt + 1][4];
 static long torpedox, torpedoy, subposx, subposy;
-static int substat;
 
 static long callback_time;
 static long callback_x;
@@ -57,7 +56,7 @@ bonus_background_proc(void)
 
   if (torpedox != -1)
     scr_draw_torpedo(torpedoy, torpedox);
-  scr_draw_submarine(subposy, subposx, (callback_time & 1) * 3 + substat);
+  scr_draw_submarine(subposy - 20, subposx, callback_time & 3);
 
   for (b = 0; b <= fishcnt; b++) {
     if (fish[b][0] >= 0)
@@ -68,22 +67,22 @@ bonus_background_proc(void)
 }
 
 static bool 
-escape(long time, long x) 
+escape(long time, long x)
 {
-   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
+  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
 
-   key_wait_for_any();
-   
-   callback_time = time;
-   callback_x = x;
-   
-   set_men_bgproc(bonus_background_proc);
-   
-   if (men_yn("Really quit", false)) 
-     return true;
-   else pal_colors(pal_bonusgame);
-   
-   return false;
+  key_wait_for_any();
+
+  callback_time = time;
+  callback_x = x;
+
+  set_men_bgproc(bonus_background_proc);
+
+  if (men_yn("Really quit", false))
+    return true;
+  else pal_colors(pal_bonusgame);
+
+  return false;
 }
 
 static void pause(long time, long x) {
@@ -104,7 +103,7 @@ static void pause(long time, long x) {
 
   if (torpedox != -1)
     scr_draw_torpedo(torpedoy, torpedox);
-  scr_draw_submarine(subposy, subposx, (time & 1) * 3 + substat);
+  scr_draw_submarine(subposy - 20, subposx, time & 3);
 
   for (b = 0; b <= fishcnt; b++) {
     if (fish[b][0] >= 0)
@@ -180,16 +179,13 @@ bool bns_game(void) {
       }
   
       if ((bool)(key_keystat() & down_key)) {
-        substat = 2;
         if (subposy < 130)
           subposy += 2;
       } else {
         if ((bool)(key_keystat() & up_key)) {
-          substat = 0;
           if (subposy > 60)
             subposy -= 2;
-        } else
-          substat = 1;
+        }
       }
   
       if ((bool)(key_keystat() & left_key)) {
@@ -275,7 +271,7 @@ bool bns_game(void) {
 
     if (torpedox != -1)
       scr_draw_torpedo(torpedoy, torpedox);
-    scr_draw_submarine(subposy, subposx, (time & 1) * 3 + substat);
+    scr_draw_submarine(subposy - 20, subposx, time & 3);
 
     for (b = 0; b <= fishcnt; b++) {
       if (fish[b][0] >= 0)

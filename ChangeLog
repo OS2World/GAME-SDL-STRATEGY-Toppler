@@ -16,6 +16,7 @@ work from pasi
 
 my work
 
+- include basses new yellow submarine (tm)
 - include basses nice new layered graphics for the bonus game
 - include compression in the datafile (zlib)
 - change layers data to use data file too (remove layer?.tga)

@@ -283,8 +283,8 @@ static void parse_config(FILE * in) {
     } else if (strstr(line, "editor_towername")) {
       int len = strlen(param);
       if (len <= TOWERNAMELEN) {
-	 memcpy(editor_towername, param, strlen(param));
-	 editor_towername[len] = '\0';
+        memcpy(editor_towername, param, strlen(param));
+        editor_towername[len] = '\0';
       } else editor_towername[0] = '\0';
     }
   }

@@ -46,7 +46,7 @@ static int slicestart;
 static int battlementstart;
 
 static unsigned short robotsst, ballst, boxst, snowballst, starst, crossst,
-         fishst, subst, haube, torb;
+         fishst, subst, torb;
 static int topplerstart;
 
 static unsigned short  step, elevatorsprite, stick;
@@ -216,8 +216,7 @@ static void loadgraphics(void) {
 
   loadcolors(subcnt, subcol);
   fishst = scr_loadsprites(16, SPR_FISHWID, SPR_FISHHEI, 6, subcol, true);
-  haube = scr_loadsprites(1, SPR_HAUBEWID, SPR_HAUBEHEI, 6, subcol, true);
-  subst = scr_loadsprites(6, SPR_SUBMWID, SPR_SUBMHEI, 6, subcol, true);
+  subst = scr_loadsprites(8, SPR_SUBMWID, SPR_SUBMHEI, 6, subcol, true);
   torb = scr_loadsprites(1, SPR_TORPWID, SPR_TORPHEI, 6, subcol, true);
 
   arc_closefile();
@@ -486,10 +485,10 @@ void scr_putbar(int x, int y, int br, int h, unsigned char col) {
 void
 scr_putrect(int x, int y, int br, int h, unsigned char col = 0)
 {
-   scr_putbar(x, y,      1     , h, col);
-   scr_putbar(x, y,      br    , 1, col);
-   scr_putbar(x + br, y, 1     , h, col);
-   scr_putbar(x, y + h , br + 1, 1, col);
+  scr_putbar(x, y,      1     , h, col);
+  scr_putbar(x, y,      br    , 1, col);
+  scr_putbar(x + br, y, 1     , h, col);
+  scr_putbar(x, y + h , br + 1, 1, col);
 }
 
 /* exchange active and inactive page */
@@ -916,13 +915,9 @@ void scr_drawall(long vert,
 
   if (svisible) {
     /* TODO: use SPR_SUBMxxx */
-    scr_blit(spr_spritedata((long)subst),
+    scr_blit(spr_spritedata(subst + subshape),
              (SCREENWID / 2) - 45 + 16,
              (SCREENHEI / 2) + 12 - substart + 16);
-    /* TODO: use SPR_HAUBExxx */
-    scr_blit(spr_spritedata(haube),
-             (SCREENWID / 2) + 11 - subshape - 16 - 8,
-             (SCREENHEI / 2) - substart + 8 * 2);
 
   }
 
@@ -1025,8 +1020,6 @@ void scr_draw_bonus2(long horiz, long towerpos) {
 
 void scr_draw_submarine(long vert, long x, long number) {
   scr_blit(spr_spritedata(subst+number), x, vert);
-  /* TODO: use SPR_HAUBExxx */
-  scr_blit(spr_spritedata(haube), x+20, vert-12);
 }
 
 void scr_draw_fish(long vert, long x, long number) {

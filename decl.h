@@ -95,17 +95,17 @@
 #define SPR_HAUBEHEI 20
 
 /* submarine sprite size */
-#define SPR_SUBMWID 60
-#define SPR_SUBMHEI 17
+#define SPR_SUBMWID 50 // 60
+#define SPR_SUBMHEI 39 // 17
 
 /* submarine ammunition, torpedo */
 #define SPR_TORPWID 16
-#define SPR_TORPHEI 16
+#define SPR_TORPHEI 3
 
 
 /*   define this if you want the bonus game to be accessible 
      from the main menu. */
-/* #define HUNT_THE_FISH */
+/*#define HUNT_THE_FISH*/
 
 #define TOWERNAMELEN 19
 
@@ -174,7 +174,6 @@
 #define pal_towergame 0
 #define pal_menu      1
 #define pal_bonusgame 2
-
 
 /* the two special characters in the font */
 #define fonttoppler     '#'

@@ -45,6 +45,8 @@ unsigned char men_yn(char *s, bool defchoice);
 
 typedef void FDECL((*callback_proc), (void));
 
+/* sets the function that gets called whenever the background
+ picture needs to be drawn */
 void set_men_bgproc(callback_proc proc);
 
 #endif

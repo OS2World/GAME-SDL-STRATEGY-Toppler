@@ -128,15 +128,15 @@ static int missionfiles (const struct dirent *file)
 
 
 Uint8 conv_char2towercode(char ch) {
-   for (int x = 0; x < SIZE(towerchar_conv); x++)
-     if (ch == towerchar_conv[x].ch) return towerchar_conv[x].dat;
-   return 0x00;
+  for (int x = 0; x < SIZE(towerchar_conv); x++)
+    if (ch == towerchar_conv[x].ch) return towerchar_conv[x].dat;
+  return 0x00;
 }
 
 char conv_towercode2char(Uint8 code) {
-   for (int x = 0; x < SIZE(towerchar_conv); x++)
-     if (code == towerchar_conv[x].dat) return towerchar_conv[x].ch;
-   return ' ';
+  for (int x = 0; x < SIZE(towerchar_conv); x++)
+    if (code == towerchar_conv[x].dat) return towerchar_conv[x].ch;
+  return ' ';
 }
 
 static void add_mission(char *fname) {
@@ -685,6 +685,7 @@ bool lev_savetower(char *fname) {
 
     for (int col = 0; col < 16; col++)
       line[col] = conv_towercode2char(tower[row][col]);
+
     line[16] = '|';
     line[17] = 0;
     fprintf(out, "%s\n", line);
