@@ -1479,7 +1479,11 @@ congrats_background_proc(void)
   scr_writetext_center(270, "Please enter your name");
 }
   
-void men_highscore(unsigned long pt, int twr) {
+/* highscores, after the game
+ * pt = points, 
+ * twr = tower reached, -1 = mission finished
+ */
+static void men_highscore(unsigned long pt, int twr) {
 
   Uint8 pos = 0xff;
 

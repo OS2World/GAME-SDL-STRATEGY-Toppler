@@ -333,21 +333,13 @@ datafiles (graphics, sounds), readonly
   first in local directory,
   then global (per compiler switch /usr/local/share/toppler)
 
-
-global configuration, readonly
-
-  only in global directory
-
-
 local configuration file, read/write/create
 
   in home directory
 
-
 level editor, new missions, towers read/write/create
 
   in home dir (/home/user/.toppler/...)
-
 
 highscore file, read/write/create
 

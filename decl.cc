@@ -71,10 +71,7 @@ void debugprintf(int lvl, char *fmt, ...) {
 /* returns true, if file exists, this is not the
  optimal way to do this. it would be better to open
  the dir the file is supposed to be in and look there
- but this is not really portable so this, but because
- fopen may be restricted we have the second parameter that
- is true makes fileextst to first enable group rights open
- the file and then remove the rights again
+ but this is not really portable so this
  */
 bool dcl_fileexists(const char *n) {
 
