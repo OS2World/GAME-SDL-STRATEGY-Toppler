@@ -53,8 +53,8 @@
 #define SPR_STARHEI 16
 
 /* size of one layer sprite of tower */
-#define SPR_SLICEWID 96 * 2
-#define SPR_SLICEHEI 8 * 2
+#define SPR_SLICEWID 192
+#define SPR_SLICEHEI 16
 #define SPR_SLICEANGLES 8
 #define SPR_SLICEFRAMES 1
 #define SPR_SLICESPRITES (SPR_SLICEANGLES * SPR_SLICEFRAMES)
@@ -75,7 +75,7 @@
 #define SPR_ELEVAFRAMES 1
 
 /* size of elevator stick / wall */
-#define SPR_STICKWID 16
+#define SPR_STICKWID 14
 #define SPR_STICKHEI 15
 
 /* size of shootable flashing box */

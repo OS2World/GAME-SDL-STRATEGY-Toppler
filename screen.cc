@@ -455,6 +455,8 @@ static void loadfont(void) {
 
 static void loadscroller(void) {
 
+  bool alpha_sv = use_alpha;
+
   use_alpha = false;
 
   arc_assign(scrollerdat);
@@ -501,6 +503,8 @@ static void loadscroller(void) {
   }
 
   arc_closefile();
+
+  use_alpha = alpha_sv;
 }
 
 void scr_init(void) {
@@ -970,7 +974,7 @@ static void putthings(long vert, long a, long angle) {
     if (rob_kind(rob) != OBJ_KIND_NOTHING && rob_kind(rob) != OBJ_KIND_CROSS) {
 
       /* ok calc the angle the robots needs to be drawn at */
-      int rob_a = (rob_angle(rob) - 4 + angle) % TOWER_ANGLES;
+      int rob_a = (rob_angle(rob) - 4 + angle) & (TOWER_ANGLES - 1);
 
       /* check if the robot is "inside" the current column */
       if (rob_a > a - 2 && rob_a <= a + 2)
@@ -1078,7 +1082,7 @@ static void draw_data(int time)
   *s = '\0';
   for (t = 1; t <= pts_lifes(); t++)
     sprintf(s + strlen(s), "%c", fonttoppler);
-  scr_writetext(5L, 21L, s);
+  scr_writetext(5, 40, s);
 }
 
 void scr_drawall(long vert,
