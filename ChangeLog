@@ -1,4 +1,9 @@
+dthurston:
+- Added a manual page, stolen from Debian package
 - Use autoconf to control installaton directory
+- Changed extra life logic to be more robust/flexible.
+
+roesser:
 - made the program mute automatically, if audio could not be opened
 - tried to incorporate c64 sound effects
 - fixed too small data type for score, makes highscore list unusable,

@@ -21,7 +21,7 @@ avoid them.
 Commandline Parameters
 ----------------------
 
--f starts the game in fullscreen mode. But be carefully! If the game
+-f starts the game in fullscreen mode. But be careful! If the game
 crashes it doesn't restore the original resolution, it stays in 660x480
 pixel mode.
 
