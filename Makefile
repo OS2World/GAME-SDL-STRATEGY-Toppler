@@ -203,8 +203,8 @@ sprites_robots_colors_rgb.png: assembler \
                                sprites_pov/robot4_rgb_colors.png \
                                sprites_pov/robot5_rgb_colors.png \
                                sprites_pov/robot6_rgb_colors.png \
-                               sprites_pov/robot7_rgb_colors.png# \
-#                               sprites_pov/robot8_rgb_colors.png
+                               sprites_pov/robot7_rgb_colors.png \
+                               sprites_pov/robot8_rgb_colors.png
 	rm sprites_pov/robot0_rgb_colors.png sprites_pov/robot0_rgb_mask.png
 	mv sprites_pov/robot8_rgb_colors.png sprites_pov/robot0_rgb_colors.png
 	mv sprites_pov/robot8_rgb_mask.png sprites_pov/robot0_rgb_mask.png
