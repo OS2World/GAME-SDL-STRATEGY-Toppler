@@ -144,6 +144,18 @@ void pal_setstdpalette(SDL_Surface *s) {
   SDL_SetColors(s, q, 0, 256);
 }
 
+void pal_setpalette(SDL_Surface *s) {
+  SDL_Color q[256];
+
+  for (int i = 0; i < 256; i++) {
+    q[i].r = pal[i][1].r;
+    q[i].g = pal[i][1].g;
+    q[i].b = pal[i][1].b;
+  }
+
+  SDL_SetColors(s, q, 0, 256);
+}
+
 void pal_calcdark(unsigned char p) {
   int r, g, b, m;
 

@@ -27,9 +27,9 @@ static struct {
   char name[10];
 } scores[10];
 
+void men_init(void) {
+  arc_assign(menudat);
 
-/* the picture is compressed using a simple lz77 version */
-static SDL_Surface *decompresstitle(void) {
   for (int t = 0; t < 240; t++) {
     int r = arc_getbits(8);
     int g = arc_getbits(8);
@@ -37,34 +37,12 @@ static SDL_Surface *decompresstitle(void) {
     pal_setpal(t, r, g, b, pal_menu);
   }
 
-  SDL_Surface *s = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 8, 0, 0, 0, 0);
-  pal_setstdpalette(s);
+  menupicture = scr_loadsprites(1, 320, 240, 8, 0, 0);
 
-  int bufferpos = 0;
-  int copycnt, copysrc;
-  unsigned char *p = (unsigned char *)s->pixels;
-
-  do {
-    if (!arc_getbits(1)) {
-      p[bufferpos++] = arc_getbits(8);
-    } else {
-      copycnt = 3 + arc_getbits(4);
-      copysrc = bufferpos - arc_getbits(12);
-
-      while (copycnt-- > 0) p[bufferpos++] = p[copysrc++];
-    }
-  } while (bufferpos < 320 *240);
-
-  return s;
-}
-
-void men_init(void) {
-  arc_assign(menudat);
-  menupicture = spr_savesprite(decompresstitle());
   arc_closefile();
 
   arc_assign(titledat);
-  titledata = scr_loadsprites(1, 304, 47, fontcol, true, true);
+  titledata = scr_loadsprites(1, 304, 47, 4, fontcol, true);
   arc_closefile();
 }
 
@@ -481,6 +459,4 @@ void men_highscore(unsigned long pt) {
 
 void men_done(void) {
 }
-
-
 

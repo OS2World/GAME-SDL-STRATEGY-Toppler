@@ -6,7 +6,8 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
-
+#include <unistd.h>
+#include <pwd.h>
 
 bool fullscreen;
 bool nosound;
@@ -30,11 +31,26 @@ static bool dcl_fileexists(char *n) {
     return false;
 }
 
+
+char * homedir()
+{
+  struct passwd *pw = getpwuid(getuid());
+  static char c = 0;
+  if (!pw) {
+
+    // empty string
+    return &c;
+  }
+  return pw->pw_dir;
+}
+
+
+
 /* checks if home/.toppler exists and creates it, if not */
 static void checkdir(void) {
   char n[200];
 
-  sprintf(n, "%s/.toppler", getenv("HOME"));
+  sprintf(n, "%s/.toppler", homedir());
 
   DIR *d = opendir(n);
 
@@ -93,7 +109,7 @@ FILE *open_local_config_file(char *name) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", getenv("HOME"), name);
+  sprintf(n, "%s/.toppler/%s", homedir(), name);
   if (dcl_fileexists(n))
     return fopen(n, "r");
 
@@ -117,7 +133,7 @@ FILE *create_local_config_file(char *name) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", getenv("HOME"), name);
+  sprintf(n, "%s/.toppler/%s", homedir(), name);
 
   return fopen(n, "w");
 
@@ -139,7 +155,7 @@ FILE *open_highscore_file(char *name) {
   if (dcl_fileexists(n))
     return fopen(n, "rb");
 
-  sprintf(n, "%s/.toppler/%s", getenv("HOME"), name);
+  sprintf(n, "%s/.toppler/%s", homedir(), name);
   if (dcl_fileexists(n))
     return fopen(n, "rb");
 
@@ -164,7 +180,7 @@ FILE *create_highscore_file(char *name) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", getenv("HOME"), name);
+  sprintf(n, "%s/.toppler/%s", homedir(), name);
   fclose(fopen(n, "a+"));
   return fopen(n, "r+");
 
@@ -184,7 +200,7 @@ FILE *open_local_data_file(char *name) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", getenv("HOME"), name);
+  sprintf(n, "%s/.toppler/%s", homedir(), name);
 
   return fopen(n, "r");
 
@@ -204,7 +220,7 @@ FILE *create_local_data_file(char *name) {
 
   char n[200];
 
-  sprintf(n, "%s/.toppler/%s", getenv("HOME"), name);
+  sprintf(n, "%s/.toppler/%s", homedir(), name);
   return fopen(n, "w+");
 
 #else

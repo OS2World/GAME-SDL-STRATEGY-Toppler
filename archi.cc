@@ -1,11 +1,14 @@
 #include "archi.h"
 
 #include "decl.h"
+#include "decompress.h"
 
 #include <SDL_endian.h>
 
 #include <string.h>
 #include <stdlib.h>
+
+#include <zlib.h>
 
 #define MAX_FILES 9
 
@@ -15,13 +18,16 @@ static Uint32 bitbuffer;
 static Uint8 bitpos;
 
 typedef struct {
-  char name[16];
-  Uint32 start, size;
+  char name[8];
+  Uint32 start, size, compress;
 } fileindex;
 
 static fileindex files[MAX_FILES];
 static unsigned char filecount;
 static Uint8 pos;
+
+static Uint8 * buffer = 0;
+static Uint32 bufferpos;
 
 
 void arc_init(char *name) {
@@ -33,9 +39,8 @@ void arc_init(char *name) {
   assert(filecount <= MAX_FILES, "too many files in archive");
 
   for (Uint8 file = 0; file < filecount; file++) {
-    for (Uint8 strpos = 0; strpos < 16; strpos++)
+    for (Uint8 strpos = 0; strpos < 8; strpos++)
       fread(&files[file].name[strpos], 1, 1, f);
-
 
     Uint8 tmp;
 
@@ -58,10 +63,24 @@ void arc_init(char *name) {
     files[file].size |= (Uint32(tmp)) << 16;
     fread(&tmp, 1, 1, f);
     files[file].size |= (Uint32(tmp)) << 24;
+
+    /* load compressed size from archive */
+    fread(&tmp, 1, 1, f);
+    files[file].compress = (Uint32(tmp)) << 0;
+    fread(&tmp, 1, 1, f);
+    files[file].compress |= (Uint32(tmp)) << 8;
+    fread(&tmp, 1, 1, f);
+    files[file].compress |= (Uint32(tmp)) << 16;
+    fread(&tmp, 1, 1, f);
+    files[file].compress |= (Uint32(tmp)) << 24;
   }
 }
 
 void arc_closefile(void) {
+  if (buffer) {
+    delete [] buffer;
+    buffer = 0;
+  }
 }
 
 void arc_done(void) {
@@ -72,13 +91,29 @@ void arc_done(void) {
 
 void arc_assign(char *name) {
 
-  assert(f != 0, "archive not initialized\n");
+  assert(f, "archive not initialized\n");
+
+  arc_closefile();
 
   for (Uint8 i = 0; i < filecount; i++)
-    if (strcmp(name, files[i].name) == 0) {
+    if (strncmp(name, files[i].name, 8) == 0) {
+
+      buffer = new Uint8[files[i].size];
+      Uint8 * b = new Uint8[files[i].compress];
+
+      unsigned long erg;
+
       fseek(f, files[i].start, SEEK_SET);
+      fread(b, files[i].compress, 1, f);
+      erg = files[i].size;
+      uncompress(buffer, &erg, b, files[i].compress);
+
+      assert(erg == files[i].size, "data file corrupt\n");
+
+      delete [] b;
       bitpos = 0;
       pos = i;
+      bufferpos = 0;
       return;
     }
 
@@ -86,23 +121,20 @@ void arc_assign(char *name) {
 
 }
 
-
 void arc_read(void *buf, Uint32 size, Uint32 *result) {
-  *result = fread(buf, 1, size, f);
+  memcpy(buf, &buffer[bufferpos], size);
+  bufferpos += size;
+  *result = size;
 }
 
 static Uint8 getbyte(void) {
-  Uint8 erg;
-
-  fread(&erg, 1, 1, f);
-
-  return erg;
+  return buffer[bufferpos++];
 }
 
 Uint16 arc_getbits(Uint8 anz) {
   Uint16 result;
 
-  while (bitpos <= 24) {
+  while (bitpos < anz) {
     bitbuffer = (bitbuffer << 8) | getbyte();
     bitpos += 8;
   }
@@ -117,6 +149,6 @@ Uint32 arc_filesize(void) {
 }
 
 bool arc_eof(void) {
-  return ftell(f) > files[pos].start + files[pos].size;
+  return bufferpos >= files[pos].size;
 }
 

@@ -25,7 +25,7 @@ static unsigned short robotsst, ballst, boxst, snowballst, starst, crossst,
          fishst, subst, haube, torb;
 static int topplerstart;
 
-unsigned short  step, elevatorsprite, stick;
+static unsigned short  step, elevatorsprite, stick;
 
 /* table used to calculate the distance of an object from the center of the
  tower that is at x degrees on the tower */
@@ -57,98 +57,35 @@ struct {
   unsigned short s[3];
 } doors[73];
 
-static SDL_Surface *fontchars[59];  //32..90
+static unsigned short fontchars[59];  //32..90
 
 #define scrolllayers 3
 
 static long layerwidth[scrolllayers];
 static SDL_Surface *layerimage[scrolllayers];
 
-/* this functions are so complex because the graphics are saved in a
- way that allowed easy loading into the video memory in a tricky vga
- graphics mode in old times, now we need to sort the pixels in an
- orderly manner */
-static void decomp(unsigned char *src, SDL_Surface *dst, int add, int count, bool sprite, bool descramble) {
-
-  int pos = 0;
-
-  int b = 0;
-
-  /* error */
-  if (count != dst->w*dst->h)
-    return;
-
-  int y = 0;
-  int l = 0;
-  int x = 0;
-  int bp = 0;
-
-  while (count > 0) {
-
-    switch (bp) {
-      case 0: b = (src[pos+1] >> 4) & 0xF; break;
-      case 1: b = (src[pos+1] >> 0) & 0xF; break;
-      case 2: b = (src[pos] >> 4) & 0xF; break;
-      case 3: b = (src[pos] >> 0) & 0xF; break;
-    }
-    bp++;
-    if (bp >= 4) {
-      bp = 0;
-      pos += 2;
-    }
-
-    if ((!sprite) || (b != 0))
-        b = b + add - 1;
-
-    if (descramble) {
-      ((char *)(dst->pixels))[y*dst->pitch+x+l] = b;
-  
-      x += 4;
-      if (x+l >= dst->w) {
-        x = 0;
-        y++;
-        if (y >= dst->h) {
-          y = 0;
-          l++;
-        }
-      }
-    } else {
-      ((char *)(dst->pixels))[y*dst->pitch+x] = b;
-      x += 1;
-      if (x >= dst->w) {
-        x = 0;
-        y++;
-        if (y >= dst->h) {
-          y = 0;
-        }
-      }
-    }
-
-    count--;
-  }
-}
-
-/* loads a sprite from the open file in arch, drscrambles it and saves it
- into the spritecollection returning the index */
-unsigned short scr_loadsprites(int num, const int w, const int h, int colstart, bool sprite, bool descr) {
+unsigned short scr_loadsprites(int num, int w, int h, int bits, int colstart, bool sprite) {
   unsigned short erg = 0;
-  unsigned char p[w * h / 2];
+  unsigned char b;
   SDL_Surface *z;
-  Uint32 res;
+
 
   for (int t = 0; t < num; t++) {
-    arc_read(p, w * h / 2, &res);
-
-    if (sprite)
-      z = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY, w, h, 8, 0, 0, 0, 0);
-    else
-      z = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, 8, 0, 0, 0, 0);
-
+    z = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
+                             w, h, 8, 0, 0, 0, 0);
     pal_setstdpalette(z);
-
     if (sprite) SDL_SetColorKey(z, SDL_SRCCOLORKEY, 0);
-
-    decomp(p, z, colstart, w * h, sprite, descr);
+  
+    for (int y = 0; y < h; y++)
+      for (int x = 0; x < w; x++) {
+        b = arc_getbits(bits);
+        if (sprite) {
+          if (b)
+            b += colstart -1;
+        } else
+          b += colstart;
+        ((char *)(z->pixels))[y*z->pitch+x] = b;
+      }
 
     if (t == 0)
       erg = spr_savesprite(z);
@@ -163,7 +100,7 @@ unsigned short scr_loadsprites(int num, const int w, const int h, int colstart, 
 static void loadcolors(int cnt, int colstart) {
   unsigned char r, g, b;
 
-  for (int t = 0; t < cnt; t++) {
+  for (int t = 0; t < cnt - 1; t++) {
     r = arc_getbits(8);
     g = arc_getbits(8);
     b = arc_getbits(8);
@@ -172,40 +109,13 @@ static void loadcolors(int cnt, int colstart) {
   }
 }
 
-/* another descramble routine for sprites */
-static unsigned short loadsprites(int num, int w, int h, int bits, int colstart) {
-  unsigned char b;
-  unsigned short erg = 0;
-  SDL_Surface *z;
-
-  for (int t = 0; t < num; t++) {
-    z = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
-                             w, h, 8, 0, 0, 0, 0);
-    pal_setstdpalette(z);
-    SDL_SetColorKey(z, SDL_SRCCOLORKEY, 0);
-
-    for (int l = 0; l < 4; l++)
-      for (int y = 0; y < h; y++)
-        for (int x = 0; x < (w / 4); x ++) {
-          b = arc_getbits(bits);
-          if (b != 0) b += colstart;
-          ((char *)(z->pixels))[y*w+4*x+l] = b;
-        }
-
-    if (t == 0)
-      erg = spr_savesprite(z);
-    else
-      spr_savesprite(z);
-  }
-
-  return erg;
-}
-
 /* loads all the graphics */
 static void loadgraphics(void) {
 
   Uint32 res;
   unsigned char pal[192];
+
+  unsigned char buffer[4000];
 
   arc_assign(grafdat);
 
@@ -218,30 +128,26 @@ static void loadgraphics(void) {
     pal_setbrickpal(t, c1, c2);
   }
 
-  slicestart = scr_loadsprites(8, 96, 8, brickcol, false, false);
-  battlementstart = scr_loadsprites(8, 144, 24, brickcol, false, false);
+  slicestart = scr_loadsprites(8, 96, 8, 4, brickcol, false);
+  battlementstart = scr_loadsprites(8, 144, 24, 4, brickcol, false);
 
   for (int t = -36; t <= 36; t++) {
 
-    {
-      Uint8 tmp;
+    Uint8 tmp;
 
-      arc_read(&tmp, 1, &res);
-      doors[t+36].xs = tmp;
-      arc_read(&tmp, 1, &res);
-      doors[t+36].xs |= ((Uint16)tmp) << 8;;
+    arc_read(&tmp, 1, &res);
+    doors[t+36].xs = tmp;
+    arc_read(&tmp, 1, &res);
+    doors[t+36].xs |= ((Uint16)tmp) << 8;;
 
-      arc_read(&tmp, 1, &res);
-      doors[t+36].br = tmp;
-      arc_read(&tmp, 1, &res);
-      doors[t+36].br |= ((Uint16)tmp) << 8;;
-    }
-
+    arc_read(&tmp, 1, &res);
+    doors[t+36].br = tmp;
+    arc_read(&tmp, 1, &res);
+    doors[t+36].br |= ((Uint16)tmp) << 8;;
 
     for (int et = 0; et < 3; et++)
-
       if (doors[t+36].br != 0)
-        doors[t+36].s[et] = scr_loadsprites(1, doors[t+36].br, 8, brickcol, false, true);
+        doors[t+36].s[et] = scr_loadsprites(1, doors[t+36].br, 8, 4, brickcol, false);
       else
         doors[t+36].s[et] = 0;
   }
@@ -250,9 +156,9 @@ static void loadgraphics(void) {
   for (int t = 0; t < envirocnt; t++)
     pal_setpal(envirocol + t, pal[2*t+1], pal[2*t], pal[2*t], pal_towergame);
 
-  step = scr_loadsprites(1, 20, 7, envirocol, false, true);
-  elevatorsprite = scr_loadsprites(1, 16, 7, envirocol, false, true);
-  stick = scr_loadsprites(1, 8, 7, envirocol, false, true);
+  step = scr_loadsprites(1, 20, 7, 4, envirocol, false);
+  elevatorsprite = scr_loadsprites(1, 16, 7, 4, envirocol, false);
+  stick = scr_loadsprites(1, 8, 7, 4, envirocol, false);
 
   arc_closefile();
 
@@ -262,31 +168,31 @@ static void loadgraphics(void) {
   for (int t = 0; t < 8; t++)
     pal_setpal(topplercol + t, pal[t * 3], pal[t * 3 + 1], pal[t * 3 + 2], pal_towergame);
 
-  topplerstart = scr_loadsprites(74, 20, 20, topplercol, true, true);
+  topplerstart = scr_loadsprites(74, 20, 20, 4, topplercol, true);
 
   arc_assign(spritedat);
 
   loadcolors(robotscnt, robotscol);
-  robotsst = loadsprites(128, 16, 16, 6, robotscol);
+  robotsst = scr_loadsprites(128, 16, 16, 6, robotscol, true);
 
   loadcolors(ballcnt, ballcol);
-  ballst = loadsprites(2, 16, 16, 5, ballcol);
+  ballst = scr_loadsprites(2, 16, 16, 5, ballcol, true);
 
   loadcolors(boxcnt, boxcol);
-  boxst = loadsprites(16, 8, 8, 4, boxcol);
+  boxst = scr_loadsprites(16, 8, 8, 4, boxcol, true);
 
   loadcolors(snowballcnt, snowballcol);
-  snowballst = loadsprites(1, 8, 8, 3, snowballcol);
+  snowballst = scr_loadsprites(1, 8, 8, 3, snowballcol, true);
 
   loadcolors(starcnt, starcol);
-  starst = loadsprites(16, 16, 16, 3, starcol);
+  starst = scr_loadsprites(16, 16, 16, 3, starcol, true);
   sts_init(starst + 10);
 
   loadcolors(subcnt, subcol);
-  fishst = loadsprites(16, 20, 20, 6, subcol);
-  haube = loadsprites(1, 20, 20, 6, subcol);
-  subst = loadsprites(6, 60, 17, 6, subcol);
-  torb = loadsprites(1, 16, 16, 6, subcol);
+  fishst = scr_loadsprites(16, 20, 20, 6, subcol, true);
+  haube = scr_loadsprites(1, 20, 20, 6, subcol, true);
+  subst = scr_loadsprites(6, 60, 17, 6, subcol, true);
+  torb = scr_loadsprites(1, 16, 16, 6, subcol, true);
 
   arc_closefile();
 
@@ -300,7 +206,7 @@ static void loadgraphics(void) {
     pal_setcrosspal(t, r, g, b);
   }
 
-  crossst = loadsprites(120, 16, 16, 4, crosscol);
+  crossst = scr_loadsprites(120, 16, 16, 4, crosscol+1, true);
 
   arc_closefile();
 }
@@ -324,73 +230,78 @@ static void loadfont(void) {
   }
 
   while (!arc_eof()) {
-    s = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
-                               12, 16, 8, 0, 0, 0, 0);
-    SDL_SetColorKey(s, SDL_SRCCOLORKEY, 0);
-    pal_setstdpalette(s);
     arc_read(&c, 1, &res);
     if (!c) break;
-    arc_read(p, 16*6, &res);
-    decomp(p, s, fontcol, 16*12, true, true);
-    fontchars[c-32] = s;
+    fontchars[c-32] = scr_loadsprites(1, 12, 16, 4, fontcol, true);
+  }
+  arc_closefile();
+}
+
+static void loadscroller(void) {
+
+  arc_assign(scrollerdat);
+
+  Uint8 layers;
+  Uint8 towerpos;
+  Uint16 towersp_num;
+  Uint16 towersp_den;
+  unsigned char c;
+  Uint32 res;
+
+  arc_read(&layers, 1, &res);
+  arc_read(&towerpos, 1, &res);
+
+  arc_read(&c, 1, &res);
+  towersp_num = ((Uint16)c) << 8;
+  arc_read(&c, 1, &res);
+  towersp_num += c;
+
+  arc_read(&c, 1, &res);
+  towersp_den = ((Uint16)c) << 8;
+  arc_read(&c, 1, &res);
+  towersp_den += c;
+
+
+  Uint8 r, g, b;
+
+  for (int i = 0; i < 152; i++) {
+    arc_read(&r, 1, &res);
+    arc_read(&g, 1, &res);
+    arc_read(&b, 1, &res);
+    pal_setpal(16 + i, r, g, b, pal_bonusgame);
+  }
+
+  assert(layers == 3, "another value than 3 is not yet supported");
+
+  for (int l = 0; l < layers; l++) {
+    layerwidth[l] = 0;
+
+    arc_read(&c, 1, &res);
+    layerwidth[l] = ((int)c) << 8;
+    arc_read(&c, 1, &res);
+    layerwidth[l] += c;
+
+    arc_read(&c, 1, &res);
+    arc_read(&c, 1, &res);
+    arc_read(&c, 1, &res);
+    arc_read(&c, 1, &res);
+
+    layerimage[l] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
+                                         layerwidth[l], 240, 8, 0, 0, 0, 0);
+    SDL_SetColorKey(layerimage[l], SDL_SRCCOLORKEY, 0);
+    pal_setstdpalette(layerimage[l]);
+    arc_read((layerimage[l]->pixels), layerwidth[l]*240, &res);
+
+    for (int i = 0; i < layerwidth[l]*240; i++)
+      if (((char *)(layerimage[l]->pixels))[i])
+        ((char *)(layerimage[l]->pixels))[i] += 16;
   }
 
   arc_closefile();
 }
 
-static void loadscroller(void) {
-  char scrollerpalette[168*3];
-  FILE *in = open_data_file("layer1.tga");
-  layerimage[0] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
-                               640, 240, 8, 0, 0, 0, 0);
-  SDL_SetColorKey(layerimage[0], SDL_SRCCOLORKEY, 0);
-  pal_setstdpalette(layerimage[0]);
-  
-  fread((layerimage[0]->pixels), 500, 1, in);
-  fread((layerimage[0]->pixels), 640*240, 1, in);
-  fclose(in);
-  
-  in = open_data_file("layer2.tga");
-  layerimage[1] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
-                               640, 240, 8, 0, 0, 0, 0);
-  
-  SDL_SetColorKey(layerimage[1], SDL_SRCCOLORKEY, 0);
-  pal_setstdpalette(layerimage[1]);
-  
-  fread((layerimage[1]->pixels), 18, 1, in);
-  fread(scrollerpalette, 152*3, 1, in);
-  for (int i = 0; i < 152; i++)
-    pal_setpal(16 + i, scrollerpalette[3*i+2], scrollerpalette[3*i+1], scrollerpalette[3*i], pal_bonusgame);
-  
-  fread((layerimage[1]->pixels), 26, 1, in);
-  
-  fread((layerimage[1]->pixels), 640*240, 1, in);
-  fclose(in);
-  
-  in = open_data_file("layer3.tga");
-  layerimage[2] = SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCCOLORKEY,
-                               640, 240, 8, 0, 0, 0, 0);
-    SDL_SetColorKey(layerimage[2], SDL_SRCCOLORKEY, 0);
-    pal_setstdpalette(layerimage[2]);
-  fread((layerimage[2]->pixels), 500, 1, in);
-  fread((layerimage[2]->pixels), 640*240, 1, in);
-  fclose(in);
-  
-  for (int i = 0; i < 640*240; i++) {
-    if (((char *)(layerimage[0]->pixels))[i])
-      ((char *)(layerimage[0]->pixels))[i] += 16;
-    if (((char *)(layerimage[1]->pixels))[i])
-      ((char *)(layerimage[1]->pixels))[i] += 16;
-    if (((char *)(layerimage[2]->pixels))[i])
-      ((char *)(layerimage[2]->pixels))[i] += 16;
-  }
-
-  layerwidth[0] = layerwidth[1] = layerwidth[2] = 640;
-  
-}
-
 void scr_init(void) {
-  spr_init(600);  /* 597 is the number of sprites, just a few for savety */
+  spr_init(700);
   loadgraphics();
   loadfont();
   loadscroller();
@@ -418,9 +329,6 @@ void scr_done(void) {
   SDL_FreeSurface(second);
   spr_done();
 }
-
-/*Malaktionen beziehen sich immer auf inaktve Seite */
-
 
 static void cleardesk(void) {
   SDL_Rect r;
@@ -524,7 +432,6 @@ void scr_writetext_center(long y, const char *s) {
   scr_writetext (160 - 6*strlen(s), y, s);
 }
 
-/*Schreibt Text mit aktuellem Font*/
 void scr_writetext(long x, long y, const char *s) {
   int t = 0;
   unsigned char c;
@@ -533,8 +440,8 @@ void scr_writetext(long x, long y, const char *s) {
       c = s[t] - 'a' + 'A' -32;
     else
       c = s[t] - 32;
-    if ((c < 59) && (fontchars[c] != NULL))
-      scr_blit(fontchars[c], x, y);
+    if ((c < 59) && (fontchars[c] != 0))
+      scr_blit(spr_spritedata(fontchars[c]), x, y);
     x += 12;
     t++;
   }
@@ -1062,13 +969,13 @@ static void put_scrollerlayer(long horiz, int layer) {
 }
 
 void scr_draw_bonus1(long horiz, long towerpos) {
-  put_scrollerlayer(horiz/2, 0);
-  put_scrollerlayer(horiz  , 1);
+  put_scrollerlayer(1*horiz/2, 0);
+  put_scrollerlayer(1*horiz/1  , 1);
 
   puttower(1, 60, 240, towerpos);
 }
 void scr_draw_bonus2(long horiz, long towerpos) {
-  put_scrollerlayer(horiz*2, 2);
+  put_scrollerlayer(2*horiz/1, 2);
 
   draw_data(-1);
 }

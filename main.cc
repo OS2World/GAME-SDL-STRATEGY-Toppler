@@ -42,6 +42,8 @@ static void startgame(void) {
   men_init();
   snd_init();
   stat = men_main();
+//  bns_game();
+  //return;
   while (stat > 0) {
     gam_newgame();
     tower = 0;
@@ -50,6 +52,7 @@ static void startgame(void) {
       do {
         gam_loadtower(tower);
         pal_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
+
         pal_calcdark(pal_towergame);
         snd_watervolume(128);
         snd_playtgame();
@@ -65,12 +68,13 @@ static void startgame(void) {
 
         if (tower < lev_towercount()) {
 
-          /* load next tower, because its colors will be needed for bonus game */
+          // load next tower, because its colors will be needed for bonus game
           tower++;
           gam_loadtower(tower);
 
           if (!bns_game())
             gameresult = GAME_ABBORTED;
+          return;
         }
       } else {
         snd_wateroff();

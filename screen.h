@@ -14,8 +14,9 @@ void scr_reinit(void);
 /* frees graphics */
 void scr_done(void);
 
-/* loads a sprite, enters it into the sprice collection and returns the index */
-unsigned short scr_loadsprites(int num, const int w, const int h, int colstart, bool sprite, bool descr);
+/* loads a number of sprite, enters it into the sprite collection
+ and returns the index of the first sprite */
+unsigned short scr_loadsprites(int num, int w, int h, int bits, int colstart, bool sprite);
 
 /* all paint routines paint onto an invisible surface, to show this surface
  call swap */

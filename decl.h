@@ -6,13 +6,14 @@
 #include <stdio.h>
 
 /* names of the different data files */
-#define grafdat         "graphics.dat"
-#define fontdat         "font.dat"
-#define spritedat       "sprites.dat"
-#define topplerdat      "toppler.dat"
-#define menudat         "menu.dat"
-#define crossdat        "cross.dat"
-#define titledat        "titles.dat"
+#define grafdat         "graphics"
+#define fontdat         "font"
+#define spritedat       "sprites"
+#define topplerdat      "toppler"
+#define menudat         "menu"
+#define crossdat        "cross"
+#define titledat        "titles"
+#define scrollerdat     "scroller"
 
 #define hiscore         "nebulous.hsc"
 
