@@ -32,16 +32,19 @@
 #include "stars.h"
 #include "robots.h"
 #include "configuration.h"
+#include "highscore.h"
 
 #include <SDL_endian.h>
 
 #include <ctype.h>
 #include <stdlib.h>
+#include <string.h>
+
+/* really required? */
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <string.h>
 
 #define NUMHISCORES 10
 #define SCORENAMELEN 9
@@ -87,14 +90,6 @@ typedef struct {
 
 static unsigned short menupicture, titledata;
 static unsigned char currentmission = 0;
-
-typedef struct {
-  Uint32 points;
-  char name[SCORENAMELEN+1];
-  Sint16 tower; /* tower reached, -1 = mission finished */
-} _scores;
-
-static _scores *scores = NULL;
 
 static menubg_callback_proc menu_background_proc = NULL;
 
@@ -929,85 +924,6 @@ men_options(void *mainmenu) {
   }
   return s;
 }
-  
-static void emptyscoretable(void) {
-  if (scores) {
-    for (int t = 0; t < NUMHISCORES; t++) {
-      scores[t].points = 0;
-      scores[t].name[0] = 0;
-    }
-  }
-}
-
-static void savescores(void) {
-
-  FILE *f = create_highscore_file("toppler.hsc");
-
-  assert(scores, "Savescores without scores");
-
-  if (f) {
-    unsigned char len;
-    char mname[256];
-
-    while (!feof(f)) {
-
-      if ((fread(&len, 1, 1, f) == 1) &&
-          (fread(mname, 1, len, f) == len)) {
-        mname[len] = 0;
-        if (strcasecmp(mname, lev_missionname(currentmission)) == 0) {
-
-          // this is necessary because some system can not switch
-          // on the fly from reading to writing
-          fseek(f, ftell(f), SEEK_SET);
-
-          fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
-          fclose(f);
-          return;
-        }
-      } else
-        break;
-
-      fseek(f, ftell(f) + sizeof(_scores)*NUMHISCORES, SEEK_SET);
-    }
-
-    unsigned char tmp = strlen(lev_missionname(currentmission));
-
-    fwrite(&tmp, 1, 1, f);
-    fwrite(lev_missionname(currentmission), 1, tmp, f);
-    fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
-
-    fclose(f);
-  }
-}
-
-static void getscores(void) {
-
-  FILE *f = open_highscore_file("toppler.hsc");
-
-  if (!scores)
-    scores = new _scores[NUMHISCORES];
-
-  if (f) {
-
-    unsigned char len;
-    char mname[256];
-
-    while (!feof(f)) {
-
-      if ((fread(&len, 1, 1, f) == 1) &&
-          (fread(mname, 1, len, f) == len) &&
-          (fread(scores, 1, sizeof(_scores) * NUMHISCORES, f) == sizeof(_scores) * NUMHISCORES)) {
-        mname[len] = 0;
-        if (strcasecmp(mname, lev_missionname(currentmission)) == 0)
-          return;
-      }
-    }
-
-    fclose(f);
-  }
-
-  emptyscoretable();
-}
 
 static int hiscores_timer = 0;
 static int hiscores_pager = 0;
@@ -1022,15 +938,19 @@ static int hiscores_maxlen = 0;
 void
 get_hiscores_string(int p, char **pos, char **points, char **name)
 {
-  if (!scores || (p < 0) || (p > NUMHISCORES))
-    *pos = * points = *name = "";
+  Uint32 pt;
+  Uint8 tw;
+
   static char buf1[SCORENAMELEN + 5];
   static char buf2[SCORENAMELEN + 5];
   static char buf3[SCORENAMELEN + 5];
+
   buf1[0] = buf2[0] = buf3[0] = '\0';
+
+  hsc_entry(p, buf3, &pt, &tw);
+
   snprintf(buf1, SCORENAMELEN + 5, "%i.", p + 1);
-  snprintf(buf2, SCORENAMELEN + 5, "%i", scores ? scores[p].points : 0);
-  snprintf(buf3, SCORENAMELEN + 5, "%s", scores ? scores[p].name : "");
+  snprintf(buf2, SCORENAMELEN + 5, "%i", pt);
     
   *pos = buf1;
   *points = buf2;
@@ -1040,7 +960,7 @@ get_hiscores_string(int p, char **pos, char **points, char **name)
 void
 calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
 {
-  for (int x = 0; x < NUMHISCORES; x++) {
+  for (int x = 0; x < hsc_entries(); x++) {
     char *a, *b, *c;
     int clen;
 
@@ -1080,23 +1000,23 @@ men_hiscores_background_proc(void *ms)
         hiscores_timer++;
         break;
       } else {
-	  bool filled_page = false;
-	  bool firstpage = (hiscores_pager == 0);
-	  int pager = (hiscores_pager + 1) % (NUMHISCORES / HISCORES_PER_PAGE);
-	  for (int tmp = 0; tmp < HISCORES_PER_PAGE; tmp++) {
-	      int cs = tmp + (pager * HISCORES_PER_PAGE);
-	      if (scores[cs].points || strlen(scores[cs].name)) {
-		  filled_page = true;
-		  break;
-	      }
-	  }
-	  if (!filled_page && firstpage) {
-	      hiscores_timer = 0;
-	      break;
-	  } else {
-	      hiscores_state = 2;
-	      next_page = pager;
-	  }
+        bool filled_page = false;
+        bool firstpage = (hiscores_pager == 0);
+        int pager = (hiscores_pager + 1) % (NUMHISCORES / HISCORES_PER_PAGE);
+        for (int tmp = 0; tmp < HISCORES_PER_PAGE; tmp++) {
+//          int cs = tmp + (pager * HISCORES_PER_PAGE);
+//          if (scores[cs].points || strlen(scores[cs].name)) {
+            filled_page = true;
+            break;
+//          }
+        }
+        if (!filled_page && firstpage) {
+          hiscores_timer = 0;
+          break;
+        } else {
+          hiscores_state = 2;
+          next_page = pager;
+        }
       }
     case 2: /* move the scores out */
       if (hiscores_xpos > -(hiscores_maxlen + 40)) {
@@ -1106,7 +1026,7 @@ men_hiscores_background_proc(void *ms)
       } else {
         hiscores_state = 0;
         hiscores_xpos = SCREENWID;
-	hiscores_pager = next_page;
+        hiscores_pager = next_page;
       }
     default: break;
     }
@@ -1136,7 +1056,7 @@ static void show_scores(bool back = true, int mark = -1) {
 
   if (!ms) return;
 
-  getscores();
+  hsc_select(lev_missionname(currentmission));
 
   hiscores_timer = 0;
   if ((mark >= 0) && (mark < NUMHISCORES))
@@ -1546,109 +1466,53 @@ bool men_input(char *origs, int max_len, int xpos, int ypos, const char *allowed
   return ende;
 }
 
-
-static int congrats_placement = 0;
-
 static void
 congrats_background_proc(void)
 {
   scr_blit(restsprites.data(menupicture), 0, 0);
   scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
 
-  scr_writetext_center(130, "Congratulations");
-  if (congrats_placement == 0) {
-    scr_writetext_center(170, "You've got the");
-    scr_writetext_center(210, "highest score");
-  } else {
-    char buf[40];
-    snprintf(buf, 40, "%i best players", NUMHISCORES);
-    scr_writetext_center(170, "You are one of the");
-    scr_writetext_center(210, buf);
-  }
+  scr_writetext_center(130, "Congratulations! You are");
+  scr_writetext_center(170, "probably good enough to");
+  scr_writetext_center(210, "enter the highscore table!");
+
   scr_writetext_center(270, "Please enter your name");
 }
   
 void men_highscore(unsigned long pt, int twr) {
 
-#ifdef HISCOREDIR
-
-  /* this part prevents two parties accessing the highscore table
-   at the same time by creating a file that guards this block of
-   code it is extremely important that the file is deleted upon
-   leaving this block */
-
-  dcl_stickyEnable();
-  if (dcl_fileexists(HISCOREDIR"/toppler.hsc")) {
-
-    int lockfd;
-  
-    scr_writetext_center(90,"Highscorefile locked");
-    scr_writetext_center(130,"please wait");
-    scr_swap();
-  
-    while ((lockfd = open(HISCOREDIR"/toppler.hsc.lck", O_CREAT | O_RDWR | O_EXCL)) == -1) {
-      dcl_wait();
-      scr_swap();
-    }
-    close(lockfd);
-
-  }
-  dcl_stickyDisable();
-
-#endif
-
-  scr_blit(restsprites.data(menupicture), 0, 0);
-  scr_blit(fontsprites.data(titledata), 8, 0);
-
-  getscores();
-
-  int t = NUMHISCORES;
-    
-  while ((t > 0) && (pt > scores[t-1].points)) {
-    if (t < NUMHISCORES)
-      scores[t] = scores[t-1];
-    t--;
-  }
-
-  if (t < NUMHISCORES) {
-    congrats_placement = t;
-    set_men_bgproc(congrats_background_proc);
-
-#if (SYSTEM == SYS_LINUX)
-
-    /* copy the login name into the name entered into the highscore table */
-    strncpy(scores[t].name, getenv("LOGNAME"), SCORENAMELEN);
-    scores[t].name[SCORENAMELEN] = 0; // to be sure we have a terminated string
-
-#else
-
-    /* on systems without login we have no name */
-    scores[t].name[0] = 0;
-
-#endif
+  Uint8 pos = 0xff;
 
 #ifndef GAME_DEBUG_KEYS
-    while (!men_input(scores[t].name, SCORENAMELEN)) ;
 
-    scores[t].points = pt;
-    scores[t].tower = twr;
+  hsc_select(lev_missionname(currentmission));
 
-    savescores();
-#endif /* GAME_DEBUG_KEYS */
-  }
+  /* check, if there is a chance at all to get into the list,
+   * if not we don't need to lock the highscoretable
+   */
+  if (hsc_canEnter(pt)) {
 
-#ifdef HISCOREDIR
-  dcl_stickyEnable();
-  unlink(HISCOREDIR"/toppler.hsc.lck");
-  dcl_stickyDisable();
+    set_men_bgproc(congrats_background_proc);
+
+    char name[SCORENAMELEN+1];
+
+#if (SYSTEM == SYS_LINUX)
+    /* copy the login name into the name entered into the highscore table */
+    strncpy(name, getenv("LOGNAME"), SCORENAMELEN);
+    name[SCORENAMELEN] = 0; // to be sure we have a terminated string
+#else
+    /* on systems without login we have no name */
+    name[0] = 0;
 #endif
 
-  show_scores(false, t);
-    
-  if (scores) {
-    delete [] scores;
-    scores = NULL;
+    while (!men_input(name, SCORENAMELEN)) ;
+
+    pos = hsc_enter(pt, twr, name);
   }
+
+#endif /* GAME_DEBUG_KEYS */
+
+  show_scores(false, pos);
 }
 
 void men_done(void) {

@@ -23,6 +23,7 @@
 #include "sound.h"
 #include "level.h"
 #include "configuration.h"
+#include "highscore.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -77,12 +78,6 @@ static void QuitFunction(void) {
 
   printf("exit function\n");
 
-#ifdef HISCOREDIR
-  dcl_stickyEnable();
-  unlink(HISCOREDIR"/toppler.hsc.lck");
-  dcl_stickyDisable();
-#endif
-
   SDL_Quit();
 }
 
@@ -94,7 +89,7 @@ int main(int argc, char *argv[]) {
   printf("Nebulous\n");
 #endif
 
-  dcl_init();
+  hsc_init();
 
   if (parse_arguments(argc, argv)) {
     SDL_InitSubSystem(SDL_INIT_VIDEO);
@@ -104,17 +99,7 @@ int main(int argc, char *argv[]) {
     tt_has_focus = true;
     atexit(QuitFunction);
     srand(time(0));
-    try {
-      startgame();
-    }
-    catch (std::exception e) {
-#ifdef HISCOREDIR
-      dcl_stickyEnable();
-      unlink(HISCOREDIR"/toppler.hsc.lck");
-      dcl_stickyDisable();
-#endif
-    }
-
+    startgame();
     printf("Thanks for playing!\n");
     SDL_ShowCursor(mouse);
     SDL_Quit();

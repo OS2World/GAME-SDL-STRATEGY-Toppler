@@ -1,5 +1,5 @@
 Name: toppler
-Version: 0.98.5
+Version: 0.99.0
 Release: 1
 
 

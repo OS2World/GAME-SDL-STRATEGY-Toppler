@@ -34,24 +34,8 @@
 #endif
 
 static bool wait_overflow = false;
-gid_t UserGroupID, GameGroupID;
 /* Not read from config file */
 int  curr_scr_update_speed = MENU_DCLSPEED;
-
-void dcl_init(void) {
-  UserGroupID = getgid ();
-  GameGroupID = getegid ();
-
-  setegid(UserGroupID);
-}
-
-void dcl_stickyEnable(void) {
-  setegid(GameGroupID);
-}
-
-void dcl_stickyDisable(void) {
-  setegid(UserGroupID);
-}
 
 int dcl_update_speed(int spd) {
     int tmp = curr_scr_update_speed;
@@ -92,11 +76,9 @@ void debugprintf(int lvl, char *fmt, ...) {
  is true makes fileextst to first enable group rights open
  the file and then remove the rights again
  */
-bool dcl_fileexists(const char *n, bool group) {
+bool dcl_fileexists(const char *n) {
 
-  if (group) dcl_stickyEnable();
   FILE *f = fopen(n, "r");
-  if (group) dcl_stickyDisable();
 
   if (f) {
     fclose(f);
@@ -209,92 +191,6 @@ FILE *create_local_config_file(const char *name) {
 #endif
 
 }
-
-/* open a highscore table: on windows we only look in the current
- directory, on unix system it's a bit more complicated:
-
- if HIGHSCOREDIR is defined, then we first look for a file in
- there, if there is one, we need to swith to our privileged level
- open the file and switch back
-
- if there is no file in HIGHSCOREDIR, look into the home dir of the user
- */
-
-FILE *open_highscore_file(const char *name) {
-
-#if (SYSTEM == SYS_LINUX)
-
-  char n[200];
-
-#ifdef HISCOREDIR
-
-  snprintf(n, 200, HISCOREDIR"/%s", name);
-  if (dcl_fileexists(n, true)) {
-
-    dcl_stickyEnable();
-    FILE *f = fopen(n, "rb");
-    if (f) {
-      dcl_stickyDisable();
-      return f;
-    }
-  }
-
-#endif
-
-  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
-  if (dcl_fileexists(n))
-    return fopen(n, "rb");
-
-  return NULL;
-
-#else
-
-  if (dcl_fileexists(name))
-    return fopen(name, "rb");
-
-  return NULL;
-
-#endif
-
-}
-
-/* this is not really a creation but opens a file for write acces,
- if the file doesn't exist it is created, but this creation
- is not done for the global highscore table, because this must
- be created by the sys admin
- */
-FILE *create_highscore_file(const char *name) {
-
-#if (SYSTEM == SYS_LINUX)
-
-  char n[200];
-
-#ifdef HISCOREDIR
-
-  snprintf(n, 200, HISCOREDIR"/%s", name);
-
-  if (dcl_fileexists(n, true)) {
-    dcl_stickyEnable();
-    return fopen(n, "r+b");
-    dcl_stickyDisable();
-  }
-
-#endif
-
-  checkdir();
-
-  snprintf(n, 200, "%s/.toppler/%s", homedir(), name);
-  fclose(fopen(n, "a+"));
-  return fopen(n, "r+");
-
-#else
-
-  fclose(fopen(name, "a+"));
-  return fopen(name, "r+b");
-
-#endif
-}
-
 
 /* used for tower and mission saving */
 

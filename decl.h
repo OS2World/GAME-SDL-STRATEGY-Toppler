@@ -172,15 +172,13 @@ void dcl_wait(void);
 bool dcl_wait_overflow(void);
 
 /* true, if files exitst */
-bool dcl_fileexists(const char *n, bool group = false);
+bool dcl_fileexists(const char *n);
 
 /* opens files looking into the right directories */
 FILE *open_data_file(const char *name);
 //FILE *open_global_config_file(const char *name);
 FILE *open_local_config_file(const char *name);
 FILE *create_local_config_file(const char *name);
-FILE *open_highscore_file(const char *name);
-FILE *create_highscore_file(const char *name);
 FILE *open_local_data_file(const char *name);
 FILE *create_local_data_file(const char *name);
 
@@ -207,6 +205,7 @@ typedef struct dirent {
 } dirent;
 
 #define strcasecmp stricmp
+#define snprintf _snprintf
 #define M_PI 3.1415926535897932384626433832795
 #else
 #include <dirent.h>
@@ -218,23 +217,5 @@ typedef struct dirent {
  */
 int alpha_scandir(const char *dir, struct dirent ***namelist,
                   int (*select)(const struct dirent *));
-
-
-/* privilege handling */
-
-/* this function saves the sticky bit information and
- resets the effection id to the real id so that the
- program is running with the users restrictions
- */
-void dcl_init(void);
-
-/* this function enable the additionat abilities given with
- the sticky bit
- */
-void dcl_stickyEnable(void);
-
-/* this function disables the sticky bit abilities again */
-void dcl_stickyDisable(void);
-
 
 #endif
