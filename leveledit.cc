@@ -706,6 +706,7 @@ void le_edit(void) {
         {
           char name[TOWERNAMELEN+1];
           strncpy(name, config.editor_towername(), TOWERNAMELEN);
+          name[TOWERNAMELEN] = 0;
           while (!men_input(name, TOWERNAMELEN)) ;
           config.editor_towername(name);
         }
@@ -726,6 +727,7 @@ void le_edit(void) {
         {
           char name[TOWERNAMELEN+1];
           strncpy(name, config.editor_towername(), TOWERNAMELEN);
+          name[TOWERNAMELEN] = 0;
           while (!men_input(name, TOWERNAMELEN)) ;
           config.editor_towername(name);
         }

@@ -326,6 +326,7 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
 
   do {
     strncpy(entry.d_name, finddata.cFileName, 199);
+    entry.d_name[200] = 0;
 
     if (select == NULL || (select != NULL && (*select)(&entry)))
     {

@@ -618,8 +618,10 @@ static char *redefine_menu_up(void *tms) {
 static char *game_options_menu_password(void *prevmenu) {
   static char buf[50];
   char pwd[PASSWORD_LEN+1];
+
   if (prevmenu) {
-    strncpy(pwd, config.curr_password(), PASSWORD_LEN);
+    /* one more character to also copy the termination */
+    strncpy(pwd, config.curr_password(), PASSWORD_LEN+1);
     while (!men_input(pwd, PASSWORD_LEN, -1, -1, PASSWORD_CHARS)) ;
     config.curr_password(pwd);
 	/* FIXME: change -1, -1 to correct position; Need to fix menu system
