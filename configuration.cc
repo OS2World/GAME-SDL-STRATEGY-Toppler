@@ -57,7 +57,7 @@ void configuration::parse(FILE * in) {
             if (atoi(param) > 0)
               key_redefine((ttkey)t->maxlen, (SDLKey)atoi(param));
             break;
-          default: assert(0, "Unknown config data type.");
+          default: assert_msg(0, "Unknown config data type.");
           }
           break;
         }
@@ -171,7 +171,7 @@ configuration::~configuration(void) {
       case CT_KEY:
         fprintf(f, "%i", (int)key_conv2sdlkey((ttkey)t->maxlen, true));
         break;
-      default: assert(0, "Unknown config data type.");
+      default: assert_msg(0, "Unknown config data type.");
       }
 
       fprintf(f, "\n");

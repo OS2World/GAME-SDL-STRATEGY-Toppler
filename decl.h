@@ -197,7 +197,7 @@ extern bool tt_has_focus;
 int dcl_update_speed(int spd);
 
 /* for errorchecking */
-#define assert(cond,text) if (!(cond)) { printf(_("Assertion failure: %s\n"), text); exit(1); }
+#define assert_msg(cond,text) if (!(cond)) { printf(_("Assertion failure: %s\n"), text); exit(1); }
 
 //#define CONFIGDIR "/etc"
 
