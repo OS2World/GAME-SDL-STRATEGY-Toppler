@@ -132,12 +132,13 @@ static void loadgraphics(void) {
 
   Uint32 res;
   unsigned char pal[192];
+  int t;
 
   unsigned char buffer[4000];
 
   arc_assign(grafdat);
 
-  for (int t = 0; t < brickcnt; t++) {
+  for (t = 0; t < brickcnt; t++) {
     unsigned char c1, c2;
 
     arc_read(&c1, 1, &res);
@@ -149,7 +150,7 @@ static void loadgraphics(void) {
   slicestart = scr_loadsprites(8, 96, 8, 4, brickcol, false);
   battlementstart = scr_loadsprites(8, 144, 24, 4, brickcol, false);
 
-  for (int t = -36; t <= 36; t++) {
+  for (t = -36; t <= 36; t++) {
 
     Uint8 tmp;
 
@@ -171,7 +172,7 @@ static void loadgraphics(void) {
   }
 
   arc_read(&pal[0], envirocnt*2, &res);
-  for (int t = 0; t < envirocnt; t++)
+  for (t = 0; t < envirocnt; t++)
     pal_setpal(envirocol + t, pal[2*t+1], pal[2*t], pal[2*t], pal_towergame);
 
   step = scr_loadsprites(1, 20, 7, 4, envirocol, false);
@@ -183,7 +184,7 @@ static void loadgraphics(void) {
   arc_assign(topplerdat);
   
   arc_read(pal, 8*3, &res);
-  for (int t = 0; t < 8; t++)
+  for (t = 0; t < 8; t++)
     pal_setpal(topplercol + t, pal[t * 3], pal[t * 3 + 1], pal[t * 3 + 2], pal_towergame);
 
   topplerstart = scr_loadsprites(74, 20, 20, 4, topplercol, true);
@@ -216,7 +217,7 @@ static void loadgraphics(void) {
 
   arc_assign(crossdat);
 
-  for (int t = 0; t < crosscnt; t++) {
+  for (t = 0; t < crosscnt; t++) {
     int r = arc_getbits(8);
     int g = arc_getbits(8);
     int b = arc_getbits(8);
@@ -256,6 +257,7 @@ static void loadfont(void) {
 }
 
 static void loadscroller(void) {
+  int i;
 
   arc_assign(scrollerdat);
 
@@ -282,7 +284,7 @@ static void loadscroller(void) {
 
   Uint8 r, g, b;
 
-  for (int i = 0; i < 152; i++) {
+  for (i = 0; i < 152; i++) {
     arc_read(&r, 1, &res);
     arc_read(&g, 1, &res);
     arc_read(&b, 1, &res);
@@ -465,7 +467,7 @@ void scr_writetext(long x, long y, const char *s) {
   }
 }
 
-void scr_putbar(int x, int y, int br, int h, unsigned char col = 0) {
+void scr_putbar(int x, int y, int br, int h, unsigned char col) {
   SDL_Rect r;
   r.w = br;
   r.h = h;

@@ -34,6 +34,9 @@ const char * lev_missionname(Uint16 num);
 /* loads a mission from the file with the given name */
 void lev_loadmission(Uint16 num);
 
+/* free all the memory allocated by the mission and the mission list */
+void lev_done();
+
 /* returns the number of towers that are in the current mission */
 Uint8 lev_towercount(void);
 

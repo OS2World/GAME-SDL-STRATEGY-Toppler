@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+
 #include "archi.h"
 
 #include "decl.h"
@@ -24,6 +25,15 @@
 
 #include <string.h>
 #include <stdlib.h>
+
+#if (SYSTEM == SYS_WINDOWS)
+
+#include "afx.h"
+
+#define _WINDOWS
+#define ZLIB_DLL
+
+#endif
 
 #include <zlib.h>
 
@@ -63,33 +73,33 @@ void arc_init(char *name) {
 
     /* load start from archive */
     fread(&tmp, 1, 1, f);
-    files[file].start = (Uint32(tmp)) << 0;
+    files[file].start = ((Uint32)(tmp)) << 0;
     fread(&tmp, 1, 1, f);
-    files[file].start |= (Uint32(tmp)) << 8;
+    files[file].start |= ((Uint32)(tmp)) << 8;
     fread(&tmp, 1, 1, f);
-    files[file].start |= (Uint32(tmp)) << 16;
+    files[file].start |= ((Uint32)(tmp)) << 16;
     fread(&tmp, 1, 1, f);
-    files[file].start |= (Uint32(tmp)) << 24;
+    files[file].start |= ((Uint32)(tmp)) << 24;
 
     /* load filesize from archive */
     fread(&tmp, 1, 1, f);
-    files[file].size = (Uint32(tmp)) << 0;
+    files[file].size = ((Uint32)(tmp)) << 0;
     fread(&tmp, 1, 1, f);
-    files[file].size |= (Uint32(tmp)) << 8;
+    files[file].size |= ((Uint32)(tmp)) << 8;
     fread(&tmp, 1, 1, f);
-    files[file].size |= (Uint32(tmp)) << 16;
+    files[file].size |= ((Uint32)(tmp)) << 16;
     fread(&tmp, 1, 1, f);
-    files[file].size |= (Uint32(tmp)) << 24;
+    files[file].size |= ((Uint32)(tmp)) << 24;
 
     /* load compressed size from archive */
     fread(&tmp, 1, 1, f);
-    files[file].compress = (Uint32(tmp)) << 0;
+    files[file].compress = ((Uint32)(tmp)) << 0;
     fread(&tmp, 1, 1, f);
-    files[file].compress |= (Uint32(tmp)) << 8;
+    files[file].compress |= ((Uint32)(tmp)) << 8;
     fread(&tmp, 1, 1, f);
-    files[file].compress |= (Uint32(tmp)) << 16;
+    files[file].compress |= ((Uint32)(tmp)) << 16;
     fread(&tmp, 1, 1, f);
-    files[file].compress |= (Uint32(tmp)) << 24;
+    files[file].compress |= ((Uint32)(tmp)) << 24;
   }
 }
 

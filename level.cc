@@ -23,7 +23,6 @@
 #include "decl.h"
 
 #include <string.h>
-#include <dirent.h>
 #include <stdlib.h>
 
 
@@ -109,6 +108,8 @@ static void add_mission(char *fname) {
 
   FILE * f = fopen(fname, "rb");
 
+  if (!f) return;
+
   unsigned char mnamelength;
   fread(&mnamelength, 1, 1, f);
 
@@ -158,15 +159,16 @@ static void add_mission(char *fname) {
     l->next = m;
   else
     missions = m;
+
+  fclose(f);
 }
 
 
 void lev_findmissions() {
 
   char pathname[100];
-  char mname[30];
 
-  struct dirent **eps;
+  struct dirent **eps = NULL;
 
   missions = NULL;
 
@@ -177,8 +179,17 @@ void lev_findmissions() {
     delete n;
   }
 
+#if SYSTEM == SYS_WINDOWS
+  {
+    char n[100];
+    GetCurrentDirectory(100, n);
+    sprintf(pathname, "%s\\", n);
+  }
+#else
   sprintf(pathname, "%s", "./");
-  int n = scandir("./", &eps, missionfiles, alphasort);
+#endif
+
+  int n = scandir(pathname, &eps, missionfiles, alphasort);
 
   if (n >= 0) {
 
@@ -190,6 +201,8 @@ void lev_findmissions() {
       add_mission(fname);
     }
   }
+  free(eps);
+  eps = NULL;
 
   sprintf(pathname, "%s/.toppler/", getenv("HOME"));
   n = scandir(pathname, &eps, missionfiles, alphasort);
@@ -204,8 +217,10 @@ void lev_findmissions() {
       add_mission(fname);
     }
   }
+  free(eps);
+  eps = NULL;
 
-  sprintf(pathname, "%s/", DATADIR);
+  sprintf(pathname, "%s/", TOP_DATADIR);
   n = scandir(pathname, &eps, missionfiles, alphasort);
 
   if (n >= 0) {
@@ -218,7 +233,25 @@ void lev_findmissions() {
       add_mission(fname);
     }
   }
+  free(eps);
+  eps = NULL;
 }
+
+void lev_done() {
+  if (mission) {
+    delete [] mission;
+    mission = NULL;
+  }
+
+  mission_node * m = missions;
+
+  while (m) {
+    m = m->next;
+    delete missions;
+    missions = m;
+  }
+}
+
 
 Uint16 lev_missionnumber() {
   int num = 0;
@@ -1014,7 +1047,8 @@ bool lev_mission_new(char * name) {
 void lev_mission_addtower(char * name) {
   assert(fmission, "called mission_addtower without mission_new");
 
-  Uint8 rows;
+  Uint8 rows, col;
+  Sint16 row;
 
   FILE * in = open_local_data_file(name);
   if (!tower) return;
@@ -1054,12 +1088,12 @@ void lev_mission_addtower(char * name) {
 
   /* load the tower */
   Uint8 tower[256][16];
-  for (Sint16 row = rows - 1; row >= 0; row--) {
+  for (row = rows - 1; row >= 0; row--) {
     char line[200];
 
     fgets(line, 200, in);
 
-    for (Uint8 col = 0; col < 16; col++) {
+    for (col = 0; col < 16; col++) {
       switch(line[col]) {
       case '1': tower[row][col] = 0x10; break;
       case '2': tower[row][col] = 0x20; break;
@@ -1088,17 +1122,17 @@ void lev_mission_addtower(char * name) {
   }
 
   /* output bitmap */
-  for (Uint8 row = 0; row < rows; row++) {
+  for (row = 0; row < rows; row++) {
 
     Uint8 c = 0;
-    for (Uint8 col = 0; col < 8; col ++)
+    for (col = 0; col < 8; col ++)
       if (tower[row][col])
         c |= (0x80 >> col);
 
     fwrite(&c, 1, 1, fmission);
 
     c = 0;
-    for (Uint8 col = 0; col < 8; col ++)
+    for (col = 0; col < 8; col ++)
       if (tower[row][col + 8])
         c |= (0x80 >> col);
 
@@ -1106,10 +1140,10 @@ void lev_mission_addtower(char * name) {
   }
 
   /* output bytemep */
-  for (Uint8 row = 0; row < rows; row++)
-    for (Uint8 c = 0; c < 16; c ++)
-      if (tower[row][c])
-        fwrite(&tower[row][c], 1, 1, fmission);
+  for (row = 0; row < rows; row++)
+    for (col = 0; col < 16; col ++)
+      if (tower[row][col])
+        fwrite(&tower[row][col], 1, 1, fmission);
 
   fclose(in);
 }

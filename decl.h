@@ -22,6 +22,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <dirent.h>
 
 /* names of the different data files */
 #define grafdat         "graphics"
@@ -123,12 +124,7 @@ void save_config(void);
 #define CONFIGDIR "/etc"
 #define HISCOREDIR "/var/games/nebulous"
 
-/* sunOS doesn't have this function so I need to implement by myself */
-#if SELF_SCANDIR
 int scandir(const char *dir, struct dirent ***namelist,
-            int (*select)(const struct dirent *),
-            int (*compar)(const void *, const void *));
-int alphasort(const void *a, const void *b);
-#endif
+            int (*select)(const struct dirent *));
 
 #endif

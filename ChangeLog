@@ -1,3 +1,4 @@
+- make compilable on windows
 - include compression in the datafile (zlib)
 - change layers data to use data file too (remove layer?.tga)
 - get rid of this terrible page wise saving of data, so I could finally remove

@@ -30,7 +30,7 @@ void spr_init(Uint16 maxsp) {
 
   maxsprite = maxsp;
 
-  sarray = new (SDL_Surface *)[maxsp];
+  sarray = new SDL_Surface *[maxsp];
 
   for (int i = 0; i < maxsprite; i++)
     sarray[i] = NULL;

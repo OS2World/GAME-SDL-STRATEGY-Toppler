@@ -122,7 +122,7 @@ static void men_options(void) {
       palt = p + 1;
     }
 
-    if (c == ' ')
+    if ((c == ' ') || (c == 13))
       switch(p) {
         case 0:
           fullscreen = !fullscreen;
@@ -231,13 +231,14 @@ static void getscores(void) {
 
 static void show_scores(int mark = 10) {
   char s[100];
+  int t;
   
   getscores();
 
   scr_blit(spr_spritedata(menupicture), 0, 0);
   scr_blit(spr_spritedata(titledata), 8, 0);
   
-  for (int t = 0; t < 9; t++) {
+  for (t = 0; t < 9; t++) {
     if (t == mark)
       sprintf(s, "*%5i %s", scores[t].points, scores[t].name);
     else
@@ -250,7 +251,7 @@ static void show_scores(int mark = 10) {
   char sx[2];
   sx[1] = 0;
 
-  for (int t = 0; t < 9; t++) {
+  for (t = 0; t < 9; t++) {
     sx[0] = s[t];
     scr_writetext(220 + 50 - 15 + 30 * t / 8, 60 + t * 10, sx);
   }
@@ -332,7 +333,7 @@ unsigned char men_main() {
     if ((c == 4) && (p == 0))
       m = (m + missioncount - 1) % missioncount;
 
-    if (c == ' ')
+    if ((c == ' ') || (c == 13))
       switch(p) {
         case 0:
           currentmission = m;
@@ -459,8 +460,12 @@ void men_highscore(unsigned long pt) {
     }
     scr_writetext_center(140, "PLEASE ENTER YOUR NAME");
 
+#if SYSTEM == SYS_LINUX
     strncpy(scores[t].name, getenv("LOGNAME"), 9);
     scores[t].name[9] = 0; //to be sure
+#else
+    scores[t].name[0] = 0;
+#endif
 
     men_input(scores[t].name, 9, 160);
     scores[t].points = pt;

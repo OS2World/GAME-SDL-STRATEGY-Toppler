@@ -22,10 +22,11 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
 #include <pwd.h>
+#include <dirent.h>
 
 bool fullscreen;
 bool nosound;
@@ -52,6 +53,9 @@ static bool dcl_fileexists(char *n) {
 
 char * homedir()
 {
+
+#if (SYSTEM == SYS_LINUX)
+
   struct passwd *pw = getpwuid(getuid());
   static char c = 0;
   if (!pw) {
@@ -60,12 +64,20 @@ char * homedir()
     return &c;
   }
   return pw->pw_dir;
+
+#else
+
+  return "./";
+
+#endif
+
 }
-
-
 
 /* checks if home/.toppler exists and creates it, if not */
 static void checkdir(void) {
+
+#if (SYSTEM == SYS_LINUX)
+
   char n[200];
 
   sprintf(n, "%s/.toppler", homedir());
@@ -75,6 +87,9 @@ static void checkdir(void) {
   if (!d) {
     mkdir(n, S_IRWXU);
   }
+
+#endif
+
 }
 
 FILE *open_data_file(char *name) {
@@ -88,7 +103,7 @@ FILE *open_data_file(char *name) {
   // look into the data dir
   char n[200];
 
-  sprintf(n, DATADIR"/%s", name);
+  sprintf(n, TOP_DATADIR"/%s", name);
   if (dcl_fileexists(n))
     return fopen(n, "rb");
 
@@ -204,6 +219,7 @@ FILE *create_highscore_file(char *name) {
 
 #else
 
+  fclose(fopen(n, "a+"));
   return fopen(name, "r+");
 
 #endif
@@ -272,13 +288,17 @@ void load_config(void) {
 
   FILE * in = open_global_config_file(".toppler.rc");
   
-  if (in)
+  if (in) {
     parse_config(in);
+    fclose(in);
+  }
   
   in = open_local_config_file(".toppler.rc");
   
-  if (in)
-   parse_config(in);
+  if (in) {
+    parse_config(in);
+    fclose(in);
+  }
 }
 
 void save_config(void) {
@@ -292,43 +312,45 @@ void save_config(void) {
   }
 }
 
-#ifdef SELF_SCANDIR
+static int alphasort(const void *a, const void *b) {
+  return(strcmp(((struct dirent *)a)->d_name, ((struct dirent *)b)->d_name));
+}
+
 int scandir(const char *dir, struct dirent ***namelist,
-            int (*select)(const struct dirent *),
-            int (*compar)(const void *, const void *)) {
+            int (*select)(const struct dirent *)) {
   DIR *d;
   struct dirent *entry;
-  register int i=0;
+  int i = 0;
   size_t entrysize;
 
-  if ((d=opendir(dir)) == NULL)
+  if ((d = opendir(dir)) == NULL)
      return(-1);
 
-  *namelist=NULL;
-  while ((entry=readdir(d)) != NULL)
+  *namelist = NULL;
+  while ((entry = readdir(d)) != NULL)
   {
     if (select == NULL || (select != NULL && (*select)(entry)))
     {
-      *namelist=(struct dirent **)realloc((void *)(*namelist),
-                 (size_t)((i+1)*sizeof(struct dirent *)));
-        if (*namelist == NULL) return(-1);
-        entrysize=sizeof(struct dirent)-sizeof(entry->d_name)+strlen(entry->d_name)+1;
-        (*namelist)[i]=(struct dirent *)malloc(entrysize);
-        if ((*namelist)[i] == NULL) return(-1);
-        memcpy((*namelist)[i], entry, entrysize);
-        i++;
+      *namelist = (struct dirent **)realloc((void *)(*namelist), (size_t)((i + 1) * sizeof(struct dirent *)));
+      if (*namelist == NULL)
+        return(-1);
+      entrysize = sizeof(struct dirent) - sizeof(entry->d_name) + strlen(entry->d_name) + 1;
+      (*namelist)[i] = (struct dirent *)malloc(entrysize);
+      if ((*namelist)[i] == NULL)
+        return(-1);
+      memcpy((*namelist)[i], entry, entrysize);
+      i++;
     }
   }
-  if (closedir(d)) return(-1);
-  if (i == 0) return(-1);
-  if (compar != NULL)
-    qsort((void *)(*namelist), (size_t)i, sizeof(struct dirent *), compar);
+  if (closedir(d))
+    return(-1);
+
+  if (i == 0)
+    return(-1);
+
+  qsort((void *)(*namelist), (size_t)i, sizeof(struct dirent *), alphasort);
     
   return(i);
 }
 
-int alphasort(const void *a, const void *b) {
-  return(strcmp(((struct dirent *)a)->d_name, ((struct dirent *)b)->d_name));
-}
-#endif
 

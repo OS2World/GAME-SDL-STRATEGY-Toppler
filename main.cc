@@ -102,6 +102,7 @@ static void startgame(void) {
     men_highscore(pts_points());
     stat = men_main();
   }
+  lev_done();
   snd_done();
   gam_done();
   arc_done();
