@@ -1,10 +1,14 @@
-me:
+Version 0.99.0 17.Feb.2003
 
 - fix highscore bug
 - replace all sprintf with snprintf to avoid buffer overflows
 - finally there is the global highscore table
 - fix config saving bug
 - cleanup of archive interface, makes it easier to handle
+- separate out highscore handling
+- rpm installes global highscore
+- readme updates
+- add clarences 3rd mission
 
 Version 0.98.4 14.Jan.2003
 

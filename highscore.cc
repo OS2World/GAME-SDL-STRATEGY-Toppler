@@ -206,7 +206,9 @@ void hsc_init(void) {
     if (f) {
 
       fclose(f);
+      setegid(GameGroupID);
       unlink(fname);
+      setegid(UserGroupID);
 
       /* ok, we've got all the rights we need */
       snprintf(highscoreName, 200, HISCOREDIR "/" SCOREFNAME);
@@ -217,6 +219,11 @@ void hsc_init(void) {
 #endif
 
   /* no dir to the global highscore table -> not global highscore table */
+
+  if (globalHighscore)
+    printf("using global highscore at %s\n", highscoreName);
+  else
+    printf("using local highscore at %s\n", highscoreName);
 
 #else // (SYSTEM == SYS_LINUX)
 

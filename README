@@ -1,6 +1,33 @@
 TOWER TOPPLER
 -------------
 
+Installation
+------------
+
+Most of the installation is the normal
+
+./configure
+make
+make install
+
+procedure except for the global highscore. If you want this feature
+then you need to call
+
+make global_highscore
+
+afterwards. This changes to binary owner to root:games and sets the
+sticky bit for group. It also creates a directory in /usr/local/var
+named toppler and a file names toppler.hsc inside this directory. The
+binary will have write access to this directory and the file. But the
+normal user shouldn't (to prevent them from cheating)
+
+The rpm will install the global highscore file for you.
+
+If the program finds the global highscore file and has the neccessary
+rights to access it, it will always use this list. If not the local
+file will be used. Which table is used, can you find out by looking at
+the output the program writes on stdout upon startup.
+
 Goal
 ----
 

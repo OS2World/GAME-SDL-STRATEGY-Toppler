@@ -40,7 +40,6 @@ avoid these beings.
 
 
 %install
-
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
 
@@ -62,4 +61,13 @@ rm -rf $RPM_BUILD_ROOT
 * Sun Oct  6 2002 Chong Kai Xiong <descender@phreaker.net>
 - Initial build.
 
+%post
+chgrp games /usr/bin/toppler;
+chmod g+s /usr/bin/toppler
+install -d /usr/var/toppler
+touch /usr/var/toppler/toppler.hsc
+chgrp games /usr/var/toppler
+chmod g+rw /usr/var/toppler
+chgrp games /usr/var/toppler/toppler.hsc
+chmod g+rw /usr/var/toppler/toppler.hsc
 
