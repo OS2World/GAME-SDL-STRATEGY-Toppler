@@ -53,6 +53,9 @@ static unsigned short  step, elevatorsprite, stick;
  tower that is at x degrees on the tower */
 static int sintab[TOWER_ANGLES];
 
+/* this table is used for the waves of the water */
+static Sint8 waves[0x80];
+
 /* this value added to the start of the animal sprites leads to
  the mirrored ones */
 #define mirror          37
@@ -498,6 +501,14 @@ void scr_init(void) {
   /* initialize sinus table */
   for (int i = 0; i < TOWER_ANGLES; i++)
     sintab[i] = int(sin(i * 2 * M_PI / TOWER_ANGLES) * (TOWER_RADIUS + SPR_STEPWID / 2) + 0.5);
+
+
+  /* initialize wave table */
+  for (int t = 0; t < 0x80; t++)
+    waves[t] = (Sint8)(8 * (sin(t * 2.0 * M_PI / 0x7f)) +
+      4 * (sin(t * 4.0 * M_PI / 0x7f+2)) +
+      3 * (sin(t * 6.0 * M_PI / 0x7f+3)) + 0.5);
+
 }
 
 void scr_reinit() {
@@ -596,7 +607,7 @@ static void putbattlement(long angle, long height) {
 
 static void putwater(long height) {
 
-  static const char waves[] = {
+  static const char simple_waves[] = {
     4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6,
     7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
     7, 7, 6, 6, 6, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4, 4,
@@ -605,61 +616,101 @@ static void putwater(long height) {
     0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3,
     3, 3 };
 
-  static int wavetime = 0;
 
-  int horizontal_shift;
+  static int wavetime = 0;
 
   height *= 4;
 
   if (height < (SCREENHEI / 2)) {
-    for (int y = 0; y < (SCREENHEI / 2) - height; y++) {
 
-      int target_line = (SCREENHEI / 2) + height + y;
-      int source_line = (SCREENHEI / 2) + height - y - 1 - waves[(wavetime * 4 + y * 2) & 0x7f];
-      if (source_line < 0)
-        source_line = 0;
+    if (use_waves) {
 
-      int z = waves[(wavetime*5 + y) & 0x7f];
-      if (abs(z - 4) > y) {
-        if (z < 4)
-          horizontal_shift = 4 - y;
-        else
-          horizontal_shift = 4 + y;
-      } else {
-        horizontal_shift = z;
-      }
-
-      {  // fill left and right edge with dark pixels
-        int right_idx = target_line * display->pitch + (SCREENWID - 10) * display->format->BytesPerPixel;
-        int left_idx = target_line * display->pitch;
-        for (int x = 0; x < 10; x++) {
-          ((Uint8 *)(display->pixels))[right_idx + 0] = 30 + y/2;
-          ((Uint8 *)(display->pixels))[right_idx + 1] = 0;
-          ((Uint8 *)(display->pixels))[right_idx + 2] = 0;
-          ((Uint8 *)(display->pixels))[left_idx + 0] = 30 + y/2;
-          ((Uint8 *)(display->pixels))[left_idx + 1] = 0;
-          ((Uint8 *)(display->pixels))[left_idx + 2] = 0;
-          right_idx += display->format->BytesPerPixel;
-          left_idx += display->format->BytesPerPixel;
-        }
-      }
-
-      {  // copy one pixel row
-        int target_idx = target_line * display->pitch + horizontal_shift * display->format->BytesPerPixel;
-        int source_idx = source_line * display->pitch;
+      int targetidx = ((SCREENHEI / 2) + height) * display->pitch;
+      int source_line = (SCREENHEI / 2) + height - 1;
+  
+      for (int y = 0; y < (SCREENHEI / 2) - height; y++) {
+  
         for (int x = 0; x < SCREENWID; x++) {
-          if ((x + horizontal_shift > 0) && (x + horizontal_shift < SCREENWID)) {
-            ((Uint8 *)(display->pixels))[target_idx + 0] = ((long)((Uint8 *)(display->pixels))[source_idx + 0]) * (340-y) / 512 + (y/2) + 30;
-            ((Uint8 *)(display->pixels))[target_idx + 1] = ((long)((Uint8 *)(display->pixels))[source_idx + 1]) * (340-y) / 512;
-            ((Uint8 *)(display->pixels))[target_idx + 2] = ((long)((Uint8 *)(display->pixels))[source_idx + 2]) * (340-y) / 512;
+          Sint16 dx = waves[(x+y+12*wavetime) & 0x7f] + waves[2*x-y+11*wavetime & 0x7f];
+          Sint16 dy = waves[(x-y+13*wavetime) & 0x7f] + waves[2*x-3*y-14*wavetime & 0x7f];
+  
+          dx = dx * y / (SCREENHEI/2);
+          dy = dy * y / (SCREENHEI/2);
+  
+          Uint8 r, g, b;
+  
+          if ((x+dx < 0) || (x+dx > SCREENWID) || (source_line+dy < 0)) {
+            r = g = 0;
+            b = ((y+dx)/2) + 30;
+          } else {
+            int source_idx = (source_line+dy) * display->pitch + (x+dx) * display->format->BytesPerPixel;
+  
+            b = ((((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9) + ((y+dy)/2) + 30;
+            g = (((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9;
+            r = (((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9;
           }
-          target_idx += display->format->BytesPerPixel;
-          source_idx += display->format->BytesPerPixel;
+  
+          ((Uint8 *)(display->pixels))[targetidx++] = b;
+          ((Uint8 *)(display->pixels))[targetidx++] = g;
+          ((Uint8 *)(display->pixels))[targetidx++] = r;
+  
+          targetidx++;
+        }
+        source_line --;
+      }
+    } else {
+
+      int horizontal_shift;
+  
+      for (int y = 0; y < (SCREENHEI / 2) - height; y++) {
+  
+        int target_line = (SCREENHEI / 2) + height + y;
+        int source_line = (SCREENHEI / 2) + height - y - 1 - simple_waves[(wavetime * 4 + y * 2) & 0x7f];
+        if (source_line < 0)
+          source_line = 0;
+  
+        int z = simple_waves[(wavetime*5 + y) & 0x7f];
+        if (abs(z - 4) > y) {
+          if (z < 4)
+            horizontal_shift = 4 - y;
+          else
+            horizontal_shift = 4 + y;
+        } else {
+          horizontal_shift = z;
+        }
+  
+        {  // fill left and right edge with dark pixels
+          int right_idx = target_line * display->pitch + (SCREENWID - 10) * display->format->BytesPerPixel;
+          int left_idx = target_line * display->pitch;
+          for (int x = 0; x < 10; x++) {
+            ((Uint8 *)(display->pixels))[right_idx + 0] = 30 + y/2;
+            ((Uint8 *)(display->pixels))[right_idx + 1] = 0;
+            ((Uint8 *)(display->pixels))[right_idx + 2] = 0;
+            ((Uint8 *)(display->pixels))[left_idx + 0] = 30 + y/2;
+            ((Uint8 *)(display->pixels))[left_idx + 1] = 0;
+            ((Uint8 *)(display->pixels))[left_idx + 2] = 0;
+            right_idx += display->format->BytesPerPixel;
+            left_idx += display->format->BytesPerPixel;
+          }
+        }
+  
+        {  // copy one pixel row
+          int target_idx = target_line * display->pitch + horizontal_shift * display->format->BytesPerPixel;
+          int source_idx = source_line * display->pitch;
+          for (int x = 0; x < SCREENWID; x++) {
+            if ((x + horizontal_shift > 0) && (x + horizontal_shift < SCREENWID)) {
+              ((Uint8 *)(display->pixels))[target_idx + 0] = ((long)((Uint8 *)(display->pixels))[source_idx + 0]) * (340-y) / 512 + (y/2) + 30;
+              ((Uint8 *)(display->pixels))[target_idx + 1] = ((long)((Uint8 *)(display->pixels))[source_idx + 1]) * (340-y) / 512;
+              ((Uint8 *)(display->pixels))[target_idx + 2] = ((long)((Uint8 *)(display->pixels))[source_idx + 2]) * (340-y) / 512;
+            }
+            target_idx += display->format->BytesPerPixel;
+            source_idx += display->format->BytesPerPixel;
+          }
         }
       }
-
     }
   }
+
   wavetime++;
 }
 

@@ -494,26 +494,26 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
     bg_time = time;
       
     if ((demo > 0) && (demolen < demo) && dbuf) {
-	demokeys = dbuf[demolen++];
-	get_keys(left_right, up_down, space, demokeys);
-	if ((demolen >= demo) || key_keystat()) state = STATE_ABORTED;
+      demokeys = dbuf[demolen++];
+      get_keys(left_right, up_down, space, demokeys);
+      if ((demolen >= demo) || key_keystat()) state = STATE_ABORTED;
     } else {
-	demokeys = key_keystat();
-	get_keys(left_right, up_down, space, demokeys);
+      demokeys = key_keystat();
+      get_keys(left_right, up_down, space, demokeys);
     }
       
     if (demo < 0) {
-	if ((demolen >= demo_alloc) || (dbuf == NULL)) {
-	    demo_alloc += 200;
-	    Uint16 *tmp = (Uint16 *)malloc((demo_alloc)*sizeof(Uint16));
-	    if (demolen && (dbuf)) {
-		(void)memcpy(tmp, dbuf, demolen*sizeof(Uint16));
-		free(dbuf);
-	    }
-	    dbuf = tmp;
-	    *(Uint16 **)demobuf = tmp;
-	}
-	dbuf[demolen++] = demokeys;
+      if ((demolen >= demo_alloc) || (dbuf == NULL)) {
+        demo_alloc += 200;
+        Uint16 *tmp = (Uint16 *)malloc((demo_alloc)*sizeof(Uint16));
+        if (demolen && (dbuf)) {
+          (void)memcpy(tmp, dbuf, demolen*sizeof(Uint16));
+          free(dbuf);
+        }
+        dbuf = tmp;
+        *(Uint16 **)demobuf = tmp;
+      }
+      dbuf[demolen++] = demokeys;
     }
       
     if (key_keypressed(quit_action) || ((demo >= 0) && (demolen > demo))) {

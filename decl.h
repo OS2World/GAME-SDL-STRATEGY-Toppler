@@ -135,7 +135,7 @@
 
 /*   define this if you want the bonus game to be accessible 
      from the main menu. */
-#define HUNT_THE_FISH
+/*#define HUNT_THE_FISH*/
 
 #define TOWERNAMELEN 19
 
@@ -184,6 +184,7 @@ extern bool use_alpha_sprites;
 extern bool use_alpha_layers;
 extern bool use_alpha_font;
 extern bool use_alpha_darkening;
+extern bool use_waves;
 
 
 void load_config(void);

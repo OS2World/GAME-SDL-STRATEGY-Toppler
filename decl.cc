@@ -39,6 +39,7 @@ bool use_alpha_sprites = false;
 bool use_alpha_layers = false;
 bool use_alpha_font = false;
 bool use_alpha_darkening = false;
+bool use_waves = false;
 
 char editor_towername[TOWERNAMELEN+1] = "";
 
@@ -64,7 +65,8 @@ static const struct _config_data config_data[] = {
     CNF_BOOL( "use_alpha_sprites",   &use_alpha_sprites ),
     CNF_BOOL( "use_alpha_font",      &use_alpha_font ),
     CNF_BOOL( "use_alpha_layers",    &use_alpha_layers ),
-    CNF_BOOL( "use_alpha_darkening", &use_alpha_darkening )
+    CNF_BOOL( "use_alpha_darkening", &use_alpha_darkening ),
+    CNF_BOOL( "use_waves",           &use_waves )
 };
 
 void dcl_wait(void) {
@@ -307,18 +309,18 @@ static void parse_config(FILE * in) {
     fscanf(in, "%s %s\n", line, param);
       
     for (int idx = 0; idx < SIZE(config_data); idx++) {
-	if (strstr(line, config_data[idx].cnf_name)) {
-	    switch (config_data[idx].cnf_typ) {
-		case CT_BOOL:
-		  *(bool *)config_data[idx].cnf_var = (atoi(param) == 1);
-		  break;
-		case CT_STRING:
-		  strncpy((char *)config_data[idx].cnf_var, param, config_data[idx].maxlen);
-		  break;
-		default: assert(0, "Unknown config data type.");
-	    }
-	    break;
-	}
+      if (strstr(line, config_data[idx].cnf_name)) {
+        switch (config_data[idx].cnf_typ) {
+        case CT_BOOL:
+          *(bool *)config_data[idx].cnf_var = (atoi(param) == 1);
+          break;
+        case CT_STRING:
+          strncpy((char *)config_data[idx].cnf_var, param, config_data[idx].maxlen);
+          break;
+        default: assert(0, "Unknown config data type.");
+        }
+        break;
+      }
     }
   }
 }

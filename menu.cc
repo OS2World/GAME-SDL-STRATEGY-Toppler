@@ -254,8 +254,8 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
   }
 
   if (ms->mproc) {
-      (*ms->mproc) (ms);
-      menu_background_proc = NULL;
+    (*ms->mproc) (ms);
+    menu_background_proc = NULL;
   } else men_yn_background_proc(ms);
 
   if (has_title) scr_writetext_center(ms->ystart, ms->title);
@@ -277,20 +277,20 @@ draw_menu_system(struct _menusystem *ms, Uint16 dx, Uint16 dy)
     maxy = realy + FONTHEI;
     if (len) {
       if (dx >= minx && dx <= maxx && dy >= miny && dy <= maxy) {
-	  newhilite = y + offs;
-	  ms->curr_mtime = 0;
+        newhilite = y + offs;
+        ms->curr_mtime = 0;
       }
       if (y + offs == ms->hilited) {
         if (ms->yhilitpos == -1) {
           ms->yhilitpos = miny;
         } else {
           if (ms->yhilitpos < miny) {
-	      ms->yhilitpos += ((miny - ms->yhilitpos + 3) / 4)+1;
-	      if (ms->yhilitpos > miny) ms->yhilitpos = miny;
-	  } else if (ms->yhilitpos > miny) {
-	      ms->yhilitpos -= ((ms->yhilitpos - miny + 3) / 4)+1;
-	      if (ms->yhilitpos < miny) ms->yhilitpos = miny;
-	  }
+            ms->yhilitpos += ((miny - ms->yhilitpos + 3) / 4)+1;
+            if (ms->yhilitpos > miny) ms->yhilitpos = miny;
+          } else if (ms->yhilitpos > miny) {
+            ms->yhilitpos -= ((ms->yhilitpos - miny + 3) / 4)+1;
+            if (ms->yhilitpos < miny) ms->yhilitpos = miny;
+          }
         }
         scr_putbar((SCREENWID - ms->maxoptlen - 8) / 2, ms->yhilitpos - 3,
                    ms->maxoptlen + 8, FONTHEI + 3,
@@ -686,6 +686,40 @@ men_alpha_menu(void *ms)
 }
 
 static char *
+men_waves_menu(void *ms)
+{
+  if (ms) {
+    use_waves = !use_waves;
+  }
+  if (use_waves) return "Expensive waves  \x04";
+  else return "Expensive waves \x03";
+}
+
+static char *
+men_alpha_options(void *mainmenu) {
+  static char s[20] = "Alpha Options";
+  if (mainmenu) {
+
+    struct _menusystem *ms = new_menu_system(s, NULL, 0, spr_spritedata(titledata)->h+30);
+
+    if (!ms) return NULL;
+
+    ms = add_menu_option(ms, NULL, men_alpha_font);
+    ms = add_menu_option(ms, NULL, men_alpha_sprites);
+    ms = add_menu_option(ms, NULL, men_alpha_layer);
+    ms = add_menu_option(ms, NULL, men_alpha_menu);
+
+    ms = add_menu_option(ms, NULL, NULL);
+    ms = add_menu_option(ms, "Back", NULL);
+
+    ms = run_menu_system(ms);
+
+    free_menu_system(ms);
+  }
+  return s;
+}
+
+static char *
 men_options_graphic(void *mainmenu) {
   static char s[20] = "Graphics";
   if (mainmenu) {
@@ -695,10 +729,8 @@ men_options_graphic(void *mainmenu) {
     if (!ms) return NULL;
 
     ms = add_menu_option(ms, NULL, men_options_windowed);
-    ms = add_menu_option(ms, NULL, men_alpha_font);
-    ms = add_menu_option(ms, NULL, men_alpha_sprites);
-    ms = add_menu_option(ms, NULL, men_alpha_layer);
-    ms = add_menu_option(ms, NULL, men_alpha_menu);
+    ms = add_menu_option(ms, NULL, men_alpha_options);
+    ms = add_menu_option(ms, NULL, men_waves_menu);
 
     ms = add_menu_option(ms, NULL, NULL);
     ms = add_menu_option(ms, "Back", NULL);
