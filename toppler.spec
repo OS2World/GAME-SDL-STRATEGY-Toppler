@@ -1,7 +1,7 @@
-
 Name: toppler
-Version: 0.98.0
+Version: 0.98.1
 Release: 1
+
 
 URL: http://toppler.soureforge.net
 
@@ -12,6 +12,7 @@ BuildRoot: %{_tmppath}/%{name}-root
 
 Requires: SDL >= 1.2.4, SDL_mixer >= 1.2.4
 BuildRequires: SDL-devel >= 1.2.4
+AutoReqProv: no
 
 Source0: %{name}-%{version}.tar.gz
 #Patch0: %{name}-%{version}-patch0.diff.gz
