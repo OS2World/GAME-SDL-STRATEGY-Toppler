@@ -431,7 +431,7 @@ Uint8 lev_towerrows(void) {
   return towerheight;
 }
 
-const char * lev_towername(void) {
+char * lev_towername(void) {
   return towername;
 }
 

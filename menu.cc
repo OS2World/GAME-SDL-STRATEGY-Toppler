@@ -839,14 +839,12 @@ draw_input_box(int x, int y, int len, int cursor, char *txt)
 
 void men_input(char *s, int max_len, int xpos, int ypos) {
   char inp;
-  char pos = 0;
+  char pos = strlen(s);
 
   if (xpos < 0) xpos = (SCREENWID / 2) - max_len * (FONTMAXWID / 2);
   if (xpos < 0) xpos = 0;
 
   if (ypos < 0) ypos = (SCREENHEI / 2) - (FONTHEI / 2);
-
-  s[0] = 0;
 
   do {
     if (menu_background_proc) (*menu_background_proc) ();

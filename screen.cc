@@ -646,7 +646,7 @@ int scr_textlength(const char *s, int chars) {
   int pos = 0;
   unsigned char c;
 
-  while (s[pos]) {
+  while (s[pos] && (chars > 0)) {
     if (s[pos] == ' ') {
       len += FONTMINWID;
     } else {
@@ -655,8 +655,8 @@ int scr_textlength(const char *s, int chars) {
         len += fontchars[c].width + 3;
     }
     pos++;
-    if (pos == chars)
-      break;
+
+    chars--;
   }
 
   return len - 1;
@@ -755,11 +755,10 @@ static void draw_tower(long vert, long angle) {
   }
 }
 
-static void draw_tower_editor(long vert, long angle, long hs, long he, int state) {
+static void draw_tower_editor(long vert, long angle, int state) {
 
   puttower(angle, vert, lev_towerrows());
 
-  vert *= 4;
 
   int slice = 0;
   int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;
@@ -779,6 +778,7 @@ static void draw_tower_editor(long vert, long angle, long hs, long he, int state
         continue;
 
       if (lev_is_door(slice, col)) {
+        if (lev_is_targetdoor(slice, col) && (state & 1)) continue;
         if (lev_is_door_upperend(slice, col))
           scr_blit(spr_spritedata(doors[a].s[2]), (SCREENWID / 2) + doors[a].xs, ypos);
         else if (lev_is_door_upperend(slice + 1, col))
@@ -832,7 +832,7 @@ static void putcase(unsigned char w, long x, long h) {
 }
 
 static void putcase_editor(unsigned char w, long x, long h, int state) {
-   long angle = 0;
+  long angle = 0;
   switch (w) {
 
   case 0:
@@ -981,15 +981,30 @@ static void putthings(long vert, long a, long angle) {
   }
 }
 
-static void putthings_editor(long vert, long a, long angle, long hs, long he, int state) {
+static void putthings_editor(long vert, long a, long angle, int state) {
 
-  long x, y, h;
+  /* ok, at first lets check if there is a column right at the
+   angle to be drawn */
+  if (((a - angle) & 0x7) == 0) {
 
-  x = sintab[a];
-  y = (vert * 2) - (hs * 8) + 112;
-  for (h = hs; h <= he; h++) {
-    putcase_editor(lev_tower(h, ((a - angle) / 8) & 0xf), x + (SCREENWID/2), y + (SCREENHEI / 2) - 120, state);
-    y -= 8;
+    /* yes there is one, find out wich one */
+    int col = ((a - angle) / TOWER_STEPS_PER_COLUMN) & (TOWER_COLUMNS - 1);
+
+    /* calc the x pos where the thing has to be drawn */
+    int x = sintab[a % TOWER_ANGLES] + (SCREENWID/2);
+
+    int slice = 0;
+    int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;
+
+    while ((ypos > -SPR_SLICEHEI) && (slice < lev_towerrows())) {
+  
+      /* if we are over the bottom of the screen, draw the slice */
+      if (ypos < SCREENHEI)
+        putcase_editor(lev_tower(slice, col), x, ypos, state);
+  
+      slice++;
+      ypos -= SPR_SLICEHEI;
+    }
   }
 }
 
@@ -1003,11 +1018,11 @@ static void draw_behind(long vert, long angle)
 }
 
 
-static void draw_behind_editor(long vert, long angle, long hs, long he, int state)
+static void draw_behind_editor(long vert, long angle, int state)
 {
   for (int a = 0; a < 32; a ++) {
-    putthings_editor(vert, 64 - a, angle, hs, he, state);
-    putthings_editor(vert, 64 + a, angle, hs, he, state);
+    putthings_editor(vert, 64 - a, angle, state);
+    putthings_editor(vert, 64 + a, angle, state);
   }
 }
 
@@ -1021,13 +1036,13 @@ static void draw_bevore(long  vert, long angle)
   putthings(vert, 0, angle);
 }
 
-static void draw_bevore_editor(long  vert, long angle, long hs, long he, int state)
+static void draw_bevore_editor(long  vert, long angle, int state)
 {
   for (int a = 0; a < 32; a ++) {
-    putthings_editor(vert, 32 - a, angle, hs, he, state);
-    putthings_editor(vert, 96 + a, angle, hs, he, state);
+    putthings_editor(vert, 32 - a, angle, state);
+    putthings_editor(vert, 96 + a, angle, state);
   }
-  putthings_editor(vert, 0, angle, hs, he, state);
+  putthings_editor(vert, 0, angle, state);
 }
 
 /* draws the cross that moves to and fro over the screen */
@@ -1120,7 +1135,7 @@ void scr_drawall(long vert,
 
 void scr_drawedit(long vpos, long apos) {
 
-  long hs, he, t;
+  long t;
   static long vert = 0, angle = 0;
 
   if (vpos != vert) {
@@ -1139,7 +1154,7 @@ void scr_drawedit(long vpos, long apos) {
 
   apos &= 0x7f;
 
-  t = (apos - angle) % TOWER_ANGLES;
+  t = (apos - angle) & (TOWER_ANGLES - 1);
 
   if (t != 0) {
     if (t < 0x3f) {
@@ -1158,22 +1173,16 @@ void scr_drawedit(long vpos, long apos) {
 
   cleardesk();
 
-  hs = vert / 4 - 16;
-  if (hs < 0) hs = 0;
+  draw_behind_editor(vert * 4, angle, boxstate);
+  draw_tower_editor(vert * 4, angle, boxstate);
+  draw_bevore_editor(vert * 4, angle, boxstate);
 
-  he = vert / 4 + 16;
-  if (he > lev_towerrows()) he = lev_towerrows() - 1;
-
-  draw_behind_editor(vert, angle, hs, he, boxstate);
-  draw_tower_editor(vert, angle, hs, he, boxstate);
-  draw_bevore_editor(vert, angle, hs, he, boxstate);
-
-  putbattlement(angle, vert);
+  putbattlement(angle, vert * 4);
 
   putwater(vert);
 
   if (boxstate & 1) {
-    scr_putrect((SCREENWID / 2) - (16 / 2), (SCREENHEI / 2) - 8, 16, 8, boxstate * 0xf, boxstate * 0xf, boxstate * 0xf, 128);
+    scr_putrect((SCREENWID / 2) - (32 / 2), (SCREENHEI / 2) - 16, 32, 16, boxstate * 0xf, boxstate * 0xf, boxstate * 0xf, 128);
   }
 
 

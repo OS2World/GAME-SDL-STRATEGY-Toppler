@@ -178,6 +178,7 @@ static void createMission(void) {
   set_men_bgproc(NULL);
 
   char missionname[25];
+  missionname[0] = 0;
   men_input(missionname, 15);
 
   if (!missionname[0])
@@ -269,8 +270,9 @@ static void createMission(void) {
 #define EDACT_MOVEPAGEDOWN  35
 #define EDACT_GOTOSTART     36
 #define EDACT_SHOWKEYHELP   37
+#define EDACT_NAMETOWER     38
 
-#define NUMEDITORACTIONS  38
+#define NUMEDITORACTIONS  39
 
 const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Quit",          "Move up",        "Move down",       "Move left",
@@ -282,7 +284,7 @@ const char *_ed_key_actions[NUMEDITORACTIONS] = {
    "Lift Top stop", "Put Stick",      "Put Box",         "Load Tower",   
    "Save Tower",    "Test Tower",     "Set Tower Color", "Increase Time", 
    "Decrease Time", "Create Mission", "Move Page Up",    "Move Page Down",  
-   "Go To Start",   "Show This Help"
+   "Go To Start",   "Show This Help", "Name The Tower"
 };
 
 struct _ed_key {
@@ -327,6 +329,7 @@ struct _ed_key {
    {EDACT_INCTIME,       'b'},
    {EDACT_DECTIME,       'n'},
    {EDACT_CREATEMISSION, 'm'},
+   {EDACT_NAMETOWER,     't'}
 };
 
 void le_showkeyhelp(int row, int col) {
@@ -419,7 +422,8 @@ void le_edit(void) {
     sprintf(status, "%c  X%d  Y%d",
             changed ? '*' : ' ', -col & 0xf, row);
 
-    scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(), 128, 0, 0, 255);
+    scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(),
+               lev_towercol_red(), lev_towercol_green(), lev_towercol_blue(), 255);
     scr_putbar(SCREENWID-8, SCREENHEI-row-1, 8, 1, blink_color, blink_color, blink_color, 128);
 
     blink_color = (blink_color + 5) & 0xFF;
@@ -609,6 +613,10 @@ void le_edit(void) {
       case EDACT_GOTOSTART:
         col = 0;
         row = 1;
+        break;
+      case EDACT_NAMETOWER:
+        men_input(lev_towername(), TOWERNAMELEN);
+        changed = true;
         break;
       case EDACT_SHOWKEYHELP: le_showkeyhelp(row, col); break;
       default: break;

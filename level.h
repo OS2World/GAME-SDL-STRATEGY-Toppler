@@ -70,7 +70,7 @@ unsigned char lev_tower(Uint8 row, Uint8 column);
 Uint8 lev_towerrows(void);
 
 /* the name of the tower */
-const char *lev_towername(void);
+char *lev_towername(void);
 
 /* the number of the actual tower */
 Uint8 lev_towernr(void);
