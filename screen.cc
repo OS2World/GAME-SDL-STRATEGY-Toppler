@@ -33,6 +33,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <wchar.h>
 
 static SDL_Surface *display;
 
@@ -833,22 +834,28 @@ static void putwater(long height) {
 int scr_textlength(const char *s, int chars) {
   int len = 0;
   int pos = 0;
-  unsigned char c;
+  mbstate_t state;
+  memset (&state, '\0', sizeof (state));
+  wchar_t tmp;
 
   while (s[pos] && (chars > 0)) {
-    if (s[pos] == ' ') {
+
+    size_t nbytes = mbrtowc (&tmp, &s[pos], chars, &state);
+    if (nbytes <= 0)
+      return 0;
+
+    if (tmp == ' ') {
       len += FONTMINWID;
     } else {
-      c = s[pos];
-      if (fontchars[c].width != 0)
-        len += fontchars[c].width + 3;
+      if (fontchars[tmp & 0xff].width != 0)
+        len += fontchars[tmp & 0xff].width + 3;
     }
     pos++;
 
     chars--;
   }
 
-  return len - 1;
+  return len;
 }
 
 void scr_writetext_center(long y, const char *s) {
@@ -1167,68 +1174,137 @@ static void putrobot(int t, int m, long x, long h)
 }
 
 void scr_writetext(long x, long y, const char *s, int maxchars) {
+
+  mbstate_t state;
+  memset (&state, '\0', sizeof (state));
+  wchar_t tmp;
+
   int t = 0;
-  unsigned char c;
+
   while (s[t] && (maxchars-- != 0)) {
-    if (s[t] == ' ') {
+
+    size_t nbytes = mbrtowc (&tmp, &s[t], maxchars, &state);
+    if (nbytes <= 0)
+      return;
+
+
+    if (tmp == ' ') {
       x += FONTMINWID;
       t++;
       continue;
     }
 
-    c = s[t];
-    if (fontchars[c].width != 0) {
-      scr_blit(fontsprites.data(fontchars[c].s), x, y-20);
-      x += fontchars[c].width + 3;
+    if (fontchars[tmp & 0xff].width != 0) {
+      scr_blit(fontsprites.data(fontchars[tmp & 0xff].s), x, y-20);
+      x += fontchars[tmp & 0xff].width + 3;
     }
+
     t++;
   }
 }
 
 void scr_writeformattext(long x, long y, const char *s) {
 
+  mbstate_t state;
+  memset (&state, '\0', sizeof (state));
+  wchar_t tmp;
+
+  size_t len = strlen(s);
+
   int origx = x;
   int t = 0;
   Uint8 towerblock = 0;
-  unsigned char c;
   while (s[t]) {
-    switch(s[t]) {
+
+    size_t nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+    if (nbytes <= 0)
+      return;
+
+    switch(tmp) {
     case ' ':
       x += FONTMINWID;
       t++;
       break;
     case '~':
-      switch(s[t+1]) {
+
+      nbytes = mbrtowc (&tmp, &s[t+1], len-t, &state);
+      if (nbytes <= 0)
+        return;
+
+      switch(tmp) {
       case 't':
-        x = (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
+
+        nbytes = mbrtowc (&tmp, &s[t+2], len-t, &state);
+        if (nbytes <= 0)
+          return;
+
+        x = (tmp - '0') * 100;
+
+        nbytes = mbrtowc (&tmp, &s[t+3], len-t, &state);
+        if (nbytes <= 0)
+          return;
+
+        x += (tmp - '0') * 10;
+
+        nbytes = mbrtowc (&tmp, &s[t+3], len-t, &state);
+        if (nbytes <= 0)
+          return;
+
+        x += (tmp - '0');
+
         t += 5;
         break;
       case 'T':
-	x = origx + (s[t+2] - '0') * 100 + (s[t+3] - '0') * 10 + (s[t+4] - '0');
-	t += 5;
-	break;
+        nbytes = mbrtowc (&tmp, &s[t+2], len-t, &state);
+        if (nbytes <= 0)
+          return;
+
+        x = origx + (tmp - '0') * 100;
+
+        nbytes = mbrtowc (&tmp, &s[t+3], len-t, &state);
+        if (nbytes <= 0)
+          return;
+
+        x += (tmp - '0') * 10;
+
+        nbytes = mbrtowc (&tmp, &s[t+3], len-t, &state);
+        if (nbytes <= 0)
+          return;
+
+        x += (tmp - '0');
+
+        t += 5;
+        break;
       case 'b':
-	towerblock = conv_char2towercode(s[t+2]);
-	putcase(towerblock, x+16, y);
-	x += 32;
-	t += 3;
-	break;
+
+        nbytes = mbrtowc (&tmp, &s[t+2], len-t, &state);
+        if (nbytes <= 0)
+          return;
+
+        towerblock = conv_char2towercode(tmp);
+        putcase(towerblock, x+16, y);
+        x += 32;
+        t += 3;
+        break;
       case 'e':
-	towerblock = conv_char2towercode(s[t+2]);
-	putcase_editor(towerblock, x+16, y, boxstate);
-	x += 32;
-	t += 3;
-	break;
+        nbytes = mbrtowc (&tmp, &s[t+2], len-t, &state);
+        if (nbytes <= 0)
+          return;
+
+        towerblock = conv_char2towercode(tmp);
+        putcase_editor(towerblock, x+16, y, boxstate);
+        x += 32;
+        t += 3;
+        break;
       default:
         assert(0, _("Wrong command in formatted text."));
         t += 2;
       }
       break;
     default:
-      c = s[t];
-      if (fontchars[c].width != 0) {
-        scr_blit(fontsprites.data(fontchars[c].s), x, y-20);
-        x += fontchars[c].width + 3;
+      if (fontchars[tmp & 0xff].width != 0) {
+        scr_blit(fontsprites.data(fontchars[tmp & 0xff].s), x, y-20);
+        x += fontchars[tmp & 0xff].width + 3;
       }
       t++;
     }

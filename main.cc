@@ -29,6 +29,7 @@
 #include <time.h>
 #include <string.h>
 #include <unistd.h>
+#include <langinfo.h>
 
 #include <stdexcept>
 
@@ -73,13 +74,14 @@ static void QuitFunction(void) {
 int main(int argc, char *argv[]) {
 
   setlocale(LC_MESSAGES, "");
+  setlocale(LC_CTYPE, "");
   bindtextdomain("toppler", LOCALEDIR"/locale");
 //  bindtextdomain("toppler", "po");
   textdomain("toppler");
-  bind_textdomain_codeset("toppler", "iso-latin1");
+
 
 #ifdef VERSION
-  printf(_("Nebulous version %s\n"), "VERSION");
+  printf(_("Nebulous version %s\n"), VERSION);
 #else
   printf(_("Nebulous\n"));
 #endif

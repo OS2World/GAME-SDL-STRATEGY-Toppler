@@ -122,9 +122,10 @@ static int missionfiles (const struct dirent *file)
           (file->d_name[len - 4] == '.'));
 }
 
-Uint8 conv_char2towercode(char ch) {
+Uint8 conv_char2towercode(wchar_t ch) {
   if (ch)
     for (int x = 0; x < NUM_TBLOCKS; x++)
+      // we can do that because we use only chars below 128
       if (ch == towerblockdata[x].ch) return x;
   return TB_EMPTY;
 }

@@ -1,28 +1,28 @@
 # translation of fr.po to Deutsch
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR Andreas R?er.
-# Andreas RÃ¶ver <roever@users.sf.net>, 2004.
+# Andreas Röver <roever@users.sf.net>, 2004.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-01-18 14:53+0100\n"
-"PO-Revision-Date: 2004-01-04 09:34+0100\n"
-"Last-Translator: Andreas RÃ¶ver <roever@users.sf.net>\n"
+"PO-Revision-Date: 2004-01-20 17:09+0100\n"
+"Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0.2\n"
 
 #: archi.cc:37
 msgid "Data file not found"
-msgstr "Archive non trouvÃ©e"
+msgstr "Archive non trouvée"
 
 #: archi.cc:44
 msgid "Failed to alloc memory for archive index."
-msgstr "Ã‰chec pour l'allocation de mÃ©moire pour l'index d'archive"
+msgstr "Échec pour l'allocation de mémoire pour l'index d'archive"
 
 #: archi.cc:58
 msgid "Filename too long, datafile corrupt?"
@@ -30,7 +30,7 @@ msgstr "Nom de fichier trop long, archive corrompue ?"
 
 #: archi.cc:133
 msgid "Decompression problem, data file corrupt?"
-msgstr "problÃ¨me de dÃ©compression, archive corrompue ?"
+msgstr "problème de décompression, archive corrompue ?"
 
 #: archi.cc:134
 msgid "Data file corrupt."
@@ -38,7 +38,7 @@ msgstr "Archive corrompue"
 
 #: archi.cc:144
 msgid "File not found in archive!"
-msgstr "Fichier non trouvÃ© dans l'archive"
+msgstr "Fichier non trouvé dans l'archive"
 
 #: bonus.cc:104 game.cc:457
 msgid "Pause"
@@ -46,36 +46,36 @@ msgstr "Pause"
 
 #: configuration.cc:60 configuration.cc:174
 msgid "Unknown config data type."
-msgstr "Type de donnÃ©e de configuration inconnue"
+msgstr "Type de donnée de configuration inconnue"
 
 #: decl.h:196
 #, c-format
 msgid "Assertion failure: %s\n"
-msgstr "Ã‰chec de l'insertion : %s\n"
+msgstr "Échec de l'insertion : %s\n"
 
 #: elevators.cc:63
 msgid "Select more than one elevator."
-msgstr "SÃ©lectionnez plus d'un ascenceur"
+msgstr "Sélectionnez plus d'un ascenceur"
 
 #: elevators.cc:90
 msgid "Work with unselected elevator, activate."
-msgstr "Travaille sans un ascenceur sÃ©lectionnÃ© (activer)"
+msgstr "Travaille sans un ascenceur sélectionné (activer)"
 
 #: elevators.cc:99
 msgid "Work with unselected elevator, move."
-msgstr "Travaille sans un ascenceur sÃ©lectionnÃ© (dÃ©placer)"
+msgstr "Travaille sans un ascenceur sélectionné (déplacer)"
 
 #: elevators.cc:114
 msgid "Work with unselected elevator, is_atstop."
-msgstr "Travaille sans un ascenceur sÃ©lectionnÃ© (is_atstop)"
+msgstr "Travaille sans un ascenceur sélectionné (is_atstop)"
 
 #: elevators.cc:124
 msgid "Deselected an inactive elevator."
-msgstr "DÃ©sÃ©lection d'un ascenceur inactif"
+msgstr "Désélection d'un ascenceur inactif"
 
 #: game.cc:85
 msgid "You are entering the"
-msgstr "Vous pÃ©nÃ©trez dans"
+msgstr "Vous pénétrez dans"
 
 #: game.cc:90
 msgid "Nameless Tower"
@@ -88,7 +88,7 @@ msgstr "Mot de passe :   %s"
 
 #: game.cc:302
 msgid "Time over"
-msgstr "Temps Ã©coulÃ©"
+msgstr "Temps écoulé"
 
 #: game.cc:313
 #, c-format
@@ -125,15 +125,15 @@ msgstr "Woooaaaa !\n"
 
 #: level.cc:1264
 msgid "called mission_finish twice"
-msgstr "mission_finish appelÃ© deux fois"
+msgstr "mission_finish appelé deux fois"
 
 #: level.cc:1305
 msgid "called mission_addtower without mission_new"
-msgstr "mission_addtower appelÃ© sans mission_new"
+msgstr "mission_addtower appelé sans mission_new"
 
 #: level.cc:1435
 msgid "called mission_finish without mission_new"
-msgstr "mission_finish appelÃ© sans mission_new"
+msgstr "mission_finish appelé sans mission_new"
 
 #: leveledit.cc:103 menu.cc:938
 msgid "Quit"
@@ -149,23 +149,23 @@ msgstr "Descendre"
 
 #: leveledit.cc:103
 msgid "Move left"
-msgstr "Se dÃ©placer Ã  gauche"
+msgstr "Se déplacer à gauche"
 
 #: leveledit.cc:104
 msgid "Move right"
-msgstr "Se dÃ©placer Ã  droite"
+msgstr "Se déplacer à droite"
 
 #: leveledit.cc:104
 msgid "Insert row"
-msgstr "InsÃ©rer un Ã©chelon"
+msgstr "Insérer un échelon"
 
 #: leveledit.cc:104
 msgid "Delete row"
-msgstr "Supprimer un Ã©chelon"
+msgstr "Supprimer un échelon"
 
 #: leveledit.cc:104
 msgid "Rotate 180"
-msgstr "Tourner de 180 degrÃ©s"
+msgstr "Tourner de 180 degrés"
 
 #: leveledit.cc:105
 msgid "Put space"
@@ -197,7 +197,7 @@ msgstr "Placer un but"
 
 #: leveledit.cc:107
 msgid "Check tower"
-msgstr "ContrÃ´ler la tour"
+msgstr "Contrôler la tour"
 
 #: leveledit.cc:107
 msgid "Put rolling ball"
@@ -233,11 +233,11 @@ msgstr "Placer ascenceur"
 
 #: leveledit.cc:109
 msgid "Lift middle stop"
-msgstr "ArrÃªt d'ascenceur intermÃ©diaire"
+msgstr "Arrêt d'ascenceur intermédiaire"
 
 #: leveledit.cc:110
 msgid "Lift top stop"
-msgstr "Dernier arrÃªt d'ascenceur"
+msgstr "Dernier arrêt d'ascenceur"
 
 #: leveledit.cc:110
 msgid "Put pillar"
@@ -245,7 +245,7 @@ msgstr "Placer colonne"
 
 #: leveledit.cc:110
 msgid "Put box"
-msgstr "Placer une boÃ®te"
+msgstr "Placer une boîte"
 
 #: leveledit.cc:110
 msgid "Load tower"
@@ -261,7 +261,7 @@ msgstr "Tester la tour"
 
 #: leveledit.cc:111
 msgid "Set tower color"
-msgstr "Ã‰tablir la couleur de la tour"
+msgstr "Établir la couleur de la tour"
 
 #: leveledit.cc:111
 msgid "Increase time"
@@ -273,7 +273,7 @@ msgstr "Diminuer le temps"
 
 #: leveledit.cc:112
 msgid "Create mission"
-msgstr "CrÃ©er une mission"
+msgstr "Créer une mission"
 
 #: leveledit.cc:112
 msgid "Move page up"
@@ -281,11 +281,11 @@ msgstr "Page suivante"
 
 #: leveledit.cc:112
 msgid "Move page down"
-msgstr "Page prÃ©cÃ©dente"
+msgstr "Page précédente"
 
 #: leveledit.cc:113
 msgid "Go to start"
-msgstr "Aller au dÃ©but"
+msgstr "Aller au début"
 
 #: leveledit.cc:113
 msgid "Show this help"
@@ -297,15 +297,15 @@ msgstr "Nommer la tour"
 
 #: leveledit.cc:113
 msgid "Set tower time"
-msgstr "Ã‰tablir le temps pour la tour"
+msgstr "Établir le temps pour la tour"
 
 #: leveledit.cc:114
 msgid "Record demo"
-msgstr "Enregistrer une dÃ©mo"
+msgstr "Enregistrer une démo"
 
 #: leveledit.cc:114
 msgid "Play demo"
-msgstr "Jouer la dÃ©mo"
+msgstr "Jouer la démo"
 
 #: leveledit.cc:114
 msgid "Adjust tower height"
@@ -313,15 +313,15 @@ msgstr "Ajuster la hauteur de la tour"
 
 #: leveledit.cc:114
 msgid "Go to end"
-msgstr "Aller Ã  la fin"
+msgstr "Aller à la fin"
 
 #: leveledit.cc:115
 msgid "Cut row"
-msgstr "Couper un Ã©chelon"
+msgstr "Couper un échelon"
 
 #: leveledit.cc:115
 msgid "Paste row"
-msgstr "Coller un Ã©chelon"
+msgstr "Coller un échelon"
 
 #: leveledit.cc:115
 msgid "Change robot type"
@@ -329,7 +329,7 @@ msgstr "Changer le type du robot"
 
 #: leveledit.cc:189
 msgid "Tower changed, really quit"
-msgstr "###Tour modifiÃ©e, voulez-vous vraiment quitter ?"
+msgstr "###Tour modifiée, voulez-vous vraiment quitter ?"
 
 #: leveledit.cc:199
 msgid "Tower changed, really load"
@@ -353,15 +353,15 @@ msgstr "Couleur de la tour"
 
 #: leveledit.cc:305
 msgid "No problems found"
-msgstr "Aucun problÃ¨me rencontrÃ©"
+msgstr "Aucun problème rencontré"
 
 #: leveledit.cc:306
 msgid "No starting step"
-msgstr "Pas de marche de dÃ©part"
+msgstr "Pas de marche de départ"
 
 #: leveledit.cc:307
 msgid "Start is blocked"
-msgstr "Le dÃ©part est bloquÃ©"
+msgstr "Le départ est bloqué"
 
 #: leveledit.cc:308
 msgid "Unknown block"
@@ -369,19 +369,19 @@ msgstr "Bloc inconnu"
 
 #: leveledit.cc:309
 msgid "No elevator stop"
-msgstr "Pas d'arrÃªt Ã  l'ascenceur"
+msgstr "Pas d'arrêt à l'ascenceur"
 
 #: leveledit.cc:310
 msgid "Elevator is blocked"
-msgstr "L'ascenceur est bloquÃ©"
+msgstr "L'ascenceur est bloqué"
 
 #: leveledit.cc:311
 msgid "No opposing doorway"
-msgstr "Pas de porte de l'autre cÃ´tÃ©"
+msgstr "Pas de porte de l'autre côté"
 
 #: leveledit.cc:312
 msgid "Broken doorway"
-msgstr "Porte cassÃ©e"
+msgstr "Porte cassée"
 
 #: leveledit.cc:313
 msgid "No exit"
@@ -405,11 +405,11 @@ msgstr "La tour n'a pas de nom"
 
 #: leveledit.cc:325
 msgid "Tower check:"
-msgstr "ContrÃ´le de la tour :"
+msgstr "Contrôle de la tour :"
 
 #: leveledit.cc:351 leveledit.cc:367 leveledit.cc:389
 msgid "Mission creation"
-msgstr "CrÃ©ation d'une mission"
+msgstr "Création d'une mission"
 
 #: leveledit.cc:352
 msgid "enter mission name"
@@ -417,11 +417,11 @@ msgstr "Entrez le nom de la mission"
 
 #: leveledit.cc:353
 msgid "empty to abort"
-msgstr "Rien Ã  abandonner"
+msgstr "Rien à abandonner"
 
 #: leveledit.cc:369
 msgid "could not create file"
-msgstr "Ne peut pas crÃ©er le fichier"
+msgstr "Ne peut pas créer le fichier"
 
 #: leveledit.cc:370
 msgid "aborting"
@@ -434,11 +434,11 @@ msgstr "Entrez le nom de"
 #: leveledit.cc:393
 #, c-format
 msgid "tower no %i"
-msgstr "tour numÃ©ro %i"
+msgstr "tour numéro %i"
 
 #: leveledit.cc:414
 msgid "Editor Key Help"
-msgstr "Aide de l'Ã©diteur"
+msgstr "Aide de l'éditeur"
 
 #: leveledit.cc:532
 msgid "cut#"
@@ -451,15 +451,15 @@ msgstr ""
 
 #: leveledit.cc:703
 msgid "Load tower:"
-msgstr "Tour chargÃ©e"
+msgstr "Tour chargée"
 
 #: leveledit.cc:724
 msgid "Save tower:"
-msgstr "Tour sauvergardÃ©e"
+msgstr "Tour sauvergardée"
 
 #: leveledit.cc:785
 msgid "No recorded demo"
-msgstr "Pas de dÃ©mo enregistrÃ©e"
+msgstr "Pas de démo enregistrée"
 
 #: leveledit.cc:831
 msgid "Enter tower time:"
@@ -486,18 +486,18 @@ msgstr ""
 "\n"
 "\tOptions :\n"
 "\n"
-"  -f\tActiver le mode plein Ã©cran\n"
-"  -s\tDÃ©sactiver le son\n"
-"  -dX\tNiveau de dÃ©buggage Ã  X  (dÃ©faut : %i)\n"
+"  -f\tActiver le mode plein écran\n"
+"  -s\tDésactiver le son\n"
+"  -dX\tNiveau de débuggage à X  (défaut : %i)\n"
 
 #: main.cc:46
 #, c-format
 msgid "Debug level is now %c.\n"
-msgstr "Le niveau de dÃ©buggage est maintenant %c.\n"
+msgstr "Le niveau de débuggage est maintenant %c.\n"
 
 #: main.cc:48
 msgid "Illegal debug level value, using default.\n"
-msgstr "Niveau de dÃ©buggage illÃ©gal, utilise la valeur par dÃ©faut.\n"
+msgstr "Niveau de débuggage illégal, utilise la valeur par défaut.\n"
 
 #: main.cc:82
 #, c-format
@@ -514,11 +514,11 @@ msgstr "Nebulous"
 
 #: main.cc:98
 msgid "Thanks for playing!\n"
-msgstr "Merci d'avoir jouÃ© !\n"
+msgstr "Merci d'avoir joué !\n"
 
 #: menu.cc:78
 msgid "Extra Life"
-msgstr "Vie supplÃ©mentaire"
+msgstr "Vie supplémentaire"
 
 #: menu.cc:83
 msgid "+200 Points"
@@ -576,11 +576,11 @@ msgstr "Retour"
 
 #: menu.cc:256 menu.cc:271
 msgid "Redefine Keys"
-msgstr "RedÃ©finir les touches"
+msgstr "Redéfinir les touches"
 
 #: menu.cc:283 menu.cc:284
 msgid "Fullscreen"
-msgstr "Plein Ã©cran"
+msgstr "Plein écran"
 
 #: menu.cc:304 menu.cc:305
 msgid "Sounds"
@@ -597,7 +597,7 @@ msgstr "Sprites transparents"
 
 #: menu.cc:367 menu.cc:368
 msgid "Scroller alpha"
-msgstr "DÃ©filement transparent"
+msgstr "Défilement transparent"
 
 #: menu.cc:380 menu.cc:381
 msgid "Shadowing"
@@ -613,7 +613,7 @@ msgstr "Vagues simples"
 
 #: menu.cc:408
 msgid "Expensive waves"
-msgstr "Vagues coÃ»teuses"
+msgstr "Vagues coûteuses"
 
 #: menu.cc:409
 msgid "Error"
@@ -621,11 +621,11 @@ msgstr "Erreur"
 
 #: menu.cc:419
 msgid "Complete Scroller"
-msgstr "DÃ©filement complet"
+msgstr "Défilement complet"
 
 #: menu.cc:420
 msgid "2 layers Scoller"
-msgstr "DÃ©filement deux couches"
+msgstr "Défilement deux couches"
 
 #: menu.cc:426
 msgid "Alpha Options"
@@ -654,7 +654,7 @@ msgstr "OK"
 
 #: menu.cc:659
 msgid "Congratulations! You are"
-msgstr "FÃ©licitations ! Vous Ãªtes"
+msgstr "Félicitations ! Vous êtes"
 
 #: menu.cc:660
 msgid "probably good enough to"
@@ -684,12 +684,12 @@ msgstr ""
 
 #: menu.cc:778
 msgid "Hunt the Fish"
-msgstr "Ã€ la pÃªche"
+msgstr "À la pêche"
 
 #: menu.cc:801
 #, c-format
 msgid "%c Start: %s %c"
-msgstr "%c DÃ©marrer : %s %c"
+msgstr "%c Démarrer : %s %c"
 
 #: menu.cc:811
 msgid "Highscores"
@@ -697,7 +697,7 @@ msgstr "Meilleurs scores"
 
 #: menu.cc:823
 msgid "Level Editor"
-msgstr "Ã‰diteur de niveau"
+msgstr "Éditeur de niveau"
 
 #: menu.cc:884
 msgid "Return to Game"
@@ -709,7 +709,7 @@ msgstr "Quitter le jeu"
 
 #: menu.cc:901
 msgid "DEBUG MENU"
-msgstr "MENU DE DÃ‰BUGGAGE"
+msgstr "MENU DE DÉBUGGAGE"
 
 #: menu.cc:906
 msgid "Back to Game"
@@ -733,23 +733,23 @@ msgstr "Non"
 
 #: screen.cc:549
 msgid "Must have at least 2 scroll layers!"
-msgstr "Il faut au moins 2 couche de dÃ©filement !"
+msgstr "Il faut au moins 2 couche de défilement !"
 
 #: screen.cc:552
 msgid "Failed to alloc memory for bonus scroller!"
-msgstr "Ã‰chec pour l'allocation de mÃ©moire pour le dÃ©filement bonus"
+msgstr "Échec pour l'allocation de mémoire pour le défilement bonus"
 
 #: screen.cc:634
 msgid "could not open display"
-msgstr "Ne peut pas accÃ©der Ã  l'affichage"
+msgstr "Ne peut pas accéder à l'affichage"
 
 #: screen.cc:1216
 msgid "Wrong command in formatted text."
-msgstr "Commande incorrecte en texte formatÃ©"
+msgstr "Commande incorrecte en texte formaté"
 
 #: screen.cc:1260
 msgid "Wrong command in formatted text, scr_formattextlength."
-msgstr "Commande incorrecte en texte formatÃ©, scr_formattextlength."
+msgstr "Commande incorrecte en texte formaté, scr_formattextlength."
 
 #: screen.cc:1431
 msgid "REC"
@@ -757,7 +757,7 @@ msgstr "###ENREGISTREMENT"
 
 #: screen.cc:1432
 msgid "DEMO"
-msgstr "DÃ‰MO"
+msgstr "DÉMO"
 
 #: sound.cc:62
 msgid "Couldn't init the sound system, muting.\n"
@@ -765,11 +765,11 @@ msgstr "Ne peut pas initialiser le son, silence.\n"
 
 #: sound.cc:70
 msgid "Could not open audio, muting.\n"
-msgstr "Ne peut pas accÃ©der au son, silence.\n"
+msgstr "Ne peut pas accéder au son, silence.\n"
 
 #: sprites.cc:45
 msgid "could not alloc memory for sprite array"
-msgstr "Ne peut pas allouer la mÃ©moire pour le tableau de sprites"
+msgstr "Ne peut pas allouer la mémoire pour le tableau de sprites"
 
 #: stars.cc:54
 msgid "sts_init with too few stars!"
@@ -777,15 +777,15 @@ msgstr ""
 
 #: stars.cc:57
 msgid "Failed to alloc memory!"
-msgstr "Ã‰chec de l'allocation de la mÃ©moire"
+msgstr "Échec de l'allocation de la mémoire"
 
 #: levelnames.txt:1
 msgid "Run and don't stop"
-msgstr "Courez et ne vous arrÃªtez pas"
+msgstr "Courez et ne vous arrêtez pas"
 
 #: levelnames.txt:1
 msgid "Watch your step"
-msgstr "Regardez oÃ¹ vous mettez les pieds"
+msgstr "Regardez où vous mettez les pieds"
 
 #: levelnames.txt:1
 msgid "Short, but deadly"
@@ -793,11 +793,11 @@ msgstr "Cour, mais mortel"
 
 #: levelnames.txt:1
 msgid "The maddening"
-msgstr "Ã€ rendre fou"
+msgstr "À rendre fou"
 
 #: levelnames.txt:1
 msgid "Doom at every step"
-msgstr "La mort Ã  chaque pas"
+msgstr "La mort à chaque pas"
 
 #: levelnames.txt:1
 msgid "Enemies everywhere"
@@ -813,7 +813,7 @@ msgstr "Destructeur d'esprit"
 
 #: levelnames.txt:1
 msgid "Mind Trap"
-msgstr "PiÃ¨ge Ã  esprit"
+msgstr "Piège à esprit"
 
 #: levelnames.txt:1
 msgid "Breaking Tower"
@@ -849,7 +849,7 @@ msgstr "La tour agassante"
 
 #: levelnames.txt:1
 msgid "Cave of Failure"
-msgstr "La caverne de l'Ã©chec"
+msgstr "La caverne de l'échec"
 
 #: levelnames.txt:1
 msgid "Dividing path"
@@ -861,11 +861,11 @@ msgstr "Pas de sortie ?"
 
 #: levelnames.txt:1
 msgid "Trap"
-msgstr "PiÃ¨ge"
+msgstr "Piège"
 
 #: levelnames.txt:1
 msgid "Tower of Mystery"
-msgstr "La tour des mystÃ¨res"
+msgstr "La tour des mystères"
 
 #: levelnames.txt:1
 msgid "Slip ... and die"
@@ -917,7 +917,7 @@ msgstr "Le royaume des robots"
 
 #: levelnames.txt:1
 msgid "Trap of tricks"
-msgstr "PiÃ¨ges Ã  astuces"
+msgstr "Pièges à astuces"
 
 #: levelnames.txt:1
 msgid "Slippery slide"
@@ -929,11 +929,11 @@ msgstr "Le chemin interrompu"
 
 #: levelnames.txt:1
 msgid "Swimmers delight"
-msgstr "DÃ©lice des nageurs"
+msgstr "Délice des nageurs"
 
 #: levelnames.txt:1
 msgid "Nasty one"
-msgstr "MÃ©chant"
+msgstr "Méchant"
 
 #: levelnames.txt:1
 msgid "Edge of doom"
@@ -949,11 +949,11 @@ msgstr "Le paradis des robots"
 
 #: levelnames.txt:1
 msgid "Trick of traps"
-msgstr "L'astuce des piÃ¨ges"
+msgstr "L'astuce des pièges"
 
 #: levelnames.txt:1
 msgid "No man's land"
-msgstr "DÃ©sert"
+msgstr "Désert"
 
 #: levelnames.txt:1
 msgid "Oh, *******!!"
@@ -961,11 +961,11 @@ msgstr "Oh, *******!!"
 
 #: levelnames.txt:1
 msgid "Riddle of reason"
-msgstr "Ã‰nigme de la raison"
+msgstr "Énigme de la raison"
 
 #: levelnames.txt:1
 msgid "Maze of mistakes"
-msgstr "Le dÃ©dale des erreurs"
+msgstr "Le dédale des erreurs"
 
 #: levelnames.txt:1
 msgid "Last trump"
@@ -1005,7 +1005,7 @@ msgstr "Les tours ABC"
 
 #, fuzzy
 #~ msgid "Fullscreen "
-#~ msgstr "Plein Ã©cran "
+#~ msgstr "Plein écran "
 
 #, fuzzy
 #~ msgid "Sounds "
@@ -1021,8 +1021,9 @@ msgstr "Les tours ABC"
 
 #, fuzzy
 #~ msgid "Scroller alpha "
-#~ msgstr "DÃ©filement transparent "
+#~ msgstr "Défilement transparent "
 
 #, fuzzy
 #~ msgid "Shadowing "
 #~ msgstr "Ombres "
+

@@ -85,7 +85,7 @@ Uint16 lev_missionnumber();
 const char * lev_missionname(Uint16 num);
 
 /* Convert a char into towerblock */
-Uint8 conv_char2towercode(char ch);
+Uint8 conv_char2towercode(wchar_t ch);
   
 /* Get tower password. Note that the password changes when
    the tower changes. */
