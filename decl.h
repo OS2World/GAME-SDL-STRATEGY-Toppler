@@ -202,6 +202,7 @@ extern bool use_alpha_sprites;
 extern bool use_alpha_layers;
 extern bool use_alpha_font;
 extern bool use_alpha_darkening;
+extern bool use_full_scroller;
 extern int  waves_type;
 extern bool status_top;
 extern int  editor_towerpagesize;

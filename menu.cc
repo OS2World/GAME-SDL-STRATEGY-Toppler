@@ -824,6 +824,17 @@ men_waves_menu(void *ms)
 }
 
 static char *
+men_full_scroller(void *ms)
+{
+  if (ms) {
+    use_full_scroller = !use_full_scroller;
+  }
+  if (use_full_scroller) return "Complete Scroller";
+  else return "2 layers Scoller";
+}
+
+
+static char *
 men_alpha_options(void *mainmenu) {
   static char s[20] = "Alpha Options";
   if (mainmenu) {
@@ -859,6 +870,7 @@ men_options_graphic(void *mainmenu) {
     ms = add_menu_option(ms, NULL, men_options_windowed);
     ms = add_menu_option(ms, NULL, men_alpha_options);
     ms = add_menu_option(ms, NULL, men_waves_menu, SDLK_UNKNOWN, MOF_PASSKEYS);
+    ms = add_menu_option(ms, NULL, men_full_scroller, SDLK_UNKNOWN, MOF_RIGHT);
 
     ms = add_menu_option(ms, NULL, NULL);
     ms = add_menu_option(ms, "Back", NULL);

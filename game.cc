@@ -592,6 +592,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
                            top_anglepos(), tower_angle), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, drawflags);
       scr_swap();
       snd_play();
+
       dcl_wait();
     }
 

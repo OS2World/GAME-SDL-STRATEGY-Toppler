@@ -1,3 +1,14 @@
+me:
+
+- switch to 16 bit graphic mode -> huge speed improvement
+- accelerate waves
+- option to switch off all but the top and bottom layer in bonus game
+- bugfix in level loader
+- include new levels from clarence ball (ball 2)
+- bugfix in event handling (mouse clicking)
+- bugfix in level.cc that slightly changed the robot behaviour and made 
+  the demos run differently
+
 Version 0.98.3 20.Dec.2002
 
 pasi:

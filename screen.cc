@@ -588,7 +588,7 @@ void scr_reload_sprites() {
 void scr_init(void) {
   spr_init(1000);
 
-  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 32, (fullscreen) ? (SDL_FULLSCREEN) : (0));
+  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (fullscreen) ? (SDL_FULLSCREEN) : (0));
 
   load_sprites();
 
@@ -606,7 +606,7 @@ void scr_init(void) {
 }
 
 void scr_reinit() {
-  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 32, (fullscreen) ? (SDL_FULLSCREEN) : (0));
+  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (fullscreen) ? (SDL_FULLSCREEN) : (0));
 }
 
 void scr_done(void) {
@@ -644,36 +644,10 @@ static void cleardesk(long height) {
 
 void scr_darkenscreen(void) {
 
-  int x, y;
-
   if (!use_alpha_darkening)
     return;
 
-  static SDL_Surface *s = NULL;
-
-  if (!s) {
-      s = SDL_CreateRGBSurface(SDL_HWSURFACE, 20, 20, 24, 0xff, 0xff00, 0xff0000, 0);
-      SDL_SetColorKey(s, SDL_SRCCOLORKEY | SDL_RLEACCEL, 0xff);
-
-      for (y = 0; y < 20; y++)
-	for (x = 0; x < 20; x++)
-	  if ((y+x) & 1)
-	    ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0x00;
-          else
-            ((Uint8*)s->pixels)[y * s->pitch + x * s->format->BytesPerPixel] = 0xff;
-
-  }
-
-  x = y = 0;
-
-  while (y < SCREENHEI) {
-    x = 0;
-    while (x < SCREENWID) {
-      scr_blit(s, x, y);
-      x += 20;
-    }
-    y += 20;
-  }
+  scr_putbar(0, 0, SCREENWID, SCREENHEI, 0, 0, 0, 128);
 }
 
 
@@ -739,10 +713,13 @@ static void putwater(long height) {
 
     case waves_expensive:
       {
-        int targetidx = ((SCREENHEI / 2) + height) * display->pitch;
         int source_line = (SCREENHEI / 2) + height - 1;
 
+        Uint8 buffer[4] = {0,0,0,0};
+
         for (int y = 0; y < (SCREENHEI / 2) - height; y++) {
+
+          Uint8 * target = (Uint8*)display->pixels + ((SCREENHEI/2) + height + y) * display->pitch;
 
           for (int x = 0; x < SCREENWID; x++) {
             Sint16 dx = waves[(x+y+12*wavetime) & 0x7f] + waves[2*x-y+11*wavetime & 0x7f];
@@ -751,25 +728,16 @@ static void putwater(long height) {
             dx = dx * y / (SCREENHEI/2);
             dy = dy * y / (SCREENHEI/2);
 
-            Uint8 r, g, b;
+            if ((x+dx < 0) || (x+dx > SCREENWID) || (source_line+dy < 0))
+              memcpy(target, &buffer, display->format->BytesPerPixel);
+            else
+              memcpy(target, (Uint8*)display->pixels +
+                     (x+dx) * display->format->BytesPerPixel +
+                     (source_line+dy) * display->pitch, display->format->BytesPerPixel);
 
-            if ((x+dx < 0) || (x+dx > SCREENWID) || (source_line+dy < 0)) {
-              r = g = 0;
-              b = ((y+dx)/2) + 30;
-            } else {
-              int source_idx = (source_line+dy) * display->pitch + (x+dx) * display->format->BytesPerPixel;
-
-              b = ((((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9) + ((y+dy)/2) + 30;
-              g = (((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9;
-              r = (((long)((Uint8 *)(display->pixels))[source_idx++]) * (340-y+dy)) >> 9;
-            }
-
-            ((Uint8 *)(display->pixels))[targetidx++] = b;
-            ((Uint8 *)(display->pixels))[targetidx++] = g;
-            ((Uint8 *)(display->pixels))[targetidx++] = r;
-
-            targetidx++;
+            target += display->format->BytesPerPixel;
           }
+          scr_putbar(0, (SCREENHEI/2) + height + y, SCREENWID, 1, 0, 0, y, 128);
           source_line --;
         }
       }
@@ -777,6 +745,9 @@ static void putwater(long height) {
     case waves_simple:
       {
         int horizontal_shift;
+
+        scr_putbar(0, (SCREENHEI / 2) + height, 10,  (SCREENHEI / 2) - height, 0, 0, 0, 255);
+        scr_putbar(SCREENWID-10, (SCREENHEI / 2) + height, 10,  (SCREENHEI / 2) - height, 0, 0, 0, 255);
 
         for (int y = 0; y < (SCREENHEI / 2) - height; y++) {
 
@@ -795,34 +766,26 @@ static void putwater(long height) {
             horizontal_shift = z;
           }
 
-          {  // fill left and right edge with dark pixels
-            int right_idx = target_line * display->pitch + (SCREENWID - 10) * display->format->BytesPerPixel;
-            int left_idx = target_line * display->pitch;
-            for (int x = 0; x < 10; x++) {
-              ((Uint8 *)(display->pixels))[right_idx + 0] = 30 + y/2;
-              ((Uint8 *)(display->pixels))[right_idx + 1] = 0;
-              ((Uint8 *)(display->pixels))[right_idx + 2] = 0;
-              ((Uint8 *)(display->pixels))[left_idx + 0] = 30 + y/2;
-              ((Uint8 *)(display->pixels))[left_idx + 1] = 0;
-              ((Uint8 *)(display->pixels))[left_idx + 2] = 0;
-              right_idx += display->format->BytesPerPixel;
-              left_idx += display->format->BytesPerPixel;
-            }
+          SDL_Rect r1;
+          SDL_Rect r2;
+
+          r1.w = r2.w = SCREENWID;
+          r1.h = r2.h = 1;
+
+          r2.y = target_line;
+          r1.y = source_line;
+
+          if (horizontal_shift > 0) {
+            r1.x = horizontal_shift;
+            r2.x = 0;
+          } else {
+            r1.x = 0;
+            r2.x = -horizontal_shift;
           }
 
-          {  // copy one pixel row
-            int target_idx = target_line * display->pitch + horizontal_shift * display->format->BytesPerPixel;
-            int source_idx = source_line * display->pitch;
-            for (int x = 0; x < SCREENWID; x++) {
-              if ((x + horizontal_shift > 0) && (x + horizontal_shift < SCREENWID)) {
-                ((Uint8 *)(display->pixels))[target_idx + 0] = ((long)((Uint8 *)(display->pixels))[source_idx + 0]) * (340-y) / 512 + (y/2) + 30;
-                ((Uint8 *)(display->pixels))[target_idx + 1] = ((long)((Uint8 *)(display->pixels))[source_idx + 1]) * (340-y) / 512;
-                ((Uint8 *)(display->pixels))[target_idx + 2] = ((long)((Uint8 *)(display->pixels))[source_idx + 2]) * (340-y) / 512;
-              }
-              target_idx += display->format->BytesPerPixel;
-              source_idx += display->format->BytesPerPixel;
-            }
-          }
+          SDL_BlitSurface(display, &r1, display, &r2);
+          scr_putbar(0, target_line, SCREENWID, 1, 0, 0, y, 128);
+
         }
       }
       break;
@@ -865,7 +828,9 @@ void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb,
 
   if (alpha != 255) {
 
-    SDL_Surface *s = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, br, h, 24, 0xff, 0xff00, 0xff0000, 0);
+    SDL_Surface *s = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, br, h, 16,
+                                          display->format->Rmask, display->format->Gmask,
+                                          display->format->Bmask, 0);
     SDL_SetAlpha(s, SDL_SRCALPHA, alpha);
 
     SDL_Rect r;
@@ -1570,17 +1535,23 @@ static void put_scrollerlayer(long horiz, int layer) {
 void scr_draw_bonus1(long horiz, long towerpos) {
   int l;
 
-  for (l = 0; (l < num_scrolllayers) && (l < sl_tower_depth); l++)
-    put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
+  if (use_full_scroller)
+    for (l = 0; (l < num_scrolllayers) && (l < sl_tower_depth); l++)
+      put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
+  else
+    put_scrollerlayer(scroll_layers[0].num*horiz/scroll_layers[0].den, 0);
 
   puttower(0, SCREENHEI/2, SCREENHEI, sl_tower_num*towerpos/sl_tower_den);
 }
 
 void scr_draw_bonus2(long horiz, long towerpos) {
   int l;
-  
-  for (l = sl_tower_depth; l < num_scrolllayers; l++) 
+
+  if (use_full_scroller)
+    for (l = sl_tower_depth; l < num_scrolllayers; l++)
       put_scrollerlayer(scroll_layers[l].num*horiz/scroll_layers[l].den, l);
+  else
+    put_scrollerlayer(scroll_layers[num_scrolllayers-1].num*horiz/scroll_layers[num_scrolllayers-1].den, num_scrolllayers-1);
 
   draw_data(-1, SF_NONE);
 }
