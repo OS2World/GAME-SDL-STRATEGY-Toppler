@@ -1,5 +1,7 @@
 my work
 
+- improved autoconf and automake (hopefully)
+- switch from palettized to true color mode -> remove palette module
 - fix bug in config.in enabled SDL_mixer always
 - fix name clash with standard scandir and alphasort
 - remove some warnings

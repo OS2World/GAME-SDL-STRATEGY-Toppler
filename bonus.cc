@@ -23,7 +23,6 @@
 #include "decl.h"
 #include "points.h"
 #include "sprites.h"
-#include "palette.h"
 #include "level.h"
 
 #include <stdlib.h>
@@ -75,8 +74,6 @@ bonus_background_proc(void)
 static bool 
 escape(long time, long x)
 {
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
-
   key_wait_for_any();
 
   callback_time = time;
@@ -86,22 +83,17 @@ escape(long time, long x)
 
   if (men_yn("Really quit", false))
     return true;
-  else pal_colors(pal_bonusgame);
 
   return false;
 }
 
 static void pause(long time, long x) {
    
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_bonusgame);
-   
   callback_time = time;
   callback_x = x;
   set_men_bgproc(bonus_background_proc);
 
   men_info("Pause", -1, 1);
-
-  pal_colors(pal_bonusgame);
 }
 
 
@@ -129,8 +121,6 @@ bool bns_game(void) {
 
   x = 0;
 
-  pal_colors(pal_bonusgame);
-   
   set_men_bgproc(NULL);
 
   key_readkey();
@@ -264,11 +254,8 @@ bool bns_game(void) {
 
     scr_swap();
 
-    if (x == 300) {
-      pal_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
-      pal_calcdark(pal_towergame);
-      pal_colors(pal_bonusgame);
-    }
+    if (x == 300)
+      scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
 
     if (time == gametime) {
       automatic = true;

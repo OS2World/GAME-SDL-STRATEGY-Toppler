@@ -25,7 +25,6 @@
 #include "archi.h"
 #include "screen.h"
 #include "keyb.h"
-#include "palette.h"
 #include "decl.h"
 #include "level.h"
 #include "sound.h"
@@ -54,21 +53,18 @@ static struct {
 
 
 void men_init(void) {
+
+  Uint8 pal[3*240];
+  Uint32 res;
+
   arc_assign(menudat);
-
-  for (int t = 0; t < 240; t++) {
-    int r = arc_getbits(8);
-    int g = arc_getbits(8);
-    int b = arc_getbits(8);
-    pal_setpal(t, r, g, b, pal_menu);
-  }
-
-  menupicture = scr_loadsprites(1, SCREENWID, SCREENHEI, 8, 0, 0);
-
+  arc_read(pal, 3*240, &res);
+  menupicture = scr_loadsprites(1, SCREENWID, SCREENHEI, 8, false, pal);
   arc_closefile();
 
   arc_assign(titledat);
-  titledata = scr_loadsprites(1, SPR_TITLEWID, SPR_TITLEHEI, 4, fontcol, true);
+  arc_read(pal, 3*16, &res);
+  titledata = scr_loadsprites(1, SPR_TITLEWID, SPR_TITLEHEI, 4, true, pal);
   arc_closefile();
 }
 
@@ -198,6 +194,8 @@ free_menu_system(struct _menusystem *ms)
 void 
 draw_menu_system(struct _menusystem *ms)
 {
+  static Uint8 blink_color = 0;
+
   if (!ms) return;
 
   int y, offs = 0, len;
@@ -228,10 +226,12 @@ draw_menu_system(struct _menusystem *ms)
     if (y + offs == ms->hilited)
       scr_putbar((SCREENWID - ms->maxoptlen - 8) / 2,
                  ms->ystart + (y + (has_title ? 3 : 1)) * FONTHEI - 3,
-                 ms->maxoptlen + 8, FONTHEI + 3, fontcol + get_blink_color());
+                 ms->maxoptlen + 8, FONTHEI + 3, blink_color, blink_color, blink_color);
     if (len)
       scr_writetext_center(ms->ystart + (y + (has_title ? 3 : 1)) * FONTHEI, ms->moption[y+offs].oname);
   }
+
+  blink_color = (blink_color + 5) & 0xFF;
   scr_swap();
   dcl_wait();
 }
@@ -600,6 +600,8 @@ calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
 static char *
 men_hiscores_background_proc(void *ms)
 {
+  static Uint8 blink_color = 0;
+
   if (ms) {
 
     scr_blit(spr_spritedata(menupicture), 0, 0);
@@ -634,12 +636,14 @@ men_hiscores_background_proc(void *ms)
       get_hiscores_string(cs, &pos, &points, &name);
       if (cs == hiscores_hilited) {
         int clen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20 + 10;
-        scr_putbar(hiscores_xpos - 5, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45 - 3, clen, FONTHEI + 3, fontcol + get_blink_color());
+        scr_putbar(hiscores_xpos - 5, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45 - 3, clen, FONTHEI + 3, blink_color, blink_color, blink_color);
       }
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, pos);
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 10 + hiscores_maxlen_points - scr_textlength(points) , (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, points);
       scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points, (t*(FONTHEI+1)) + SPR_TITLEHEI + 45, name);
     }
+    blink_color = (blink_color + 5) & 0xFF;
+
     return NULL;
   }
   return "HighScores";
@@ -689,8 +693,7 @@ main_game_loop()
     snd_wateron();
     do {
       gam_loadtower(tower);
-      pal_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
-      pal_calcdark(pal_towergame);
+      scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
       snd_watervolume(128);
       snd_playtgame();
       gam_arrival();
@@ -727,10 +730,8 @@ men_main_bonusgame_proc(void *ms)
   if (ms) {
     snd_stoptitle();
     gam_newgame();
-    pal_settowercolor(rand() % 256, rand() % 256, rand() % 256);
-    pal_calcdark(pal_towergame);
+    scr_settowercolor(rand() % 256, rand() % 256, rand() % 256);
     bns_game();
-    pal_colors(pal_menu);
     snd_playtitle();
   }
   return "Hunt the Fish";
@@ -775,7 +776,7 @@ men_main_leveleditor_proc(void *ms)
   if (ms) {
     snd_stoptitle();
     le_edit();
-    pal_colors(pal_menu);
+//    pal_colors(pal_menu);
     snd_playtitle();
   }
   return "Level Editor";
@@ -788,7 +789,7 @@ void men_main() {
 
   if (!ms) return;
 
-  pal_colors(pal_menu);
+//  pal_colors(pal_menu);
 
   snd_playtitle();
 
@@ -810,12 +811,6 @@ void men_main() {
   free_menu_system(ms);
 
   snd_stoptitle();
-
-  /*scr_putbar(0,0,SCREENWID,SCREENHEI);
-   scr_swap();
-   scr_blit(spr_spritedata(titledata), 0, 0);
-   scr_swap();
-   scr_savedisplaybmp("toppler_title.bmp");*/
 }
 
 static int input_box_cursor_state = 0;
@@ -823,15 +818,17 @@ static int input_box_cursor_state = 0;
 void
 draw_input_box(int x, int y, int len, int cursor, char *txt)
 {
-  int col = get_blink_color();
+  static int col = 0;
 
-  scr_putbar(x, y, len * FONTMAXWID, FONTHEI, 0);
+  scr_putbar(x, y, len * FONTMAXWID, FONTHEI);
   scr_writetext(x+1,y, txt);
 
   if ((input_box_cursor_state & 4) && ((cursor >= 0) && (cursor < len)))
-    scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI, fontcol + 14 - col);
-  scr_putrect(x,y, len * FONTMAXWID, FONTHEI, fontcol + col);
+    scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI, (fontcol + 14 - col) * 0xf, (fontcol + 14 - col) * 0xf, (14 - col) * 0xf);
+  scr_putrect(x,y, len * FONTMAXWID, FONTHEI, col, col, col);
   input_box_cursor_state++;
+
+  col = (col + 5) & 0xFF;
 }
 
 void men_input(char *s, int max_len, int xpos, int ypos) {
@@ -914,7 +911,7 @@ congrats_background_proc(void)
   
 void men_highscore(unsigned long pt) {
 
-  pal_colors(pal_menu);
+//  pal_colors(pal_menu);
 
 #ifdef USE_LOCKING
   int lockfd;

@@ -20,7 +20,7 @@
 
 #include "decl.h"
 #include "level.h"
-#include "palette.h"
+#include "screen.h"
 #include "toppler.h"
 #include "sound.h"
 
@@ -304,9 +304,9 @@ void rob_new(int verticalpos) {
         if (next_cross_timer != -1) return;
 
         /* set colors for the cross */
-        pal_setcrosscolors(crosscols[nextcrosscolor].r,
-                           crosscols[nextcrosscolor].g,
-                           crosscols[nextcrosscolor].b);
+        scr_setcrosscolor(crosscols[nextcrosscolor].r,
+                          crosscols[nextcrosscolor].g,
+                          crosscols[nextcrosscolor].b);
         nextcrosscolor = (nextcrosscolor + 1) & 7;
 
         /* fill in the data for the robot */

@@ -19,7 +19,6 @@
 #include "leveledit.h"
 
 #include "decl.h"
-#include "palette.h"
 #include "level.h"
 #include "screen.h"
 #include "keyb.h"
@@ -40,23 +39,19 @@ static void editor_background_proc(void) {
 }
 
 static bool really_quit(int row, int col) {
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
 
   if (men_yn("Tower changed, really quit", false)) {
     return true;
   } else {
-    pal_colors(pal_towergame);
     return false;
   }
 }
 
 static bool really_load(int row, int col) {
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
    
   if (men_yn("Tower changed, really load", false)) {   
     return true;
   } else {
-    pal_colors(pal_towergame);
     return false;
   }
 }
@@ -93,7 +88,7 @@ static bool edit_towercolor(int row, int col) {
       scr_writetext_center(z, cbuf);
     }
 
-    bgcol = get_blink_color();
+    bgcol = (bgcol + 5) & 0xFF;
 
     scr_swap();
     dcl_wait();
@@ -130,11 +125,10 @@ static bool edit_towercolor(int row, int col) {
         lev_set_towercol(oldc[0],oldc[1],oldc[2]);
       else
         lev_set_towercol(newc[0],newc[1],newc[2]);
-      pal_settowercolor(lev_towercol_red(),
+
+      scr_settowercolor(lev_towercol_red(),
                         lev_towercol_green(),
                         lev_towercol_blue());
-      pal_calcdark(pal_towergame);
-      pal_colors(pal_towergame);
 
       curc[0] = newc[0];
       curc[1] = newc[1];
@@ -169,18 +163,13 @@ static void edit_checktower(int &row, int &col) {
    bg_row = r;
    bg_col = -c;
 
-   pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
-
    men_info(problemstr[pr % NUM_TPROBLEMS], 50, 2);
    row = bg_row;
    col = bg_col;
-
-   pal_colors(pal_towergame);
 }
 
 static void createMission(void) {
 
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
   scr_drawedit(0, 0);
   scr_writetext_center(30, "Mission creation");
   scr_writetext_center(70, "enter mission name");
@@ -191,10 +180,8 @@ static void createMission(void) {
   char missionname[25];
   men_input(missionname, 15);
 
-  if (!missionname[0]) {
-    pal_colors(pal_towergame);
+  if (!missionname[0])
     return;
-  }
 
   if (!lev_mission_new(missionname)) {
 
@@ -212,8 +199,6 @@ static void createMission(void) {
       inp = key_chartyped();
     } while (!inp);
   
-    pal_colors(pal_towergame);
-
     return;
   }
 
@@ -353,8 +338,6 @@ void le_showkeyhelp(int row, int col) {
   point[0] = fontpoint;
   point[1] = 0;
 
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
-
   do {
     scr_drawedit(row * 4, col * 8);
 
@@ -402,8 +385,6 @@ void le_showkeyhelp(int row, int col) {
     }
 
   } while (!ende);
-
-  pal_colors(pal_towergame);
 }
 
 void le_edit(void) {
@@ -413,6 +394,7 @@ void le_edit(void) {
   char inp;
   int row = 0, col = 0;
   int tstep = 0;
+  Uint8 blink_color = 0;
 
   lev_new();
 
@@ -421,11 +403,9 @@ void le_edit(void) {
   set_men_bgproc(editor_background_proc);
 
   lev_set_towercol(rand() % 256,rand() % 256,rand() % 256);
-  pal_settowercolor(lev_towercol_red(),
+  scr_settowercolor(lev_towercol_red(),
                     lev_towercol_green(),
                     lev_towercol_blue());
-  pal_calcdark(pal_towergame);
-  pal_colors(pal_towergame);
 
   while (!ende) {
     bg_row = row;
@@ -440,7 +420,9 @@ void le_edit(void) {
             changed ? '*' : ' ', -col & 0xf, row);
 
     scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(), 10);
-    scr_putbar(SCREENWID-8, SCREENHEI-row-1, 8, 1, get_blink_color());
+    scr_putbar(SCREENWID-8, SCREENHEI-row-1, 8, 1, blink_color, blink_color, blink_color);
+
+    blink_color = (blink_color + 5) & 0xFF;
 
     scr_writetext(0, SCREENHEI-FONTHEI, status);
 
@@ -567,11 +549,9 @@ void le_edit(void) {
             break;
         men_input(editor_towername, TOWERNAMELEN);
         lev_loadtower(editor_towername);
-        pal_settowercolor(lev_towercol_red(),
+        scr_settowercolor(lev_towercol_red(),
                           lev_towercol_green(),
                           lev_towercol_blue());
-        pal_calcdark(pal_towergame);
-        pal_colors(pal_towergame);
         changed = false;
         break;
       case EDACT_SAVETOWER:
@@ -590,7 +570,6 @@ void le_edit(void) {
           snb_init();
           snd_wateron();
           gam_towergame(dummy1, dummy2);
-          pal_colors(pal_towergame);
           snd_wateroff();
           lev_restore(p);
           key_readkey();

@@ -35,7 +35,12 @@ void scr_done(void);
 
 /* loads a number of sprite, enters it into the sprite collection
  and returns the index of the first sprite */
-unsigned short scr_loadsprites(int num, int w, int h, int bits, int colstart, bool sprite);
+unsigned short scr_loadsprites(int num, int w, int h, int bits, bool sprite, const Uint8 *pal);
+
+/* changes the colors of the slices, doors and battlement
+ */
+void scr_settowercolor(Uint8 red, Uint8 green, Uint8 blue);
+void scr_setcrosscolor(Uint8 red, Uint8 green, Uint8 blue);
 
 /* all paint routines paint onto an invisible surface, to show this surface
  call swap */
@@ -43,22 +48,20 @@ unsigned short scr_loadsprites(int num, int w, int h, int bits, int colstart, bo
 
 /* writes some text onto the screen */
 void scr_writetext(long x, long y, const char *s);
+
 /* centers the text horizontally */
 void scr_writetext_center(long y, const char *s);
+
 /* returns the number of pixels the first chars characters in
  text needs in the display (if the sting is only n chars long
  then only n chars are claculated */
 int scr_textlength(const char *s, int chars = 32000);
 
 /* draws a filles rectangle with color col */
-void scr_putbar(int x, int y, int br, int h, unsigned char col = 0);
+void scr_putbar(int x, int y, int br, int h, Uint8 colr = 0, Uint8 colg = 0, Uint8 col = 0);
 
 /* draws a rectangle */
-void scr_putrect(int x, int y, int br, int h, unsigned char col = 0);
-
-/* for the submarine game i intend to use a simpel voxel space (maybe)*/
-void scr_putvoxel(long xpos, unsigned char (*grnd)[100][256],
-                  unsigned char (*ceil)[100][256]);
+void scr_putrect(int x, int y, int br, int h, Uint8 colr = 0, Uint8 colg = 0, Uint8 col = 0);
 
 /* put the drawing surface onto a visible surface */
 void scr_swap(void);

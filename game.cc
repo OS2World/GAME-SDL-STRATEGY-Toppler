@@ -21,7 +21,6 @@
 #include "stars.h"
 #include "points.h"
 #include "decl.h"
-#include "palette.h"
 #include "screen.h"
 #include "keyb.h"
 #include "menu.h"
@@ -75,8 +74,6 @@ void gam_arrival(void) {
   top_hide();
 
   key_readkey();
-
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
 
   do {
     scr_drawall(8, 0, lev_towertime(), svisible, subshape, substart);
@@ -147,8 +144,6 @@ void gam_arrival(void) {
   } while (!((b == 5) || key_keypressed(fire_key)));
 
   svisible = false;
-
-  pal_colors(pal_towergame);
 }
 
 void gam_pick_up(Uint8 anglepos, Uint16 time) {
@@ -281,15 +276,11 @@ static void game_background_proc(void) {
 
 static void timeout(int &tower_position, int &tower_anglepos) {
 
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
-   
   bg_tower_pos = tower_position;
   bg_tower_angle = tower_anglepos;
   bg_time = 0;
    
   men_info("Time over", 150);
-
-  pal_colors(pal_towergame);
 }
 
 static void writebonus(int &tower_position, int tower_anglepos, int zeit, int tec, int extra, int time) {
@@ -333,8 +324,6 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
   extra = 100;
   tec = top_technic();
 
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
-
   do {
      writebonus(tower_position, tower_angle, zeit, tec, extra, time);
      dcl_wait();
@@ -370,8 +359,6 @@ static void bonus(int &tower_position, int &tower_angle, int time) {
      writebonus(tower_position, tower_angle, zeit, tec, extra, time);
      dcl_wait();
   } while ((delay++ < 30) && (!key_keypressed(fire_key)));
-
-  pal_colors(pal_towergame);
 }
 
 /* update the time */
@@ -416,15 +403,12 @@ static void get_keys(Sint8 &left_right, Sint8 &up_down, bool &space) {
 
 static void escape(Uint8 &state, int &tower_position, int &tower_anglepos, int time) {
 
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
-  
   snd_wateroff();
 
   key_wait_for_any();
 
-  if (men_yn("Really quit", false)) {
-     state = STATE_ABBORTED;
-  } else pal_colors(pal_towergame);
+  if (men_yn("Really quit", false))
+    state = STATE_ABBORTED;
 
   snd_wateron();
   towerpos(top_verticalpos(), tower_position,
@@ -432,7 +416,6 @@ static void escape(Uint8 &state, int &tower_position, int &tower_anglepos, int t
 }
 
 static void pause(int &tower_position, int tower_anglepos, int time) {
-  pal_darkening(fontcol, fontcol + fontcnt - 1, pal_towergame);
 
   snd_wateroff();
 
@@ -441,8 +424,6 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
   bg_time = time;
    
   men_info("Pause", -1, 1);
-
-  pal_colors(pal_towergame);
 
   snd_wateron();
   towerpos(top_verticalpos(), tower_position,
