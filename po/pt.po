@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-14 20:59+0100\n"
+"POT-Creation-Date: 2005-10-03 19:54+0200\n"
 "PO-Revision-Date: 2005-01-09 00:00+0100\n"
 "Last-Translator: Helder Correia <helder.correia@netcabo.pt>\n"
 "Language-Team: pt <pt@li.org>\n"
@@ -63,6 +63,7 @@ msgid "Lifes:     ~t3505000 X %3d"
 msgstr "Vidas:     ~t3505000 X %3d"
 
 #: keyb.cc:161
+#, c-format
 msgid "Wheee!!\n"
 msgstr "Boa!\n"
 
@@ -427,6 +428,7 @@ msgid "Debug level is now %c.\n"
 msgstr "Nível de depuração é agora %c.\n"
 
 #: main.cc:57
+#, c-format
 msgid "Illegal debug level value, using default.\n"
 msgstr "Valor de nível de depuração ilegal, a usar valor por omissão.\n"
 
@@ -436,10 +438,12 @@ msgid "Nebulous version %s"
 msgstr "Nebulous versão %s"
 
 #: main.cc:104 main.cc:112
+#, c-format
 msgid "Nebulous"
 msgstr "Nebulous"
 
 #: main.cc:119
+#, c-format
 msgid "Thanks for playing!\n"
 msgstr "Obrigado por jogar!\n"
 
@@ -481,6 +485,7 @@ msgid "Status on top"
 msgstr "Estado no topo"
 
 #: menu.cc:185
+#, c-format
 msgid "Lives: "
 msgstr "Vidas: "
 
