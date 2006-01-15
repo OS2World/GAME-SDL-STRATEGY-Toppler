@@ -85,9 +85,9 @@ void gam_arrival(void) {
     scr_writetext_center((SCREENHEI / 6), _("You are entering the"));
 
     if (strlen(lev_towername()))
-      scr_writetext_center((SCREENHEI*2 / 6), _(lev_towername()));
+      scr_writetext_broken_center((SCREENHEI*2 / 6), _(lev_towername()));
     else
-      scr_writetext_center((SCREENHEI*2 / 6), _("Nameless Tower"));
+      scr_writetext_broken_center((SCREENHEI*2 / 6), _("Nameless Tower"));
 
     if (passwd && lev_show_passwd(lev_towernr())) {
       char buf[50];

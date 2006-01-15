@@ -863,6 +863,40 @@ void scr_writetext_center(long y, const char *s) {
   scr_writetext ((SCREENWID - scr_textlength(s)) / 2, y, s);
 }
 
+void scr_writetext_broken_center(long y, const char *s) {
+
+  // ok, we try to break the text into several lines, if the lines are longer then the
+  // screenwidth
+  
+  int len = strlen(s);
+  int start = 0;
+  int end = len;
+
+  while (start < len) {
+    
+    while (scr_textlength(s+start, end-start+1) > SCREENWID) {
+      end--;
+      while ((end > start) && (s[end] != ' ')) end--;
+
+      if (end == start) {
+        while ((end < len) && (s[end] != ' ')) end++;
+        break;
+      }
+    }
+    
+    if (s[end] == ' ') end--;
+    
+    scr_writetext((SCREENWID - scr_textlength(s+start, end-start+1)) / 2, y, s+start, end-start+1);
+
+    start = end+1;
+    end = len;
+    while ((start < len) && (s[start] == ' ')) start++;
+
+    y += 40;
+    
+  }
+}
+
 void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb, Uint8 alpha) {
 
   if (alpha != 255) {
