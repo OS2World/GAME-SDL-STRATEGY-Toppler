@@ -764,6 +764,15 @@ bool lev_is_robot(int row, int col) {
   return ((towerblockdata[tower[row][col]].tf & TBF_ROBOT) != 0);
 }
 
+
+static bool inside_cyclic_intervall(int x, int start, int end, int cycle) {
+
+  while (x < start) x += cycle;
+  while (x >= end) x -= cycle;
+
+  return (x >= start) && (x < end);
+}
+
 #ifndef CREATOR
 
 /* returns true, if the given figure can be at the given position
@@ -800,11 +809,11 @@ bool lev_testfigure(long angle, long vert, long back,
         return false;
       } else if (lev_is_stick(k + y, hinten)) {
         t = hinten * 8 + height;
-        if ((angle >= t) && (angle < t + width))
+        if (inside_cyclic_intervall(angle, t, t+width, 0x80))
           return false;
       } else if (lev_is_box(k + y, hinten)) {
         t = hinten * 8 + height;
-        if ((angle >= t) && (angle < t + width)) {
+        if (inside_cyclic_intervall(angle, t, t+width, 0x80)) {
           if (typ == 2) {
             // the snowball removes the box
             lev_clear(k + y, hinten);
