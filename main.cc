@@ -30,7 +30,7 @@
 #include <string.h>
 
 #if ENABLE_NLS == 1
-#include <langinfo.h>
+#include <libintl.h>
 #endif
 
 

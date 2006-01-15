@@ -4,6 +4,8 @@ AM_CXXFLAGS = -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(pkglocalsta
 SUBDIRS = po m4
 ACLOCAL_AMFLAGS = -I m4
 
+PACKAGE = toppler
+
 bin_PROGRAMS = toppler
 
 toppler_SOURCES =                  \
@@ -29,7 +31,8 @@ toppler_SOURCES =                  \
   sprites.cc       sprites.h       \
   stars.cc         stars.h         \
   toppler.cc       toppler.h       \
-  txtsys.cc        txtsys.h
+  txtsys.cc        txtsys.h        \
+  qnxicon.c
 
 dist_pixmaps_DATA = $(PACKAGE).xpm
 applications_DATA = $(PACKAGE).desktop
@@ -44,7 +47,8 @@ dist_pkglocalstate_DATA = $(PACKAGE).hsc
 EXTRA_DIST = \
   config.rpath mkinstalldirs Makefile.tools \
   $(PACKAGE).spec \
-  VERSION levelnames.txt
+  VERSION levelnames.txt \
+  toppler.qpg
 
 install-exec-hook:
 	-chgrp games $(DESTDIR)$(bindir)/toppler

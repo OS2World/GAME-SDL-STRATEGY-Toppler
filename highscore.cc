@@ -25,6 +25,10 @@
 #include <stdio.h>
 #include <fcntl.h>
 
+#ifdef __QNXNTO__
+   #include <strings.h>
+#endif // __QNXNTO__
+
 #define NUMHISCORES 10
 
 #define SCOREFNAME "toppler.hsc"

@@ -76,5 +76,5 @@ AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit memmove memset mkdir setlocale strcasecmp strchr strstr])
 
 # Output.
-AC_CONFIG_FILES([Makefile toppler.spec toppler.nsi toppler.desktop po/Makefile.in m4/Makefile])
+AC_CONFIG_FILES([Makefile toppler.spec toppler.nsi toppler.desktop po/Makefile.in m4/Makefile toppler.qpg])
 AC_OUTPUT
