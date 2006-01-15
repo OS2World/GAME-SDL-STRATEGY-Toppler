@@ -2,6 +2,7 @@
 #define SOUNDSYS_H
 
 #ifdef HAVE_LIBSDL_MIXER
+#define USE_RWOPS
 #include <SDL_mixer.h>
 #endif
 
@@ -30,6 +31,9 @@ public:
   void startsound(int snd); //the sound will play in the next update
   void setsoundvol(int snd, int vol); //set sound volume
 
+  void playmusic(const char * file); //start playing a background music
+  void stopmusic(void);            // stop playing the background music
+
   /* tries to open and initialize the sound device */
   void opensound(void);
   /* closes the sound device */
@@ -52,6 +56,8 @@ private:
   struct ttsnddat *sounds;
 
   static class ttsounds *inst;
+
+  Mix_Music * title;
 
 };
 

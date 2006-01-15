@@ -185,3 +185,24 @@ void ttsounds::closesound(void) {
   useSound = false;
 }
 
+
+void ttsounds::playmusic(const char * fname) {
+  if (!useSound) return;
+
+#ifdef HAVE_LIBSDL_MIXER
+  file f(dataarchive, fname);
+
+  title = Mix_LoadMUS_RW(f.rwOps());  
+  Mix_PlayMusic(title, -1);
+#endif
+}
+void ttsounds::stopmusic(void) {
+  if (!useSound) return;
+
+#ifdef HAVE_LIBSDL_MIXER
+  Mix_FadeOutMusic(1000);
+
+  while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
+#endif
+}
+

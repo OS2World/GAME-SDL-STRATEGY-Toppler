@@ -294,13 +294,36 @@ men_options_sounds(_menusystem *ms)
     if (config.nosound()) {
       config.nosound(false);
       snd_init();
+      if (!config.nomusic())
+        snd_playTitle();
     } else {
+      if (!config.nomusic())
+        snd_stopTitle();
       snd_done();
       config.nosound(true);
     }
   }
   if (config.nosound()) sprintf(txt, "%s %c", _("Sounds"), 3);
   else sprintf(txt, "%s %c", _("Sounds"), 4);
+
+  return txt;
+}
+
+  static const char *
+men_options_music(_menusystem *ms)
+{
+  static char txt[30];
+  if (ms) {
+    if (config.nomusic()) {
+      config.nomusic(false);
+      snd_playTitle();
+    } else {
+      snd_stopTitle();
+      config.nomusic(true);
+    }
+  }
+  if (config.nomusic()) sprintf(txt, "%s %c", _("Music"), 3);
+  else sprintf(txt, "%s %c", _("Music"), 4);
 
   return txt;
 }
@@ -480,6 +503,7 @@ men_options(_menusystem *mainmenu) {
     ms = add_menu_option(ms, NULL, run_redefine_menu);
     ms = add_menu_option(ms, NULL, men_options_graphic);
     ms = add_menu_option(ms, NULL, men_options_sounds);
+    ms = add_menu_option(ms, NULL, men_options_music);
 
     ms = add_menu_option(ms, NULL, NULL);
     ms = add_menu_option(ms, _("Back"), NULL);

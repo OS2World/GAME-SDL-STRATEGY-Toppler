@@ -69,7 +69,11 @@ static void startgame(void) {
   gam_init();
   men_init();
   snd_init();
+  if (!config.nomusic())
+    snd_playTitle();
   men_main();
+  if (!config.nomusic())
+    snd_stopTitle();
   lev_done();
   snd_done();
   gam_done();

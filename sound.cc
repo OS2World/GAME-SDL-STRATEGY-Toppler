@@ -61,3 +61,14 @@ void snd_done(void) {
   ttsounds::instance()->closesound();
 }
 
+
+void snd_playTitle(void) {
+  ttsounds::instance()->playmusic("title.xm");
+}
+
+
+void snd_stopTitle(void) {
+  ttsounds::instance()->stopmusic();
+}
+
+
