@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-10-03 19:54+0200\n"
+"POT-Creation-Date: 2006-01-16 21:33+0100\n"
 "PO-Revision-Date: 2005-01-09 00:00+0100\n"
 "Last-Translator: Helder Correia <helder.correia@netcabo.pt>\n"
 "Language-Team: pt <pt@li.org>\n"
@@ -67,7 +67,7 @@ msgstr "Vidas:     ~t3505000 X %3d"
 msgid "Wheee!!\n"
 msgstr "Boa!\n"
 
-#: leveledit.cc:103 menu.cc:923
+#: leveledit.cc:103 menu.cc:947
 msgid "Quit"
 msgstr "Sair"
 
@@ -432,17 +432,17 @@ msgstr "Nível de depuração é agora %c.\n"
 msgid "Illegal debug level value, using default.\n"
 msgstr "Valor de nível de depuração ilegal, a usar valor por omissão.\n"
 
-#: main.cc:102
+#: main.cc:106
 #, c-format
 msgid "Nebulous version %s"
 msgstr "Nebulous versão %s"
 
-#: main.cc:104 main.cc:112
+#: main.cc:108 main.cc:116
 #, c-format
 msgid "Nebulous"
 msgstr "Nebulous"
 
-#: main.cc:119
+#: main.cc:123
 #, c-format
 msgid "Thanks for playing!\n"
 msgstr "Obrigado por jogar!\n"
@@ -502,7 +502,7 @@ msgstr "Bónus"
 msgid "Game Options"
 msgstr "Opções de jogo"
 
-#: menu.cc:245 menu.cc:265 menu.cc:437 menu.cc:461 menu.cc:485 menu.cc:642
+#: menu.cc:245 menu.cc:265 menu.cc:460 menu.cc:484 menu.cc:509 menu.cc:666
 msgid "Back"
 msgstr "Voltar"
 
@@ -514,92 +514,96 @@ msgstr "Redefinir teclas"
 msgid "Fullscreen"
 msgstr "Ecra completo"
 
-#: menu.cc:302 menu.cc:303
+#: menu.cc:306 menu.cc:307
 msgid "Sounds"
 msgstr "Sons"
 
-#: menu.cc:337 menu.cc:338
+#: menu.cc:325 menu.cc:326
+msgid "Music"
+msgstr ""
+
+#: menu.cc:360 menu.cc:361
 msgid "Font alpha"
 msgstr "Letras"
 
-#: menu.cc:351 menu.cc:352
+#: menu.cc:374 menu.cc:375
 msgid "Sprites alpha"
 msgstr "Blocos de imagem"
 
-#: menu.cc:365 menu.cc:366
+#: menu.cc:388 menu.cc:389
 msgid "Scroller alpha"
 msgstr "Desfile"
 
-#: menu.cc:378 menu.cc:379
+#: menu.cc:401 menu.cc:402
 msgid "Shadowing"
 msgstr "Sombreamento"
 
-#: menu.cc:404
+#: menu.cc:427
 msgid "Nonreflecting waves"
 msgstr "Ondas sem reflexo"
 
-#: menu.cc:405
+#: menu.cc:428
 msgid "Simple waves"
 msgstr "Ondas simples"
 
-#: menu.cc:406
+#: menu.cc:429
 msgid "Expensive waves"
 msgstr "Ondas complexas"
 
-#: menu.cc:407
+#: menu.cc:430
 msgid "Error"
 msgstr "Erro"
 
-#: menu.cc:417
+#: menu.cc:440
 msgid "Complete Scroller"
 msgstr "Desfile completo"
 
-#: menu.cc:418
+#: menu.cc:441
 msgid "2 layers Scoller"
 msgstr "Desfile 2 camadas"
 
-#: menu.cc:424
+#: menu.cc:447
 msgid "Alpha Options"
 msgstr "Transparência"
 
-#: menu.cc:448
+#: menu.cc:471
 msgid "Graphics"
 msgstr "Gráficos"
 
-#: menu.cc:472
+#: menu.cc:495
 msgid "Options"
 msgstr "Opções"
 
-#: menu.cc:615
+#: menu.cc:639
 msgid "HighScores"
 msgstr "Pontuações"
 
-#: menu.cc:620
+#: menu.cc:644
 #, c-format
 msgid "Scores for %s"
 msgstr "Pontuações: %s"
 
-#: menu.cc:644
+#: menu.cc:668
 msgid "OK"
 msgstr "OK"
 
-#: menu.cc:657
+#: menu.cc:681
 msgid "Congratulations! You are"
 msgstr "Parabéns! Provavelmente,"
 
-#: menu.cc:658
+#: menu.cc:682
 msgid "probably good enough to"
 msgstr "fez uma das melhores"
 
-#: menu.cc:659
+#: menu.cc:683
 msgid "enter the highscore table!"
 msgstr "pontuações até agora!"
 
-#: menu.cc:661
+#: menu.cc:685
 msgid "Please enter your name"
 msgstr "Por favor, insira o seu nome."
 
-#: menu.cc:715
+#: menu.cc:739
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -613,36 +617,36 @@ msgstr ""
 "versao do Tower Toppler.\n"
 "Quer continuar?"
 
-#: menu.cc:772
+#: menu.cc:796
 msgid "Hunt the Fish"
 msgstr "Cace o Peixe"
 
-#: menu.cc:793
+#: menu.cc:817
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Início: %s %c"
 
-#: menu.cc:803
+#: menu.cc:827
 msgid "Highscores"
 msgstr "Pontuações"
 
-#: menu.cc:815
+#: menu.cc:839
 msgid "Level Editor"
 msgstr "Editor de níveis"
 
-#: menu.cc:871
+#: menu.cc:895
 msgid "Return to Game"
 msgstr "Regressar ao jogo"
 
-#: menu.cc:881
+#: menu.cc:905
 msgid "Quit Game"
 msgstr "Sair do jogo"
 
-#: menu.cc:888
+#: menu.cc:912
 msgid "DEBUG MENU"
 msgstr "MENU DE DEPURAÇAO"
 
-#: menu.cc:893
+#: menu.cc:917
 msgid "Back to Game"
 msgstr "Voltar ao jogo"
 
@@ -662,11 +666,11 @@ msgstr "Sim"
 msgid "No"
 msgstr "Nao"
 
-#: screen.cc:1581
+#: screen.cc:1615
 msgid "REC"
 msgstr "GRAVAR"
 
-#: screen.cc:1582
+#: screen.cc:1616
 msgid "DEMO"
 msgstr "DEMONSTRAÇAO"
 
