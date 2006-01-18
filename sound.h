@@ -57,6 +57,7 @@ void snd_done(void);
 
 void snd_playTitle(void);
 void snd_stopTitle(void);
+void snd_musicVolume(int vol);
 
 #endif
 

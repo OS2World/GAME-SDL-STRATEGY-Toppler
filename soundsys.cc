@@ -190,9 +190,7 @@ void ttsounds::playmusic(const char * fname) {
   if (!useSound) return;
 
 #ifdef HAVE_LIBSDL_MIXER
-  file f(dataarchive, fname);
-
-  title = Mix_LoadMUS_RW(f.rwOps());  
+  title = Mix_LoadMUS(fname);
   Mix_PlayMusic(title, -1);
 #endif
 }

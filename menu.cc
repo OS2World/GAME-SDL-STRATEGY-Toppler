@@ -805,7 +805,9 @@ men_main_startgame_proc(_menusystem *ms)
     switch (key_sdlkey2conv(ms->key, false)) {
     case fire_key:
       dcl_update_speed(config.game_speed());
+      snd_musicVolume(MIX_MAX_VOLUME/4);
       main_game_loop();
+      snd_musicVolume(MIX_MAX_VOLUME);
       dcl_update_speed(MENU_DCLSPEED);
       break;
     case right_key: currentmission = (currentmission + 1) % missioncount; break;

@@ -2,7 +2,6 @@
 #define SOUNDSYS_H
 
 #ifdef HAVE_LIBSDL_MIXER
-#define USE_RWOPS
 #include <SDL_mixer.h>
 #endif
 
