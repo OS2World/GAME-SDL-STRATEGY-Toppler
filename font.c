@@ -30,7 +30,7 @@ Uint8 get_alpha(SDL_Surface *s, int x, int y) {
 void write_palette(FILE *out, SDL_Surface *s) {
   int i;
   Uint8 c = s->format->palette->ncolors - 1;
-  
+
   fwrite(&c, 1, 1, out);
 
   for (i = 0; i < s->format->palette->ncolors; i++) {
@@ -50,7 +50,7 @@ void get(SDL_Surface *colors, SDL_Surface * mask, unsigned short c)
   unsigned char width = 0;
   int i, x, y;
   Uint8 b;
-  
+
   while (get_color(colors, xpos + width + 1, ypos + 1) != markercolor)
     width++;
 
@@ -58,7 +58,7 @@ void get(SDL_Surface *colors, SDL_Surface * mask, unsigned short c)
 
   fwrite(&c, 1, 2, outp);
   fwrite(&width, 1, 1, outp);
-  
+
   printf(" get %c(%i) at pos (%i;%i)\n", c, c, xpos, ypos);
 
   for (y = 0; y < height; y++)
@@ -219,7 +219,7 @@ int main() {
   get(colors, mask, (unsigned char)'Õ');
   get(colors, mask, (unsigned char)'î');
   get(colors, mask, (unsigned char)'Î');
-  
+
   get(colors, mask, (unsigned char)'ê');
   get(colors, mask, (unsigned char)'Ê');
   get(colors, mask, (unsigned char)'â');
@@ -241,6 +241,8 @@ int main() {
   get(colors, mask, 0x15d);
   get(colors, mask, 0x168);
   get(colors, mask, 0x169);
+  get(colors, mask, 0xC5);
+  get(colors, mask, 0xE5);
 
   fclose(outp);
 }
