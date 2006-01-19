@@ -11,18 +11,18 @@ msgstr ""
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=latin-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: bonus.cc:104
 #: game.cc:480
 msgid "Pause"
-msgstr "Gör paus"
+msgstr "GÃ¶r paus"
 
 #: decl.h:200
 #, c-format
 msgid "Assertion failure: %s\n"
-msgstr "Påstående misslyckades: %s\n"
+msgstr "PÃ¥stÃ¥ende misslyckades: %s\n"
 
 #: game.cc:85
 msgid "You are entering the"
@@ -35,11 +35,11 @@ msgstr "Ej namngivet torn"
 #: game.cc:94
 #, c-format
 msgid "Password:   %s"
-msgstr "Lösenord:   %s"
+msgstr "LÃ¶senord:   %s"
 
 #: game.cc:302
 msgid "Time over"
-msgstr "Slut på tid"
+msgstr "Slut pÃ¥ tid"
 
 #: game.cc:314
 #: game.cc:323
@@ -75,19 +75,19 @@ msgstr "Avsluta"
 
 #: leveledit.cc:103
 msgid "Move up"
-msgstr "Gå upp"
+msgstr "GÃ¥ upp"
 
 #: leveledit.cc:103
 msgid "Move down"
-msgstr "Gå ner"
+msgstr "GÃ¥ ner"
 
 #: leveledit.cc:103
 msgid "Move left"
-msgstr "Gå vänster"
+msgstr "GÃ¥ vÃ¤nster"
 
 #: leveledit.cc:104
 msgid "Move right"
-msgstr "Gå höger"
+msgstr "GÃ¥ hÃ¶ger"
 
 #: leveledit.cc:104
 msgid "Insert row"
@@ -103,31 +103,31 @@ msgstr "Rotera 180"
 
 #: leveledit.cc:105
 msgid "Put space"
-msgstr "Sätt in tomrum"
+msgstr "SÃ¤tt in tomrum"
 
 #: leveledit.cc:105
 msgid "Put step"
-msgstr "Sätt in steg"
+msgstr "SÃ¤tt in steg"
 
 #: leveledit.cc:105
 msgid "Put vanisher"
-msgstr "Sätt in lömskt block"
+msgstr "SÃ¤tt in lÃ¶mskt block"
 
 #: leveledit.cc:105
 msgid "Put slider left"
-msgstr "Sätt in glidare vänster"
+msgstr "SÃ¤tt in glidare vÃ¤nster"
 
 #: leveledit.cc:106
 msgid "Put slider right"
-msgstr "Sätt in glidare höger"
+msgstr "SÃ¤tt in glidare hÃ¶ger"
 
 #: leveledit.cc:107
 msgid "Put door"
-msgstr "Sätt in dörr"
+msgstr "SÃ¤tt in dÃ¶rr"
 
 #: leveledit.cc:107
 msgid "Put goal"
-msgstr "Sätt in mål"
+msgstr "SÃ¤tt in mÃ¥l"
 
 #: leveledit.cc:107
 msgid "Check tower"
@@ -135,35 +135,35 @@ msgstr "Kontrollera torn"
 
 #: leveledit.cc:107
 msgid "Put rolling ball"
-msgstr "Sätt in rullande boll"
+msgstr "SÃ¤tt in rullande boll"
 
 #: leveledit.cc:108
 msgid "Put jumping ball moving"
-msgstr "Sätt in hoppande flyttande boll"
+msgstr "SÃ¤tt in hoppande flyttande boll"
 
 #: leveledit.cc:108
 msgid "Put jumping ball"
-msgstr "Sätt in hoppande boll"
+msgstr "SÃ¤tt in hoppande boll"
 
 #: leveledit.cc:108
 msgid "Put robot up down"
-msgstr "Sätt in robot upp ned"
+msgstr "SÃ¤tt in robot upp ned"
 
 #: leveledit.cc:108
 msgid "Put robot up down fast"
-msgstr "Sätt in robot upp ned snabb"
+msgstr "SÃ¤tt in robot upp ned snabb"
 
 #: leveledit.cc:109
 msgid "Put robot left right"
-msgstr "Sätt in robot vänster höger"
+msgstr "SÃ¤tt in robot vÃ¤nster hÃ¶ger"
 
 #: leveledit.cc:109
 msgid "Put robot left right fast"
-msgstr "Sätt in robot vänster höger snabb"
+msgstr "SÃ¤tt in robot vÃ¤nster hÃ¶ger snabb"
 
 #: leveledit.cc:109
 msgid "Put lift"
-msgstr "Sätt in hiss"
+msgstr "SÃ¤tt in hiss"
 
 #: leveledit.cc:109
 msgid "Lift middle stop"
@@ -175,15 +175,15 @@ msgstr "Hiss stoppar toppen"
 
 #: leveledit.cc:110
 msgid "Put pillar"
-msgstr "Sätt in pelare"
+msgstr "SÃ¤tt in pelare"
 
 #: leveledit.cc:110
 msgid "Put box"
-msgstr "Sätt in låda"
+msgstr "SÃ¤tt in lÃ¥da"
 
 #: leveledit.cc:110
 msgid "Load tower"
-msgstr "Läs in torn"
+msgstr "LÃ¤s in torn"
 
 #: leveledit.cc:111
 msgid "Save tower"
@@ -195,11 +195,11 @@ msgstr "Testa torn"
 
 #: leveledit.cc:111
 msgid "Set tower color"
-msgstr "Ställ in färg på torn"
+msgstr "StÃ¤ll in fÃ¤rg pÃ¥ torn"
 
 #: leveledit.cc:111
 msgid "Increase time"
-msgstr "Öka tid"
+msgstr "Ã–ka tid"
 
 #: leveledit.cc:112
 msgid "Decrease time"
@@ -219,11 +219,11 @@ msgstr "Flytta sida ned"
 
 #: leveledit.cc:113
 msgid "Go to start"
-msgstr "Gå till start"
+msgstr "GÃ¥ till start"
 
 #: leveledit.cc:113
 msgid "Show this help"
-msgstr "Visa denna hjälp"
+msgstr "Visa denna hjÃ¤lp"
 
 #: leveledit.cc:113
 msgid "Name the tower"
@@ -231,7 +231,7 @@ msgstr "Namnge torn"
 
 #: leveledit.cc:113
 msgid "Set tower time"
-msgstr "Ställ in tid"
+msgstr "StÃ¤ll in tid"
 
 #: leveledit.cc:114
 msgid "Record demo"
@@ -243,11 +243,11 @@ msgstr "Spela demo"
 
 #: leveledit.cc:114
 msgid "Adjust tower height"
-msgstr "Justera tornets höjd"
+msgstr "Justera tornets hÃ¶jd"
 
 #: leveledit.cc:114
 msgid "Go to end"
-msgstr "Gå till slutet"
+msgstr "GÃ¥ till slutet"
 
 #: leveledit.cc:115
 msgid "Cut row"
@@ -259,35 +259,35 @@ msgstr "Klistra in rad"
 
 #: leveledit.cc:115
 msgid "Change robot type"
-msgstr "Ändra robottyp"
+msgstr "Ã„ndra robottyp"
 
 #: leveledit.cc:189
 msgid "Tower changed, really quit"
 msgstr ""
-"Torn ändrat,\n"
+"Torn Ã¤ndrat,\n"
 "verkligen avsluta"
 
 #: leveledit.cc:199
 msgid "Tower changed, really load"
 msgstr ""
-"Torn ändrat,\n"
-"verkligen läsa in"
+"Torn Ã¤ndrat,\n"
+"verkligen lÃ¤sa in"
 
 #: leveledit.cc:216
 msgid "Red"
-msgstr "Röd"
+msgstr "RÃ¶d"
 
 #: leveledit.cc:216
 msgid "Green"
-msgstr "Grön"
+msgstr "GrÃ¶n"
 
 #: leveledit.cc:216
 msgid "Blue"
-msgstr "Blå"
+msgstr "BlÃ¥"
 
 #: leveledit.cc:225
 msgid "Tower Color"
-msgstr "Tornfärg"
+msgstr "TornfÃ¤rg"
 
 #: leveledit.cc:305
 msgid "No problems found"
@@ -295,47 +295,47 @@ msgstr "Inga problem hittades"
 
 #: leveledit.cc:306
 msgid "No starting step"
-msgstr "Inget steg att börja på"
+msgstr "Inget steg att bÃ¶rja pÃ¥"
 
 #: leveledit.cc:307
 msgid "Start is blocked"
-msgstr "Start är blockerad"
+msgstr "Start Ã¤r blockerad"
 
 #: leveledit.cc:308
 msgid "Unknown block"
-msgstr "Okänd blockering"
+msgstr "OkÃ¤nd blockering"
 
 #: leveledit.cc:309
 msgid "No elevator stop"
-msgstr "Inget stopp för hiss"
+msgstr "Inget stopp fÃ¶r hiss"
 
 #: leveledit.cc:310
 msgid "Elevator is blocked"
-msgstr "Hiss är blockerad"
+msgstr "Hiss Ã¤r blockerad"
 
 #: leveledit.cc:311
 msgid "No opposing doorway"
-msgstr "Ingen motsvarande dörr"
+msgstr "Ingen motsvarande dÃ¶rr"
 
 #: leveledit.cc:312
 msgid "Broken doorway"
-msgstr "Trasig väg för dörr"
+msgstr "Trasig vÃ¤g fÃ¶r dÃ¶rr"
 
 #: leveledit.cc:313
 msgid "No exit"
-msgstr "Ingen utgång"
+msgstr "Ingen utgÃ¥ng"
 
 #: leveledit.cc:314
 msgid "Exit is unreachable"
-msgstr "Utgång kan ej nås"
+msgstr "UtgÃ¥ng kan ej nÃ¥s"
 
 #: leveledit.cc:315
 msgid "Not enough time"
-msgstr "Inte tillräcklig tid"
+msgstr "Inte tillrÃ¤cklig tid"
 
 #: leveledit.cc:316
 msgid "Tower is too short"
-msgstr "Torn är för kort"
+msgstr "Torn Ã¤r fÃ¶r kort"
 
 #: leveledit.cc:317
 msgid "Tower has no name"
@@ -357,7 +357,7 @@ msgstr "ange uppdragsnamn"
 
 #: leveledit.cc:353
 msgid "empty to abort"
-msgstr "blank för att avbryta"
+msgstr "blank fÃ¶r att avbryta"
 
 #: leveledit.cc:369
 msgid "could not create file"
@@ -369,7 +369,7 @@ msgstr "avbryter"
 
 #: leveledit.cc:390
 msgid "enter name of"
-msgstr "ange namnet för"
+msgstr "ange namnet fÃ¶r"
 
 #: leveledit.cc:393
 #, c-format
@@ -378,7 +378,7 @@ msgstr "torn nr %i"
 
 #: leveledit.cc:414
 msgid "Editor Key Help"
-msgstr "Hjälp för redigering"
+msgstr "HjÃ¤lp fÃ¶r redigering"
 
 #: leveledit.cc:532
 msgid "cut#"
@@ -387,11 +387,11 @@ msgstr "klipp#"
 #: leveledit.cc:571
 #, c-format
 msgid "key: %s, char: %c, action: %i\n"
-msgstr "tangent: %s, tecken: %c, åtgärd: %i\n"
+msgstr "tangent: %s, tecken: %c, Ã¥tgÃ¤rd: %i\n"
 
 #: leveledit.cc:703
 msgid "Load tower:"
-msgstr "Läs in torn:"
+msgstr "LÃ¤s in torn:"
 
 #: leveledit.cc:724
 msgid "Save tower:"
@@ -403,11 +403,11 @@ msgstr "Ingen inspelad demo"
 
 #: leveledit.cc:831
 msgid "Enter tower time:"
-msgstr "Ange tid för torn:"
+msgstr "Ange tid fÃ¶r torn:"
 
 #: leveledit.cc:847
 msgid "Adjust tower height:"
-msgstr "Justera tornets höjd:"
+msgstr "Justera tornets hÃ¶jd:"
 
 #: leveledit.cc:927
 msgid "Name the tower:"
@@ -426,18 +426,18 @@ msgstr ""
 "\n"
 "\tFlaggor:\n"
 "\n"
-"  -f\tAktivera helskärmsläge\n"
-"  -s\tTyst, stäng av allt ljud\n"
-"  -dX\tSätt felsökningsläge til X  (förval: %i)\n"
+"  -f\tAktivera helskÃ¤rmslÃ¤ge\n"
+"  -s\tTyst, stÃ¤ng av allt ljud\n"
+"  -dX\tSÃ¤tt felsÃ¶kningslÃ¤ge til X  (fÃ¶rval: %i)\n"
 
 #: main.cc:55
 #, c-format
 msgid "Debug level is now %c.\n"
-msgstr "Felsökningsnivå är nu %c.\n"
+msgstr "FelsÃ¶kningsnivÃ¥ Ã¤r nu %c.\n"
 
 #: main.cc:57
 msgid "Illegal debug level value, using default.\n"
-msgstr "Ogiltig felsökningsnivå, använder förvald.\n"
+msgstr "Ogiltig felsÃ¶kningsnivÃ¥, anvÃ¤nder fÃ¶rvald.\n"
 
 #: main.cc:102
 #, c-format
@@ -451,7 +451,7 @@ msgstr "Nebulous"
 
 #: main.cc:119
 msgid "Thanks for playing!\n"
-msgstr "Tack för att du spelar!\n"
+msgstr "Tack fÃ¶r att du spelar!\n"
 
 #: menu.cc:78
 msgid "Extra Life"
@@ -459,7 +459,7 @@ msgstr "Extraliv"
 
 #: menu.cc:83
 msgid "+200 Points"
-msgstr "+200 poäng"
+msgstr "+200 poÃ¤ng"
 
 #: menu.cc:102
 msgid "Up"
@@ -471,11 +471,11 @@ msgstr "Ned"
 
 #: menu.cc:102
 msgid "Left"
-msgstr "Vänster"
+msgstr "VÃ¤nster"
 
 #: menu.cc:102
 msgid "Right"
-msgstr "Höger"
+msgstr "HÃ¶ger"
 
 #: menu.cc:102
 msgid "Fire"
@@ -484,12 +484,12 @@ msgstr "Skjut"
 #: menu.cc:154
 #, c-format
 msgid "Password: %s"
-msgstr "Lösenord: %s"
+msgstr "LÃ¶senord: %s"
 
 #: menu.cc:163
 #: menu.cc:164
 msgid "Status on top"
-msgstr "Status på topp"
+msgstr "Status pÃ¥ topp"
 
 #: menu.cc:185
 msgid "Lives: "
@@ -526,7 +526,7 @@ msgstr "Definiera tangenter"
 #: menu.cc:283
 #: menu.cc:284
 msgid "Fullscreen"
-msgstr "Helskärmsläge"
+msgstr "HelskÃ¤rmslÃ¤ge"
 
 #: menu.cc:302
 #: menu.cc:303
@@ -555,15 +555,15 @@ msgstr "Skuggning"
 
 #: menu.cc:404
 msgid "Nonreflecting waves"
-msgstr "Ej reflekterande vågor"
+msgstr "Ej reflekterande vÃ¥gor"
 
 #: menu.cc:405
 msgid "Simple waves"
-msgstr "Enkla vågor"
+msgstr "Enkla vÃ¥gor"
 
 #: menu.cc:406
 msgid "Expensive waves"
-msgstr "Kraftiga vågor"
+msgstr "Kraftiga vÃ¥gor"
 
 #: menu.cc:407
 msgid "Error"
@@ -579,7 +579,7 @@ msgstr "2-lagers skroll"
 
 #: menu.cc:424
 msgid "Alpha Options"
-msgstr "Alfainställningar"
+msgstr "AlfainstÃ¤llningar"
 
 #: menu.cc:448
 msgid "Graphics"
@@ -591,12 +591,12 @@ msgstr "Alternativ"
 
 #: menu.cc:615
 msgid "HighScores"
-msgstr "Poängtoppen"
+msgstr "PoÃ¤ngtoppen"
 
 #: menu.cc:620
 #, c-format
 msgid "Scores for %s"
-msgstr "Poäng för %s"
+msgstr "PoÃ¤ng fÃ¶r %s"
 
 #: menu.cc:644
 msgid "OK"
@@ -604,15 +604,15 @@ msgstr "OK"
 
 #: menu.cc:657
 msgid "Congratulations! You are"
-msgstr "Gratulerar! Du är"
+msgstr "Gratulerar! Du Ã¤r"
 
 #: menu.cc:658
 msgid "probably good enough to"
-msgstr "antagligen tillräckligt bra att"
+msgstr "antagligen tillrÃ¤ckligt bra att"
 
 #: menu.cc:659
 msgid "enter the highscore table!"
-msgstr "komma in på poängtoppen!"
+msgstr "komma in pÃ¥ poÃ¤ngtoppen!"
 
 #: menu.cc:661
 msgid "Please enter your name"
@@ -626,11 +626,11 @@ msgid ""
 "version of Tower Toppler.\n"
 "Do you want to continue?"
 msgstr ""
-"Detta uppdrag innehåller\n"
-"okända byggblock.\n"
-"Du behöver antagligen en\n"
+"Detta uppdrag innehÃ¥ller\n"
+"okÃ¤nda byggblock.\n"
+"Du behÃ¶ver antagligen en\n"
 "ny version av Tower Toppler.\n"
-"Vill du fortsätta?"
+"Vill du fortsÃ¤tta?"
 
 #: menu.cc:772
 msgid "Hunt the Fish"
@@ -643,15 +643,15 @@ msgstr "%c Starta: %s %c"
 
 #: menu.cc:803
 msgid "Highscores"
-msgstr "Poängtoppen"
+msgstr "PoÃ¤ngtoppen"
 
 #: menu.cc:815
 msgid "Level Editor"
-msgstr "Redigera nivå"
+msgstr "Redigera nivÃ¥"
 
 #: menu.cc:871
 msgid "Return to Game"
-msgstr "Återvänd till spel"
+msgstr "Ã…tervÃ¤nd till spel"
 
 #: menu.cc:881
 msgid "Quit Game"
@@ -659,7 +659,7 @@ msgstr "Avsluta spel"
 
 #: menu.cc:888
 msgid "DEBUG MENU"
-msgstr "FELSÖKNINGSMENY"
+msgstr "FELSÃ–KNINGSMENY"
 
 #: menu.cc:893
 msgid "Back to Game"
@@ -695,15 +695,15 @@ msgstr "Uppdrag 1"
 
 #: levelnames.txt:2
 msgid "Tower of eyes"
-msgstr "Ögonens torn"
+msgstr "Ã–gonens torn"
 
 #: levelnames.txt:3
 msgid "Realm of robots"
-msgstr "Robotarnas värld"
+msgstr "Robotarnas vÃ¤rld"
 
 #: levelnames.txt:4
 msgid "Trap of tricks"
-msgstr "Fällor eller tricks"
+msgstr "FÃ¤llor eller tricks"
 
 #: levelnames.txt:5
 msgid "Slippery slide"
@@ -711,11 +711,11 @@ msgstr "Slippery slide"
 
 #: levelnames.txt:6
 msgid "Broken path"
-msgstr "Trasig väg"
+msgstr "Trasig vÃ¤g"
 
 #: levelnames.txt:7
 msgid "Swimmers delight"
-msgstr "Simmarnas önskan"
+msgstr "Simmarnas Ã¶nskan"
 
 #: levelnames.txt:8
 msgid "Nasty one"
@@ -731,7 +731,7 @@ msgstr "Uppdrag 2"
 
 #: levelnames.txt:12
 msgid "Blink of the eye"
-msgstr "Ögats blinkning"
+msgstr "Ã–gats blinkning"
 
 #: levelnames.txt:13
 msgid "Robot's heaven"
@@ -751,7 +751,7 @@ msgstr "Oh, *******!!"
 
 #: levelnames.txt:17
 msgid "Riddle of reason"
-msgstr "Anledningarnas gåta"
+msgstr "Anledningarnas gÃ¥ta"
 
 #: levelnames.txt:18
 msgid "Maze of mistakes"
@@ -771,11 +771,11 @@ msgstr "Spring och stanna inte"
 
 #: levelnames.txt:23
 msgid "Watch your step"
-msgstr "Se var du går"
+msgstr "Se var du gÃ¥r"
 
 #: levelnames.txt:24
 msgid "Short, but deadly"
-msgstr "Kort men dödlig"
+msgstr "Kort men dÃ¶dlig"
 
 #: levelnames.txt:25
 msgid "The maddening"
@@ -787,11 +787,11 @@ msgstr "Doom at every step"
 
 #: levelnames.txt:27
 msgid "Enemies everywhere"
-msgstr "Fiender överallt"
+msgstr "Fiender Ã¶verallt"
 
 #: levelnames.txt:28
 msgid "You will loose"
-msgstr "Du kommer att förlora"
+msgstr "Du kommer att fÃ¶rlora"
 
 #: levelnames.txt:29
 msgid "Mind destroyer"
@@ -823,11 +823,11 @@ msgstr "Massaker"
 
 #: levelnames.txt:37
 msgid "Bouncing Murders"
-msgstr "Studsande mördare"
+msgstr "Studsande mÃ¶rdare"
 
 #: levelnames.txt:38
 msgid "Trial and error"
-msgstr "Försök och misslyckas"
+msgstr "FÃ¶rsÃ¶k och misslyckas"
 
 #: levelnames.txt:39
 msgid "Tower of Pure Evil"
@@ -851,11 +851,11 @@ msgstr "Delad stig"
 
 #: levelnames.txt:45
 msgid "No Way Out?"
-msgstr "Ingen väg ut?"
+msgstr "Ingen vÃ¤g ut?"
 
 #: levelnames.txt:46
 msgid "Trap"
-msgstr "Fälla"
+msgstr "FÃ¤lla"
 
 #: levelnames.txt:47
 msgid "Tower of Mystery"
@@ -863,11 +863,11 @@ msgstr "Mysteriernas torn"
 
 #: levelnames.txt:48
 msgid "Slip ... and die"
-msgstr "Halka ... och dö"
+msgstr "Halka ... och dÃ¶"
 
 #: levelnames.txt:49
 msgid "Mission Impossible"
-msgstr "Omöjligt uppdrag"
+msgstr "OmÃ¶jligt uppdrag"
 
 #: levelnames.txt:51
 msgid "ABC Towers"
@@ -883,7 +883,7 @@ msgstr "Korridorer"
 
 #: levelnames.txt:54
 msgid "Higher Ground"
-msgstr "Högre mark"
+msgstr "HÃ¶gre mark"
 
 #: levelnames.txt:55
 msgid "No Icing"
@@ -895,7 +895,7 @@ msgstr "Tre lager"
 
 #: levelnames.txt:57
 msgid "Two Ways"
-msgstr "Två vägar"
+msgstr "TvÃ¥ vÃ¤gar"
 
 #: levelnames.txt:58
 msgid "Spiral"
