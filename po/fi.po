@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-21 12:42+0100\n"
+"POT-Creation-Date: 2006-01-21 13:31+0100\n"
 "PO-Revision-Date: 2004-12-17 20:11+0200\n"
 "Last-Translator: basse <bastian.salmela@hel.fi>\n"
 "Language-Team: fi_FI <fi@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Pause"
 msgstr "Tauko"
 
-#: decl.h:200
+#: decl.h:206
 #, c-format
 msgid "Assertion failure: %s\n"
 msgstr "Vahvistus virhe: %s\n"

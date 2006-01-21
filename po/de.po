@@ -1,9 +1,9 @@
-# translation of de.po to 
+# translation of de.po to
 # translation of de2.po to Deutsch
 # translation of de.po to Deutsch
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR Andreas R?er.
-# Andreas Röver <roever@users.sf.net>, 2003, 2004.
+# Andreas Röver <roever@users.sf.net>, 2003, 2004, 2006.
 # Ronny Standtke <Ronny.Standtke@gmx.de>, 2005.
 # Ronny Standtke <Ronny.Standtke@gmx.net>, 2005.
 #
@@ -11,20 +11,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-21 12:42+0100\n"
-"PO-Revision-Date: 2005-09-28 19:08+0200\n"
-"Last-Translator: Ronny Standtke <Ronny.Standtke@gmx.net>\n"
-"Language-Team:  <de@li.org>\n"
+"POT-Creation-Date: 2006-01-21 13:31+0100\n"
+"PO-Revision-Date: 2006-01-21 13:21+0100\n"
+"Last-Translator: Andreas Röver <roever@users.sf.net>\n"
+"Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.9.1\n"
+"X-Generator: KBabel 1.10.2\n"
 
 #: bonus.cc:104 game.cc:480
 msgid "Pause"
 msgstr "Pause"
 
-#: decl.h:200
+#: decl.h:206
 #, c-format
 msgid "Assertion failure: %s\n"
 msgstr "Annahme gescheitert: %s\n"
@@ -524,7 +524,7 @@ msgstr "Tonausgabe"
 
 #: menu.cc:325 menu.cc:326
 msgid "Music"
-msgstr ""
+msgstr "Musik"
 
 #: menu.cc:360 menu.cc:361
 msgid "Font alpha"

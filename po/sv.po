@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler 1.1.1-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-21 12:42+0100\n"
+"POT-Creation-Date: 2006-01-21 13:31+0100\n"
 "PO-Revision-Date: 2005-12-30 03:40+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -18,7 +18,7 @@ msgstr ""
 msgid "Pause"
 msgstr "Gör paus"
 
-#: decl.h:200
+#: decl.h:206
 #, c-format
 msgid "Assertion failure: %s\n"
 msgstr "Påstående misslyckades: %s\n"

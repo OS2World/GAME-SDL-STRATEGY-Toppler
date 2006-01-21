@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-21 12:42+0100\n"
+"POT-Creation-Date: 2006-01-21 13:31+0100\n"
 "PO-Revision-Date: 2004-02-08 10:56+0100\n"
 "Last-Translator: Bill Allombert <ballombe@debian.org>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "Pause"
 msgstr "Pause"
 
-#: decl.h:200
+#: decl.h:206
 #, c-format
 msgid "Assertion failure: %s\n"
 msgstr "Échec de l'assertion : %s\n"
