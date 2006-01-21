@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-16 21:33+0100\n"
+"POT-Creation-Date: 2006-01-21 12:42+0100\n"
 "PO-Revision-Date: 2005-09-28 19:08+0200\n"
 "Last-Translator: Ronny Standtke <Ronny.Standtke@gmx.net>\n"
 "Language-Team:  <de@li.org>\n"
@@ -71,7 +71,7 @@ msgstr "Leben:       ~t35010 X %3d"
 msgid "Wheee!!\n"
 msgstr "Huuuaaaa!\n"
 
-#: leveledit.cc:103 menu.cc:947
+#: leveledit.cc:103 menu.cc:949
 msgid "Quit"
 msgstr "Beenden"
 
@@ -625,32 +625,32 @@ msgstr ""
 msgid "Hunt the Fish"
 msgstr "Fischfang"
 
-#: menu.cc:817
+#: menu.cc:819
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Start: %s %c"
 
-#: menu.cc:827
+#: menu.cc:829
 msgid "Highscores"
 msgstr "Siegerliste"
 
-#: menu.cc:839
+#: menu.cc:841
 msgid "Level Editor"
 msgstr "Leveleditor"
 
-#: menu.cc:895
+#: menu.cc:897
 msgid "Return to Game"
 msgstr "Zurück zum Spiel"
 
-#: menu.cc:905
+#: menu.cc:907
 msgid "Quit Game"
 msgstr "Beende Spiel"
 
-#: menu.cc:912
+#: menu.cc:914
 msgid "DEBUG MENU"
 msgstr "DEBUG MENÜ"
 
-#: menu.cc:917
+#: menu.cc:919
 msgid "Back to Game"
 msgstr "Zurück zum Spiel"
 

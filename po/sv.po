@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler 1.1.1-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-14 20:59+0100\n"
+"POT-Creation-Date: 2006-01-21 12:42+0100\n"
 "PO-Revision-Date: 2005-12-30 03:40+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -14,8 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonus.cc:104
-#: game.cc:480
+#: bonus.cc:104 game.cc:480
 msgid "Pause"
 msgstr "Gör paus"
 
@@ -41,20 +40,17 @@ msgstr "Lösenord:   %s"
 msgid "Time over"
 msgstr "Slut på tid"
 
-#: game.cc:314
-#: game.cc:323
+#: game.cc:314 game.cc:323
 #, c-format
 msgid "Time:      ~t35010 X %3d"
 msgstr "Tid:      ~t35010 X %3d"
 
-#: game.cc:316
-#: game.cc:325
+#: game.cc:316 game.cc:325
 #, c-format
 msgid "Technique: ~t35010 X %3d"
 msgstr "Teknik: ~t35010 X %3d"
 
-#: game.cc:318
-#: game.cc:327
+#: game.cc:318 game.cc:327
 #, c-format
 msgid "Extra:     ~t35010 X %3d"
 msgstr "Extra:     ~t35010 X %3d"
@@ -65,11 +61,11 @@ msgid "Lifes:     ~t3505000 X %3d"
 msgstr "Liv:     ~t3505000 X %3d"
 
 #: keyb.cc:161
+#, c-format
 msgid "Wheee!!\n"
 msgstr "Woohooo!!\n"
 
-#: leveledit.cc:103
-#: menu.cc:923
+#: leveledit.cc:103 menu.cc:949
 msgid "Quit"
 msgstr "Avsluta"
 
@@ -345,9 +341,7 @@ msgstr "Torn saknar namn"
 msgid "Tower check:"
 msgstr "Kontroll av torn:"
 
-#: leveledit.cc:351
-#: leveledit.cc:367
-#: leveledit.cc:389
+#: leveledit.cc:351 leveledit.cc:367 leveledit.cc:389
 msgid "Mission creation"
 msgstr "Skapa uppdrag"
 
@@ -436,20 +430,22 @@ msgid "Debug level is now %c.\n"
 msgstr "Felsökningsnivå är nu %c.\n"
 
 #: main.cc:57
+#, c-format
 msgid "Illegal debug level value, using default.\n"
 msgstr "Ogiltig felsökningsnivå, använder förvald.\n"
 
-#: main.cc:102
+#: main.cc:106
 #, c-format
 msgid "Nebulous version %s"
 msgstr "Nebulous version %s"
 
-#: main.cc:104
-#: main.cc:112
+#: main.cc:108 main.cc:116
+#, c-format
 msgid "Nebulous"
 msgstr "Nebulous"
 
-#: main.cc:119
+#: main.cc:123
+#, c-format
 msgid "Thanks for playing!\n"
 msgstr "Tack för att du spelar!\n"
 
@@ -486,12 +482,12 @@ msgstr "Skjut"
 msgid "Password: %s"
 msgstr "Lösenord: %s"
 
-#: menu.cc:163
-#: menu.cc:164
+#: menu.cc:163 menu.cc:164
 msgid "Status on top"
 msgstr "Status på topp"
 
 #: menu.cc:185
+#, c-format
 msgid "Lives: "
 msgstr "Liv: "
 
@@ -500,8 +496,7 @@ msgstr "Liv: "
 msgid "Game Speed: %i"
 msgstr "Spelhastighet: %i"
 
-#: menu.cc:224
-#: menu.cc:225
+#: menu.cc:224 menu.cc:225
 msgid "Bonus"
 msgstr "Bonus"
 
@@ -509,116 +504,108 @@ msgstr "Bonus"
 msgid "Game Options"
 msgstr "Spelalternativ"
 
-#: menu.cc:245
-#: menu.cc:265
-#: menu.cc:437
-#: menu.cc:461
-#: menu.cc:485
-#: menu.cc:642
+#: menu.cc:245 menu.cc:265 menu.cc:460 menu.cc:484 menu.cc:509 menu.cc:666
 msgid "Back"
 msgstr "Tillbaka"
 
-#: menu.cc:256
-#: menu.cc:271
+#: menu.cc:256 menu.cc:271
 msgid "Redefine Keys"
 msgstr "Definiera tangenter"
 
-#: menu.cc:283
-#: menu.cc:284
+#: menu.cc:283 menu.cc:284
 msgid "Fullscreen"
 msgstr "Helskärmsläge"
 
-#: menu.cc:302
-#: menu.cc:303
+#: menu.cc:306 menu.cc:307
 msgid "Sounds"
 msgstr "Ljud"
 
-#: menu.cc:337
-#: menu.cc:338
+#: menu.cc:325 menu.cc:326
+msgid "Music"
+msgstr ""
+
+#: menu.cc:360 menu.cc:361
 msgid "Font alpha"
 msgstr "Typsnitt alpha"
 
-#: menu.cc:351
-#: menu.cc:352
+#: menu.cc:374 menu.cc:375
 msgid "Sprites alpha"
 msgstr "Sprite alpha"
 
-#: menu.cc:365
-#: menu.cc:366
+#: menu.cc:388 menu.cc:389
 msgid "Scroller alpha"
 msgstr "Skroller alpha"
 
-#: menu.cc:378
-#: menu.cc:379
+#: menu.cc:401 menu.cc:402
 msgid "Shadowing"
 msgstr "Skuggning"
 
-#: menu.cc:404
+#: menu.cc:427
 msgid "Nonreflecting waves"
 msgstr "Ej reflekterande vågor"
 
-#: menu.cc:405
+#: menu.cc:428
 msgid "Simple waves"
 msgstr "Enkla vågor"
 
-#: menu.cc:406
+#: menu.cc:429
 msgid "Expensive waves"
 msgstr "Kraftiga vågor"
 
-#: menu.cc:407
+#: menu.cc:430
 msgid "Error"
 msgstr "Fel"
 
-#: menu.cc:417
+#: menu.cc:440
 msgid "Complete Scroller"
 msgstr "Komplett skroll"
 
-#: menu.cc:418
+#: menu.cc:441
 msgid "2 layers Scoller"
 msgstr "2-lagers skroll"
 
-#: menu.cc:424
+#: menu.cc:447
 msgid "Alpha Options"
 msgstr "Alfainställningar"
 
-#: menu.cc:448
+#: menu.cc:471
 msgid "Graphics"
 msgstr "Grafik"
 
-#: menu.cc:472
+#: menu.cc:495
 msgid "Options"
 msgstr "Alternativ"
 
-#: menu.cc:615
+#: menu.cc:639
 msgid "HighScores"
 msgstr "Poängtoppen"
 
-#: menu.cc:620
+#: menu.cc:644
 #, c-format
 msgid "Scores for %s"
 msgstr "Poäng för %s"
 
-#: menu.cc:644
+#: menu.cc:668
 msgid "OK"
 msgstr "OK"
 
-#: menu.cc:657
+#: menu.cc:681
 msgid "Congratulations! You are"
 msgstr "Gratulerar! Du är"
 
-#: menu.cc:658
+#: menu.cc:682
 msgid "probably good enough to"
 msgstr "antagligen tillräckligt bra att"
 
-#: menu.cc:659
+#: menu.cc:683
 msgid "enter the highscore table!"
 msgstr "komma in på poängtoppen!"
 
-#: menu.cc:661
+#: menu.cc:685
 msgid "Please enter your name"
 msgstr "Ange ditt namn"
 
-#: menu.cc:715
+#: menu.cc:739
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -632,36 +619,36 @@ msgstr ""
 "ny version av Tower Toppler.\n"
 "Vill du fortsätta?"
 
-#: menu.cc:772
+#: menu.cc:796
 msgid "Hunt the Fish"
 msgstr "Jaga fisken"
 
-#: menu.cc:793
+#: menu.cc:819
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Starta: %s %c"
 
-#: menu.cc:803
+#: menu.cc:829
 msgid "Highscores"
 msgstr "Poängtoppen"
 
-#: menu.cc:815
+#: menu.cc:841
 msgid "Level Editor"
 msgstr "Redigera nivå"
 
-#: menu.cc:871
+#: menu.cc:897
 msgid "Return to Game"
 msgstr "Återvänd till spel"
 
-#: menu.cc:881
+#: menu.cc:907
 msgid "Quit Game"
 msgstr "Avsluta spel"
 
-#: menu.cc:888
+#: menu.cc:914
 msgid "DEBUG MENU"
 msgstr "FELSÖKNINGSMENY"
 
-#: menu.cc:893
+#: menu.cc:919
 msgid "Back to Game"
 msgstr "Tillbaka till spel"
 
@@ -681,11 +668,11 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nej"
 
-#: screen.cc:1581
+#: screen.cc:1615
 msgid "REC"
 msgstr "REC"
 
-#: screen.cc:1582
+#: screen.cc:1616
 msgid "DEMO"
 msgstr "DEMO"
 
@@ -904,4 +891,3 @@ msgstr "Spiral"
 #: levelnames.txt:59
 msgid "Skygazer"
 msgstr "Skygazer"
-

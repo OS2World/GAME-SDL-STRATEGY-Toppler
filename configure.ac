@@ -2,10 +2,10 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.13)
-AC_INIT([toppler],[1.1.1])
+AC_INIT([toppler],[1.1.2])
+AM_INIT_AUTOMAKE
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([toppler.cc])
 AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE

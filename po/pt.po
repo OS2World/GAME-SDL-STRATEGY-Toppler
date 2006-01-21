@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-16 21:33+0100\n"
+"POT-Creation-Date: 2006-01-21 12:42+0100\n"
 "PO-Revision-Date: 2005-01-09 00:00+0100\n"
 "Last-Translator: Helder Correia <helder.correia@netcabo.pt>\n"
 "Language-Team: pt <pt@li.org>\n"
@@ -67,7 +67,7 @@ msgstr "Vidas:     ~t3505000 X %3d"
 msgid "Wheee!!\n"
 msgstr "Boa!\n"
 
-#: leveledit.cc:103 menu.cc:947
+#: leveledit.cc:103 menu.cc:949
 msgid "Quit"
 msgstr "Sair"
 
@@ -621,32 +621,32 @@ msgstr ""
 msgid "Hunt the Fish"
 msgstr "Cace o Peixe"
 
-#: menu.cc:817
+#: menu.cc:819
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Início: %s %c"
 
-#: menu.cc:827
+#: menu.cc:829
 msgid "Highscores"
 msgstr "Pontuações"
 
-#: menu.cc:839
+#: menu.cc:841
 msgid "Level Editor"
 msgstr "Editor de níveis"
 
-#: menu.cc:895
+#: menu.cc:897
 msgid "Return to Game"
 msgstr "Regressar ao jogo"
 
-#: menu.cc:905
+#: menu.cc:907
 msgid "Quit Game"
 msgstr "Sair do jogo"
 
-#: menu.cc:912
+#: menu.cc:914
 msgid "DEBUG MENU"
 msgstr "MENU DE DEPURAÇAO"
 
-#: menu.cc:917
+#: menu.cc:919
 msgid "Back to Game"
 msgstr "Voltar ao jogo"
 

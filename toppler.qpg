@@ -67,7 +67,7 @@
             </QPM:ProductDescription>
 
             <QPM:ReleaseDescription>
-               <QPM:ReleaseVersion></QPM:ReleaseVersion>
+               <QPM:ReleaseVersion>1.1.2</QPM:ReleaseVersion>
                <QPM:ReleaseUrgency>Medium</QPM:ReleaseUrgency>
                <QPM:ReleaseStability>Stable</QPM:ReleaseStability>
                <QPM:ReleaseNoteMinor></QPM:ReleaseNoteMinor>
