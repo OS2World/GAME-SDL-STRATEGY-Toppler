@@ -152,6 +152,38 @@ FILE *open_data_file(const char *name) {
 #endif
 }
 
+bool get_data_file_path(const char * name, char * f, int len) {
+
+#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
+  // look into actual directory
+  if (dcl_fileexists(name)) {
+    snprintf(f, len, name);
+    return true;
+  }
+
+  // look into the data dir
+  char n[200];
+
+  snprintf(n, 200, TOP_DATADIR"/%s", name);
+  if (dcl_fileexists(n)) {
+    snprintf(f, len, n);
+    return true;
+  }
+
+  return false;
+
+#else
+
+  if (dcl_fileexists(name)) {
+    snprintf(f, len, name);
+    return true;
+  }
+
+  return false;
+
+#endif
+}
+
 FILE *open_local_config_file(const char *name) {
 
 #if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)

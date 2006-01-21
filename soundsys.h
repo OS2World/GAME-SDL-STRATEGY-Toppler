@@ -50,6 +50,7 @@ public:
 
   void playmusic(const char * file); //start playing a background music
   void stopmusic(void);            // stop playing the background music
+  void fadeToVol(int vol);
 
   /* tries to open and initialize the sound device */
   void opensound(void);
@@ -75,6 +76,8 @@ private:
   static class ttsounds *inst;
 
   Mix_Music * title;
+  int musicVolume;
+
 
 };
 

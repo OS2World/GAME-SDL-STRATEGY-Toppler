@@ -104,7 +104,7 @@
 #define SPR_FISHHEI  40
 
 /* submarine sprite size */
-#define SPR_SUBMWID 120 
+#define SPR_SUBMWID 120
 #define SPR_SUBMHEI 80
 
 /* submarine ammunition, torpedo */
@@ -136,7 +136,7 @@
 #define GAME_DEBUG_KEYS
 #endif
 
-/*   define this if you want the bonus game to be accessible 
+/*   define this if you want the bonus game to be accessible
  from the main menu. */
 #ifdef TESTER
 #define HUNT_THE_FISH
@@ -186,6 +186,12 @@ FILE *open_local_config_file(const char *name);
 FILE *create_local_config_file(const char *name);
 FILE *open_local_data_file(const char *name);
 FILE *create_local_data_file(const char *name);
+
+/* returns the filename that would be opened with open_data_file in
+ * f, f is max len characters
+ * returns true, if the file pointer of open_data_file would be not NULL
+ */
+bool get_data_file_path(const char * fname, char * f, int len);
 
 /* Is the TT window active? */
 extern bool tt_has_focus;

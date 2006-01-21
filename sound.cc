@@ -24,7 +24,6 @@
 #include "configuration.h"
 
 static bool samplesloaded = false;
-static int musicVolume;
 
 void snd_init(void) {
   if (!config.nosound()) {
@@ -65,7 +64,6 @@ void snd_done(void) {
 
 void snd_playTitle(void) {
   ttsounds::instance()->playmusic("toppler.mp3");
-  musicVolume = MIX_MAX_VOLUME;
 }
 
 
@@ -74,20 +72,5 @@ void snd_stopTitle(void) {
 }
 
 void snd_musicVolume(int vol) {
-
-  while (musicVolume != vol) {
-
-    if (musicVolume > vol) {
-      musicVolume -= 4;
-      if (musicVolume < vol)
-        musicVolume = vol;
-    } else {
-      musicVolume += 4;
-      if (musicVolume > vol)
-        musicVolume = vol;
-    }
-
-    Mix_VolumeMusic(musicVolume);
-    dcl_wait();
-  }
+  ttsounds::instance()->fadeToVol(vol);
 }

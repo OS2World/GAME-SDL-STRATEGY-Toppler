@@ -30,6 +30,8 @@ ttsounds::ttsounds(void)
   sounds = NULL;
 
   debugprintf(9, "ttsounds::ttsounds\n");
+  
+  title = 0;
 }
 
 ttsounds::~ttsounds(void)
@@ -208,17 +210,44 @@ void ttsounds::playmusic(const char * fname) {
   if (!useSound) return;
 
 #ifdef HAVE_LIBSDL_MIXER
-  title = Mix_LoadMUS(fname);
-  Mix_PlayMusic(title, -1);
+  char f[500];
+  if (get_data_file_path(fname, f, 500)) {
+    title = Mix_LoadMUS(f);
+    Mix_PlayMusic(title, -1);
+    musicVolume = MIX_MAX_VOLUME;
+  }
 #endif
 }
 void ttsounds::stopmusic(void) {
   if (!useSound) return;
 
 #ifdef HAVE_LIBSDL_MIXER
-  Mix_FadeOutMusic(1000);
+  if (title) {
+    Mix_FadeOutMusic(1000);
 
-  while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
+    while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
+  }
 #endif
+}
+
+void ttsounds::fadeToVol(int vol) {
+  
+  if (!title) return;
+  
+  while (musicVolume != vol) {
+
+    if (musicVolume > vol) {
+      musicVolume -= 4;
+      if (musicVolume < vol)
+        musicVolume = vol;
+    } else {
+      musicVolume += 4;
+      if (musicVolume > vol)
+        musicVolume = vol;
+    }
+
+    Mix_VolumeMusic(musicVolume);
+    dcl_wait();
+  }
 }
 
