@@ -5,6 +5,7 @@ Version 1.1.2
 - portugese localisation
 - long tower names are broken into several lines
 - swedish translation
+- small bug that made the toppler get stuck under very special conditions
 
 Version 1.1.1
 
