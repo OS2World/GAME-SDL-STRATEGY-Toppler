@@ -16,7 +16,7 @@ DATFILES = cross.dat font.dat graphics.dat menu.dat scroller.dat \
        sounds/alarm.wav sounds/boing.wav sounds/bubbles.wav sounds/fanfare.wav \
        sounds/hit.wav sounds/honk.wav sounds/rumble.wav sounds/score.wav \
        sounds/sonar.wav sounds/splash.wav sounds/swoosh.wav sounds/tap.wav \
-       sounds/tick.wav sounds/torpedo.wav sounds/water.wav sounds/title.xm
+       sounds/tick.wav sounds/torpedo.wav sounds/water.wav
 
 CLEANRULES = cross.clean font.clean graphics.clean menu.clean \
 	     scroller.clean sprites.clean titles.clean dude.clean
