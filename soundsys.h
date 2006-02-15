@@ -21,8 +21,11 @@
 
 #ifdef HAVE_LIBSDL_MIXER
 #include <SDL_mixer.h>
+#else
+#define MIX_MAX_VOLUME 0
 #endif
 
+#ifdef HAVE_LIBSDL_MIXER
 struct ttsnddat {
   bool in_use; //is this datablock in use (sndfile is loaded)
   bool play;   //is this block goind to get played next time?
@@ -30,10 +33,9 @@ struct ttsnddat {
   int channel; //sound channel
   int volume;  //sound volume
   int loops;   //how many times to loop this sound?
-#ifdef HAVE_LIBSDL_MIXER
   Mix_Chunk *sound; //sound data
-#endif
 };
+#endif
 
 class ttsounds {
 public:
@@ -65,6 +67,7 @@ public:
 private:
   ttsounds(void);
 
+#ifdef HAVE_LIBSDL_MIXER
   /* this var is only true, if we the user wants sound, and wa
    * can init it
    */
@@ -73,11 +76,11 @@ private:
   int n_sounds; // # of sounds allocated
   struct ttsnddat *sounds;
 
-  static class ttsounds *inst;
-
   Mix_Music * title;
   int musicVolume;
+#endif
 
+  static class ttsounds *inst;
 
 };
 
