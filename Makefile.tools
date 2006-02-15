@@ -2,7 +2,7 @@
 #  Makefile Tools - some useful scripts to distribute your software
 #  ================================================================
 #
-#  Version: 0.9.3
+#  Version: 0.9.4
 #
 #
 #  Usage: add to each "Makefile.am" the following line:
@@ -190,7 +190,7 @@ dist-flatdir:
 			esac \
 		&& if test "$$convert"; then \
 			echo "converting text files"; \
-			find ! -type d ! -name '*.*' | while read file; do \
+			find ! -type d -name '[A-Z]*' ! -name '*.*' | while read file; do \
 				echo " $$file -> $$file.txt"; \
 				$(UNIX2DOS) <"$$file" >"$$file.txt"; \
 				rm -f "$$file"; \
