@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "$0: running autopoint ..."
-autopoint || exit 1
+autopoint --force || exit 1
 
 echo "$0: running some preparations ..."
 (
@@ -18,6 +18,12 @@ echo "$0: running some preparations ..."
 
 	echo "Creating po/LINGUAS"
 	echo -n "$linguas" >po/LINGUAS
+
+	echo "Bugfixing po/Makefile.in.in"
+	cp po/Makefile.in.in po/Makefile.in.in~
+	sed \
+		-e 's/\(mkinstalldirs = \$(SHELL) \).*/\1"$(MKINSTALLDIRS)"/' \
+		<po/Makefile.in.in~ >po/Makefile.in.in
 
 	echo "Updating configure.ac (backup is in configure.ac~)"
 	cp configure.ac configure.ac~
