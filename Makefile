@@ -1,6 +1,6 @@
 TOPPLERDIR = ../toppler
 
-all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm pasi2.ttm
+all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm pasi2.ttm david1.ttm
 	cp *.ttm ${TOPPLERDIR}
 
 clean:
@@ -82,3 +82,12 @@ pasi2.ttm: kallinen2/t1 kallinen2/t2 \
 	mv "${HOME}/.toppler/Pasis 2 Towers.ttm" pasi2.ttm
 
 
+# RULE FOR DAVIDS MISSION 1
+
+abc.ttm: david1/lev1 david1/lev2 david1/lev3 david1/lev4 \
+         david1/lev5 david1/lev6 david1/lev7 david1/lev8 \
+         cremission
+	ln -s `pwd`/david1 ${HOME}/.toppler/t
+	./cremission "David 1" 12 t/lev1 t/lev2 t/lev3 t/lev4 t/lev5 t/lev6 t/lev7 t/lev8
+	rm ${HOME}/.toppler/t
+	mv "${HOME}/.toppler/David 1.ttm" david1.ttm
