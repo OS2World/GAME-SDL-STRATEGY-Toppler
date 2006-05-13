@@ -40,7 +40,7 @@ dist_man_MANS = toppler.6
 dist_pkgdoc_DATA = AUTHORS COPYING ChangeLog NEWS README
 dist_pkgdata_DATA = \
   toppler.dat \
-  m1.ttm m2.ttm ball1.ttm ball2.ttm ball3.ttm abc.ttm pasi2.ttm
+  m1.ttm m2.ttm ball1.ttm ball2.ttm ball3.ttm abc.ttm pasi2.ttm david1.ttm
 
 dist_pkglocalstate_DATA = $(PACKAGE).hsc
 
