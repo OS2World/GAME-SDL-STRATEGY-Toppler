@@ -217,7 +217,6 @@ typedef struct dirent {
 } dirent;
 
 #define strcasecmp stricmp
-#define snprintf _snprintf
 #define M_PI 3.1415926535897932384626433832795
 #else
 #include <dirent.h>
@@ -244,3 +243,16 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
 
 
 #endif
+
+#ifndef HAVE_MBRTOWC
+
+typedef int mbstate_t;
+size_t my_mbrtowc (wchar_t * out, const char *s, int n, mbstate_t * st);
+
+#else
+
+#define my_mbrtowc mbrtowc
+
+#endif
+
+
