@@ -229,20 +229,46 @@ int main() {
   get(colors, mask, (unsigned char)'û');
   get(colors, mask, (unsigned char)'Û');
 
-  get(colors, mask, 0x108);
-  get(colors, mask, 0x109);
-  get(colors, mask, 0x11c);
-  get(colors, mask, 0x11d);
-  get(colors, mask, 0x124);
-  get(colors, mask, 0x125);
-  get(colors, mask, 0x134);
-  get(colors, mask, 0x135);
-  get(colors, mask, 0x15c);
-  get(colors, mask, 0x15d);
-  get(colors, mask, 0x168);
-  get(colors, mask, 0x169);
-  get(colors, mask, 0xC5);
-  get(colors, mask, 0xE5);
+  get(colors, mask, 0x108);  // ^C
+  get(colors, mask, 0x109);  // ^c
+  get(colors, mask, 0x11c);  // ^G
+  get(colors, mask, 0x11d);  // ^g
+  get(colors, mask, 0x124);  // ^H
+  get(colors, mask, 0x125);  // ^h
+  get(colors, mask, 0x134);  // ^J
+  get(colors, mask, 0x135);  // ^j
+  get(colors, mask, 0x15c);  // ^S
+  get(colors, mask, 0x15d);  // ^s
+  get(colors, mask, 0x168);  // ~U
+  get(colors, mask, 0x169);  // ~u
+  get(colors, mask, 0xC5);   // °A
+  get(colors, mask, 0xE5);   // °a
+  get(colors, mask, 0x153);   // oe ½
+
+  get(colors, mask, 0x152);   // OE ¼
+  get(colors, mask, 0xC3);   // ~A Ã
+  get(colors, mask, 0xE3);   // ~a ã
+  get(colors, mask, 0xC6);   // AE Æ
+  get(colors, mask, 0xE6);   // ae æ
+  get(colors, mask, 0xCB);   // "E Ë
+  get(colors, mask, 0xEB);   // "e ë
+  get(colors, mask, 0xCF);   // "I Ï
+  get(colors, mask, 0xEF);   // "i ï
+  get(colors, mask, 0xD0);   // Thorn
+  get(colors, mask, 0xF0);   // thorn
+  get(colors, mask, 0xD5);   // ~O Õ
+  get(colors, mask, 0xF5);   // ~o õ
+  get(colors, mask, 0xD8);   // /O Ø
+  get(colors, mask, 0xF8);   // /o ø
+  get(colors, mask, 0xD9);   // `U Ù
+  get(colors, mask, 0xF9);   // `u ù
+  get(colors, mask, 0xDA);   // u Ú
+  get(colors, mask, 0xFA);   // u ú
+  get(colors, mask, 0xDD);   // ¿Y Ý
+  get(colors, mask, 0xFD);   // ¿y ý
+  get(colors, mask, 0xDE);   // |°
+  get(colors, mask, 0xFE);   // |°
+  get(colors, mask, 0xFF);   // "y
 
   fclose(outp);
 }
