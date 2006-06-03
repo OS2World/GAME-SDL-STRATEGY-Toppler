@@ -514,10 +514,10 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   /* time left for the player to reach the tower */
   int time = lev_towertime();
 
-  if (demo < 0) drawflags = SF_REC;
+  if (demo == -1) drawflags = SF_REC;
   else if (demo > 0) drawflags = SF_DEMO;
 
-  assert_msg(!(demo && !demobuf), "Trying to play or record a null demo.");
+  assert_msg(!(((demo == -1) || (demo > 0)) && !demobuf), "Trying to play or record a null demo.");
 
   top_init();
 
@@ -542,7 +542,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
       get_keys(left_right, up_down, space, demokeys);
     }
 
-    if (demo < 0) {
+    if (demo == -1) {
       if ((demolen >= demo_alloc) || (dbuf == NULL)) {
         demo_alloc += 200;
         Uint16 *tmp = new Uint16[demo_alloc];
@@ -648,7 +648,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   resttime = time;
   key_readkey();
 
-  if (demo < 0) {
+  if (demo == -1) {
     demo = demolen;
   }
   if (demo) state = STATE_ABORTED;

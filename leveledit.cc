@@ -790,7 +790,7 @@ void le_edit(void) {
         {
           Uint8 dummy1;
           Uint16 dummy2;
-	  int dummy3 = 0;
+	  int dummy3 = -2;
 	  int speed = dcl_update_speed(config.game_speed());
 	  Uint16 *dummybuf = NULL;
           unsigned char *p;
