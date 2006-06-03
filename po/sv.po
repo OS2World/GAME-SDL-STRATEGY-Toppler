@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler 1.1.1-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-21 13:31+0100\n"
+"POT-Creation-Date: 2006-06-03 13:56+0200\n"
 "PO-Revision-Date: 2005-12-30 03:40+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -18,6 +18,7 @@ msgstr ""
 msgid "Pause"
 msgstr "Gör paus"
 
+#. for errorchecking
 #: decl.h:206
 #, c-format
 msgid "Assertion failure: %s\n"
@@ -680,214 +681,265 @@ msgstr "DEMO"
 msgid "Mission 1"
 msgstr "Uppdrag 1"
 
-#: levelnames.txt:2
+#. Tower name, you can translate freely
+#: levelnames.txt:3
 msgid "Tower of eyes"
 msgstr "Ögonens torn"
 
-#: levelnames.txt:3
+#. Tower name, you can translate freely
+#: levelnames.txt:5
 msgid "Realm of robots"
 msgstr "Robotarnas värld"
 
-#: levelnames.txt:4
+#. Tower name, you can translate freely
+#: levelnames.txt:7
 msgid "Trap of tricks"
 msgstr "Fällor eller tricks"
 
-#: levelnames.txt:5
+#. Tower name, you can translate freely
+#: levelnames.txt:9
 msgid "Slippery slide"
 msgstr "Slippery slide"
 
-#: levelnames.txt:6
+#. Tower name, you can translate freely
+#: levelnames.txt:11
 msgid "Broken path"
 msgstr "Trasig väg"
 
-#: levelnames.txt:7
+#. Tower name, you can translate freely
+#: levelnames.txt:13
 msgid "Swimmers delight"
 msgstr "Simmarnas önskan"
 
-#: levelnames.txt:8
+#. Tower name, you can translate freely
+#: levelnames.txt:15
 msgid "Nasty one"
 msgstr "En elaking"
 
-#: levelnames.txt:9
+#. Tower name, you can translate freely
+#: levelnames.txt:17
 msgid "Edge of doom"
 msgstr "Helvetets kant"
 
-#: levelnames.txt:11
+#: levelnames.txt:19
 msgid "Mission 2"
 msgstr "Uppdrag 2"
 
-#: levelnames.txt:12
+#. Tower name, you can translate freely
+#: levelnames.txt:21
 msgid "Blink of the eye"
 msgstr "Ögats blinkning"
 
-#: levelnames.txt:13
+#. Tower name, you can translate freely
+#: levelnames.txt:23
 msgid "Robot's heaven"
 msgstr "Robotarnas himmel"
 
-#: levelnames.txt:14
+#. Tower name, you can translate freely
+#: levelnames.txt:25
 msgid "Trick of traps"
 msgstr "Trick of traps"
 
-#: levelnames.txt:15
+#. Tower name, you can translate freely
+#: levelnames.txt:27
 msgid "No man's land"
 msgstr "Ingenmansland"
 
-#: levelnames.txt:16
+#. Tower name, you can translate freely
+#: levelnames.txt:29
 msgid "Oh, *******!!"
 msgstr "Oh, *******!!"
 
-#: levelnames.txt:17
+#. Tower name, you can translate freely
+#: levelnames.txt:31
 msgid "Riddle of reason"
 msgstr "Anledningarnas gåta"
 
-#: levelnames.txt:18
+#. Tower name, you can translate freely
+#: levelnames.txt:33
 msgid "Maze of mistakes"
 msgstr "Misstagens labyrint"
 
-#: levelnames.txt:19
+#. Tower name, you can translate freely
+#: levelnames.txt:35
 msgid "Last trump"
 msgstr "Last trump"
 
-#: levelnames.txt:21
+#. Ball is the name of the autor (Clarence Ball) and should not be translated
+#: levelnames.txt:38
 msgid "Ball 1"
 msgstr "Boll 1"
 
-#: levelnames.txt:22
+#. Tower name, you can translate freely
+#: levelnames.txt:40
 msgid "Run and don't stop"
 msgstr "Spring och stanna inte"
 
-#: levelnames.txt:23
+#. Tower name, you can translate freely
+#: levelnames.txt:42
 msgid "Watch your step"
 msgstr "Se var du går"
 
-#: levelnames.txt:24
+#. Tower name, you can translate freely
+#: levelnames.txt:44
 msgid "Short, but deadly"
 msgstr "Kort men dödlig"
 
-#: levelnames.txt:25
+#. Tower name, you can translate freely
+#: levelnames.txt:46
 msgid "The maddening"
 msgstr "The maddening"
 
-#: levelnames.txt:26
+#. Tower name, you can translate freely
+#: levelnames.txt:48
 msgid "Doom at every step"
 msgstr "Doom at every step"
 
-#: levelnames.txt:27
+#. Tower name, you can translate freely
+#: levelnames.txt:50
 msgid "Enemies everywhere"
 msgstr "Fiender överallt"
 
-#: levelnames.txt:28
+#. Tower name, you can translate freely
+#: levelnames.txt:52
 msgid "You will loose"
 msgstr "Du kommer att förlora"
 
-#: levelnames.txt:29
+#. Tower name, you can translate freely
+#: levelnames.txt:54
 msgid "Mind destroyer"
 msgstr "Mind destroyer"
 
-#: levelnames.txt:31
+#. Ball is the name of the autor (Clarence Ball) and should not be translated
+#: levelnames.txt:57
 msgid "Ball 2"
 msgstr "Boll 2"
 
-#: levelnames.txt:32
+#. Tower name, you can translate freely
+#: levelnames.txt:59
 msgid "Mind Trap"
 msgstr "Mind Trap"
 
-#: levelnames.txt:33
+#. Tower name, you can translate freely
+#: levelnames.txt:61
 msgid "Breaking Tower"
 msgstr "Breaking Tower"
 
-#: levelnames.txt:34
+#. Tower name, you can translate freely
+#: levelnames.txt:63
 msgid "Great Fall"
 msgstr "Great Fall"
 
-#: levelnames.txt:35
+#. Tower name, you can translate freely
+#: levelnames.txt:65
 msgid "Tower of Intrigue"
 msgstr "Intrigernas torn"
 
-#: levelnames.txt:36
+#. Tower name, you can translate freely
+#: levelnames.txt:67
 msgid "Massacre"
 msgstr "Massaker"
 
-#: levelnames.txt:37
+#. Tower name, you can translate freely
+#: levelnames.txt:69
 msgid "Bouncing Murders"
 msgstr "Studsande mördare"
 
-#: levelnames.txt:38
+#. Tower name, you can translate freely
+#: levelnames.txt:71
 msgid "Trial and error"
 msgstr "Försök och misslyckas"
 
-#: levelnames.txt:39
+#. Tower name, you can translate freely
+#: levelnames.txt:73
 msgid "Tower of Pure Evil"
 msgstr "Tornet av ren ondska"
 
-#: levelnames.txt:41
+#. Ball is the name of the autor (Clarence Ball) and should not be translated
+#: levelnames.txt:76
 msgid "Ball 3"
 msgstr "Boll 3"
 
-#: levelnames.txt:42
+#. Tower name, you can translate freely
+#: levelnames.txt:78
 msgid "Annoying Tower"
 msgstr "Annoying Tower"
 
-#: levelnames.txt:43
+#. Tower name, you can translate freely
+#: levelnames.txt:80
 msgid "Cave of Failure"
 msgstr "Cave of Failure"
 
-#: levelnames.txt:44
+#. Tower name, you can translate freely
+#: levelnames.txt:82
 msgid "Dividing path"
 msgstr "Delad stig"
 
-#: levelnames.txt:45
+#. Tower name, you can translate freely
+#: levelnames.txt:84
 msgid "No Way Out?"
 msgstr "Ingen väg ut?"
 
-#: levelnames.txt:46
+#. Tower name, you can translate freely
+#: levelnames.txt:86
 msgid "Trap"
 msgstr "Fälla"
 
-#: levelnames.txt:47
+#. Tower name, you can translate freely
+#: levelnames.txt:88
 msgid "Tower of Mystery"
 msgstr "Mysteriernas torn"
 
-#: levelnames.txt:48
+#. Tower name, you can translate freely
+#: levelnames.txt:90
 msgid "Slip ... and die"
 msgstr "Halka ... och dö"
 
-#: levelnames.txt:49
+#. Tower name, you can translate freely
+#: levelnames.txt:92
 msgid "Mission Impossible"
 msgstr "Omöjligt uppdrag"
 
-#: levelnames.txt:51
+#: levelnames.txt:94
 msgid "ABC Towers"
 msgstr "ABC-tornen"
 
-#: levelnames.txt:52
+#. Tower name, you can translate freely
+#: levelnames.txt:96
 msgid "Slices"
 msgstr "Slices"
 
-#: levelnames.txt:53
+#. Tower name, you can translate freely
+#: levelnames.txt:98
 msgid "Corridors"
 msgstr "Korridorer"
 
-#: levelnames.txt:54
+#. Tower name, you can translate freely
+#: levelnames.txt:100
 msgid "Higher Ground"
 msgstr "Högre mark"
 
-#: levelnames.txt:55
+#. Tower name, you can translate freely
+#: levelnames.txt:102
 msgid "No Icing"
 msgstr "No Icing"
 
-#: levelnames.txt:56
+#. Tower name, you can translate freely
+#: levelnames.txt:104
 msgid "Three Layers"
 msgstr "Tre lager"
 
-#: levelnames.txt:57
+#. Tower name, you can translate freely
+#: levelnames.txt:106
 msgid "Two Ways"
 msgstr "Två vägar"
 
-#: levelnames.txt:58
+#. Tower name, you can translate freely
+#: levelnames.txt:108
 msgid "Spiral"
 msgstr "Spiral"
 
-#: levelnames.txt:59
+#. Tower name, you can translate freely
+#: levelnames.txt:110
 msgid "Skygazer"
 msgstr "Skygazer"

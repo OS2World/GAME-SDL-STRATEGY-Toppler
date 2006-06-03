@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-21 13:31+0100\n"
+"POT-Creation-Date: 2006-06-03 13:56+0200\n"
 "PO-Revision-Date: 2005-01-09 00:00+0100\n"
 "Last-Translator: Helder Correia <helder.correia@netcabo.pt>\n"
 "Language-Team: pt <pt@li.org>\n"
@@ -20,6 +20,7 @@ msgstr ""
 msgid "Pause"
 msgstr "Em pausa"
 
+#. for errorchecking
 #: decl.h:206
 #, c-format
 msgid "Assertion failure: %s\n"
@@ -678,214 +679,265 @@ msgstr "DEMONSTRAÇAO"
 msgid "Mission 1"
 msgstr "Missao 1"
 
-#: levelnames.txt:2
+#. Tower name, you can translate freely
+#: levelnames.txt:3
 msgid "Tower of eyes"
 msgstr "Torre dos Olhos"
 
-#: levelnames.txt:3
+#. Tower name, you can translate freely
+#: levelnames.txt:5
 msgid "Realm of robots"
 msgstr "Reino dos robots"
 
-#: levelnames.txt:4
+#. Tower name, you can translate freely
+#: levelnames.txt:7
 msgid "Trap of tricks"
 msgstr "Armadilha de truques"
 
-#: levelnames.txt:5
+#. Tower name, you can translate freely
+#: levelnames.txt:9
 msgid "Slippery slide"
 msgstr "Escorregadelas"
 
-#: levelnames.txt:6
+#. Tower name, you can translate freely
+#: levelnames.txt:11
 msgid "Broken path"
 msgstr "Caminho interrompido"
 
-#: levelnames.txt:7
+#. Tower name, you can translate freely
+#: levelnames.txt:13
 msgid "Swimmers delight"
 msgstr "Prazer dos nadadores"
 
-#: levelnames.txt:8
+#. Tower name, you can translate freely
+#: levelnames.txt:15
 msgid "Nasty one"
 msgstr "Sujo"
 
-#: levelnames.txt:9
+#. Tower name, you can translate freely
+#: levelnames.txt:17
 msgid "Edge of doom"
 msgstr "Abismo do medo"
 
-#: levelnames.txt:11
+#: levelnames.txt:19
 msgid "Mission 2"
 msgstr "Missao 2"
 
-#: levelnames.txt:12
+#. Tower name, you can translate freely
+#: levelnames.txt:21
 msgid "Blink of the eye"
 msgstr "Piscar do olho"
 
-#: levelnames.txt:13
+#. Tower name, you can translate freely
+#: levelnames.txt:23
 msgid "Robot's heaven"
 msgstr "Paraíso dos robots"
 
-#: levelnames.txt:14
+#. Tower name, you can translate freely
+#: levelnames.txt:25
 msgid "Trick of traps"
 msgstr "Truque de armadilhas"
 
-#: levelnames.txt:15
+#. Tower name, you can translate freely
+#: levelnames.txt:27
 msgid "No man's land"
 msgstr "Terra de ninguém"
 
-#: levelnames.txt:16
+#. Tower name, you can translate freely
+#: levelnames.txt:29
 msgid "Oh, *******!!"
 msgstr "Oh, *******!!"
 
-#: levelnames.txt:17
+#. Tower name, you can translate freely
+#: levelnames.txt:31
 msgid "Riddle of reason"
 msgstr "Adivinha da razao"
 
-#: levelnames.txt:18
+#. Tower name, you can translate freely
+#: levelnames.txt:33
 msgid "Maze of mistakes"
 msgstr "Labirinto de erros"
 
-#: levelnames.txt:19
+#. Tower name, you can translate freely
+#: levelnames.txt:35
 msgid "Last trump"
 msgstr ""
 
-#: levelnames.txt:21
+#. Ball is the name of the autor (Clarence Ball) and should not be translated
+#: levelnames.txt:38
 msgid "Ball 1"
 msgstr "Bola 1"
 
-#: levelnames.txt:22
+#. Tower name, you can translate freely
+#: levelnames.txt:40
 msgid "Run and don't stop"
 msgstr "Corre e nao pares"
 
-#: levelnames.txt:23
+#. Tower name, you can translate freely
+#: levelnames.txt:42
 msgid "Watch your step"
 msgstr "Olha para o chao"
 
-#: levelnames.txt:24
+#. Tower name, you can translate freely
+#: levelnames.txt:44
 msgid "Short, but deadly"
 msgstr "Curto, mas mortal"
 
-#: levelnames.txt:25
+#. Tower name, you can translate freely
+#: levelnames.txt:46
 msgid "The maddening"
 msgstr "The maddening"
 
-#: levelnames.txt:26
+#. Tower name, you can translate freely
+#: levelnames.txt:48
 msgid "Doom at every step"
 msgstr "Medo em cada passo"
 
-#: levelnames.txt:27
+#. Tower name, you can translate freely
+#: levelnames.txt:50
 msgid "Enemies everywhere"
 msgstr "Enimigos por todo o lado"
 
-#: levelnames.txt:28
+#. Tower name, you can translate freely
+#: levelnames.txt:52
 msgid "You will loose"
 msgstr "Vais perder"
 
-#: levelnames.txt:29
+#. Tower name, you can translate freely
+#: levelnames.txt:54
 msgid "Mind destroyer"
 msgstr "Destruidor da mente"
 
-#: levelnames.txt:31
+#. Ball is the name of the autor (Clarence Ball) and should not be translated
+#: levelnames.txt:57
 msgid "Ball 2"
 msgstr "Bola 2"
 
-#: levelnames.txt:32
+#. Tower name, you can translate freely
+#: levelnames.txt:59
 msgid "Mind Trap"
 msgstr "Armadilha mental"
 
-#: levelnames.txt:33
+#. Tower name, you can translate freely
+#: levelnames.txt:61
 msgid "Breaking Tower"
 msgstr "Torre Partida"
 
-#: levelnames.txt:34
+#. Tower name, you can translate freely
+#: levelnames.txt:63
 msgid "Great Fall"
 msgstr "Grande queda"
 
-#: levelnames.txt:35
+#. Tower name, you can translate freely
+#: levelnames.txt:65
 msgid "Tower of Intrigue"
 msgstr "Torre da Intriga"
 
-#: levelnames.txt:36
+#. Tower name, you can translate freely
+#: levelnames.txt:67
 msgid "Massacre"
 msgstr "Massacre"
 
-#: levelnames.txt:37
+#. Tower name, you can translate freely
+#: levelnames.txt:69
 msgid "Bouncing Murders"
 msgstr "Assassinos saltitantes"
 
-#: levelnames.txt:38
+#. Tower name, you can translate freely
+#: levelnames.txt:71
 msgid "Trial and error"
 msgstr "Tentativa e falha"
 
-#: levelnames.txt:39
+#. Tower name, you can translate freely
+#: levelnames.txt:73
 msgid "Tower of Pure Evil"
 msgstr "Torre do Puro Mal"
 
-#: levelnames.txt:41
+#. Ball is the name of the autor (Clarence Ball) and should not be translated
+#: levelnames.txt:76
 msgid "Ball 3"
 msgstr "Bola 3"
 
-#: levelnames.txt:42
+#. Tower name, you can translate freely
+#: levelnames.txt:78
 msgid "Annoying Tower"
 msgstr "Torre Chata"
 
-#: levelnames.txt:43
+#. Tower name, you can translate freely
+#: levelnames.txt:80
 msgid "Cave of Failure"
 msgstr "Caverna do Fracasso"
 
-#: levelnames.txt:44
+#. Tower name, you can translate freely
+#: levelnames.txt:82
 msgid "Dividing path"
 msgstr "Caminho divisor"
 
-#: levelnames.txt:45
+#. Tower name, you can translate freely
+#: levelnames.txt:84
 msgid "No Way Out?"
 msgstr "Sem saída?"
 
-#: levelnames.txt:46
+#. Tower name, you can translate freely
+#: levelnames.txt:86
 msgid "Trap"
 msgstr "Armadilha"
 
-#: levelnames.txt:47
+#. Tower name, you can translate freely
+#: levelnames.txt:88
 msgid "Tower of Mystery"
 msgstr "Torre do Mistério"
 
-#: levelnames.txt:48
+#. Tower name, you can translate freely
+#: levelnames.txt:90
 msgid "Slip ... and die"
 msgstr "Escorrega ... e morre"
 
-#: levelnames.txt:49
+#. Tower name, you can translate freely
+#: levelnames.txt:92
 msgid "Mission Impossible"
 msgstr "Missao Impossível"
 
-#: levelnames.txt:51
+#: levelnames.txt:94
 msgid "ABC Towers"
 msgstr "Torres ABC"
 
-#: levelnames.txt:52
+#. Tower name, you can translate freely
+#: levelnames.txt:96
 msgid "Slices"
 msgstr "Fatias"
 
-#: levelnames.txt:53
+#. Tower name, you can translate freely
+#: levelnames.txt:98
 msgid "Corridors"
 msgstr "Corredores"
 
-#: levelnames.txt:54
+#. Tower name, you can translate freely
+#: levelnames.txt:100
 msgid "Higher Ground"
 msgstr "Terra Alta"
 
-#: levelnames.txt:55
+#. Tower name, you can translate freely
+#: levelnames.txt:102
 msgid "No Icing"
 msgstr "Sem gelo"
 
-#: levelnames.txt:56
+#. Tower name, you can translate freely
+#: levelnames.txt:104
 msgid "Three Layers"
 msgstr "Três camadas"
 
-#: levelnames.txt:57
+#. Tower name, you can translate freely
+#: levelnames.txt:106
 msgid "Two Ways"
 msgstr "Dois caminhos"
 
-#: levelnames.txt:58
+#. Tower name, you can translate freely
+#: levelnames.txt:108
 msgid "Spiral"
 msgstr "Espiral"
 
-#: levelnames.txt:59
+#. Tower name, you can translate freely
+#: levelnames.txt:110
 msgid "Skygazer"
 msgstr "Skygazer"
