@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler 1.1.1-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-03 13:56+0200\n"
+"POT-Creation-Date: 2006-06-03 14:13+0200\n"
 "PO-Revision-Date: 2005-12-30 03:40+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -943,3 +943,50 @@ msgstr "Spiral"
 #: levelnames.txt:110
 msgid "Skygazer"
 msgstr "Skygazer"
+
+#. David is the name of the autor and should not be translated
+#: levelnames.txt:113
+msgid "David 1"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:115
+msgid "Difficult jumps!"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:117
+msgid "Washout"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:119
+msgid "Climbing and tricks"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:121
+msgid "Watch the robots"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:123
+#, fuzzy
+msgid "Two Halves"
+msgstr "Två vägar"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:125
+msgid "Turning up the heat"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:127
+msgid "Confusing"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:129
+#, fuzzy
+msgid "Short but dangerous"
+msgstr "Kort men dödlig"

@@ -1,24 +1,23 @@
 # translation of de.po to
-# translation of de2.po to Deutsch
 # translation of de.po to Deutsch
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR Andreas R?er.
-# Andreas RÃ¶ver <roever@users.sf.net>, 2003, 2004, 2006.
+#
+# Andreas Röver <roever@users.sf.net>, 2003, 2004, 2006.
 # Ronny Standtke <Ronny.Standtke@gmx.de>, 2005.
 # Ronny Standtke <Ronny.Standtke@gmx.net>, 2005.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-03 13:56+0200\n"
-"PO-Revision-Date: 2006-01-21 13:21+0100\n"
-"Last-Translator: Andreas RÃ¶ver <roever@users.sf.net>\n"
+"POT-Creation-Date: 2006-06-03 14:13+0200\n"
+"PO-Revision-Date: 2006-06-03 14:19+0200\n"
+"Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.10.2\n"
+"X-Generator: KBabel 1.11.2\n"
 
 #: bonus.cc:104 game.cc:480
 msgid "Pause"
@@ -94,15 +93,15 @@ msgstr "Bewege nach rechts"
 
 #: leveledit.cc:104
 msgid "Insert row"
-msgstr "Zeile einfÃ¼gen"
+msgstr "Zeile einfügen"
 
 #: leveledit.cc:104
 msgid "Delete row"
-msgstr "Zeile lÃ¶schen"
+msgstr "Zeile löschen"
 
 #: leveledit.cc:104
 msgid "Rotate 180"
-msgstr "um 180Â° drehen"
+msgstr "um 180° drehen"
 
 #: leveledit.cc:105
 msgid "Put space"
@@ -126,7 +125,7 @@ msgstr "Rechts-Rutscher"
 
 #: leveledit.cc:107
 msgid "Put door"
-msgstr "TÃ¼r"
+msgstr "Tür"
 
 #: leveledit.cc:107
 msgid "Put goal"
@@ -134,7 +133,7 @@ msgstr "Ziel"
 
 #: leveledit.cc:107
 msgid "Check tower"
-msgstr "Turm prÃ¼fen"
+msgstr "Turm prüfen"
 
 #: leveledit.cc:107
 msgid "Put rolling ball"
@@ -178,7 +177,7 @@ msgstr "Oberer Stop"
 
 #: leveledit.cc:110
 msgid "Put pillar"
-msgstr "SÃ¤ule"
+msgstr "Säule"
 
 #: leveledit.cc:110
 msgid "Put box"
@@ -194,7 +193,7 @@ msgstr "Speichern"
 
 #: leveledit.cc:111
 msgid "Test tower"
-msgstr "PrÃ¼fen"
+msgstr "Prüfen"
 
 #: leveledit.cc:111
 msgid "Set tower color"
@@ -246,7 +245,7 @@ msgstr "Demo abspielen"
 
 #: leveledit.cc:114
 msgid "Adjust tower height"
-msgstr "TurmhÃ¶he verÃ¤ndern"
+msgstr "Turmhöhe verändern"
 
 #: leveledit.cc:114
 msgid "Go to end"
@@ -254,11 +253,11 @@ msgstr "Zum Ende"
 
 #: leveledit.cc:115
 msgid "Cut row"
-msgstr "Reihe lÃ¶schen"
+msgstr "Reihe löschen"
 
 #: leveledit.cc:115
 msgid "Paste row"
-msgstr "Reihe einfÃ¼gen"
+msgstr "Reihe einfügen"
 
 #: leveledit.cc:115
 msgid "Change robot type"
@@ -266,11 +265,11 @@ msgstr "Robotertyp setzen"
 
 #: leveledit.cc:189
 msgid "Tower changed, really quit"
-msgstr "Turm verÃ¤ndert, sicher"
+msgstr "Turm verändert, sicher"
 
 #: leveledit.cc:199
 msgid "Tower changed, really load"
-msgstr "Turm verÃ¤ndert, sicher"
+msgstr "Turm verändert, sicher"
 
 #: leveledit.cc:216
 msgid "Red"
@@ -278,7 +277,7 @@ msgstr "Rot"
 
 #: leveledit.cc:216
 msgid "Green"
-msgstr "GrÃ¼n"
+msgstr "Grün"
 
 #: leveledit.cc:216
 msgid "Blue"
@@ -306,7 +305,7 @@ msgstr "unbekannter Block"
 
 #: leveledit.cc:309
 msgid "No elevator stop"
-msgstr "Kein Stopp fÃ¼r Aufzug"
+msgstr "Kein Stopp für Aufzug"
 
 #: leveledit.cc:310
 msgid "Elevator is blocked"
@@ -314,11 +313,11 @@ msgstr "Fahrstuhl blockiert"
 
 #: leveledit.cc:311
 msgid "No opposing doorway"
-msgstr "Keine gegenÃ¼berliegende TÃ¼r"
+msgstr "Keine gegenüberliegende Tür"
 
 #: leveledit.cc:312
 msgid "Broken doorway"
-msgstr "TÃ¼r kaputt"
+msgstr "Tür kaputt"
 
 #: leveledit.cc:313
 msgid "No exit"
@@ -366,7 +365,7 @@ msgstr "Abbruch"
 
 #: leveledit.cc:390
 msgid "enter name of"
-msgstr "Gib Name fÃ¼r Turm"
+msgstr "Gib Name für Turm"
 
 #: leveledit.cc:393
 #, c-format
@@ -375,7 +374,7 @@ msgstr "Nummer %i ein"
 
 #: leveledit.cc:414
 msgid "Editor Key Help"
-msgstr "Hilfe fÃ¼r Editortasten"
+msgstr "Hilfe für Editortasten"
 
 #: leveledit.cc:532
 msgid "cut#"
@@ -404,7 +403,7 @@ msgstr "Turm Zeit eingeben:"
 
 #: leveledit.cc:847
 msgid "Adjust tower height:"
-msgstr "TurmhÃ¶he einstellen"
+msgstr "Turmhöhe einstellen"
 
 #: leveledit.cc:927
 msgid "Name the tower:"
@@ -435,7 +434,7 @@ msgstr "Debuglevel ist jetzt %c.\n"
 #: main.cc:57
 #, c-format
 msgid "Illegal debug level value, using default.\n"
-msgstr "UngÃ¼ltiger Debuglevel, benutze Voreinstellung.\n"
+msgstr "Ungültiger Debuglevel, benutze Voreinstellung.\n"
 
 #: main.cc:106
 #, c-format
@@ -450,7 +449,7 @@ msgstr "Nebulous"
 #: main.cc:123
 #, c-format
 msgid "Thanks for playing!\n"
-msgstr "Danke fÃ¼r's spielen!\n"
+msgstr "Danke für's spielen!\n"
 
 #: menu.cc:78
 msgid "Extra Life"
@@ -509,7 +508,7 @@ msgstr "Spieloptionen"
 
 #: menu.cc:245 menu.cc:265 menu.cc:460 menu.cc:484 menu.cc:509 menu.cc:666
 msgid "Back"
-msgstr "ZurÃ¼ck"
+msgstr "Zurück"
 
 #: menu.cc:256 menu.cc:271
 msgid "Redefine Keys"
@@ -529,15 +528,15 @@ msgstr "Musik"
 
 #: menu.cc:360 menu.cc:361
 msgid "Font alpha"
-msgstr "Schrift glÃ¤tten"
+msgstr "Schrift glätten"
 
 #: menu.cc:374 menu.cc:375
 msgid "Sprites alpha"
-msgstr "Sprites glÃ¤tten"
+msgstr "Sprites glätten"
 
 #: menu.cc:388 menu.cc:389
 msgid "Scroller alpha"
-msgstr "Scroller glÃ¤tten"
+msgstr "Scroller glätten"
 
 #: menu.cc:401 menu.cc:402
 msgid "Shadowing"
@@ -553,7 +552,7 @@ msgstr "Einfache Wellen"
 
 #: menu.cc:429
 msgid "Expensive waves"
-msgstr "AufwÃ¤ndige Wellen"
+msgstr "Aufwändige Wellen"
 
 #: menu.cc:430
 msgid "Error"
@@ -561,7 +560,7 @@ msgstr "Fehler"
 
 #: menu.cc:440
 msgid "Complete Scroller"
-msgstr "VollstÃ¤ndiger Scroller"
+msgstr "Vollständiger Scroller"
 
 #: menu.cc:441
 msgid "2 layers Scoller"
@@ -569,7 +568,7 @@ msgstr "2-Schichten Scroller"
 
 #: menu.cc:447
 msgid "Alpha Options"
-msgstr "GlÃ¤ttungsoptionen"
+msgstr "Glättungsoptionen"
 
 #: menu.cc:471
 msgid "Graphics"
@@ -586,7 +585,7 @@ msgstr "Siegerliste"
 #: menu.cc:644
 #, c-format
 msgid "Scores for %s"
-msgstr "Punkte fÃ¼r %s"
+msgstr "Punkte für %s"
 
 #: menu.cc:668
 msgid "OK"
@@ -602,7 +601,7 @@ msgstr "wahrscheinlich gut genug"
 
 #: menu.cc:683
 msgid "enter the highscore table!"
-msgstr "fÃ¼r die Siegerliste!"
+msgstr "für die Siegerliste!"
 
 #: menu.cc:685
 msgid "Please enter your name"
@@ -616,7 +615,7 @@ msgid ""
 "version of Tower Toppler.\n"
 "Do you want to continue?"
 msgstr ""
-"Diese Mission enthÃ¤lt\n"
+"Diese Mission enthält\n"
 "unbekannte Elemente.\n"
 "Du brauchst wahrscheinlich\n"
 "eine neue Version von\n"
@@ -641,7 +640,7 @@ msgstr "Leveleditor"
 
 #: menu.cc:897
 msgid "Return to Game"
-msgstr "ZurÃ¼ck zum Spiel"
+msgstr "Zurück zum Spiel"
 
 #: menu.cc:907
 msgid "Quit Game"
@@ -649,19 +648,19 @@ msgstr "Beende Spiel"
 
 #: menu.cc:914
 msgid "DEBUG MENU"
-msgstr "DEBUG MENÃœ"
+msgstr "DEBUG MENÜ"
 
 #: menu.cc:919
 msgid "Back to Game"
-msgstr "ZurÃ¼ck zum Spiel"
+msgstr "Zurück zum Spiel"
 
 #: menusys.cc:390
 msgid "Press fire"
-msgstr "DrÃ¼cke Feuer"
+msgstr "Drücke Feuer"
 
 #: menusys.cc:390
 msgid "Press space"
-msgstr "DrÃ¼cke Leertaste"
+msgstr "Drücke Leertaste"
 
 #: menusys.cc:554
 msgid "Yes"
@@ -711,7 +710,7 @@ msgstr "den unterbrochenen Weg"
 #. Tower name, you can translate freely
 #: levelnames.txt:13
 msgid "Swimmers delight"
-msgstr "das Paradies fÃ¼r Schwimmer"
+msgstr "das Paradies für Schwimmer"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:15
@@ -755,12 +754,12 @@ msgstr "Oh, *******!!"
 #. Tower name, you can translate freely
 #: levelnames.txt:31
 msgid "Riddle of reason"
-msgstr "das RÃ¤tsel der Vernunft"
+msgstr "das Rätsel der Vernunft"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:33
 msgid "Maze of mistakes"
-msgstr "das Labyrinth der IrrtÃ¼mer"
+msgstr "das Labyrinth der Irrtümer"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:35
@@ -785,12 +784,12 @@ msgstr "Vorsicht, Stufe!"
 #. Tower name, you can translate freely
 #: levelnames.txt:44
 msgid "Short, but deadly"
-msgstr "Kurz aber tÃ¶dlich"
+msgstr "Kurz aber tödlich"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:46
 msgid "The maddening"
-msgstr "den UnertrÃ¤glichen"
+msgstr "den Unerträglichen"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:48
@@ -800,7 +799,7 @@ msgstr "Untergang bei jedem Schritt"
 #. Tower name, you can translate freely
 #: levelnames.txt:50
 msgid "Enemies everywhere"
-msgstr "Gegner Ã¼berall"
+msgstr "Gegner überall"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:52
@@ -830,7 +829,7 @@ msgstr "den zerbrechenden Turm"
 #. Tower name, you can translate freely
 #: levelnames.txt:63
 msgid "Great Fall"
-msgstr "den groÃŸen Fall"
+msgstr "den großen Fall"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:65
@@ -845,7 +844,7 @@ msgstr "das Massaker"
 #. Tower name, you can translate freely
 #: levelnames.txt:69
 msgid "Bouncing Murders"
-msgstr "HÃ¼pfende MÃ¶rder"
+msgstr "Hüpfende Mörder"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:71
@@ -855,7 +854,7 @@ msgstr "Versuch und Irrtum"
 #. Tower name, you can translate freely
 #: levelnames.txt:73
 msgid "Tower of Pure Evil"
-msgstr "den Turm des puren BÃ¶sen"
+msgstr "den Turm des puren Bösen"
 
 #. Ball is the name of the autor (Clarence Ball) and should not be translated
 #: levelnames.txt:76
@@ -865,12 +864,12 @@ msgstr "Ball 3"
 #. Tower name, you can translate freely
 #: levelnames.txt:78
 msgid "Annoying Tower"
-msgstr "den lÃ¤stigen Turm"
+msgstr "den lästigen Turm"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:80
 msgid "Cave of Failure"
-msgstr "die HÃ¶hle des Versagens"
+msgstr "die Höhle des Versagens"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:82
@@ -904,7 +903,7 @@ msgstr "Mission Impossible"
 
 #: levelnames.txt:94
 msgid "ABC Towers"
-msgstr "ABC-TÃ¼rme"
+msgstr "ABC-Türme"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:96
@@ -945,3 +944,49 @@ msgstr "die Spirale"
 #: levelnames.txt:110
 msgid "Skygazer"
 msgstr "den Himmelsanbeter"
+
+#. David is the name of the autor and should not be translated
+#: levelnames.txt:113
+msgid "David 1"
+msgstr "David 1"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:115
+msgid "Difficult jumps!"
+msgstr "Schwere Sprünge"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:117
+msgid "Washout"
+msgstr "Reinfall"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:119
+msgid "Climbing and tricks"
+msgstr "Klettern und Hangeln"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:121
+msgid "Watch the robots"
+msgstr "Achtung Roboter!"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:123
+msgid "Two Halves"
+msgstr "zwei Hälften"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:125
+msgid "Turning up the heat"
+msgstr "wärmer, wärmer, heiß"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:127
+msgid "Confusing"
+msgstr "Verwirrenden"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:129
+msgid "Short but dangerous"
+msgstr "Kurz aber tödlich"
+

@@ -109,3 +109,22 @@ _("Spiral")
 /* Tower name, you can translate freely */
 _("Skygazer")
 
+/*David is the name of the autor and should not be translated*/
+_("David 1")
+/* Tower name, you can translate freely */
+_("Difficult jumps!")
+/* Tower name, you can translate freely */
+_("Washout")
+/* Tower name, you can translate freely */
+_("Climbing and tricks")
+/* Tower name, you can translate freely */
+_("Watch the robots")
+/* Tower name, you can translate freely */
+_("Two Halves")
+/* Tower name, you can translate freely */
+_("Turning up the heat")
+/* Tower name, you can translate freely */
+_("Confusing")
+/* Tower name, you can translate freely */
+_("Short but dangerous")
+

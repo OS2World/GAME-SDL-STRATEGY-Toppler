@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-03 13:56+0200\n"
+"POT-Creation-Date: 2006-06-03 14:13+0200\n"
 "PO-Revision-Date: 2004-02-08 10:56+0100\n"
 "Last-Translator: Bill Allombert <ballombe@debian.org>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -941,3 +941,50 @@ msgstr "La spirale"
 #: levelnames.txt:110
 msgid "Skygazer"
 msgstr "Le regarde-ciel"
+
+#. David is the name of the autor and should not be translated
+#: levelnames.txt:113
+msgid "David 1"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:115
+msgid "Difficult jumps!"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:117
+msgid "Washout"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:119
+msgid "Climbing and tricks"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:121
+msgid "Watch the robots"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:123
+#, fuzzy
+msgid "Two Halves"
+msgstr "Deux Voies"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:125
+msgid "Turning up the heat"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:127
+msgid "Confusing"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:129
+#, fuzzy
+msgid "Short but dangerous"
+msgstr "Court, mais mortel"
