@@ -59,7 +59,10 @@ void get(SDL_Surface *colors, SDL_Surface * mask, unsigned short c)
   fwrite(&c, 1, 2, outp);
   fwrite(&width, 1, 1, outp);
 
-  printf(" get %c(%i) at pos (%i;%i)\n", c, c, xpos, ypos);
+  if (c < 0x100)
+    printf(" get %c(%i) at pos (%i;%i)\n", c, c, xpos, ypos);
+  else
+    printf(" get  (%i) at pos (%i;%i)\n", c, xpos, ypos);
 
   for (y = 0; y < height; y++)
     for (x = 0; x < width; x++) {
@@ -269,6 +272,17 @@ int main() {
   get(colors, mask, 0xDE);   // |°
   get(colors, mask, 0xFE);   // |°
   get(colors, mask, 0xFF);   // "y
+  
+  get(colors, mask, 0x11A);  // inv^ E
+  get(colors, mask, 0x11B);  // inv^ e
+  get(colors, mask, 0x160);  // inv^ S
+  get(colors, mask, 0x161);  // inv^ s
+  get(colors, mask, 0x10C);  // inv^ C
+  get(colors, mask, 0x10E);  // inv^ c
+  get(colors, mask, 0x158);  // inv^ R
+  get(colors, mask, 0x159);  // inv^ r
+  get(colors, mask, 0x16E);  // °U
+  get(colors, mask, 0x16F);  // °u
 
   fclose(outp);
 }
