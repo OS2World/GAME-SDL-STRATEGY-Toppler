@@ -283,6 +283,12 @@ int main() {
   get(colors, mask, 0x159);  // inv^ r
   get(colors, mask, 0x16E);  // °U
   get(colors, mask, 0x16F);  // °u
+  get(colors, mask, 0x102);  // A with lower halve circle above
+  get(colors, mask, 0x103);  // a with lower halve circle above
+  get(colors, mask, 0x21A);  // T with comma below
+  get(colors, mask, 0x21B);  // t with comma below
+  get(colors, mask, 0x218);  // S with comma below
+  get(colors, mask, 0x219);  // s with comma below
 
   fclose(outp);
 }
