@@ -278,7 +278,7 @@ int main() {
   get(colors, mask, 0x160);  // inv^ S
   get(colors, mask, 0x161);  // inv^ s
   get(colors, mask, 0x10C);  // inv^ C
-  get(colors, mask, 0x10E);  // inv^ c
+  get(colors, mask, 0x10D);  // inv^ c
   get(colors, mask, 0x158);  // inv^ R
   get(colors, mask, 0x159);  // inv^ r
   get(colors, mask, 0x16E);  // °U
@@ -289,6 +289,8 @@ int main() {
   get(colors, mask, 0x21B);  // t with comma below
   get(colors, mask, 0x218);  // S with comma below
   get(colors, mask, 0x219);  // s with comma below
+  get(colors, mask, 0x17D);  // inv^ Z
+  get(colors, mask, 0x17E);  // inv^ z
 
   fclose(outp);
 }
