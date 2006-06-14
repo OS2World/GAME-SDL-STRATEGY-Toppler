@@ -25,12 +25,16 @@ echo "$0: running some preparations ..."
 		-e 's/\(mkinstalldirs = \$(SHELL) \).*/\1"$(MKINSTALLDIRS)"/' \
 		<po/Makefile.in.in~ >po/Makefile.in.in
 
-	echo "Updating configure.ac (backup is in configure.ac~)"
-	cp configure.ac configure.ac~
+	echo "Updating po/Makefile.in.in"
+	sed \
+		-e 's/^\(mkinstalldirs = \).*/\1\$(MKINSTALLDIRS)/' \
+		-i po/Makefile.in.in
+
+	echo "Updating configure.ac"
 	sed \
 		-e 's/\(ALL_LINGUAS="\)[^"]*/\1'"$all_linguas"'/' \
 		-e 's/\(AC_INIT([^,]*,\)[^,]*\([,)].*\)/\1'"[$version]"'\2/' \
-		<configure.ac~ >configure.ac
+		-i configure.ac
 )
 
 echo "$0: running aclocal ..."

@@ -13,6 +13,7 @@ Name "${NAME}"
 OutFile "${OUTFILE}"
 InstallDir "$PROGRAMFILES\${PACKAGE}"
 InstallDirRegKey HKLM "Software\${PACKAGE}" "Install_Dir"
+SetCompressor LZMA
 
 Page license
 Page components
@@ -43,7 +44,6 @@ Section "!${NAME} - ${VERSION}"
   SetOutPath "$INSTDIR"
 
   File "${FLATDIR}\${MAINPROG}"
-  File "${FLATDIR}\*.dll"
   File "${FLATDIR}\*.ttm"
   File "${FLATDIR}\*.dat"
   File "${FLATDIR}\*.hsc"
@@ -92,7 +92,6 @@ Section "Uninstall"
 
   Delete $INSTDIR\${UNINSTPROG}
   Delete $INSTDIR\${MAINPROG}
-  Delete $INSTDIR\*.dll
   Delete $INSTDIR\*.ttm
   Delete $INSTDIR\*.dat
   Delete $INSTDIR\*.txt

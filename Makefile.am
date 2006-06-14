@@ -8,6 +8,7 @@ PACKAGE = toppler
 
 bin_PROGRAMS = toppler
 
+toppler_LDFLAGS = $(LIBINTL)
 toppler_SOURCES =                  \
   archi.cc         archi.h         \
   bonus.cc         bonus.h         \
