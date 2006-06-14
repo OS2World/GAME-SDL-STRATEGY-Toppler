@@ -10,13 +10,6 @@ AC_CONFIG_SRCDIR([toppler.cc])
 AM_CONFIG_HEADER([config.h])
 AM_MAINTAINER_MODE
 
-# To be removed in the future
-AC_DEFINE_UNQUOTED(SYS_LINUX,0,Linux)
-AC_DEFINE_UNQUOTED(SYS_WINDOWS,1,Windows)
-AC_DEFINE_UNQUOTED(SYS_BEOS,2,BeOs)
-AC_DEFINE_UNQUOTED(SYS_MACOSX,3,MacOSX)
-AC_DEFINE_UNQUOTED(SYSTEM,SYS_LINUX,System)
-
 # General information.
 AC_SUBST(FULLNAME,"Tower Toppler")
 AC_SUBST(URL,"http://toppler.sourceforge.net/")

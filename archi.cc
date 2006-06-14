@@ -19,7 +19,7 @@
 #include "archi.h"
 #include "decl.h"
 
-#if (SYSTEM == SYS_WINDOWS)
+#ifdef WIN32
 //#define _WINDOWS
 //#define ZLIB_DLL
 #endif

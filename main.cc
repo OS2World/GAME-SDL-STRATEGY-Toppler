@@ -36,7 +36,7 @@
 
 #include <stdexcept>
 
-#if (SYSTEM != SYS_WINDOWS)
+#ifndef WIN32
 #include <unistd.h>
 #endif
 

@@ -242,7 +242,7 @@ void lev_findmissions() {
     delete n;
   }
 
-#if (SYSTEM == SYS_WINDOWS)
+#ifdef WIN32
   {
     char n[100];
     GetCurrentDirectory(100, n);
@@ -269,7 +269,7 @@ void lev_findmissions() {
   free(eps);
   eps = NULL;
 
-#if (SYSTEM != SYS_WINDOWS)
+#ifndef WIN32
 
   snprintf(pathname, 100, "%s/.toppler/", getenv("HOME"));
   n = alpha_scandir(pathname, &eps, missionfiles);

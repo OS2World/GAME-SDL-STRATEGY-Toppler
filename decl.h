@@ -207,7 +207,7 @@ int dcl_update_speed(int spd);
 
 //#define CONFIGDIR "/etc"
 
-#if (SYSTEM == SYS_WINDOWS)
+#ifdef WIN32
 
 #include <windows.h>
 #include <ctype.h>

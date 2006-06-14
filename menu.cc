@@ -706,7 +706,7 @@ static void men_highscore(unsigned long pt, int twr) {
 
     char name[SCORENAMELEN+1];
 
-#if (SYSTEM == SYS_LINUX)
+#ifndef WIN32
     /* copy the login name into the name entered into the highscore table */
     strncpy(name, getenv("LOGNAME"), SCORENAMELEN);
     name[SCORENAMELEN] = 0; // to be sure we have a terminated string

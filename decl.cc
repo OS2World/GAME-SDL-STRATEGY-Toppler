@@ -25,7 +25,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#if (SYSTEM != SYS_WINDOWS)
+#ifndef WIN32
 
 #include <unistd.h>
 #include <pwd.h>
@@ -94,7 +94,7 @@ bool dcl_fileexists(const char *n) {
 char * homedir()
 {
 
-#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
+#ifndef WIN32
 
   return getenv("HOME");
 
@@ -109,7 +109,7 @@ char * homedir()
 /* checks if home/.toppler exists and creates it, if not */
 static void checkdir(void) {
 
-#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
+#ifndef WIN32
 
   char n[200];
 
@@ -128,7 +128,7 @@ static void checkdir(void) {
 FILE *open_data_file(const char *name) {
 
 
-#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
+#ifndef WIN32
   // look into actual directory
   if (dcl_fileexists(name))
     return fopen(name, "rb");
@@ -154,7 +154,7 @@ FILE *open_data_file(const char *name) {
 
 bool get_data_file_path(const char * name, char * f, int len) {
 
-#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
+#ifndef WIN32
   // look into actual directory
   if (dcl_fileexists(name)) {
     snprintf(f, len, name);
@@ -186,7 +186,7 @@ bool get_data_file_path(const char * name, char * f, int len) {
 
 FILE *open_local_config_file(const char *name) {
 
-#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
+#ifndef WIN32
 
   checkdir();
 
@@ -210,7 +210,7 @@ FILE *open_local_config_file(const char *name) {
 
 FILE *create_local_config_file(const char *name) {
 
-#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
+#ifndef WIN32
 
   checkdir();
 
@@ -232,7 +232,7 @@ FILE *create_local_config_file(const char *name) {
 
 FILE *open_local_data_file(const char *name) {
 
-#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
+#ifndef WIN32
 
   checkdir();
 
@@ -252,7 +252,7 @@ FILE *open_local_data_file(const char *name) {
 
 FILE *create_local_data_file(const char *name) {
 
-#if (SYSTEM == SYS_LINUX || SYSTEM == SYS_MACOSX)
+#ifndef WIN32
 
   checkdir();
 
@@ -274,7 +274,7 @@ static int sort_by_name(const void *a, const void *b) {
   return(strcmp((*((struct dirent **)a))->d_name, ((*(struct dirent **)b))->d_name));
 }
 
-#if (SYSTEM == SYS_WINDOWS)
+#ifdef WIN32
 
 int alpha_scandir(const char *dir, struct dirent ***namelist,
             int (*select)(const struct dirent *)) {

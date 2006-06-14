@@ -21,7 +21,7 @@
 
 #include <SDL_types.h>
 
-#if (SYSTEM == SYS_WINDOWS)
+#ifdef WIN32
 #include "decl.h"
 #endif
 
