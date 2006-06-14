@@ -1,33 +1,44 @@
 #
-#  Makefile Tools - some useful scripts to distribute your software
-#  ================================================================
+#  Makefile Tools
+#  ==============
 #
-#  Version: 0.9.4
+#  Some useful scripts to distribute your software
 #
-#
-#  Usage: add to each "Makefile.am" the following line:
-#
-#     include $(top_srcdir)/Makefile.tools
-#
+#  Version: 0.9.7
 #
 #  Requires: automake >= 1.8
 #
 #
-#  Copyright (C) 2003-2005  Volker Grabsch <volker-mt@v.notjusthosting.com>
+#  Usage:
 #
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
+#    * put this file "Makefile.tools" into the top directory of
+#      your sources
 #
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
+#    * add this line to each "Makefile.am" of your sources:
 #
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#          include $(top_srcdir)/Makefile.tools
+#
+#
+#  Copyright (c) 2003-2006  Volker Grabsch <volker-mt@v.notjusthosting.com>
+#
+#  Permission is hereby granted, free of charge, to any person obtaining
+#  a copy of this software and associated documentation files (the
+#  "Software"), to deal in the Software without restriction, including
+#  without limitation the rights to use, copy, modify, merge, publish,
+#  distribute, sublicense, and/or sell copies of the Software, and to
+#  permit persons to whom the Software is furnished to do so, subject
+#  to the following conditions:
+#
+#  The above copyright notice and this permission notice shall be
+#  included in all copies or substantial portions of the Software.
+# 
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+#  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+#  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+#  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+#  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+#  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+#  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
 
@@ -83,7 +94,7 @@ NSIS = makensis
 SU = su -c
 RPM = rpm
 DPKG_BUILDPACKAGE = dpkg-buildpackage -rfakeroot
-UNIX2DOS = awk '{print $$0"\r"}'
+UNIX2DOS = sed 's/$$/\r/'
 
 
 #
@@ -91,10 +102,13 @@ UNIX2DOS = awk '{print $$0"\r"}'
 #
 
 run:
-	$(MAKE) $(AM_MAKEFLAGS) -C "$(abs_top_srcdir)" \
-		all
+	$(MAKE) $(AM_MAKEFLAGS) -C "$(abs_top_srcdir)" all
 	cd "$(abs_top_srcdir)/data" \
 		&& "$(abs_top_srcdir)/src/$(PACKAGE)"
+
+
+static:
+	$(MAKE) $(AM_MAKEFLAGS) LDFLAGS="$(LDFLAGS) -all-static" -C "$(abs_top_srcdir)" all
 
 
 #

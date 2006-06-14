@@ -36,6 +36,9 @@ echo "$0: running some preparations ..."
 echo "$0: running aclocal ..."
 aclocal || exit 1
 
+echo "$0: running libtoolize ..."
+libtoolize || exit 1
+
 echo "$0: running autoconf ..."
 autoconf || exit 1
 

@@ -36,6 +36,7 @@ AM_GNU_GETTEXT_VERSION(0.11.5)
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
+AC_PROG_LIBTOOL
 
 # Checks for libraries.
 SDL_VERSION=1.2.0
@@ -44,15 +45,12 @@ AM_PATH_SDL($SDL_VERSION,
 	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!]))
 CPPFLAGS="$CPPFLAGS $SDL_CFLAGS"
 LIBS="$LIBS $SDL_LIBS"
-[ $HAVE_SDL ] && DLL_FILES="$DLL_FILES /bin/SDL.dll"
 
 AC_CHECK_LIB(SDL_mixer, main, ,
 	AC_MSG_WARN([Can't find SDL_mixer. Toppler will have no sound.]))
-[ $HAVE_LIBSDL_MIXER ] && DLL_FILES="$DLL_FILES /bin/SDL_mixer.dll"
 
 AC_CHECK_LIB(z, uncompress, ,
 	AC_MSG_ERROR([Can't find libz. Toppler needs it to uncompress the data tile!]))
-[ $HAVE_LIBZ ] && DLL_FILES="$DLL_FILES /bin/mgwz.dll"
 
 AC_CHECK_LIB(msvcp60, mbrtowc)
 
@@ -69,11 +67,9 @@ AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_FUNC_CLOSEDIR_VOID
-AC_FUNC_MALLOC
 AC_FUNC_MBRTOWC
-AC_FUNC_REALLOC
 AC_FUNC_VPRINTF
-AC_CHECK_FUNCS([atexit memmove memset mkdir setlocale strcasecmp strchr strstr])
+AC_CHECK_FUNCS([atexit malloc realloc memmove memset mkdir setlocale strcasecmp strchr strstr])
 
 # Output.
 AC_CONFIG_FILES([Makefile toppler.spec toppler.nsi toppler.desktop po/Makefile.in m4/Makefile toppler.qpg])
