@@ -986,4 +986,3 @@ msgstr "Nahastua"
 #: levelnames.txt:129
 msgid "Short but dangerous"
 msgstr "Labur baina arriskutsua"
-
