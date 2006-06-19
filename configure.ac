@@ -45,8 +45,6 @@ AC_CHECK_LIB(SDL_mixer, main, ,
 AC_CHECK_LIB(z, uncompress, ,
 	AC_MSG_ERROR([Can't find libz. Toppler needs it to uncompress the data tile!]))
 
-AC_CHECK_LIB(msvcp60, mbrtowc)
-
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
