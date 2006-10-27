@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-03 14:13+0200\n"
+"POT-Creation-Date: 2006-10-27 20:32+0200\n"
 "PO-Revision-Date: 2006-06-07 14:26+0200\n"
 "Last-Translator: Piarres Beobide <pi@beobide.net>\n"
 "Language-Team: Euskara  <librezale@librezale.org>\n"
@@ -68,7 +68,7 @@ msgstr "Bizitzak:     ~t3505000 X %3d"
 msgid "Wheee!!\n"
 msgstr "Wheee!!\n"
 
-#: leveledit.cc:103 menu.cc:949
+#: leveledit.cc:103 menu.cc:984
 msgid "Quit"
 msgstr "Utzi"
 
@@ -588,23 +588,27 @@ msgstr "%s-ren puntuazioa"
 msgid "OK"
 msgstr "Ados"
 
-#: menu.cc:681
-msgid "Congratulations! You are"
-msgstr "Zorionak!"
+#. you can use up to 4 lines of text here, but please check
+#. * if the text fits onto the screen
+#.
+#: menu.cc:684
+msgid ""
+"Congratulations! You are\n"
+"probably good enough to\n"
+"enter the highscore table!"
+msgstr ""
+"Zorionak! Ziurrenik\n"
+"aski Puntuazio handien\n"
+"taulara sartzeko!"
 
-#: menu.cc:682
-msgid "probably good enough to"
-msgstr "Ziurrenik aski"
-
-#: menu.cc:683
-msgid "enter the highscore table!"
-msgstr "Puntuazio handien taulara sartzeko!"
-
-#: menu.cc:685
+#. scr_writetext_center(130, _("Congratulations! You are"));
+#. scr_writetext_center(170, _("probably good enough to"));
+#. scr_writetext_center(210, _("enter the highscore table!"));
+#: menu.cc:720
 msgid "Please enter your name"
 msgstr "Mesedez idatzi zure izena"
 
-#: menu.cc:739
+#: menu.cc:774
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -618,36 +622,36 @@ msgstr ""
 "bertsio berriago bat behar\n"
 "duzu. Jarraitu nahi al duzu?"
 
-#: menu.cc:796
+#: menu.cc:831
 msgid "Hunt the Fish"
 msgstr "Arraina Eizatu"
 
-#: menu.cc:819
+#: menu.cc:854
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Hasi: %s %c"
 
-#: menu.cc:829
+#: menu.cc:864
 msgid "Highscores"
 msgstr "Puntuazio altuenak"
 
-#: menu.cc:841
+#: menu.cc:876
 msgid "Level Editor"
 msgstr "Maila Editorea"
 
-#: menu.cc:897
+#: menu.cc:932
 msgid "Return to Game"
 msgstr "Jokura Itzuli"
 
-#: menu.cc:907
+#: menu.cc:942
 msgid "Quit Game"
 msgstr "Jokua utzi"
 
-#: menu.cc:914
+#: menu.cc:949
 msgid "DEBUG MENU"
 msgstr "ARAZPEN MENUA"
 
-#: menu.cc:919
+#: menu.cc:954
 msgid "Back to Game"
 msgstr "Jokura itzuli"
 
@@ -986,3 +990,12 @@ msgstr "Nahastua"
 #: levelnames.txt:129
 msgid "Short but dangerous"
 msgstr "Labur baina arriskutsua"
+
+#~ msgid "Congratulations! You are"
+#~ msgstr "Zorionak!"
+
+#~ msgid "probably good enough to"
+#~ msgstr "Ziurrenik aski"
+
+#~ msgid "enter the highscore table!"
+#~ msgstr "Puntuazio handien taulara sartzeko!"

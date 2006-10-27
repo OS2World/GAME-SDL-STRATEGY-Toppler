@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-03 14:13+0200\n"
+"POT-Creation-Date: 2006-10-27 20:32+0200\n"
 "PO-Revision-Date: 2004-12-17 20:11+0200\n"
 "Last-Translator: basse <bastian.salmela@hel.fi>\n"
 "Language-Team: fi_FI <fi@li.org>\n"
@@ -71,7 +71,7 @@ msgstr "Elämiä:       ~t35010 X %3d"
 msgid "Wheee!!\n"
 msgstr "Jihuuu!!\n"
 
-#: leveledit.cc:103 menu.cc:949
+#: leveledit.cc:103 menu.cc:984
 msgid "Quit"
 msgstr "Lopeta"
 
@@ -596,23 +596,28 @@ msgstr "Pisteitä %s"
 msgid "OK"
 msgstr "Ok"
 
-#: menu.cc:681
-msgid "Congratulations! You are"
-msgstr "Onneksi olkoon! Olet "
+#. you can use up to 4 lines of text here, but please check
+#. * if the text fits onto the screen
+#.
+#: menu.cc:684
+msgid ""
+"Congratulations! You are\n"
+"probably good enough to\n"
+"enter the highscore table!"
+msgstr ""
+"Onneksi olkoon! Olet\n"
+"todennäköisesti tarpeeksi\n"
+"hyvä päästäksesi\n"
+"pistetaululle!"
 
-#: menu.cc:682
-msgid "probably good enough to"
-msgstr "todennäköisesti tarpeeksi hyvä"
-
-#: menu.cc:683
-msgid "enter the highscore table!"
-msgstr "päästäksesi pistetaululle!"
-
-#: menu.cc:685
+#. scr_writetext_center(130, _("Congratulations! You are"));
+#. scr_writetext_center(170, _("probably good enough to"));
+#. scr_writetext_center(210, _("enter the highscore table!"));
+#: menu.cc:720
 msgid "Please enter your name"
 msgstr "Kirjoita nimesi"
 
-#: menu.cc:739
+#: menu.cc:774
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -627,36 +632,36 @@ msgstr ""
 "Tower Topplerista\n"
 ". Haluatko jatkaa?"
 
-#: menu.cc:796
+#: menu.cc:831
 msgid "Hunt the Fish"
 msgstr "Metsästä kaloja"
 
-#: menu.cc:819
+#: menu.cc:854
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Aloita: %s %c"
 
-#: menu.cc:829
+#: menu.cc:864
 msgid "Highscores"
 msgstr "Pistetaulukko"
 
-#: menu.cc:841
+#: menu.cc:876
 msgid "Level Editor"
 msgstr "Taso editori"
 
-#: menu.cc:897
+#: menu.cc:932
 msgid "Return to Game"
 msgstr "Palaa peliin"
 
-#: menu.cc:907
+#: menu.cc:942
 msgid "Quit Game"
 msgstr "Lopeta peli"
 
-#: menu.cc:914
+#: menu.cc:949
 msgid "DEBUG MENU"
 msgstr "DEBUG VALIKKO"
 
-#: menu.cc:919
+#: menu.cc:954
 msgid "Back to Game"
 msgstr "Takaisin peliin"
 
@@ -999,6 +1004,15 @@ msgstr ""
 #: levelnames.txt:129
 msgid "Short but dangerous"
 msgstr ""
+
+#~ msgid "Congratulations! You are"
+#~ msgstr "Onneksi olkoon! Olet "
+
+#~ msgid "probably good enough to"
+#~ msgstr "todennäköisesti tarpeeksi hyvä"
+
+#~ msgid "enter the highscore table!"
+#~ msgstr "päästäksesi pistetaululle!"
 
 #~ msgid "Data file not found"
 #~ msgstr "Data tiedostoa ei löytynyt"

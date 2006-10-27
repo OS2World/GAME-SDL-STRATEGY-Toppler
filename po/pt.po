@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-03 14:13+0200\n"
+"POT-Creation-Date: 2006-10-27 20:32+0200\n"
 "PO-Revision-Date: 2005-01-09 00:00+0100\n"
 "Last-Translator: Helder Correia <helder.correia@netcabo.pt>\n"
 "Language-Team: pt <pt@li.org>\n"
@@ -68,7 +68,7 @@ msgstr "Vidas:     ~t3505000 X %3d"
 msgid "Wheee!!\n"
 msgstr "Boa!\n"
 
-#: leveledit.cc:103 menu.cc:949
+#: leveledit.cc:103 menu.cc:984
 msgid "Quit"
 msgstr "Sair"
 
@@ -588,23 +588,27 @@ msgstr "Pontuações: %s"
 msgid "OK"
 msgstr "OK"
 
-#: menu.cc:681
-msgid "Congratulations! You are"
-msgstr "Parabéns! Provavelmente,"
+#. you can use up to 4 lines of text here, but please check
+#. * if the text fits onto the screen
+#.
+#: menu.cc:684
+msgid ""
+"Congratulations! You are\n"
+"probably good enough to\n"
+"enter the highscore table!"
+msgstr ""
+"Parabéns! Provavelmente,\n"
+"fez uma das melhores\n"
+"pontuações até agora!"
 
-#: menu.cc:682
-msgid "probably good enough to"
-msgstr "fez uma das melhores"
-
-#: menu.cc:683
-msgid "enter the highscore table!"
-msgstr "pontuações até agora!"
-
-#: menu.cc:685
+#. scr_writetext_center(130, _("Congratulations! You are"));
+#. scr_writetext_center(170, _("probably good enough to"));
+#. scr_writetext_center(210, _("enter the highscore table!"));
+#: menu.cc:720
 msgid "Please enter your name"
 msgstr "Por favor, insira o seu nome."
 
-#: menu.cc:739
+#: menu.cc:774
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -618,36 +622,36 @@ msgstr ""
 "versao do Tower Toppler.\n"
 "Quer continuar?"
 
-#: menu.cc:796
+#: menu.cc:831
 msgid "Hunt the Fish"
 msgstr "Cace o Peixe"
 
-#: menu.cc:819
+#: menu.cc:854
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Início: %s %c"
 
-#: menu.cc:829
+#: menu.cc:864
 msgid "Highscores"
 msgstr "Pontuações"
 
-#: menu.cc:841
+#: menu.cc:876
 msgid "Level Editor"
 msgstr "Editor de níveis"
 
-#: menu.cc:897
+#: menu.cc:932
 msgid "Return to Game"
 msgstr "Regressar ao jogo"
 
-#: menu.cc:907
+#: menu.cc:942
 msgid "Quit Game"
 msgstr "Sair do jogo"
 
-#: menu.cc:914
+#: menu.cc:949
 msgid "DEBUG MENU"
 msgstr "MENU DE DEPURAÇAO"
 
-#: menu.cc:919
+#: menu.cc:954
 msgid "Back to Game"
 msgstr "Voltar ao jogo"
 
@@ -988,3 +992,12 @@ msgstr ""
 #, fuzzy
 msgid "Short but dangerous"
 msgstr "Curto, mas mortal"
+
+#~ msgid "Congratulations! You are"
+#~ msgstr "Parabéns! Provavelmente,"
+
+#~ msgid "probably good enough to"
+#~ msgstr "fez uma das melhores"
+
+#~ msgid "enter the highscore table!"
+#~ msgstr "pontuações até agora!"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-03 14:13+0200\n"
+"POT-Creation-Date: 2006-10-27 20:32+0200\n"
 "PO-Revision-Date: 2006-06-09 19:35+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -67,7 +67,7 @@ msgstr "Životy:    ~t3505000 X %3d"
 msgid "Wheee!!\n"
 msgstr "Jééé!!\n"
 
-#: leveledit.cc:103 menu.cc:949
+#: leveledit.cc:103 menu.cc:984
 msgid "Quit"
 msgstr "Konec"
 
@@ -587,23 +587,27 @@ msgstr "Skóre pro %s"
 msgid "OK"
 msgstr "OK"
 
-#: menu.cc:681
-msgid "Congratulations! You are"
-msgstr "Gratulujeme! Jste"
+#. you can use up to 4 lines of text here, but please check
+#. * if the text fits onto the screen
+#.
+#: menu.cc:684
+msgid ""
+"Congratulations! You are\n"
+"probably good enough to\n"
+"enter the highscore table!"
+msgstr ""
+"Gratulujeme! Jste\n"
+"dobrý i na umístění\n"
+"v tabulce nejlepších!"
 
-#: menu.cc:682
-msgid "probably good enough to"
-msgstr "dobrý i na umístění"
-
-#: menu.cc:683
-msgid "enter the highscore table!"
-msgstr "v tabulce nejlepších!"
-
-#: menu.cc:685
+#. scr_writetext_center(130, _("Congratulations! You are"));
+#. scr_writetext_center(170, _("probably good enough to"));
+#. scr_writetext_center(210, _("enter the highscore table!"));
+#: menu.cc:720
 msgid "Please enter your name"
 msgstr "Zadejte své jméno"
 
-#: menu.cc:739
+#: menu.cc:774
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -617,36 +621,36 @@ msgstr ""
 "verzi Tower Toppler.\n"
 "Chcete pokračovat?"
 
-#: menu.cc:796
+#: menu.cc:831
 msgid "Hunt the Fish"
 msgstr "Ulovte rybu"
 
-#: menu.cc:819
+#: menu.cc:854
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Start: %s %c"
 
-#: menu.cc:829
+#: menu.cc:864
 msgid "Highscores"
 msgstr "Nejvyšší skóre"
 
-#: menu.cc:841
+#: menu.cc:876
 msgid "Level Editor"
 msgstr "Editor úrovní"
 
-#: menu.cc:897
+#: menu.cc:932
 msgid "Return to Game"
 msgstr "Návrat do hry"
 
-#: menu.cc:907
+#: menu.cc:942
 msgid "Quit Game"
 msgstr "Ukončit hru"
 
-#: menu.cc:914
+#: menu.cc:949
 msgid "DEBUG MENU"
 msgstr "LADICÍ MENU"
 
-#: menu.cc:919
+#: menu.cc:954
 msgid "Back to Game"
 msgstr "Zpět do hry"
 
@@ -985,3 +989,12 @@ msgstr "Zmatená"
 #: levelnames.txt:129
 msgid "Short but dangerous"
 msgstr "Krátká a nebezpečná"
+
+#~ msgid "Congratulations! You are"
+#~ msgstr "Gratulujeme! Jste"
+
+#~ msgid "probably good enough to"
+#~ msgstr "dobrý i na umístění"
+
+#~ msgid "enter the highscore table!"
+#~ msgstr "v tabulce nejlepších!"

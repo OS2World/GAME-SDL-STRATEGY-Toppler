@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler 1.1.1-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-03 14:13+0200\n"
+"POT-Creation-Date: 2006-10-27 20:32+0200\n"
 "PO-Revision-Date: 2005-12-30 03:40+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -66,7 +66,7 @@ msgstr "Liv:     ~t3505000 X %3d"
 msgid "Wheee!!\n"
 msgstr "Woohooo!!\n"
 
-#: leveledit.cc:103 menu.cc:949
+#: leveledit.cc:103 menu.cc:984
 msgid "Quit"
 msgstr "Avsluta"
 
@@ -590,23 +590,27 @@ msgstr "Poäng för %s"
 msgid "OK"
 msgstr "OK"
 
-#: menu.cc:681
-msgid "Congratulations! You are"
-msgstr "Gratulerar! Du är"
+#. you can use up to 4 lines of text here, but please check
+#. * if the text fits onto the screen
+#.
+#: menu.cc:684
+msgid ""
+"Congratulations! You are\n"
+"probably good enough to\n"
+"enter the highscore table!"
+msgstr ""
+"Gratulerar! Du är\n"
+"antagligen tillräckligt bra att\n"
+"komma in på poängtoppen!"
 
-#: menu.cc:682
-msgid "probably good enough to"
-msgstr "antagligen tillräckligt bra att"
-
-#: menu.cc:683
-msgid "enter the highscore table!"
-msgstr "komma in på poängtoppen!"
-
-#: menu.cc:685
+#. scr_writetext_center(130, _("Congratulations! You are"));
+#. scr_writetext_center(170, _("probably good enough to"));
+#. scr_writetext_center(210, _("enter the highscore table!"));
+#: menu.cc:720
 msgid "Please enter your name"
 msgstr "Ange ditt namn"
 
-#: menu.cc:739
+#: menu.cc:774
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -620,36 +624,36 @@ msgstr ""
 "ny version av Tower Toppler.\n"
 "Vill du fortsätta?"
 
-#: menu.cc:796
+#: menu.cc:831
 msgid "Hunt the Fish"
 msgstr "Jaga fisken"
 
-#: menu.cc:819
+#: menu.cc:854
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Starta: %s %c"
 
-#: menu.cc:829
+#: menu.cc:864
 msgid "Highscores"
 msgstr "Poängtoppen"
 
-#: menu.cc:841
+#: menu.cc:876
 msgid "Level Editor"
 msgstr "Redigera nivå"
 
-#: menu.cc:897
+#: menu.cc:932
 msgid "Return to Game"
 msgstr "Återvänd till spel"
 
-#: menu.cc:907
+#: menu.cc:942
 msgid "Quit Game"
 msgstr "Avsluta spel"
 
-#: menu.cc:914
+#: menu.cc:949
 msgid "DEBUG MENU"
 msgstr "FELSÖKNINGSMENY"
 
-#: menu.cc:919
+#: menu.cc:954
 msgid "Back to Game"
 msgstr "Tillbaka till spel"
 
@@ -990,3 +994,12 @@ msgstr ""
 #, fuzzy
 msgid "Short but dangerous"
 msgstr "Kort men dödlig"
+
+#~ msgid "Congratulations! You are"
+#~ msgstr "Gratulerar! Du är"
+
+#~ msgid "probably good enough to"
+#~ msgstr "antagligen tillräckligt bra att"
+
+#~ msgid "enter the highscore table!"
+#~ msgstr "komma in på poängtoppen!"

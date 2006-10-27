@@ -678,9 +678,40 @@ congrats_background_proc(void)
   scr_blit(restsprites.data(menupicture), 0, 0);
   scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
 
-  scr_writetext_center(130, _("Congratulations! You are"));
-  scr_writetext_center(170, _("probably good enough to"));
-  scr_writetext_center(210, _("enter the highscore table!"));
+  /* you can use up to 4 lines of text here, but please check
+   * if the text fits onto the screen
+   */
+  const char * text = _("Congratulations! You are\n"
+                        "probably good enough to\n"
+                        "enter the highscore table!");
+
+  int ypos = 210;
+
+  for (int pos = 0; text[pos]; pos++)
+    if (text[pos] == '\n') ypos -= 40;
+
+  char line[200];
+  int pos = 0;
+  int linepos = 0;
+
+  while (text[pos]) {
+
+    if (text[pos] == '\n') {
+      line[linepos] = 0;
+      scr_writetext_center(ypos, line);
+      linepos = 0;
+      ypos += 40;
+    } else {
+      if (linepos < 198) {
+        line[linepos] = text[pos];
+        linepos++;
+      }
+    }
+    pos++;
+  }
+
+  line[linepos] = 0;
+  scr_writetext_center(ypos, line);
 
   scr_writetext_center(270, _("Please enter your name"));
 }
