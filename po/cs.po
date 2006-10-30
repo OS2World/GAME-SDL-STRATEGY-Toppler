@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-27 20:32+0200\n"
+"POT-Creation-Date: 2006-10-30 20:35+0100\n"
 "PO-Revision-Date: 2006-06-09 19:35+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -67,7 +67,7 @@ msgstr "Životy:    ~t3505000 X %3d"
 msgid "Wheee!!\n"
 msgstr "Jééé!!\n"
 
-#: leveledit.cc:103 menu.cc:984
+#: leveledit.cc:103 menu.cc:980
 msgid "Quit"
 msgstr "Konec"
 
@@ -437,12 +437,12 @@ msgstr "Chybná ladicí úroveň, používám výchozí.\n"
 msgid "Nebulous version %s"
 msgstr "Nebulous verze %s"
 
-#: main.cc:108 main.cc:116
+#: main.cc:108 main.cc:117
 #, c-format
 msgid "Nebulous"
 msgstr "Nebulous"
 
-#: main.cc:123
+#: main.cc:124
 #, c-format
 msgid "Thanks for playing!\n"
 msgstr "Děkujeme za hraní!\n"
@@ -600,14 +600,11 @@ msgstr ""
 "dobrý i na umístění\n"
 "v tabulce nejlepších!"
 
-#. scr_writetext_center(130, _("Congratulations! You are"));
-#. scr_writetext_center(170, _("probably good enough to"));
-#. scr_writetext_center(210, _("enter the highscore table!"));
-#: menu.cc:720
+#: menu.cc:716
 msgid "Please enter your name"
 msgstr "Zadejte své jméno"
 
-#: menu.cc:774
+#: menu.cc:770
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -621,36 +618,36 @@ msgstr ""
 "verzi Tower Toppler.\n"
 "Chcete pokračovat?"
 
-#: menu.cc:831
+#: menu.cc:827
 msgid "Hunt the Fish"
 msgstr "Ulovte rybu"
 
-#: menu.cc:854
+#: menu.cc:850
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Start: %s %c"
 
-#: menu.cc:864
+#: menu.cc:860
 msgid "Highscores"
 msgstr "Nejvyšší skóre"
 
-#: menu.cc:876
+#: menu.cc:872
 msgid "Level Editor"
 msgstr "Editor úrovní"
 
-#: menu.cc:932
+#: menu.cc:928
 msgid "Return to Game"
 msgstr "Návrat do hry"
 
-#: menu.cc:942
+#: menu.cc:938
 msgid "Quit Game"
 msgstr "Ukončit hru"
 
-#: menu.cc:949
+#: menu.cc:945
 msgid "DEBUG MENU"
 msgstr "LADICÍ MENU"
 
-#: menu.cc:954
+#: menu.cc:950
 msgid "Back to Game"
 msgstr "Zpět do hry"
 
