@@ -1,5 +1,3 @@
-include $(top_srcdir)/Makefile.tools
-
 AM_CXXFLAGS = -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(pkglocalstatedir)\" -DLOCALEDIR=\"$(datadir)\"
 SUBDIRS = po m4
 ACLOCAL_AMFLAGS = -I m4
@@ -35,6 +33,12 @@ toppler_SOURCES =                  \
   txtsys.cc        txtsys.h        \
   qnxicon.c
 
+docdir = $(datadir)/doc
+pixmapsdir = $(datadir)/pixmaps
+applicationsdir = $(datadir)/applications
+pkgdocdir = $(docdir)/$(PACKAGE)
+pkglocalstatedir = $(localstatedir)/$(PACKAGE)
+
 dist_pixmaps_DATA = $(PACKAGE).xpm
 applications_DATA = $(PACKAGE).desktop
 dist_man_MANS = toppler.6
@@ -58,3 +62,25 @@ install-exec-hook:
 install-data-hook:
 	-chgrp games $(DESTDIR)$(pkglocalstatedir)/$(PACKAGE).hsc
 	-chmod 0664 $(DESTDIR)$(pkglocalstatedir)/$(PACKAGE).hsc
+
+abs_builddir = @abs_builddir@
+win32dir = $(PACKAGE)-$(VERSION)-win32
+
+dist-win32: $(PACKAGE).exe
+	$(RM) -r $(win32dir)
+	mkdir    $(win32dir)
+	$(INSTALL) -m644 $(dist_pkgdata_DATA)       $(win32dir)/
+	$(INSTALL) -m644 $(dist_pkglocalstate_DATA) $(win32dir)/
+	$(INSTALL) -m755 $(PACKAGE).exe             $(win32dir)/
+	$(STRIP) $(win32dir)/$(PACKAGE).exe
+	upx      $(win32dir)/$(PACKAGE).exe
+	for FILE in $(dist_pkgdoc_DATA); do \
+	    sed 's,$$,\r,' < $$FILE > $(win32dir)/$$FILE.txt; \
+	    done
+	xpmtoppm $(PACKAGE).xpm | \
+	    ppmtowinicon > $(win32dir)/$(PACKAGE).ico
+	$(MAKE) -C po install localedir=$(abs_builddir)/$(win32dir)/po
+	$(RM)   $(win32dir).zip
+	zip -r9 $(win32dir).zip $(win32dir)
+	makensis $(PACKAGE).nsi
+	$(RM) -r $(win32dir)

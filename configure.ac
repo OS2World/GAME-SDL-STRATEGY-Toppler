@@ -19,12 +19,11 @@ AC_DEFINE_UNQUOTED([URL],["$URL"],[Define to the URL of this package's homepage.
 # Compiler options.
 
 # Additional variables.
-AC_SUBST(DLL_FILES,"")
-AC_SUBST(DLL_FILES_CYGWIN,"/bin/cygwin1.dll")
 
 # I18n.
 AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.11.5)
+LIBS="$LIBS $LIBINTL"
 
 # Checks for programs.
 AC_PROG_CXX

@@ -2,9 +2,10 @@
 !define PACKAGE "@PACKAGE@"
 !define VERSION "@VERSION@"
 !define URL "@URL@"
-!define FLATDIR "@PACKAGE@-@VERSION@-@target@-flat"
+!define FLATDIR "@PACKAGE@-@VERSION@-win32"
 !define OUTFILE "${FLATDIR}.exe"
 !define MAINPROG "${PACKAGE}.exe"
+!define MAINICON "${PACKAGE}.ico"
 !define SMDIR "$SMPROGRAMS\${NAME}"
 !define UNINSTPROG "uninstall.exe"
 !define LICENSE "COPYING.txt"
@@ -14,6 +15,7 @@ OutFile "${OUTFILE}"
 InstallDir "$PROGRAMFILES\${PACKAGE}"
 InstallDirRegKey HKLM "Software\${PACKAGE}" "Install_Dir"
 SetCompressor LZMA
+XPStyle off
 
 Page license
 Page components
@@ -25,7 +27,6 @@ UninstPage instfiles
 LicenseData "${FLATDIR}\${LICENSE}"
 
 InstType "Full"
-InstType "Minimal"
 
 Section "-Install Uninstaller"
   SetOutPath "$INSTDIR"
@@ -40,13 +41,31 @@ Section "-Install Uninstaller"
 SectionEnd
 
 Section "!${NAME} - ${VERSION}"
-  SectionIn 1 2
+  SectionIn 1
   SetOutPath "$INSTDIR"
 
   File "${FLATDIR}\${MAINPROG}"
+  File "${FLATDIR}\${MAINICON}"
   File "${FLATDIR}\*.ttm"
   File "${FLATDIR}\*.dat"
   File "${FLATDIR}\*.hsc"
+
+  SetOutPath "$INSTDIR\po\de\LC_MESSAGES"
+  File     "${FLATDIR}\po\de\LC_MESSAGES\*.mo"
+  SetOutPath "$INSTDIR\po\fi\LC_MESSAGES"
+  File     "${FLATDIR}\po\fi\LC_MESSAGES\*.mo"
+  SetOutPath "$INSTDIR\po\fr\LC_MESSAGES"
+  File     "${FLATDIR}\po\fr\LC_MESSAGES\*.mo"
+  SetOutPath "$INSTDIR\po\pt\LC_MESSAGES"
+  File     "${FLATDIR}\po\pt\LC_MESSAGES\*.mo"
+  SetOutPath "$INSTDIR\po\sv\LC_MESSAGES"
+  File     "${FLATDIR}\po\sv\LC_MESSAGES\*.mo"
+  SetOutPath "$INSTDIR\po\ro\LC_MESSAGES"
+  File     "${FLATDIR}\po\ro\LC_MESSAGES\*.mo"
+  SetOutPath "$INSTDIR\po\eu\LC_MESSAGES"
+  File     "${FLATDIR}\po\eu\LC_MESSAGES\*.mo"
+  SetOutPath "$INSTDIR\po\cz\LC_MESSAGES"
+  File     "${FLATDIR}\po\cz\LC_MESSAGES\*.mo"
 SectionEnd
 
 Section "Documentation"
@@ -61,7 +80,7 @@ Section "Start Menu Entry"
   SetOutPath "$INSTDIR"
 
   CreateDirectory "${SMDIR}"
-  CreateShortCut "${SMDIR}\${NAME}.lnk" "$INSTDIR\${MAINPROG}"
+  CreateShortCut "${SMDIR}\${NAME}.lnk" "$INSTDIR\${MAINPROG}" "" "$INSTDIR\${MAINICON}"
   WriteINIStr "${SMDIR}\Homepage.url" "InternetShortcut" "URL" "${URL}"
   IfFileExists $INSTDIR\README.txt 0 NoText
     CreateShortCut "${SMDIR}\Read Me.lnk" "$INSTDIR\README.txt"
@@ -73,15 +92,12 @@ Section "Desktop Entry"
   SectionIn 1
   SetOutPath "$INSTDIR"
 
-  CreateShortCut "$DESKTOP\${NAME}.lnk" "$INSTDIR\${MAINPROG}"
+  CreateShortCut "$DESKTOP\${NAME}.lnk" "$INSTDIR\${MAINPROG}" "" "$INSTDIR\${MAINICON}"
 SectionEnd
 
 UninstallText "This will uninstall ${NAME} from your system:"
 
 Section "Uninstall"
-  DeleteRegKey HKLM \
-               "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}"
-
   Delete "$DESKTOP\${NAME}.lnk"
 
   Delete "${SMDIR}\${NAME}.lnk"
@@ -90,14 +106,19 @@ Section "Uninstall"
   Delete "${SMDIR}\Uninstall.lnk"
   RMDir "${SMDIR}"
 
-  Delete $INSTDIR\${UNINSTPROG}
   Delete $INSTDIR\${MAINPROG}
+  Delete $INSTDIR\${MAINICON}
+  RMDir /r $INSTDIR\po
   Delete $INSTDIR\*.ttm
   Delete $INSTDIR\*.dat
   Delete $INSTDIR\*.txt
   Delete $INSTDIR\.${PACKAGE}.rc
   Delete $INSTDIR\${PACKAGE}.hsc
+  Delete $INSTDIR\${UNINSTPROG}
   RMDir $INSTDIR
+
+  DeleteRegKey HKLM \
+               "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}"
 SectionEnd
 
 Function .onInstSuccess
