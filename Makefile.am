@@ -77,8 +77,9 @@ dist-win32: $(PACKAGE).exe
 	for FILE in $(dist_pkgdoc_DATA); do \
 	    sed 's,$$,\r,' < $$FILE > $(win32dir)/$$FILE.txt; \
 	    done
-	xpmtoppm $(PACKAGE).xpm | \
-	    ppmtowinicon > $(win32dir)/$(PACKAGE).ico
+	xpmtoppm --alphaout=$(PACKAGE)-alpha.pbm $(PACKAGE).xpm > $(PACKAGE).ppm
+	ppmtowinicon -andpgms $(PACKAGE).ppm $(PACKAGE)-alpha.pbm > $(win32dir)/$(PACKAGE).ico
+	$(RM)                 $(PACKAGE).ppm $(PACKAGE)-alpha.pbm
 	$(MAKE) -C po install localedir=$(abs_builddir)/$(win32dir)/locale
 	$(RM)   $(win32dir).zip
 	zip -r9 $(win32dir).zip $(win32dir)
