@@ -42,7 +42,7 @@ AC_CHECK_LIB(SDL_mixer, main, ,
 	AC_MSG_WARN([Can't find SDL_mixer. Toppler will have no sound.]))
 
 AC_CHECK_LIB(z, uncompress, ,
-	AC_MSG_ERROR([Can't find libz. Toppler needs it to uncompress the data tile!]))
+	AC_MSG_ERROR([Can't find libz. Toppler needs it to uncompress the data file!]))
 
 # Checks for header files.
 AC_HEADER_DIRENT

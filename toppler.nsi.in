@@ -49,6 +49,7 @@ Section "!${NAME} - ${VERSION}"
   File "${FLATDIR}\*.ttm"
   File "${FLATDIR}\*.dat"
   File "${FLATDIR}\*.hsc"
+  File "${FLATDIR}\*.txt"
 
   SetOutPath "$INSTDIR\locale\cz\LC_MESSAGES"
   File     "${FLATDIR}\locale\cz\LC_MESSAGES\${PACKAGE}.mo"
@@ -66,13 +67,6 @@ Section "!${NAME} - ${VERSION}"
   File     "${FLATDIR}\locale\sv\LC_MESSAGES\${PACKAGE}.mo"
   SetOutPath "$INSTDIR\locale\ro\LC_MESSAGES"
   File     "${FLATDIR}\locale\ro\LC_MESSAGES\${PACKAGE}.mo"
-SectionEnd
-
-Section "Documentation"
-  SectionIn 1
-  SetOutPath "$INSTDIR"
-
-  File "${FLATDIR}\*.txt"
 SectionEnd
 
 Section "Start Menu Entry"
@@ -124,14 +118,5 @@ SectionEnd
 Function .onInstSuccess
   SetOutPath "$INSTDIR"
 
-  IfFileExists "$INSTDIR\README.txt" 0 NoReadme
-  MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON1 \
-             "Setup has completed. View readme file now?" IDNO NoReadme
-    ExecShell open "$INSTDIR\README.txt"
-  NoReadme:
-
-  MessageBox MB_YESNO|MB_ICONQUESTION|MB_DEFBUTTON1 \
-             "Run ${NAME} now?" IDNO NoRun
-    Exec '"$INSTDIR\${MAINPROG}"'
-  NoRun:
+  ExecShell open "$INSTDIR\README.txt"
 FunctionEnd

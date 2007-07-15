@@ -18,12 +18,6 @@
 
 #include "archi.h"
 #include "decl.h"
-
-#ifdef WIN32
-//#define _WINDOWS
-//#define ZLIB_DLL
-#endif
-
 #include <zlib.h>
 #include <string.h>
 #include <stdlib.h>

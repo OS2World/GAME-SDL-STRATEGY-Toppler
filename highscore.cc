@@ -24,6 +24,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #ifdef __QNXNTO__
    #include <strings.h>
@@ -33,11 +34,6 @@
 
 #define SCOREFNAME "toppler.hsc"
 
-#ifdef WIN32
-#define gid_t int
-#else
-#include <unistd.h>
-#endif
 /* the group ids of the game */
 static gid_t UserGroupID, GameGroupID;
 
@@ -197,7 +193,7 @@ void hsc_init(void) {
   globalHighscore = false;
   snprintf(highscoreName, 199, "%s/.toppler/%s", homedir(), SCOREFNAME);
 
-  /* now check if wen have access to a global highscore table */
+  /* now check if we have access to a global highscore table */
 
 #ifdef HISCOREDIR
 

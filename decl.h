@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <dirent.h>
 
 #if ENABLE_NLS == 1
 #include <libintl.h>
@@ -207,21 +208,6 @@ int dcl_update_speed(int spd);
 
 //#define CONFIGDIR "/etc"
 
-#ifndef HAVE_DIRENT_H
-
-#include <windows.h>
-#include <ctype.h>
-
-typedef struct dirent {
-  char d_name[200];
-} dirent;
-
-#define strcasecmp stricmp
-#define M_PI 3.1415926535897932384626433832795
-#else
-#include <dirent.h>
-#endif
-
 /* a function that returns a alphabetically sorted list of
  files in the given dir filtered dith the function given at
  3rd parameter
@@ -229,11 +215,8 @@ typedef struct dirent {
 int alpha_scandir(const char *dir, struct dirent ***namelist,
                   int (*select)(const struct dirent *));
 
-
 /* for internationalisation */
-
 #if ENABLE_NLS == 1
-
 #define _(x) gettext(x)
 #define N_(x) x
 #else
@@ -241,12 +224,9 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
 #define N_(x) x
 #endif
 
-
-#endif
-
 #ifdef WIN32
-
 typedef int mbstate_t;
 size_t mbrtowc (wchar_t * out, const char *s, int n, mbstate_t * st);
+#endif
 
 #endif

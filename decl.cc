@@ -24,17 +24,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
+#include <dirent.h>
 
 #ifndef WIN32
-
-#include <unistd.h>
 #include <pwd.h>
-
 #endif
 
-#ifdef HAVE_DIRENT_H
-#include <dirent.h>
-#endif
 
 static bool wait_overflow = false;
 /* Not read from config file */
@@ -277,58 +273,6 @@ static int sort_by_name(const void *a, const void *b) {
   return(strcmp((*((struct dirent **)a))->d_name, ((*(struct dirent **)b))->d_name));
 }
 
-#ifndef HAVE_DIRENT_H
-
-int alpha_scandir(const char *dir, struct dirent ***namelist,
-            int (*select)(const struct dirent *)) {
-  HANDLE hand;
-  WIN32_FIND_DATA finddata;
-  int i = 0;
-  size_t entrysize;
-
-  struct dirent entry;
-
-  char name[200];
-
-  snprintf(name, 200, "%s\\*", dir);
-
-  hand = FindFirstFile(name, &finddata);
-
-  if (hand == INVALID_HANDLE_VALUE)
-    return -1;
-
-  *namelist = NULL;
-
-  do {
-    strncpy(entry.d_name, finddata.cFileName, 199);
-    entry.d_name[200] = 0;
-
-    if (select == NULL || (select != NULL && (*select)(&entry)))
-    {
-      *namelist = (struct dirent **)realloc((void *)(*namelist), (size_t)((i + 1) * sizeof(struct dirent *)));
-      if (*namelist == NULL)
-        return(-1);
-      entrysize = sizeof(struct dirent) - sizeof(entry.d_name) + strlen(entry.d_name) + 1;
-      (*namelist)[i] = (struct dirent *)malloc(entrysize);
-      if ((*namelist)[i] == NULL)
-        return(-1);
-      memcpy((*namelist)[i], &entry, entrysize);
-      i++;
-    }
-  } while (FindNextFile(hand, &finddata));
-
-  FindClose(hand);
-
-  if (i == 0)
-    return(-1);
-
-  qsort((void *)(*namelist), (size_t)i, sizeof(struct dirent *), sort_by_name);
-
-  return(i);
-}
-
-#else
-
 int alpha_scandir(const char *dir, struct dirent ***namelist,
             int (*select)(const struct dirent *)) {
   DIR *d;
@@ -365,8 +309,6 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
     
   return(i);
 }
-
-#endif
 
 #ifdef WIN32
 

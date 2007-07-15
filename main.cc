@@ -28,20 +28,15 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <unistd.h>
+
+#include <stdexcept>
 
 #if ENABLE_NLS == 1
 #include <libintl.h>
 #include <sys/types.h>
 #include <dirent.h>
 #endif
-
-
-#include <stdexcept>
-
-#ifndef WIN32
-#include <unistd.h>
-#endif
-
 
 static void printhelp(void) {
   printf(_("\n\tOptions:\n\n  -f\tEnable fullscreen mode\n  -s\tSilence, disable all sound\n  -dX\tSet debug level to X  (default: %i)\n"), config.debug_level());
@@ -105,13 +100,10 @@ int main(int argc, char *argv[]) {
   textdomain("toppler");
 #endif
 
-#ifdef VERSION
   printf(_("Nebulous version %s"), VERSION);
-#else
-  printf(_("Nebulous"));
-#endif
   printf("\n");
 
+  printf("hsc init\n");
   hsc_init();
 
   if (parse_arguments(argc, argv)) {

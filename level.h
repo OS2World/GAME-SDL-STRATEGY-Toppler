@@ -21,10 +21,6 @@
 
 #include <SDL_types.h>
 
-#ifdef WIN32
-#include "decl.h"
-#endif
-
 /* handles one mission with towers and the necessary manipulations
  on the towerlayout when the game is going on */
 
@@ -287,4 +283,3 @@ void lev_mission_addtower(char * name);
 void lev_mission_finish();
 
 #endif
-

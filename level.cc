@@ -19,7 +19,6 @@
 #ifndef CREATOR
 
 #include "level.h"
-
 #include "points.h"
 #include "archi.h"
 #include "configuration.h"

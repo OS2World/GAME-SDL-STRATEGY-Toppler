@@ -39,15 +39,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* really required? */
-#if 0
-#include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#endif
-
 #define NUMHISCORES 10
 #define HISCORES_PER_PAGE 5
 
