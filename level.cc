@@ -30,6 +30,7 @@
 #include "decl.h"
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define TOWERWID 16
 
@@ -245,7 +246,7 @@ void lev_findmissions() {
 #ifdef WIN32
   {
     char n[100];
-    GetCurrentDirectory(100, n);
+    getcwd(n, 100);
     sprintf(pathname, "%s\\", n);
   }
 #else

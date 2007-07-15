@@ -31,6 +31,8 @@
 
 #if ENABLE_NLS == 1
 #include <libintl.h>
+#include <sys/types.h>
+#include <dirent.h>
 #endif
 
 
@@ -97,8 +99,9 @@ int main(int argc, char *argv[]) {
   setlocale(LC_MESSAGES, "");
   setlocale(LC_CTYPE, "");
 
-  bindtextdomain("toppler", LOCALEDIR"/locale");
-//  bindtextdomain("toppler", "po");
+  DIR *dir = opendir("locale");
+  bindtextdomain("toppler", dir == NULL ? LOCALEDIR : "locale");
+  closedir(dir);
   textdomain("toppler");
 #endif
 

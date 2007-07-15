@@ -1,4 +1,4 @@
-AM_CXXFLAGS = -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(pkglocalstatedir)\" -DLOCALEDIR=\"$(datadir)\"
+AM_CXXFLAGS = -Wall -DTOP_DATADIR=\"$(pkgdatadir)\" -DHISCOREDIR=\"$(pkglocalstatedir)\" -DLOCALEDIR=\"$(localedir)\"
 SUBDIRS = po m4
 ACLOCAL_AMFLAGS = -I m4
 
@@ -50,7 +50,7 @@ dist_pkgdata_DATA = \
 dist_pkglocalstate_DATA = $(PACKAGE).hsc
 
 EXTRA_DIST = \
-  config.rpath mkinstalldirs Makefile.tools \
+  config.rpath mkinstalldirs \
   $(PACKAGE).spec \
   VERSION levelnames.txt \
   toppler.qpg
@@ -79,7 +79,7 @@ dist-win32: $(PACKAGE).exe
 	    done
 	xpmtoppm $(PACKAGE).xpm | \
 	    ppmtowinicon > $(win32dir)/$(PACKAGE).ico
-	$(MAKE) -C po install localedir=$(abs_builddir)/$(win32dir)/po
+	$(MAKE) -C po install localedir=$(abs_builddir)/$(win32dir)/locale
 	$(RM)   $(win32dir).zip
 	zip -r9 $(win32dir).zip $(win32dir)
 	makensis $(PACKAGE).nsi

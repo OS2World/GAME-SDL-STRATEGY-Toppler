@@ -29,8 +29,11 @@
 
 #include <unistd.h>
 #include <pwd.h>
-#include <dirent.h>
 
+#endif
+
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
 #endif
 
 static bool wait_overflow = false;
@@ -274,7 +277,7 @@ static int sort_by_name(const void *a, const void *b) {
   return(strcmp((*((struct dirent **)a))->d_name, ((*(struct dirent **)b))->d_name));
 }
 
-#ifdef WIN32
+#ifndef HAVE_DIRENT_H
 
 int alpha_scandir(const char *dir, struct dirent ***namelist,
             int (*select)(const struct dirent *)) {
@@ -365,9 +368,7 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
 
 #endif
 
-#ifndef HAVE_MBRTOWC
-
-
+#ifdef WIN32
 
 static int
 utf8_mbtowc (void * conv, wchar_t *pwc, const unsigned char *s, int n)
@@ -441,9 +442,8 @@ utf8_mbtowc (void * conv, wchar_t *pwc, const unsigned char *s, int n)
     return -1;
 }
 
-size_t my_mbrtowc (wchar_t * out, const char *s, int n, mbstate_t * st) {
+size_t mbrtowc (wchar_t * out, const char *s, int n, mbstate_t * st) {
   return utf8_mbtowc(0, out, (const unsigned char *)s, n);
 }
-
 
 #endif

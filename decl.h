@@ -207,7 +207,7 @@ int dcl_update_speed(int spd);
 
 //#define CONFIGDIR "/etc"
 
-#ifdef WIN32
+#ifndef HAVE_DIRENT_H
 
 #include <windows.h>
 #include <ctype.h>
@@ -244,15 +244,9 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
 
 #endif
 
-#ifndef HAVE_MBRTOWC
+#ifdef WIN32
 
 typedef int mbstate_t;
-size_t my_mbrtowc (wchar_t * out, const char *s, int n, mbstate_t * st);
-
-#else
-
-#define my_mbrtowc mbrtowc
+size_t mbrtowc (wchar_t * out, const char *s, int n, mbstate_t * st);
 
 #endif
-
-

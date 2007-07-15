@@ -50,22 +50,22 @@ Section "!${NAME} - ${VERSION}"
   File "${FLATDIR}\*.dat"
   File "${FLATDIR}\*.hsc"
 
-  SetOutPath "$INSTDIR\po\de\LC_MESSAGES"
-  File     "${FLATDIR}\po\de\LC_MESSAGES\*.mo"
-  SetOutPath "$INSTDIR\po\fi\LC_MESSAGES"
-  File     "${FLATDIR}\po\fi\LC_MESSAGES\*.mo"
-  SetOutPath "$INSTDIR\po\fr\LC_MESSAGES"
-  File     "${FLATDIR}\po\fr\LC_MESSAGES\*.mo"
-  SetOutPath "$INSTDIR\po\pt\LC_MESSAGES"
-  File     "${FLATDIR}\po\pt\LC_MESSAGES\*.mo"
-  SetOutPath "$INSTDIR\po\sv\LC_MESSAGES"
-  File     "${FLATDIR}\po\sv\LC_MESSAGES\*.mo"
-  SetOutPath "$INSTDIR\po\ro\LC_MESSAGES"
-  File     "${FLATDIR}\po\ro\LC_MESSAGES\*.mo"
-  SetOutPath "$INSTDIR\po\eu\LC_MESSAGES"
-  File     "${FLATDIR}\po\eu\LC_MESSAGES\*.mo"
-  SetOutPath "$INSTDIR\po\cz\LC_MESSAGES"
-  File     "${FLATDIR}\po\cz\LC_MESSAGES\*.mo"
+  SetOutPath "$INSTDIR\locale\cz\LC_MESSAGES"
+  File     "${FLATDIR}\locale\cz\LC_MESSAGES\${PACKAGE}.mo"
+  SetOutPath "$INSTDIR\locale\de\LC_MESSAGES"
+  File     "${FLATDIR}\locale\de\LC_MESSAGES\${PACKAGE}.mo"
+  SetOutPath "$INSTDIR\locale\eu\LC_MESSAGES"
+  File     "${FLATDIR}\locale\eu\LC_MESSAGES\${PACKAGE}.mo"
+  SetOutPath "$INSTDIR\locale\fi\LC_MESSAGES"
+  File     "${FLATDIR}\locale\fi\LC_MESSAGES\${PACKAGE}.mo"
+  SetOutPath "$INSTDIR\locale\fr\LC_MESSAGES"
+  File     "${FLATDIR}\locale\fr\LC_MESSAGES\${PACKAGE}.mo"
+  SetOutPath "$INSTDIR\locale\pt\LC_MESSAGES"
+  File     "${FLATDIR}\locale\pt\LC_MESSAGES\${PACKAGE}.mo"
+  SetOutPath "$INSTDIR\locale\sv\LC_MESSAGES"
+  File     "${FLATDIR}\locale\sv\LC_MESSAGES\${PACKAGE}.mo"
+  SetOutPath "$INSTDIR\locale\ro\LC_MESSAGES"
+  File     "${FLATDIR}\locale\ro\LC_MESSAGES\${PACKAGE}.mo"
 SectionEnd
 
 Section "Documentation"
@@ -108,7 +108,7 @@ Section "Uninstall"
 
   Delete $INSTDIR\${MAINPROG}
   Delete $INSTDIR\${MAINICON}
-  RMDir /r $INSTDIR\po
+  RMDir /r $INSTDIR\locale
   Delete $INSTDIR\*.ttm
   Delete $INSTDIR\*.dat
   Delete $INSTDIR\*.txt

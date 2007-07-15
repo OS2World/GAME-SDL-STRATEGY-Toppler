@@ -20,13 +20,8 @@ echo "$0: running some preparations ..."
 	echo -n "$linguas" >po/LINGUAS
 
 	echo "Bugfixing po/Makefile.in.in"
-	cp po/Makefile.in.in po/Makefile.in.in~
 	sed \
-		-e 's/\(mkinstalldirs = \$(SHELL) \).*/\1"$(MKINSTALLDIRS)"/' \
-		<po/Makefile.in.in~ >po/Makefile.in.in
-
-	echo "Updating po/Makefile.in.in"
-	sed \
+		-e 's/^\(MKINSTALLDIRS = \).*/\1@mkdir_p@/' \
 		-e 's/^\(mkinstalldirs = \).*/\1\$(MKINSTALLDIRS)/' \
 		-i po/Makefile.in.in
 
@@ -41,7 +36,7 @@ echo "$0: running aclocal ..."
 aclocal || exit 1
 
 echo "$0: running libtoolize ..."
-libtoolize || exit 1
+libtoolize --force || exit 1
 
 echo "$0: running autoconf ..."
 autoconf || exit 1

@@ -47,7 +47,7 @@ AC_CHECK_LIB(z, uncompress, ,
 # Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
-AC_CHECK_HEADERS([fcntl.h langinfo.h libintl.h stdlib.h string.h unistd.h wchar.h])
+AC_CHECK_HEADERS([fcntl.h langinfo.h libintl.h stdlib.h string.h unistd.h wchar.h sys/types.h dirent.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -57,7 +57,6 @@ AC_TYPE_SIZE_T
 
 # Checks for library functions.
 AC_FUNC_CLOSEDIR_VOID
-AC_FUNC_MBRTOWC
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([atexit malloc realloc memmove memset mkdir setlocale strcasecmp strchr strstr])
 
