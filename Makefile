@@ -84,7 +84,7 @@ pasi2.ttm: kallinen2/t1 kallinen2/t2 \
 
 # RULE FOR DAVIDS MISSION 1
 
-abc.ttm: david1/lev1 david1/lev2 david1/lev3 david1/lev4 \
+david1.ttm: david1/lev1 david1/lev2 david1/lev3 david1/lev4 \
          david1/lev5 david1/lev6 david1/lev7 david1/lev8 \
          cremission
 	ln -s `pwd`/david1 ${HOME}/.toppler/t
