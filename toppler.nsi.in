@@ -44,8 +44,8 @@ Section "!${NAME} - ${VERSION}"
   SectionIn 1
   SetOutPath "$INSTDIR"
 
-  File "${FLATDIR}\${MAINPROG}"
-  File "${FLATDIR}\${MAINICON}"
+  File "${FLATDIR}\*.exe"
+  File "${FLATDIR}\*.ico"
   File "${FLATDIR}\*.ttm"
   File "${FLATDIR}\*.dat"
   File "${FLATDIR}\*.hsc"
@@ -76,9 +76,7 @@ Section "Start Menu Entry"
   CreateDirectory "${SMDIR}"
   CreateShortCut "${SMDIR}\${NAME}.lnk" "$INSTDIR\${MAINPROG}" "" "$INSTDIR\${MAINICON}"
   WriteINIStr "${SMDIR}\Homepage.url" "InternetShortcut" "URL" "${URL}"
-  IfFileExists $INSTDIR\README.txt 0 NoText
-    CreateShortCut "${SMDIR}\Read Me.lnk" "$INSTDIR\README.txt"
-  NoText:
+  CreateShortCut "${SMDIR}\Read Me.lnk" "$INSTDIR\README.txt"
   CreateShortCut "${SMDIR}\Uninstall.lnk" "$INSTDIR\${UNINSTPROG}"
 SectionEnd
 
@@ -92,24 +90,24 @@ SectionEnd
 UninstallText "This will uninstall ${NAME} from your system:"
 
 Section "Uninstall"
-  Delete "$DESKTOP\${NAME}.lnk"
+  Delete   "$DESKTOP\${NAME}.lnk"
 
-  Delete "${SMDIR}\${NAME}.lnk"
-  Delete "${SMDIR}\Homepage.url"
-  Delete "${SMDIR}\Read Me.lnk"
-  Delete "${SMDIR}\Uninstall.lnk"
-  RMDir "${SMDIR}"
+  Delete   "${SMDIR}\${NAME}.lnk"
+  Delete   "${SMDIR}\Homepage.url"
+  Delete   "${SMDIR}\Read Me.lnk"
+  Delete   "${SMDIR}\Uninstall.lnk"
+  RMDir    "${SMDIR}"
 
-  Delete $INSTDIR\${MAINPROG}
-  Delete $INSTDIR\${MAINICON}
+  Delete   $INSTDIR\*.exe
+  Delete   $INSTDIR\*.ico
+  Delete   $INSTDIR\*.ttm
+  Delete   $INSTDIR\*.dat
+  Delete   $INSTDIR\*.txt
+  Delete   $INSTDIR\.${PACKAGE}.rc
+  Delete   $INSTDIR\${PACKAGE}.hsc
   RMDir /r $INSTDIR\locale
-  Delete $INSTDIR\*.ttm
-  Delete $INSTDIR\*.dat
-  Delete $INSTDIR\*.txt
-  Delete $INSTDIR\.${PACKAGE}.rc
-  Delete $INSTDIR\${PACKAGE}.hsc
-  Delete $INSTDIR\${UNINSTPROG}
-  RMDir $INSTDIR
+  Delete   $INSTDIR\${UNINSTPROG}
+  RMDir    $INSTDIR
 
   DeleteRegKey HKLM \
                "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PACKAGE}"
