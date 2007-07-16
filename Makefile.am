@@ -68,7 +68,7 @@ win32dir = $(PACKAGE)-$(VERSION)-win32
 
 dist-win32: $(PACKAGE).exe
 	$(RM) -r $(win32dir)
-	mkdir    $(win32dir)
+	$(INSTALL) -d                               $(win32dir)
 	$(INSTALL) -m644 $(dist_pkgdata_DATA)       $(win32dir)/
 	$(INSTALL) -m644 $(dist_pkglocalstate_DATA) $(win32dir)/
 	$(INSTALL) -m755 $(PACKAGE).exe             $(win32dir)/
