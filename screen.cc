@@ -1252,10 +1252,10 @@ void scr_writeformattext(long x, long y, const char *s) {
   memset (&state, '\0', sizeof (state));
   wchar_t tmp;
 
-  size_t len = strlen(s);
+  int len = strlen(s);
 
   int origx = x;
-  size_t t = 0;
+  int t = 0;
   Uint8 towerblock = 0;
   while (t < len) {
 
@@ -1374,10 +1374,10 @@ long scr_formattextlength(long x, long y, const char *s) {
   memset (&state, '\0', sizeof (state));
   wchar_t tmp;
 
-  size_t len = strlen(s);
+  int len = strlen(s);
 
   int origx = x;
-  size_t t = 0;
+  int t = 0;
   while (t < len) {
 
     size_t nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
