@@ -48,6 +48,7 @@ Section "!${NAME} - ${VERSION}"
   File "${FLATDIR}\*.ico"
   File "${FLATDIR}\*.ttm"
   File "${FLATDIR}\*.dat"
+  File "${FLATDIR}\*.ogg"
   File "${FLATDIR}\*.hsc"
   File "${FLATDIR}\*.txt"
 
@@ -102,9 +103,10 @@ Section "Uninstall"
   Delete   $INSTDIR\*.ico
   Delete   $INSTDIR\*.ttm
   Delete   $INSTDIR\*.dat
+  Delete   $INSTDIR\*.ogg
+  Delete   $INSTDIR\*.hsc
   Delete   $INSTDIR\*.txt
   Delete   $INSTDIR\.${PACKAGE}.rc
-  Delete   $INSTDIR\${PACKAGE}.hsc
   RMDir /r $INSTDIR\locale
   Delete   $INSTDIR\${UNINSTPROG}
   RMDir    $INSTDIR

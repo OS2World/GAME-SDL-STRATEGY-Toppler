@@ -63,7 +63,7 @@ void snd_done(void) {
 
 
 void snd_playTitle(void) {
-  ttsounds::instance()->playmusic("toppler.mp3");
+  ttsounds::instance()->playmusic("toppler.ogg");
 }
 
 
