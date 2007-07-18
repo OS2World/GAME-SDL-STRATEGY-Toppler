@@ -19,7 +19,7 @@
 #ifndef SOUND_H
 #define SOUND_H
 
-#include "config.h"
+#include <config.h>
 #include "soundsys.h"
 
 #ifdef HAVE_LIBSDL_MIXER

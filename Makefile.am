@@ -20,7 +20,7 @@ toppler_SOURCES =                  \
   leveledit.cc     leveledit.h     \
   menu.cc          menu.h          \
   menusys.cc       menusys.h       \
-  main.cc          config.h        \
+  main.cc                          \
   points.cc        points.h        \
   robots.cc        robots.h        \
   screen.cc        screen.h        \
@@ -68,16 +68,16 @@ win32dir = $(PACKAGE)-$(VERSION)-win32
 
 dist-win32: $(PACKAGE).exe
 	$(RM) -r $(win32dir)
-	$(INSTALL) -d                               $(win32dir)
-	$(INSTALL) -m644 $(dist_pkgdata_DATA)       $(win32dir)/
-	$(INSTALL) -m644 $(dist_pkglocalstate_DATA) $(win32dir)/
-	$(INSTALL) -m755 $(PACKAGE).exe             $(win32dir)/
+	$(INSTALL) -d $(win32dir)
+	cd $(srcdir) && $(INSTALL) -m644 $(dist_pkgdata_DATA)       $(abs_builddir)/$(win32dir)/
+	cd $(srcdir) && $(INSTALL) -m644 $(dist_pkglocalstate_DATA) $(abs_builddir)/$(win32dir)/
+	cd $(srcdir) && $(INSTALL) -m755 $(PACKAGE).exe             $(abs_builddir)/$(win32dir)/
 	$(STRIP) $(win32dir)/$(PACKAGE).exe
 	upx      $(win32dir)/$(PACKAGE).exe
 	for FILE in $(dist_pkgdoc_DATA); do \
-	    sed 's,$$,\r,' < $$FILE > $(win32dir)/$$FILE.txt; \
+	    sed 's,$$,\r,' < $(srcdir)/$$FILE > $(win32dir)/$$FILE.txt; \
 	    done
-	xpmtoppm --alphaout=$(PACKAGE)-alpha.pbm $(PACKAGE).xpm > $(PACKAGE).ppm
+	xpmtoppm --alphaout=$(PACKAGE)-alpha.pbm $(srcdir)/$(PACKAGE).xpm > $(PACKAGE).ppm
 	ppmtowinicon -andpgms $(PACKAGE).ppm $(PACKAGE)-alpha.pbm > $(win32dir)/$(PACKAGE).ico
 	$(RM)                 $(PACKAGE).ppm $(PACKAGE)-alpha.pbm
 	$(MAKE) -C po install localedir=$(abs_builddir)/$(win32dir)/locale
