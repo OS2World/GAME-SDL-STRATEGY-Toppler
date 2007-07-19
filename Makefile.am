@@ -68,14 +68,15 @@ win32dir = $(PACKAGE)-$(VERSION)-win32
 
 dist-win32: $(PACKAGE).exe
 	$(RM) -r $(win32dir)
-	$(INSTALL) -d $(win32dir)
-	cd $(srcdir) && $(INSTALL) -m644 $(dist_pkgdata_DATA)       $(abs_builddir)/$(win32dir)/
-	cd $(srcdir) && $(INSTALL) -m644 $(dist_pkglocalstate_DATA) $(abs_builddir)/$(win32dir)/
-	cd $(srcdir) && $(INSTALL) -m755 $(PACKAGE).exe             $(abs_builddir)/$(win32dir)/
+	$(INSTALL)                   -d $(win32dir)
+	$(INSTALL) -m755 $(PACKAGE).exe $(win32dir)/
 	$(STRIP) $(win32dir)/$(PACKAGE).exe
 	upx      $(win32dir)/$(PACKAGE).exe
-	for FILE in $(dist_pkgdoc_DATA); do \
-	    sed 's,$$,\r,' < $(srcdir)/$$FILE > $(win32dir)/$$FILE.txt; \
+	cd $(srcdir) && $(INSTALL) -m644 \
+	    $(dist_pkgdata_DATA) $(dist_pkglocalstate_DATA) \
+	    $(abs_builddir)/$(win32dir)/
+	cd $(srcdir) && for FILE in $(dist_pkgdoc_DATA); do \
+	    sed 's,$$,\r,' < $$FILE > $(abs_builddir)/$(win32dir)/$$FILE.txt; \
 	    done
 	xpmtoppm --alphaout=$(PACKAGE)-alpha.pbm $(srcdir)/$(PACKAGE).xpm > $(PACKAGE).ppm
 	ppmtowinicon -andpgms $(PACKAGE).ppm $(PACKAGE)-alpha.pbm > $(win32dir)/$(PACKAGE).ico
