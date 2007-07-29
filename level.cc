@@ -113,6 +113,7 @@ static int towerdemo_len = 0;
 typedef struct mission_node {
   char name[30];
   char fname[100];
+  bool archive;       // is the mission inside the archive, or not
   Uint8 prio;         // the lower prio, the further in front the mission will be in the list
   mission_node *next;
 } mission_node;
@@ -149,23 +150,40 @@ char conv_towercode2char(Uint8 code) {
 }
 
 
-static void add_mission(char *fname) {
+static void add_mission(const char *fname, bool archive = false) {
 
   char mname[30];
   Uint8 prio;
 
-  FILE * f = fopen(fname, "rb");
+  if (archive) {
 
-  if (!f) return;
+    file f(dataarchive, fname);
 
-  unsigned char mnamelength;
-  fread(&mnamelength, 1, 1, f);
+    unsigned char mnamelength;
+    f.read(&mnamelength, 1);
+    
+    if (mnamelength > 29) mnamelength = 29;
 
-  if (mnamelength > 29) mnamelength = 29;
+    f.read(mname, mnamelength);
+    mname[mnamelength] = 0;
+    f.read(&prio, 1);
 
-  fread(mname, mnamelength, 1, f);
-  mname[mnamelength] = 0;
-  fread(&prio, 1, 1, f);
+  } else {
+
+    FILE * f = fopen(fname, "rb");
+
+    if (!f) return;
+
+    unsigned char mnamelength;
+    fread(&mnamelength, 1, 1, f);
+
+    if (mnamelength > 29) mnamelength = 29;
+
+    fread(mname, mnamelength, 1, f);
+    mname[mnamelength] = 0;
+    fread(&prio, 1, 1, f);
+    fclose(f);
+  }
 
   mission_node * m = missions;
   mission_node * l = NULL;
@@ -176,7 +194,6 @@ static void add_mission(char *fname) {
     int erg = strcmp(m->name, mname);
     /* no two missions with the same name */
     if (erg == 0) {
-      fclose(f);
       return;
     }
     l = m;
@@ -203,7 +220,6 @@ static void add_mission(char *fname) {
       else
         missions = n;
 
-      fclose(f);
       return;
     }
     l = m;
@@ -216,13 +232,13 @@ static void add_mission(char *fname) {
   strcpy(m->fname, fname);
   m->prio = prio;
   m->next = NULL;
+  m->archive = archive;
 
   if (l)
     l->next = m;
   else
     missions = m;
 
-  fclose(f);
 }
 
 #ifndef CREATOR
@@ -240,6 +256,18 @@ void lev_findmissions() {
     mission_node *n = missions;
     missions = missions->next;
     delete n;
+  }
+
+  /* first check inside the archive */
+
+  for (int fn = 0; fn < dataarchive->fileNumber(); fn++) {
+    const char * n = dataarchive->fname(fn);
+
+    int len = strlen(n);
+
+    if ((len > 4) && (n[len - 1] == 'm') && (n[len - 2] == 't') &&
+        (n[len - 3] == 't') && (n[len - 4] == '.'))
+      add_mission(n, true);
   }
 
 #ifdef WIN32
@@ -358,20 +386,31 @@ bool lev_loadmission(Uint16 num) {
     m = m->next;
   }
 
-  FILE * in = fopen(m->fname, "rb");
-
   if (mission) delete [] mission;
 
-  /* find out file size */
-  fseek(in, 0, SEEK_END);
-  int fsize = ftell(in);
+  if (m->archive) {
 
-  /* get enough memory and load the whole file into memory */
-  mission = new unsigned char[fsize];
-  fseek(in, 0, SEEK_SET);
-  fread(mission, fsize, 1, in);
+    file f(dataarchive, m->fname);
+    int fsize = f.size();
+    
+    mission = new unsigned char[fsize];
+    f.read(mission, fsize);
 
-  fclose(in);
+  } else {
+  
+    FILE * in = fopen(m->fname, "rb");
+
+    /* find out file size */
+    fseek(in, 0, SEEK_END);
+    int fsize = ftell(in);
+
+    /* get enough memory and load the whole file into memory */
+    mission = new unsigned char[fsize];
+    fseek(in, 0, SEEK_SET);
+    fread(mission, fsize, 1, in);
+
+    fclose(in);
+  }
 
   for (int t = 0; t < lev_towercount(); t++) {
     lev_selecttower(t);

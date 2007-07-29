@@ -105,6 +105,12 @@ public:
    */
   ~archive();
 
+  /* number of files inside the archive */
+  Uint8 fileNumber(void) { return filecount; }
+
+  /* name of the n-th file */
+  const char * fname(Uint8 idx) { return files[idx].name; }
+
 private:
 
   FILE *f;
