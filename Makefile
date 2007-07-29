@@ -25,7 +25,7 @@ CLEANRULES = cross.clean font.clean graphics.clean menu.clean \
 # global make, this creates the final data file packing all things togethers using zlib #
 #---------------------------------------------------------------------------------------#
 $(TOPPLERDAT): crearc $(DATFILES)
-	./crearc $(TOPPLERDAT) $(DATFILES)
+	./crearc $(TOPPLERDAT) $(DATFILES) *.ttm
 	cp $(TOPPLERDAT) $(TARGETDIR)
 
 crearc: crearc.c
