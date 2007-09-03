@@ -1,6 +1,6 @@
 TOPPLERDIR = ../datafile
 
-all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm pasi2.ttm david1.ttm
+all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm pasi2.ttm david1.ttm david2.ttm
 	cp *.ttm ${TOPPLERDIR}
 
 clean:
@@ -91,3 +91,12 @@ david1.ttm: david1/lev1 david1/lev2 david1/lev3 david1/lev4 \
 	./cremission "Challenge 1" 12 t/lev1 t/lev2 t/lev3 t/lev4 t/lev5 t/lev6 t/lev7 t/lev8
 	rm ${HOME}/.toppler/t
 	mv "${HOME}/.toppler/Challenge 1.ttm" david1.ttm
+
+# RULE FOR DAVIDS MISSION 1
+
+david2.ttm: david2/l1 david2/l2 david2/l3 david2/l4 \
+         cremission
+	ln -s `pwd`/david2 ${HOME}/.toppler/t
+	./cremission "Challenge 2" 12 t/l1 t/l2 t/l3 t/l4 
+	rm ${HOME}/.toppler/t
+	mv "${HOME}/.toppler/Challenge 2.ttm" david2.ttm
