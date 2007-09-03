@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-30 20:35+0100\n"
+"POT-Creation-Date: 2007-07-19 16:28+0200\n"
 "PO-Revision-Date: 2004-02-08 10:56+0100\n"
 "Last-Translator: Bill Allombert <ballombe@debian.org>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -21,7 +21,7 @@ msgid "Pause"
 msgstr "Pause"
 
 #. for errorchecking
-#: decl.h:206
+#: decl.h:207
 #, c-format
 msgid "Assertion failure: %s\n"
 msgstr "Échec de l'assertion : %s\n"
@@ -66,9 +66,9 @@ msgstr "Vies :    ~t3505000 X %3d"
 #: keyb.cc:161
 #, c-format
 msgid "Wheee!!\n"
-msgstr "Woooaaaa !\n"
+msgstr "Woouaaa !\n"
 
-#: leveledit.cc:103 menu.cc:980
+#: leveledit.cc:103 menu.cc:971
 msgid "Quit"
 msgstr "Quitter"
 
@@ -90,11 +90,11 @@ msgstr "Se déplacer à droite"
 
 #: leveledit.cc:104
 msgid "Insert row"
-msgstr "Insérer un échelon"
+msgstr "Insérer une rangée"
 
 #: leveledit.cc:104
 msgid "Delete row"
-msgstr "Supprimer un échelon"
+msgstr "Supprimer une rangée"
 
 #: leveledit.cc:104
 msgid "Rotate 180"
@@ -162,7 +162,7 @@ msgstr "Placer un robot gauche-droite rapide"
 
 #: leveledit.cc:109
 msgid "Put lift"
-msgstr "Placer ascenceur"
+msgstr "Placer un ascenceur"
 
 #: leveledit.cc:109
 msgid "Lift middle stop"
@@ -174,7 +174,7 @@ msgstr "Dernier arrêt d'ascenseur"
 
 #: leveledit.cc:110
 msgid "Put pillar"
-msgstr "Placer colonne"
+msgstr "Placer une colonne"
 
 #: leveledit.cc:110
 msgid "Put box"
@@ -210,11 +210,11 @@ msgstr "Créer une mission"
 
 #: leveledit.cc:112
 msgid "Move page up"
-msgstr "Aller page suivante"
+msgstr "Aller à la page suivante"
 
 #: leveledit.cc:112
 msgid "Move page down"
-msgstr "Aller page précédente"
+msgstr "Aller à la page précédente"
 
 #: leveledit.cc:113
 msgid "Go to start"
@@ -250,11 +250,11 @@ msgstr "Aller à la fin"
 
 #: leveledit.cc:115
 msgid "Cut row"
-msgstr "Couper une rangé"
+msgstr "Couper une rangée"
 
 #: leveledit.cc:115
 msgid "Paste row"
-msgstr "Coller une rangé"
+msgstr "Coller une rangée"
 
 #: leveledit.cc:115
 msgid "Change robot type"
@@ -262,11 +262,11 @@ msgstr "Changer le type du robot"
 
 #: leveledit.cc:189
 msgid "Tower changed, really quit"
-msgstr "Tour modifiée, voulez-vous vraiment quitter ?"
+msgstr "Tour modifiée,\nvoulez-vous vraiment\nquitter"
 
 #: leveledit.cc:199
 msgid "Tower changed, really load"
-msgstr "Tour modifiée, voulez-vous vraiment charger ?"
+msgstr "Tour modifiée,\nvoulez-vous vraiment\ncharger"
 
 #: leveledit.cc:216
 msgid "Red"
@@ -406,7 +406,7 @@ msgstr "Ajuster la hauteur de la tour"
 msgid "Name the tower:"
 msgstr "Nommer la tour"
 
-#: main.cc:45
+#: main.cc:42
 #, c-format
 msgid ""
 "\n"
@@ -423,190 +423,189 @@ msgstr ""
 "  -s\tSilence, désactiver les sons\n"
 "  -dX\tNiveau de débuggage à X  (défaut : %i)\n"
 
-#: main.cc:55
+#: main.cc:52
 #, c-format
 msgid "Debug level is now %c.\n"
 msgstr "Le niveau de débuggage est maintenant %c.\n"
 
-#: main.cc:57
+#: main.cc:54
 #, c-format
 msgid "Illegal debug level value, using default.\n"
 msgstr "Niveau de débuggage illégal, utilise la valeur par défaut.\n"
 
-#: main.cc:106
+#: main.cc:103
 #, c-format
 msgid "Nebulous version %s"
 msgstr "Version de Nebulous %s"
 
-#: main.cc:108 main.cc:117
-#, c-format
+#: main.cc:111
 msgid "Nebulous"
 msgstr "Nebulous"
 
-#: main.cc:124
+#: main.cc:118
 #, c-format
 msgid "Thanks for playing!\n"
 msgstr "Merci d'avoir joué !\n"
 
-#: menu.cc:78
+#: menu.cc:69
 msgid "Extra Life"
 msgstr "Vie supplémentaire"
 
-#: menu.cc:83
+#: menu.cc:74
 msgid "+200 Points"
 msgstr "+200 Points"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Up"
 msgstr "Haut"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Down"
 msgstr "Bas"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Left"
 msgstr "Gauche"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Right"
 msgstr "Droite"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Fire"
 msgstr "Feu"
 
-#: menu.cc:154
+#: menu.cc:145
 #, c-format
 msgid "Password: %s"
 msgstr "Mot de passe : %s"
 
-#: menu.cc:163 menu.cc:164
+#: menu.cc:154 menu.cc:155
 msgid "Status on top"
-msgstr "Statut au sommet"
+msgstr "État au sommet"
 
-#: menu.cc:185
+#: menu.cc:176
 #, c-format
 msgid "Lives: "
 msgstr "Vies :"
 
-#: menu.cc:213
+#: menu.cc:204
 #, c-format
 msgid "Game Speed: %i"
 msgstr "Vitesse de jeu : %i"
 
-#: menu.cc:224 menu.cc:225
+#: menu.cc:215 menu.cc:216
 msgid "Bonus"
 msgstr "Bonus"
 
-#: menu.cc:232
+#: menu.cc:223
 msgid "Game Options"
 msgstr "Options du jeu"
 
-#: menu.cc:245 menu.cc:265 menu.cc:460 menu.cc:484 menu.cc:509 menu.cc:666
+#: menu.cc:236 menu.cc:256 menu.cc:451 menu.cc:475 menu.cc:500 menu.cc:657
 msgid "Back"
 msgstr "Retour"
 
-#: menu.cc:256 menu.cc:271
+#: menu.cc:247 menu.cc:262
 msgid "Redefine Keys"
 msgstr "Redéfinir les touches"
 
-#: menu.cc:283 menu.cc:284
+#: menu.cc:274 menu.cc:275
 msgid "Fullscreen"
 msgstr "Plein écran"
 
-#: menu.cc:306 menu.cc:307
+#: menu.cc:297 menu.cc:298
 msgid "Sounds"
 msgstr "Sons"
 
-#: menu.cc:325 menu.cc:326
+#: menu.cc:316 menu.cc:317
 msgid "Music"
-msgstr ""
+msgstr "Musique"
 
-#: menu.cc:360 menu.cc:361
+#: menu.cc:351 menu.cc:352
 msgid "Font alpha"
 msgstr "Polices transparentes"
 
-#: menu.cc:374 menu.cc:375
+#: menu.cc:365 menu.cc:366
 msgid "Sprites alpha"
 msgstr "Sprites transparents"
 
-#: menu.cc:388 menu.cc:389
+#: menu.cc:379 menu.cc:380
 msgid "Scroller alpha"
 msgstr "Défilement transparent"
 
-#: menu.cc:401 menu.cc:402
+#: menu.cc:392 menu.cc:393
 msgid "Shadowing"
 msgstr "Ombres"
 
-#: menu.cc:427
+#: menu.cc:418
 msgid "Nonreflecting waves"
 msgstr "Vagues sans reflets"
 
-#: menu.cc:428
+#: menu.cc:419
 msgid "Simple waves"
 msgstr "Vagues simples"
 
-#: menu.cc:429
+#: menu.cc:420
 msgid "Expensive waves"
 msgstr "Vagues coûteuses"
 
-#: menu.cc:430
+#: menu.cc:421
 msgid "Error"
 msgstr "Erreur"
 
-#: menu.cc:440
+#: menu.cc:431
 msgid "Complete Scroller"
 msgstr "Défilement complet"
 
-#: menu.cc:441
+#: menu.cc:432
 msgid "2 layers Scoller"
 msgstr "Défilement deux couches"
 
-#: menu.cc:447
+#: menu.cc:438
 msgid "Alpha Options"
 msgstr "Options de transparence"
 
-#: menu.cc:471
+#: menu.cc:462
 msgid "Graphics"
 msgstr "Graphismes"
 
-#: menu.cc:495
+#: menu.cc:486
 msgid "Options"
 msgstr "Options"
 
-#: menu.cc:639
+#: menu.cc:630
 msgid "HighScores"
 msgstr "Meilleurs scores"
 
-#: menu.cc:644
+#: menu.cc:635
 #, c-format
 msgid "Scores for %s"
 msgstr "Scores pour %s"
 
-#: menu.cc:668
+#: menu.cc:659
 msgid "OK"
 msgstr "OK"
 
 #. you can use up to 4 lines of text here, but please check
 #. * if the text fits onto the screen
 #.
-#: menu.cc:684
+#: menu.cc:675
 msgid ""
 "Congratulations! You are\n"
 "probably good enough to\n"
 "enter the highscore table!"
 msgstr ""
 "Félicitations ! Vous êtes\n"
-"Probablement suffisament\n"
-"bon pour entrer dans le\n"
+"probablement suffisament\n"
+"bon pour figurer dans le\n"
 "tableau des scores !"
 
-#: menu.cc:716
+#: menu.cc:707
 msgid "Please enter your name"
 msgstr "Veuillez entrer votre nom"
 
-#: menu.cc:770
+#: menu.cc:761
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -620,36 +619,36 @@ msgstr ""
 "version de Tower Toppler.\n"
 "Voulez-vous continuer ?"
 
-#: menu.cc:827
+#: menu.cc:818
 msgid "Hunt the Fish"
 msgstr "À la pêche"
 
-#: menu.cc:850
+#: menu.cc:841
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Démarrer : %s %c"
 
-#: menu.cc:860
+#: menu.cc:851
 msgid "Highscores"
 msgstr "Meilleurs scores"
 
-#: menu.cc:872
+#: menu.cc:863
 msgid "Level Editor"
 msgstr "Éditeur de niveau"
 
-#: menu.cc:928
+#: menu.cc:919
 msgid "Return to Game"
 msgstr "Retourner au jeu"
 
-#: menu.cc:938
+#: menu.cc:929
 msgid "Quit Game"
 msgstr "Quitter le jeu"
 
-#: menu.cc:945
+#: menu.cc:936
 msgid "DEBUG MENU"
 msgstr "MENU DE DÉBUGGAGE"
 
-#: menu.cc:950
+#: menu.cc:941
 msgid "Back to Game"
 msgstr "Retour au jeu"
 
@@ -728,7 +727,7 @@ msgstr "Mission 2"
 #. Tower name, you can translate freely
 #: levelnames.txt:21
 msgid "Blink of the eye"
-msgstr "Le clignement de l'½il"
+msgstr "Le clignement de l'œil"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:23
@@ -947,55 +946,45 @@ msgstr "Le regarde-ciel"
 #. David is the name of the autor and should not be translated
 #: levelnames.txt:113
 msgid "David 1"
-msgstr ""
+msgstr "David 1"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:115
 msgid "Difficult jumps!"
-msgstr ""
+msgstr "Sauts difficiles!"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:117
 msgid "Washout"
-msgstr ""
+msgstr "Lavage"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:119
 msgid "Climbing and tricks"
-msgstr ""
+msgstr "Escalade et pièges"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:121
 msgid "Watch the robots"
-msgstr ""
+msgstr "Regardez les robots"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:123
-#, fuzzy
 msgid "Two Halves"
-msgstr "Deux Voies"
+msgstr "Deux Moitiés"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:125
 msgid "Turning up the heat"
-msgstr ""
+msgstr "Augmenter la température"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:127
 msgid "Confusing"
-msgstr ""
+msgstr "Confus"
 
 #. Tower name, you can translate freely
 #: levelnames.txt:129
-#, fuzzy
 msgid "Short but dangerous"
 msgstr "Court, mais mortel"
 
-#~ msgid "Congratulations! You are"
-#~ msgstr "Félicitations ! Vous êtes"
-
-#~ msgid "probably good enough to"
-#~ msgstr "Probablement suffisament bon pour"
-
-#~ msgid "enter the highscore table!"
-#~ msgstr "entrer dans le tableau des scores !"
