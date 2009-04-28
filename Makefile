@@ -92,7 +92,7 @@ david1.ttm: david1/lev1 david1/lev2 david1/lev3 david1/lev4 \
 	rm ${HOME}/.toppler/t
 	mv "${HOME}/.toppler/Challenge 1.ttm" david1.ttm
 
-# RULE FOR DAVIDS MISSION 1
+# RULE FOR DAVIDS MISSION 2
 
 david2.ttm: david2/l1 david2/l2 david2/l3 david2/l4 \
          cremission
