@@ -5,6 +5,8 @@
 
 #include <configuration.h>
 
+#include "archi.h"
+#include "archi.cc"
 #include "level.h"
 #include "level.cc"
 

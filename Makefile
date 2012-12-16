@@ -1,4 +1,4 @@
-TOPPLERDIR = ../datafile
+TOPPLERDIR = ../toppler
 
 all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm pasi2.ttm david1.ttm david2.ttm
 	cp *.ttm ${TOPPLERDIR}
@@ -8,7 +8,7 @@ clean:
 
 cremission: cremission.cc
 	g++ cremission.cc -I${TOPPLERDIR} -I/usr/include/SDL ${TOPPLERDIR}/decl.o \
-    -lSDL -o cremission
+    -lSDL -lz -o cremission
 
 # RULE FOR MISSION 1
 
