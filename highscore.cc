@@ -139,7 +139,7 @@ static bool hsc_lock(void) {
     setegid(GameGroupID);
     int lockfd;
     
-    while ((lockfd = open(HISCOREDIR "/" SCOREFNAME ".lck", O_CREAT | O_RDWR | O_EXCL)) == -1) {
+    while ((lockfd = open(HISCOREDIR "/" SCOREFNAME ".lck", O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR)) == -1) {
       dcl_wait();
       scr_swap();
     }
