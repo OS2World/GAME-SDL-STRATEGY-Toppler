@@ -18,7 +18,7 @@ all: tower2inc
 	povray menu.ini )
 
 tower2inc: tower2inc.cc
-	g++ tower2inc.cc -I$(TOPPLERDIR) -I/usr/include/SDL $(OBJS) -lSDL -o tower2inc
+	g++ tower2inc.cc -I$(TOPPLERDIR) -I/usr/include/SDL $(OBJS) -lSDL -lz -o tower2inc
 
 clean:
 	rm -f tower2inc turm*.inc menu_rgb.png
