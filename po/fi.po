@@ -9,10 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-30 20:35+0100\n"
+"POT-Creation-Date: 2012-12-16 11:03+0100\n"
 "PO-Revision-Date: 2004-12-17 20:11+0200\n"
 "Last-Translator: basse <bastian.salmela@hel.fi>\n"
 "Language-Team: fi_FI <fi@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,7 +24,7 @@ msgid "Pause"
 msgstr "Tauko"
 
 #. for errorchecking
-#: decl.h:206
+#: decl.h:207
 #, c-format
 msgid "Assertion failure: %s\n"
 msgstr "Vahvistus virhe: %s\n"
@@ -71,7 +72,7 @@ msgstr "Elämiä:       ~t35010 X %3d"
 msgid "Wheee!!\n"
 msgstr "Jihuuu!!\n"
 
-#: leveledit.cc:103 menu.cc:980
+#: leveledit.cc:103 menu.cc:971
 msgid "Quit"
 msgstr "Lopeta"
 
@@ -414,7 +415,7 @@ msgstr "Määrittele tornin korkeus:"
 msgid "Name the tower:"
 msgstr "Tornin nimi:"
 
-#: main.cc:45
+#: main.cc:42
 #, c-format
 msgid ""
 "\n"
@@ -431,175 +432,174 @@ msgstr ""
 "  -s\tÄänetön, kaikki äänet vaimennettu\n"
 "  -dX\tAseta debug taso (oletus: %i)\n"
 
-#: main.cc:55
+#: main.cc:52
 #, c-format
 msgid "Debug level is now %c.\n"
 msgstr "Debug taso on nyt %c.\n"
 
-#: main.cc:57
+#: main.cc:54
 #, c-format
 msgid "Illegal debug level value, using default.\n"
 msgstr "Laiton debug taso, otetaan oletustaso käyttöön.\n"
 
-#: main.cc:106
+#: main.cc:103
 #, fuzzy, c-format
 msgid "Nebulous version %s"
 msgstr "Nebulous Versio %s\n"
 
-#: main.cc:108 main.cc:117
-#, c-format
+#: main.cc:111
 msgid "Nebulous"
 msgstr "Nebulous"
 
-#: main.cc:124
+#: main.cc:118
 #, c-format
 msgid "Thanks for playing!\n"
 msgstr "Kiitoksia pelaamisesta!\n"
 
-#: menu.cc:78
+#: menu.cc:69
 msgid "Extra Life"
 msgstr "Ylimääräinen elämä"
 
-#: menu.cc:83
+#: menu.cc:74
 msgid "+200 Points"
 msgstr "+200 Pistettä"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Up"
 msgstr "Ylös"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Down"
 msgstr "Alas"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Left"
 msgstr "Vasemmalle"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Right"
 msgstr "Oikealle"
 
-#: menu.cc:102
+#: menu.cc:93
 msgid "Fire"
 msgstr "Ammu"
 
-#: menu.cc:154
+#: menu.cc:145
 #, c-format
 msgid "Password: %s"
 msgstr "Salasana: %s"
 
-#: menu.cc:163 menu.cc:164
+#: menu.cc:154 menu.cc:155
 msgid "Status on top"
 msgstr "Tilanne ylhäällä"
 
-#: menu.cc:185
+#: menu.cc:176
 #, c-format
 msgid "Lives: "
 msgstr "Elämiä: "
 
-#: menu.cc:213
+#: menu.cc:204
 #, c-format
 msgid "Game Speed: %i"
 msgstr "Pelinopeus: %i"
 
-#: menu.cc:224 menu.cc:225
+#: menu.cc:215 menu.cc:216
 msgid "Bonus"
 msgstr "Bonus"
 
-#: menu.cc:232
+#: menu.cc:223
 msgid "Game Options"
 msgstr "Peli "
 
-#: menu.cc:245 menu.cc:265 menu.cc:460 menu.cc:484 menu.cc:509 menu.cc:666
+#: menu.cc:236 menu.cc:256 menu.cc:451 menu.cc:475 menu.cc:500 menu.cc:657
 msgid "Back"
 msgstr "Takaisin"
 
-#: menu.cc:256 menu.cc:271
+#: menu.cc:247 menu.cc:262
 msgid "Redefine Keys"
 msgstr "Näppäimet"
 
-#: menu.cc:283 menu.cc:284
+#: menu.cc:274 menu.cc:275
 msgid "Fullscreen"
 msgstr "Kokoruutu"
 
-#: menu.cc:306 menu.cc:307
+#: menu.cc:297 menu.cc:298
 msgid "Sounds"
 msgstr "Äänet"
 
-#: menu.cc:325 menu.cc:326
+#: menu.cc:316 menu.cc:317
 msgid "Music"
 msgstr ""
 
-#: menu.cc:360 menu.cc:361
+#: menu.cc:351 menu.cc:352
 msgid "Font alpha"
 msgstr "Tekstin pehmennys"
 
-#: menu.cc:374 menu.cc:375
+#: menu.cc:365 menu.cc:366
 msgid "Sprites alpha"
 msgstr "Grafiikan pehmennys"
 
-#: menu.cc:388 menu.cc:389
+#: menu.cc:379 menu.cc:380
 msgid "Scroller alpha"
 msgstr "Taustan läpinäkyvyys"
 
-#: menu.cc:401 menu.cc:402
+#: menu.cc:392 menu.cc:393
 msgid "Shadowing"
 msgstr "Varjostus"
 
-#: menu.cc:427
+#: menu.cc:418
 msgid "Nonreflecting waves"
 msgstr "Heijastamaton vesi"
 
-#: menu.cc:428
+#: menu.cc:419
 msgid "Simple waves"
 msgstr "Yksinkertainen vesi"
 
-#: menu.cc:429
+#: menu.cc:420
 msgid "Expensive waves"
 msgstr "Hieno vesi"
 
-#: menu.cc:430
+#: menu.cc:421
 msgid "Error"
 msgstr "Virhe"
 
-#: menu.cc:440
+#: menu.cc:431
 msgid "Complete Scroller"
 msgstr "Täydellinen tausta"
 
-#: menu.cc:441
+#: menu.cc:432
 msgid "2 layers Scoller"
 msgstr "2-tason tausta"
 
-#: menu.cc:447
+#: menu.cc:438
 msgid "Alpha Options"
 msgstr "Erikoisefektit"
 
-#: menu.cc:471
+#: menu.cc:462
 msgid "Graphics"
 msgstr "Grafiikka"
 
-#: menu.cc:495
+#: menu.cc:486
 msgid "Options"
 msgstr "Asetukset"
 
-#: menu.cc:639
+#: menu.cc:630
 msgid "HighScores"
 msgstr "Pistetaulukko"
 
-#: menu.cc:644
+#: menu.cc:635
 #, c-format
 msgid "Scores for %s"
 msgstr "Pisteitä %s"
 
-#: menu.cc:668
+#: menu.cc:659
 msgid "OK"
 msgstr "Ok"
 
 #. you can use up to 4 lines of text here, but please check
 #. * if the text fits onto the screen
 #.
-#: menu.cc:684
+#: menu.cc:675
 msgid ""
 "Congratulations! You are\n"
 "probably good enough to\n"
@@ -610,11 +610,11 @@ msgstr ""
 "hyvä päästäksesi\n"
 "pistetaululle!"
 
-#: menu.cc:716
+#: menu.cc:707
 msgid "Please enter your name"
 msgstr "Kirjoita nimesi"
 
-#: menu.cc:770
+#: menu.cc:761
 msgid ""
 "This mission contains\n"
 "unknown building blocks.\n"
@@ -629,36 +629,36 @@ msgstr ""
 "Tower Topplerista\n"
 ". Haluatko jatkaa?"
 
-#: menu.cc:827
+#: menu.cc:818
 msgid "Hunt the Fish"
 msgstr "Metsästä kaloja"
 
-#: menu.cc:850
+#: menu.cc:841
 #, c-format
 msgid "%c Start: %s %c"
 msgstr "%c Aloita: %s %c"
 
-#: menu.cc:860
+#: menu.cc:851
 msgid "Highscores"
 msgstr "Pistetaulukko"
 
-#: menu.cc:872
+#: menu.cc:863
 msgid "Level Editor"
 msgstr "Taso editori"
 
-#: menu.cc:928
+#: menu.cc:919
 msgid "Return to Game"
 msgstr "Palaa peliin"
 
-#: menu.cc:938
+#: menu.cc:929
 msgid "Quit Game"
 msgstr "Lopeta peli"
 
-#: menu.cc:945
+#: menu.cc:936
 msgid "DEBUG MENU"
 msgstr "DEBUG VALIKKO"
 
-#: menu.cc:950
+#: menu.cc:941
 msgid "Back to Game"
 msgstr "Takaisin peliin"
 
@@ -957,9 +957,9 @@ msgstr ""
 msgid "Skygazer"
 msgstr ""
 
-#. David is the name of the autor and should not be translated
+#. Mission name
 #: levelnames.txt:113
-msgid "David 1"
+msgid "Challenge 1"
 msgstr ""
 
 #. Tower name, you can translate freely
@@ -1000,6 +1000,32 @@ msgstr ""
 #. Tower name, you can translate freely
 #: levelnames.txt:129
 msgid "Short but dangerous"
+msgstr ""
+
+#. Mission name
+#: levelnames.txt:132
+msgid "Challenge 2"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:134
+msgid "Waves"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:136
+#, fuzzy
+msgid "Dragon tower"
+msgstr "Avaa torni"
+
+#. Tower name, you can translate freely
+#: levelnames.txt:138
+msgid "Hullabaloo"
+msgstr ""
+
+#. Tower name, you can translate freely
+#: levelnames.txt:140
+msgid "Labyrinth"
 msgstr ""
 
 #~ msgid "Congratulations! You are"
