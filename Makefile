@@ -4,7 +4,7 @@ GCC = g++ -W -Wimplicit -Wreturn-type -Wunused -Wformat -Wswitch -Wshadow -Wcast
 CFLAGS = -lz -lSDL -lSDL_image -lm -lpng -I/usr/include/SDL -I/usr/include/libpng
 
 POVRAY = povray
-GIMP = gimp-2.2
+GIMP = gimp
 
 
 TARGETDIR = ../toppler
