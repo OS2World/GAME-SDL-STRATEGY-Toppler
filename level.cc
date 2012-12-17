@@ -214,6 +214,7 @@ static void add_mission(const char *fname, bool archive = false) {
       strcpy(n->fname, fname);
       n->prio = prio;
       n->next = m;
+      n->archive = archive;
 
       if (l)
         l->next = n;
