@@ -103,7 +103,6 @@ int main(int argc, char *argv[]) {
   printf(_("Nebulous version %s"), VERSION);
   printf("\n");
 
-  printf("hsc init\n");
   hsc_init();
 
   if (parse_arguments(argc, argv)) {
