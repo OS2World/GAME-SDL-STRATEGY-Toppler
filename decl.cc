@@ -108,7 +108,7 @@ char * homedir()
 static char * acat(const char *a, const char *b)
 {
   size_t len = strlen(a)+strlen(b)+2;
-  char *s = malloc(len);
+  char *s = (char*)malloc(len);
   snprintf(s, len-1,"%s%s",a,b);
   return s;
 }
@@ -195,7 +195,7 @@ bool get_data_file_path(const char * name, char * f, int len) {
 static char * acat3(const char *a, const char *b, const char *c)
 {
   size_t len = strlen(a)+strlen(b)+strlen(c)+2;
-  char *s = malloc(len);
+  char *s = (char*)malloc(len);
   snprintf(s, len-1,"%s%s%s",a,b,c);
   return s;
 }
