@@ -115,21 +115,6 @@ static void loadscores(FILE *f) {
   }
 }
 
-static char * homedir()
-{
-
-#ifndef WIN32
-
-  return getenv("HOME");
-
-#else
-
-  return "./";
-
-#endif
-
-}
-
 static bool hsc_lock(void) {
 
 #ifndef WIN32

@@ -187,6 +187,7 @@ FILE *open_local_config_file(const char *name);
 FILE *create_local_config_file(const char *name);
 FILE *open_local_data_file(const char *name);
 FILE *create_local_data_file(const char *name);
+char * homedir();
 
 /* returns the filename that would be opened with open_data_file in
  * f, f is max len characters

@@ -299,7 +299,7 @@ void lev_findmissions() {
 
 #ifndef WIN32
 
-  snprintf(pathname, 100, "%s/.toppler/", getenv("HOME"));
+  snprintf(pathname, 100, "%s/.toppler/", homedir());
   n = alpha_scandir(pathname, &eps, missionfiles);
 
   if (n >= 0) {

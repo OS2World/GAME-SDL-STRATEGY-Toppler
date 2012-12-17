@@ -105,14 +105,21 @@ char * homedir()
 
 }
 
+static char * acat(const char *a, const char *b)
+{
+  size_t len = strlen(a)+strlen(b)+2;
+  char *s = malloc(len);
+  snprintf(s, len-1,"%s%s",a,b);
+  return s;
+}
+
+
 /* checks if home/.toppler exists and creates it, if not */
 static void checkdir(void) {
 
 #ifndef WIN32
 
-  char n[200];
-
-  snprintf(n, 199, "%s/.toppler", homedir());
+  char *n = acat(homedir(),"/.toppler");
 
   DIR *d = opendir(n);
 
@@ -120,6 +127,7 @@ static void checkdir(void) {
     mkdir(n, S_IRWXU);
   }
 
+  free(n);
 #endif
 
 }
@@ -128,18 +136,20 @@ FILE *open_data_file(const char *name) {
 
 
 #ifndef WIN32
+  FILE *f = NULL;
   // look into actual directory
   if (dcl_fileexists(name))
     return fopen(name, "rb");
 
   // look into the data dir
-  char n[200];
+  char *n = acat(TOP_DATADIR"/", name);
 
-  snprintf(n, 200, TOP_DATADIR"/%s", name);
   if (dcl_fileexists(n))
-    return fopen(n, "rb");
+    f = fopen(n, "rb");
 
-  return NULL;
+  free(n);
+
+  return f;
 
 #else
 
@@ -161,11 +171,10 @@ bool get_data_file_path(const char * name, char * f, int len) {
   }
 
   // look into the data dir
-  char n[200];
+  char *n = acat(TOP_DATADIR"/", name);
 
-  snprintf(n, 200, TOP_DATADIR"/%s", name);
   if (dcl_fileexists(n)) {
-    snprintf(f, len, n);
+    snprintf(f, len, "%s", n);
     return true;
   }
 
@@ -183,90 +192,67 @@ bool get_data_file_path(const char * name, char * f, int len) {
 #endif
 }
 
+static char * acat3(const char *a, const char *b, const char *c)
+{
+  size_t len = strlen(a)+strlen(b)+strlen(c)+2;
+  char *s = malloc(len);
+  snprintf(s, len-1,"%s%s%s",a,b,c);
+  return s;
+}
+
+static char * topplername(const char *name)
+{
+#ifndef WIN32
+  return acat3(homedir(),"/.toppler/", name);
+#else
+  return strdup(name);
+#endif
+}
+
 FILE *open_local_config_file(const char *name) {
 
-#ifndef WIN32
-
+  FILE *f = NULL;
   checkdir();
 
-  char n[200];
+  char *n = topplername(name);
 
-  snprintf(n, 199, "%s/.toppler/%s", homedir(), name);
   if (dcl_fileexists(n))
-    return fopen(n, "r+");
+    f = fopen(n, "r+");
 
-  return NULL;
-
-#else
-
-  if (dcl_fileexists(name))
-    return fopen(name, "r+");
-
-  return NULL;
-
-#endif
+  free(n);
+  return f;
 }
 
 FILE *create_local_config_file(const char *name) {
 
-#ifndef WIN32
-
   checkdir();
 
-  char n[200];
-
-  snprintf(n, 199, "%s/.toppler/%s", homedir(), name);
-
-  return fopen(n, "w");
-
-#else
-
-  return fopen(name, "w");
-
-#endif
-
+  char *n = topplername(name);
+  FILE *f = fopen(n, "wb+");
+  free(n);
+  return f;
 }
 
 /* used for tower and mission saving */
 
 FILE *open_local_data_file(const char *name) {
 
-#ifndef WIN32
-
   checkdir();
 
-  char n[200];
-
-  snprintf(n, 199, "%s/.toppler/%s", homedir(), name);
-
-  return fopen(n, "r");
-
-#else
-
-  return fopen(name, "rb");
-
-#endif
-
+  char *n = topplername(name);
+  FILE *f = fopen(n, "rb");
+  free(n);
+  return f;
 }
 
 FILE *create_local_data_file(const char *name) {
 
-#ifndef WIN32
-
   checkdir();
 
-  char n[200];
-
-  snprintf(n, 199, "%s/.toppler/%s", homedir(), name);
-  return fopen(n, "w+");
-
-#else
-
-  fclose(fopen(name, "w+"));
-  return fopen(name, "rb+");
-
-#endif
-
+  char *n = topplername(name);
+  FILE * f = fopen(n, "wb+");
+  free(n);
+  return f;
 }
 
 static int sort_by_name(const void *a, const void *b) {
