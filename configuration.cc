@@ -148,10 +148,10 @@ configuration::configuration(FILE *glob, FILE *local) {
 
 configuration::~configuration(void) {
 
-  if (need_save) {
-
-    if (!f) f = create_local_config_file(".toppler.rc");
-
+  if (need_save && !f)
+    f = create_local_config_file(".toppler.rc");
+  if (need_save && f)
+  {
     fseek(f, 0, SEEK_SET);
 
     config_data *t = first_data;
@@ -180,7 +180,7 @@ configuration::~configuration(void) {
       t = t->next;
     }
   }
-  fclose(f);
+  if (f) { fclose(f); f=NULL; }
 
   config_data *t = first_data;
 
