@@ -114,11 +114,11 @@ private:
   } cnf_type;
 
   void parse(FILE *in);
-  void register_entry(char *cnf_name, cnf_type  cnf_typ, void *cnf_var, long maxlen);
+  void register_entry(const char *cnf_name, cnf_type  cnf_typ, void *cnf_var, long maxlen);
 
   typedef struct config_data {
     config_data *next;
-    char     *cnf_name;
+    const char *cnf_name;
     cnf_type  cnf_typ;
     void     *cnf_var;
     long      maxlen;

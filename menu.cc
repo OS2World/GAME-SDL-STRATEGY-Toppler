@@ -91,7 +91,7 @@ static int times_called = 0;
 static const char *redefine_menu_up(_menusystem *ms) {
   static char buf[50];
   const char *code[REDEFINEREC] = {_("Up"), _("Down"), _("Left"), _("Right"), _("Fire")};
-  char *keystr;
+  const char *keystr;
   static int blink, times_called;
   const ttkey key[REDEFINEREC] = {up_key, down_key, left_key, right_key, fire_key};
   const char *redef_fmt = "%s:  %s";

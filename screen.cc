@@ -199,7 +199,7 @@ Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, b
               pixel=SDL_MapRGB(z->format,1,1,1);
             else
             {
-              if ((pal[b*3+2] == 1) && (pal[b*3+1] == 1) || (pal[b*3] == 1))
+              if (((pal[b*3+2] == 1) && (pal[b*3+1] == 1)) || (pal[b*3] == 1))
                 pixel=SDL_MapRGB(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2]+1);
               else
                 /* ok, this is the case where we have a sprite and don't want
@@ -289,7 +289,7 @@ static void scr_regensprites(Uint8 *data, SDL_Surface * const target, int num, i
               pixel=SDL_MapRGB(z->format,1,1,1);
             else
             {
-              if ((pal[b*3+2] == 1) && (pal[b*3+1] == 1) || (pal[b*3] == 1))
+              if (((pal[b*3+2] == 1) && (pal[b*3+1] == 1)) || (pal[b*3] == 1))
                 pixel=SDL_MapRGB(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2]+1);
               else
                 /* ok, this is the case where we have a sprite and don't want
@@ -755,8 +755,8 @@ static void putwater(long height) {
           Uint8 * target = (Uint8*)display->pixels + ((SCREENHEI/2) + height + y) * display->pitch;
 
           for (int x = 0; x < SCREENWID; x++) {
-            Sint16 dx = waves[(x+y+12*wavetime) & 0x7f] + waves[2*x-y+11*wavetime & 0x7f];
-            Sint16 dy = waves[(x-y+13*wavetime) & 0x7f] + waves[2*x-3*y-14*wavetime & 0x7f];
+            Sint16 dx = waves[(x+y+12*wavetime) & 0x7f] + waves[(2*x-y+11*wavetime) & 0x7f];
+            Sint16 dy = waves[(x-y+13*wavetime) & 0x7f] + waves[(2*x-3*y-14*wavetime) & 0x7f];
 
             dx = dx * y / (SCREENHEI/2);
             dy = dy * y / (SCREENHEI/2);

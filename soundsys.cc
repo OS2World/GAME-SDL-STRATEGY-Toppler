@@ -51,7 +51,7 @@ ttsounds::~ttsounds(void)
 #endif
 }
 
-void ttsounds::addsound(char *fname, int id, int vol, int loops)
+void ttsounds::addsound(const char *fname, int id, int vol, int loops)
 {
 #ifdef HAVE_LIBSDL_MIXER
   struct ttsnddat *tmp;

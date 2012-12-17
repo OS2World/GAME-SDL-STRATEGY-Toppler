@@ -436,7 +436,7 @@ static void le_showkeyhelp(int row, int col) {
 
       snprintf(knam, 256, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
       
-      snprintf(tabbuf2, 256, "%3i", maxkeylen - scr_textlength(knam));
+      snprintf(tabbuf2, 6, "%3i", maxkeylen - scr_textlength(knam));
       if (tabbuf2[0] < '0') tabbuf2[0] = '0';
       if (tabbuf2[1] < '0') tabbuf2[1] = '0';
       if (tabbuf2[2] < '0') tabbuf2[2] = '0';

@@ -41,7 +41,7 @@ class ttsounds {
 public:
   ~ttsounds(void);
 
-  void addsound(char *fname, int id, int vol, int loops);
+  void addsound(const char *fname, int id, int vol, int loops);
 
   void play(void); //play all active sounds
   void stop(void); //stop all sounds

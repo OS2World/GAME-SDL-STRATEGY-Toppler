@@ -535,7 +535,7 @@ void lev_selecttower(Uint8 number) {
 }
 
 char *
-gen_passwd(int pwlen, char *allowed, int buflen, char *buf)
+gen_passwd(int pwlen, const char *allowed, int buflen, char *buf)
 {
   static char passwd[PASSWORD_LEN + 1];
   int len = buflen;
@@ -636,7 +636,7 @@ void lev_get_towerdemo(int &demolen, Uint16 *&demobuf) {
     demolen = towerdemo_len;
 }
 
-void lev_set_towername(char *str) {
+void lev_set_towername(const char *str) {
     (void) strncpy(towername, str, TOWERNAMELEN);
     towername[TOWERNAMELEN] = '\0';
 }
@@ -1333,7 +1333,7 @@ lev_problem lev_is_consistent(int &row, int &col) {
         bool D = (r + 1 < towerheight) && (tower[r+1][c] == tower[r][c]);
         bool E = (r + 2 < towerheight) && (tower[r+2][c] == tower[r][c]);
 
-        if (!(A&&B||A&&D||D&&E)) {
+        if (!((A&&B)||(A&&D)||(D&&E))) {
           row = r;
           col = c;
           return TPROB_BROKENDOOR;
@@ -1405,8 +1405,6 @@ void lev_mission_addtower(char * name) {
   Uint8 namelen, tmp;
   Uint32 section_len;
   int idx;
-
-  if (!tower) return;
 
   missionidx[nmission] = ftell(fmission);
   nmission++;

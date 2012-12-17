@@ -67,7 +67,7 @@ void configuration::parse(FILE * in) {
   }
 }
 
-void configuration::register_entry(char *cnf_name, cnf_type  cnf_typ, void *cnf_var, long maxlen) {
+void configuration::register_entry(const char *cnf_name, cnf_type  cnf_typ, void *cnf_var, long maxlen) {
   config_data *t = new config_data;
 
   t->next = first_data;

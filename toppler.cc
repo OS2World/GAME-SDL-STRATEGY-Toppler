@@ -697,7 +697,7 @@ void top_testcollision(void) {
 
   if ((state == STATE_TOPPLING) ||
       (state == STATE_DROWN) ||
-      (state == STATE_DOOR) && (substate >= 10) && (substate < 31) ||
+      ((state == STATE_DOOR) && (substate >= 10) && (substate < 31)) ||
       (!tvisible))
     return;
 

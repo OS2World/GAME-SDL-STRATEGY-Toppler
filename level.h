@@ -133,7 +133,7 @@ Uint8 lev_towerrows(void);
 
 /* the name of the tower */
 char *lev_towername(void);
-void lev_set_towername(char *str);
+void lev_set_towername(const char *str);
 
 /* tower demo */
 void lev_set_towerdemo(int demolen, Uint16 *demobuf);

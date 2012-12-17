@@ -65,7 +65,7 @@ void dcl_setdebuglevel(int level) {
 }
 
 
-void debugprintf(int lvl, char *fmt, ...) {
+void debugprintf(int lvl, const char *fmt, ...) {
     if (lvl <= current_debuglevel) {
         va_list args;
         va_start(args, fmt);
@@ -166,7 +166,7 @@ bool get_data_file_path(const char * name, char * f, int len) {
 #ifndef WIN32
   // look into actual directory
   if (dcl_fileexists(name)) {
-    snprintf(f, len, name);
+    snprintf(f, len, "%s", name);
     return true;
   }
 
