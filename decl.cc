@@ -175,9 +175,11 @@ bool get_data_file_path(const char * name, char * f, int len) {
 
   if (dcl_fileexists(n)) {
     snprintf(f, len, "%s", n);
+    free(n);
     return true;
   }
 
+  free(n);
   return false;
 
 #else
@@ -292,7 +294,7 @@ int alpha_scandir(const char *dir, struct dirent ***namelist,
     return(-1);
 
   qsort((void *)(*namelist), (size_t)i, sizeof(struct dirent *), sort_by_name);
-    
+
   return(i);
 }
 
