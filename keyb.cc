@@ -159,7 +159,7 @@ static void handleEvents(void) {
       break;
     case SDL_QUIT:
       fprintf(stderr, _("Wheee!!\n"));
-      throw new quit_action_class;
+      exit(0);
       break;
     case SDL_KEYDOWN:
     case SDL_KEYUP:
