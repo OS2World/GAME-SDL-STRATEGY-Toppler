@@ -127,6 +127,8 @@ static void checkdir(void) {
     mkdir(n, S_IRWXU);
   }
 
+  closedir(d);
+
   free(n);
 #endif
 

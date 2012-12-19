@@ -312,6 +312,8 @@ static void scr_regensprites(Uint8 *data, SDL_Surface * const target, int num, i
     r.x = 0;
     r.y = 0;
     SDL_BlitSurface(z, &r, target, &r);
+
+    SDL_FreeSurface(z);
   }
 }
 
