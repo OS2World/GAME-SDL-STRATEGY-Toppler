@@ -1,7 +1,8 @@
 TOPPLERDIR = ../toppler
+TARGETDIR = ../datafile
 
 all: m1.ttm m2.ttm ball1.ttm abc.ttm ball2.ttm ball3.ttm pasi2.ttm david1.ttm david2.ttm
-	cp *.ttm ${TOPPLERDIR}
+	cp *.ttm ${TARGETDIR}
 
 clean:
 	rm -f *.ttm cremission
