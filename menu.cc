@@ -770,7 +770,7 @@ main_game_loop()
 
   gam_newgame();
   bns_restart();
-    
+
   do {
     ttsounds::instance()->startsound(SND_WATER);
     do {
