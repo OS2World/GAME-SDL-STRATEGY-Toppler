@@ -64,12 +64,12 @@ static void men_reload_sprites(Uint8 what) {
 }
 
 #ifdef GAME_DEBUG_KEYS
-static char *debug_menu_extralife(_menusystem *ms) {
+static const char *debug_menu_extralife(_menusystem *ms) {
   if (ms) lives_add();
   return _("Extra Life");
 }
 
-static char *debug_menu_extrascore(_menusystem *ms) {
+static const char *debug_menu_extrascore(_menusystem *ms) {
   if (ms) pts_add(200);
   return _("+200 Points");
 }
