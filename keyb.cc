@@ -28,7 +28,6 @@ static Uint16 mouse_x, mouse_y;
 static bool mouse_moved;
 static Uint16 mouse_button;
 static int joy_inited = 0;
-static bool joy_action = 0;
 SDL_Joystick *joy;
 
 class quit_action_class {};
@@ -104,12 +103,6 @@ void key_init(void) {
 static void handleEvents(void) {
   SDL_Event e;
 
-  if (joy_action) {
-    keydown = no_key;
-    keytyped = no_key;
-    joy_action = 0;
-  }
-
   while (SDL_PollEvent(&e)) {
 
     switch (e.type) {
@@ -146,10 +139,12 @@ static void handleEvents(void) {
       keytyped = keydown;
       break;
     case SDL_JOYBUTTONDOWN:
-    case SDL_JOYBUTTONUP:
       keydown = (ttkey)(keydown | fire_key);
       keytyped = keydown;
-      joy_action = 1;
+      break;
+    case SDL_JOYBUTTONUP:
+      keydown = (ttkey)(keydown & ~fire_key);
+      keytyped = keydown;
       break;
     case SDL_MOUSEBUTTONDOWN:
     case SDL_MOUSEBUTTONUP:
