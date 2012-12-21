@@ -46,6 +46,8 @@ dist_pkgdoc_DATA = AUTHORS COPYING ChangeLog NEWS README
 dist_pkgdata_DATA = \
   toppler.dat toppler.ogg
 
+dist_pkglocalstate_DATA = $(PACKAGE).hsc
+
 EXTRA_DIST = \
   config.rpath mkinstalldirs \
   $(PACKAGE).spec \

@@ -190,7 +190,7 @@ void hsc_init(void) {
   snprintf(fname, 200, HISCOREDIR "/" SCOREFNAME);
 
   setegid(GameGroupID);
-  FILE * f = fopen(fname, "a+");
+  FILE * f = fopen(fname, "r+");
   setegid(UserGroupID);
 
   if (f) {
