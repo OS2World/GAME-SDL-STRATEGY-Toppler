@@ -855,10 +855,8 @@ static const char *
 men_main_leveleditor_proc(_menusystem *ms)
 {
   if (ms) {
-    //snd_stoptitle();
     le_edit();
     (void)key_sdlkey();
-    //snd_playtitle();
   }
   return _("Level Editor");
 }

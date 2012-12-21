@@ -48,10 +48,6 @@ struct _ttkeyconv {
    {fire_key, SDLK_RETURN},
    {break_key, SDLK_ESCAPE},
    {pause_key, SDLK_p},
-/*   {mousebttn1, SDLK_SPACE},
-   {mousebttn4, SDLK_UP},
-   {mousebttn5, SDLK_DOWN},*/
-
    {up_key, SDLK_UP},
    {down_key, SDLK_DOWN},
    {left_key, SDLK_LEFT},
@@ -84,11 +80,11 @@ void key_init(void) {
     } else {
       joy = SDL_JoystickOpen(0);
       if (!joy) {
-	joy_inited = 2;
+        joy_inited = 2;
       } else {
-	SDL_JoystickEventState(SDL_ENABLE);
-	printf("Joystick enabled\n");
-	joy_inited = 1;
+        SDL_JoystickEventState(SDL_ENABLE);
+        printf("Joystick enabled\n");
+        joy_inited = 1;
       }
     }
   }
@@ -117,22 +113,22 @@ static void handleEvents(void) {
       break;
     case SDL_JOYAXISMOTION:
       if (e.jaxis.axis == 0) {
-	if (e.jaxis.value < -JOYSTICK_DEADZONE) {
-	  keydown = (ttkey) (keydown | left_key);
-	} else
-	if (e.jaxis.value > JOYSTICK_DEADZONE) {
-	  keydown = (ttkey) (keydown | right_key);
-	} else
-	  keydown = (ttkey) (keydown & ~(right_key|left_key));
+        if (e.jaxis.value < -JOYSTICK_DEADZONE) {
+          keydown = (ttkey) (keydown | left_key);
+        } else
+        if (e.jaxis.value > JOYSTICK_DEADZONE) {
+          keydown = (ttkey) (keydown | right_key);
+        } else
+          keydown = (ttkey) (keydown & ~(right_key|left_key));
       }
       if (e.jaxis.axis == 1) {
-	if (e.jaxis.value < -JOYSTICK_DEADZONE) {
-	  keydown = (ttkey) (keydown | up_key);
-	} else
-	if (e.jaxis.value > JOYSTICK_DEADZONE) {
-	  keydown = (ttkey) (keydown | down_key);
-	} else
-	  keydown = (ttkey) (keydown & ~(up_key|down_key));
+        if (e.jaxis.value < -JOYSTICK_DEADZONE) {
+          keydown = (ttkey) (keydown | up_key);
+        } else
+        if (e.jaxis.value > JOYSTICK_DEADZONE) {
+          keydown = (ttkey) (keydown | down_key);
+        } else
+          keydown = (ttkey) (keydown & ~(up_key|down_key));
       }
       keytyped = keydown;
       break;
@@ -300,11 +296,6 @@ bool key_mouse(Uint16 *x, Uint16 *y, ttkey *bttn) {
   handleEvents();
   switch (mouse_button) {
   default: *bttn = no_key; break;
-/*  case 1: *bttn = mousebttn1; break;
-  case 2: *bttn = mousebttn2; break;
-  case 3: *bttn = mousebttn3; break;
-  case 4: *bttn = mousebttn4; break;
-  case 5: *bttn = mousebttn5; break;*/
   }
   mouse_moved = false;
   mouse_button = 0;

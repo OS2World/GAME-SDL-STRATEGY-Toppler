@@ -182,7 +182,6 @@ bool dcl_fileexists(const char *n);
 
 /* opens files looking into the right directories */
 FILE *open_data_file(const char *name);
-//FILE *open_global_config_file(const char *name);
 FILE *open_local_config_file(const char *name);
 FILE *create_local_config_file(const char *name);
 FILE *open_local_data_file(const char *name);
@@ -206,8 +205,6 @@ int dcl_update_speed(int spd);
 
 /* for errorchecking */
 #define assert_msg(cond,text) if (!(cond)) { printf(_("Assertion failure: %s\n"), text); exit(1); }
-
-//#define CONFIGDIR "/etc"
 
 /* a function that returns a alphabetically sorted list of
  files in the given dir filtered dith the function given at

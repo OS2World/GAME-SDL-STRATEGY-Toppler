@@ -145,7 +145,6 @@ static void falling(int nr) {
 
   state = STATE_FALLING;
   substate = 0;
-  //TTSound->startsound(SND_FALL);
 
   switch (nr) {
     case 0:
