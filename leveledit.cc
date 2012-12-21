@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2006  Andreas Röver
+ * Copyright (C) 2000-2012  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -85,8 +85,8 @@ typedef enum {
   EDACT_CUTROW,
   EDACT_PASTEROW,
   EDACT_TOGGLEROBOT,
-  
-  NUMEDITORACTIONS    
+
+  NUMEDITORACTIONS
 } key_actions;
 
 struct _ed_key {
@@ -195,7 +195,7 @@ static bool really_quit(int row, int col) {
 }
 
 static bool really_load(int row, int col) {
-  bg_darken = true;   
+  bg_darken = true;
   if (men_yn(_("Tower changed, really load"), false)) {
     return true;
   } else {
@@ -250,7 +250,7 @@ static bool edit_towercolor(int row, int col) {
 
     scr_swap();
     dcl_wait();
-      
+
     c = key_sdlkey();
 
     switch (c) {
@@ -365,7 +365,7 @@ static void createMission(void) {
 
     scr_drawedit(0, 0, false);
     scr_writetext_center(30, _("Mission creation"));
-                              
+
     scr_writetext_center(80, _("could not create file"));
     scr_writetext_center(110, _("aborting"));
 
@@ -376,7 +376,7 @@ static void createMission(void) {
     do {
       inp = key_chartyped();
     } while (!inp);
-  
+
     return;
   }
 
@@ -413,14 +413,14 @@ static void le_showkeyhelp(int row, int col) {
   int maxkeylen = 0;
   textsystem *ts = new textsystem(_("Editor Key Help"), editor_background_menu_proc);
   char tabbuf1[6], tabbuf2[6];
-    
+
   if (!ts) return;
 
   for (k = 0; k < SIZE(_ed_keys); k++) {
       char knam[256];
       snprintf(knam, 256, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
       int l = scr_textlength(knam);
-      
+
       if (l > maxkeylen) maxkeylen = l;
   }
 
@@ -428,14 +428,14 @@ static void le_showkeyhelp(int row, int col) {
   if (tabbuf1[0] < '0') tabbuf1[0] = '0';
   if (tabbuf1[1] < '0') tabbuf1[1] = '0';
   if (tabbuf1[2] < '0') tabbuf1[2] = '0';
-    
+
   for (k = 0; k < SIZE(_ed_keys); k++) {
       char buf[256];
       char tmpb[256];
       char knam[256];
 
       snprintf(knam, 256, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
-      
+
       snprintf(tabbuf2, 6, "%3i", maxkeylen - scr_textlength(knam));
       if (tabbuf2[0] < '0') tabbuf2[0] = '0';
       if (tabbuf2[1] < '0') tabbuf2[1] = '0';
@@ -501,7 +501,7 @@ void le_edit(void) {
   else towerstarthei = TOWERSTARTHEI + config.editor_towerstarthei();
 
   lev_new(towerstarthei % 256);
-    
+
   if (config.editor_towerpagesize() < 1) {
     config.editor_towerpagesize(TOWERPAGESIZE);
     pagesize = TOWERPAGESIZE;
@@ -590,15 +590,15 @@ void le_edit(void) {
 	}
         break;
       case EDACT_MOVELEFT:
-        col++; 
+        col++;
 	cursor_moved = true;
         break;
       case EDACT_MOVERIGHT:
-        col--; 
+        col--;
 	cursor_moved = true;
         break;
       case EDACT_ROT180:
-        col += 8; 
+        col += 8;
 	cursor_moved = true;
         break;
       case EDACT_INSROW:
@@ -841,9 +841,9 @@ void le_edit(void) {
 	{
 	    char buf[64];
 	    int i;
-	    
+
 	    snprintf(buf, 64, "0");
-	    
+
 	    bg_text = _("Adjust tower height:");
 	    bg_darken = true;
 	    key_wait_for_none(editor_background_proc);
@@ -857,7 +857,7 @@ void le_edit(void) {
 	    if (i < 0) {
 		i = abs(i);
 		while (i-- > 0) lev_deleterow(row);
-	    } else 
+	    } else
 	    if (i>0) {
 		if (i < lev_towerrows()) {
 		    while ((i > 0) && (i < lev_towerrows())) {

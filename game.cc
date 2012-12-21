@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2006  Andreas Röver
+ * Copyright (C) 2000-2012  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -298,7 +298,7 @@ static void timeout(int &tower_position, int &tower_anglepos) {
   bg_time = 0;
 
   set_men_bgproc(game_background_proc);
-   
+
   men_info(_("Time over"), 150);
 }
 
@@ -396,7 +396,7 @@ static void bonus(int &tower_position, int &tower_angle, int time, bool lifes) {
       writebonus(tower_position, tower_angle, zeit, tec, extra, time, lif, lifes);
     }
   }
-   
+
   delay = 0;
 
   do {
@@ -475,7 +475,7 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
   bg_tower_pos = tower_position;
   bg_tower_angle = tower_anglepos;
   bg_time = time;
-   
+
   set_men_bgproc(game_background_proc);
   men_info(_("Pause"), -1, 1);
 

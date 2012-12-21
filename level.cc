@@ -1,5 +1,5 @@
 /* Tower Toppler - Nebulus
- * Copyright (C) 2000-2006  Andreas Röver
+ * Copyright (C) 2000-2012  Andreas Röver
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -144,7 +144,7 @@ Uint8 conv_char2towercode(wchar_t ch) {
 }
 
 char conv_towercode2char(Uint8 code) {
-  if ((code < NUM_TBLOCKS) && (towerblockdata[code].ch)) 
+  if ((code < NUM_TBLOCKS) && (towerblockdata[code].ch))
       return towerblockdata[code].ch;
   return towerblockdata[TB_EMPTY].ch;
 }
@@ -161,7 +161,7 @@ static void add_mission(const char *fname, bool archive = false) {
 
     unsigned char mnamelength;
     f.read(&mnamelength, 1);
-    
+
     if (mnamelength > 29) mnamelength = 29;
 
     f.read(mname, mnamelength);
@@ -393,12 +393,12 @@ bool lev_loadmission(Uint16 num) {
 
     file f(dataarchive, m->fname);
     int fsize = f.size();
-    
+
     mission = new unsigned char[fsize];
     f.read(mission, fsize);
 
   } else {
-  
+
     FILE * in = fopen(m->fname, "rb");
 
     /* find out file size */
@@ -796,7 +796,7 @@ bool lev_is_box(int row, int col) {
 
 int lev_is_sliding(int row, int col) {
     return ((tower[row][col] == TB_STEP_LSLIDER) ? 1 :
-            (tower[row][col] == TB_STEP_RSLIDER) ? -1 : 
+            (tower[row][col] == TB_STEP_RSLIDER) ? -1 :
             0);
 }
 
@@ -832,11 +832,11 @@ bool lev_testfigure(long angle, long vert, long back,
     case 0:  /* toppler */
       x = (vert == 3) ? 3 : 2;
       break;
-  
+
     case 1:  /* robot */
       x = (vert == 0) ? 1 : 2;
       break;
-  
+
     case 2:  /* snowball */
       x = (vert == 0) ? 0 : 1;
       break;
@@ -891,7 +891,7 @@ bool lev_loadtower(const char *fname) {
   char line[200];
 
   if (in == NULL) return false;
-    
+
   lev_clear_tower();
   lev_set_towerdemo(0, NULL);
   towertime = 0;
@@ -932,19 +932,19 @@ bool lev_loadtower(const char *fname) {
       sscanf(line, "%hhu\n", &towerheight);
 
       for (int row = towerheight - 1; row >= 0; row--) {
-    
+
         fgets(line, 200, in);
-    
+
         for (int col = 0; col < TOWERWID; col++)
           tower[row][col] = conv_char2towercode(line[col]);
       }
     } else if (strncmp(&line[1], tss_string_demo, strlen(tss_string_demo)) == 0) {
       if (fgets(line, 200, in)) {
           sscanf(line, "%i\n", &towerdemo_len);
-    
+
           if (towerdemo_len > 0) {
               towerdemo = new Uint16[towerdemo_len];
-    
+
               for (int idx = 0; idx < towerdemo_len; idx++) {
                   fgets(line, 200, in);
                   sscanf(line, "%hu\n", &towerdemo[idx]);
@@ -1174,7 +1174,7 @@ lev_problem lev_is_consistent(int &row, int &col) {
   if (towerheight < 4) return TPROB_SHORTTOWER;
 
   for (int r = 0; r < towerheight; r++)
-    for (int c = 0; c < TOWERWID; c++) { 
+    for (int c = 0; c < TOWERWID; c++) {
       // check for undefined symbols
       if (tower[r][c] >= NUM_TBLOCKS) {
           row = r;
@@ -1386,7 +1386,7 @@ bool lev_mission_new(char * name, Uint8 prio) {
 void write_fmission_section(Uint8 section, Uint32 section_len) {
     Uint8 tmp;
     fwrite(&section, 1, 1, fmission);
-    
+
     tmp = section_len & 0xff;
     fwrite(&tmp, 1, 1, fmission);
     tmp = (section_len >> 8) & 0xff;
