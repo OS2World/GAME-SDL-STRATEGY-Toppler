@@ -118,23 +118,21 @@ static void handleEvents(void) {
     case SDL_JOYAXISMOTION:
       if (e.jaxis.axis == 0) {
 	if (e.jaxis.value < -JOYSTICK_DEADZONE) {
-	  keydown = left_key;
+	  keydown = (ttkey) (keydown | left_key);
 	} else
 	if (e.jaxis.value > JOYSTICK_DEADZONE) {
-	  keydown = right_key;
-	} else {
-	  keydown = no_key;
-	}
+	  keydown = (ttkey) (keydown | right_key);
+	} else
+	  keydown = (ttkey) (keydown & ~(right_key|left_key));
       }
       if (e.jaxis.axis == 1) {
 	if (e.jaxis.value < -JOYSTICK_DEADZONE) {
-	  keydown = up_key;
+	  keydown = (ttkey) (keydown | up_key);
 	} else
 	if (e.jaxis.value > JOYSTICK_DEADZONE) {
-	  keydown = down_key;
-	} else {
-	  keydown = no_key;
-	}
+	  keydown = (ttkey) (keydown | down_key);
+	} else
+	  keydown = (ttkey) (keydown & ~(up_key|down_key));
       }
       keytyped = keydown;
       break;
