@@ -83,7 +83,7 @@ static void show() {
       scr_draw_fish(fish[b].y, fish[b].x, fish[b].state);
 
   /* and finally the forground layers of the scroller */
-  scr_draw_bonus2(xpos, towerpos);
+  scr_draw_bonus2(xpos);
 }
 
 /* callback proc for menu drawing the current state and dim that picture */

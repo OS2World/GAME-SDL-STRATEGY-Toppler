@@ -25,7 +25,6 @@
 
 ttsounds::ttsounds(void)
 {
-#ifdef HAVE_LIBSDL_MIXER
   useSound = false;
   n_sounds = 0;
   sounds = NULL;
@@ -33,12 +32,10 @@ ttsounds::ttsounds(void)
   debugprintf(9, "ttsounds::ttsounds\n");
 
   title = 0;
-#endif
 }
 
 ttsounds::~ttsounds(void)
 {
-#ifdef HAVE_LIBSDL_MIXER
   closesound();
 
   for (int t = 0; t < n_sounds; t++)
@@ -48,12 +45,10 @@ ttsounds::~ttsounds(void)
   delete [] sounds;
 
   debugprintf(9, "ttsounds::~ttsounds\n");
-#endif
 }
 
 void ttsounds::addsound(const char *fname, int id, int vol, int loops)
 {
-#ifdef HAVE_LIBSDL_MIXER
   struct ttsnddat *tmp;
   bool need_add = true;
   int add_pos = n_sounds;
@@ -96,12 +91,10 @@ void ttsounds::addsound(const char *fname, int id, int vol, int loops)
   n_sounds++;
 
   return;
-#endif
 }
 
 void ttsounds::play(void)
 {
-#ifdef HAVE_LIBSDL_MIXER
   if (!useSound) return;
 
   for (int t = 0; t < n_sounds; t++)
@@ -113,19 +106,15 @@ void ttsounds::play(void)
       sounds[t].play = false;
     }
   debugprintf(9,"ttsounds::play()\n");
-#endif
 }
 
 void ttsounds::stop(void)
 {
-#ifdef HAVE_LIBSDL_MIXER
   for (int t = 0; t < n_sounds; t++) stopsound(t);
-#endif
 }
 
 void ttsounds::stopsound(int snd)
 {
-#ifdef HAVE_LIBSDL_MIXER
   if (useSound) {
     if ((snd >= 0) && (snd < n_sounds)) {
       if (sounds[snd].channel != -1) {
@@ -137,23 +126,19 @@ void ttsounds::stopsound(int snd)
     }
   }
   debugprintf(9,"ttsounds::stopsound(%i)\n", snd);
-#endif
 }
 
 void ttsounds::startsound(int snd)
 {
-#ifdef HAVE_LIBSDL_MIXER
   if (!useSound) return;
 
   if ((snd >= 0) && (snd < n_sounds)) sounds[snd].play = true;
 
   debugprintf(9,"ttsounds::startsound(%i)\n", snd);
-#endif
 }
 
 void ttsounds::setsoundvol(int snd, int vol)
 {
-#ifdef HAVE_LIBSDL_MIXER
   if (useSound) {
     if ((snd >= 0) && (snd < n_sounds)) {
       if (sounds[snd].channel != -1) {
@@ -166,7 +151,6 @@ void ttsounds::setsoundvol(int snd, int vol)
 
     debugprintf(9,"ttsounds::setsoundvol(%i, %i)\n", snd, vol);
   }
-#endif
 }
 
 ttsounds * ttsounds::instance(void) {
@@ -179,7 +163,6 @@ ttsounds * ttsounds::instance(void) {
 class ttsounds *ttsounds::inst = 0;
 
 void ttsounds::opensound(void) {
-#ifdef HAVE_LIBSDL_MIXER
   if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
     debugprintf(0, "Couldn't init the sound system, muting.\n");
     return;
@@ -192,12 +175,9 @@ void ttsounds::opensound(void) {
   }
 
   useSound = true;
-#endif
-
 }
 
 void ttsounds::closesound(void) {
-#ifdef HAVE_LIBSDL_MIXER
   if (!useSound) return;
 
   while (Mix_Playing(-1)) dcl_wait();
@@ -206,12 +186,10 @@ void ttsounds::closesound(void) {
   SDL_QuitSubSystem(SDL_INIT_AUDIO);
 
   useSound = false;
-#endif
 }
 
 
 void ttsounds::playmusic(const char * fname) {
-#ifdef HAVE_LIBSDL_MIXER
   if (!useSound) return;
 
   char f[500];
@@ -220,10 +198,8 @@ void ttsounds::playmusic(const char * fname) {
     Mix_PlayMusic(title, -1);
     musicVolume = MIX_MAX_VOLUME;
   }
-#endif
 }
 void ttsounds::stopmusic(void) {
-#ifdef HAVE_LIBSDL_MIXER
   if (!useSound) return;
 
   if (title) {
@@ -231,11 +207,9 @@ void ttsounds::stopmusic(void) {
 
     while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
   }
-#endif
 }
 
 void ttsounds::fadeToVol(int vol) {
-#ifdef HAVE_LIBSDL_MIXER
   if (!title) return;
 
   while (musicVolume != vol) {
@@ -253,6 +227,5 @@ void ttsounds::fadeToVol(int vol) {
     Mix_VolumeMusic(musicVolume);
     dcl_wait();
   }
-#endif
 }
 

@@ -34,6 +34,8 @@
 
 #define SCOREFNAME "toppler.hsc"
 
+#pragma GCC diagnostic ignored "-Wunused-result"
+
 /* the group ids of the game */
 static gid_t UserGroupID, GameGroupID;
 
@@ -239,7 +241,7 @@ void hsc_init(void) {
 }
 
 void hsc_select(const char * mission) {
-  strncpy(missionname, mission, 100);
+  strncpy(missionname, mission, 99);
 
   if (globalHighscore) setegid(GameGroupID);
   FILE *f = fopen(highscoreName, "rb");

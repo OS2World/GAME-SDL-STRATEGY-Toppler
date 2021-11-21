@@ -92,8 +92,8 @@ typedef enum {
 struct _ed_key {
    key_actions action;
    SDLKey key;
-   char   character;
-   Uint16 mod; /* KMOD_NONE|KMOD_SHIFT|KMOD_CTRL|KMOD_ALT */
+   char   character = '\0';
+   Uint16 mod = 0; /* KMOD_NONE|KMOD_SHIFT|KMOD_CTRL|KMOD_ALT */
 };
 
 #define TOWERPAGESIZE 5 /* pageup/pagedown moving */
@@ -179,12 +179,12 @@ static void editor_background_proc(void) {
    if (bg_text) scr_writetext_center(5, bg_text);
 }
 
-static const char *editor_background_menu_proc(_menusystem *ms) {
+static const char *editor_background_menu_proc(_menusystem * /*ms*/) {
     editor_background_proc();
     return 0;
 }
 
-static bool really_quit(int row, int col) {
+static bool really_quit() {
   bg_darken = true;
   if (men_yn(_("Tower changed, really quit"), false)) {
     return true;
@@ -194,7 +194,7 @@ static bool really_quit(int row, int col) {
   bg_darken = false;
 }
 
-static bool really_load(int row, int col) {
+static bool really_load() {
   bg_darken = true;
   if (men_yn(_("Tower changed, really load"), false)) {
     return true;
@@ -259,9 +259,11 @@ static bool edit_towercolor(int row, int col) {
     case SDLK_LEFT: if (newc[activecol] > 0)   newc[activecol]--; break;
     case SDLK_RIGHT: if (newc[activecol] < 255) newc[activecol]++; break;
     case SDLK_PAGEDOWN: if (newc[activecol] > 10)  newc[activecol] = newc[activecol] - 10;
-                                              else newc[activecol] = 0;  break;
+                                              else newc[activecol] = 0;
+                                              break;
     case SDLK_PAGEUP: if (newc[activecol] < 245)  newc[activecol] = newc[activecol] + 10;
-                                             else newc[activecol] = 255; break;
+                                             else newc[activecol] = 255;
+                                             break;
     case SDLK_0: case SDLK_1: case SDLK_2: case SDLK_3: case SDLK_4:
     case SDLK_5: case SDLK_6: case SDLK_7: case SDLK_8:
     case SDLK_9: newc[activecol] = (int) ((c - '0') * 256) / 10; break;
@@ -408,7 +410,7 @@ static void createMission(void) {
   lev_findmissions();
 }
 
-static void le_showkeyhelp(int row, int col) {
+static void le_showkeyhelp() {
   int k;
   int maxkeylen = 0;
   textsystem *ts = new textsystem(_("Editor Key Help"), editor_background_menu_proc);
@@ -574,7 +576,7 @@ void le_edit(void) {
 
       switch (action) {
       case EDACT_QUIT:
-        if (changed) ende = really_quit(row, col);
+        if (changed) ende = really_quit();
         else ende = true;
         break;
       case EDACT_MOVEUP:
@@ -698,7 +700,7 @@ void le_edit(void) {
         break;
       case EDACT_LOADTOWER:
         if (changed)
-          if (!really_load(row, col))
+          if (!really_load())
             break;
         bg_text = _("Load tower:");
         bg_darken = true;
@@ -932,7 +934,7 @@ void le_edit(void) {
         changed = true;
         break;
       case EDACT_SHOWKEYHELP:
-        le_showkeyhelp(row, col);
+        le_showkeyhelp();
         break;
       case EDACT_TOGGLEROBOT:
         lev_set_robotnr((lev_robotnr() + 1) % scr_numrobots());

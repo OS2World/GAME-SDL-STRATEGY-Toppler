@@ -430,6 +430,7 @@ void rob_update(void) {
         if (object[t].time > 0)
           break;
         object[t].kind = OBJ_KIND_FREEZEBALL;
+        [[fallthrough]];
 
       case OBJ_KIND_FREEZEBALL:
 

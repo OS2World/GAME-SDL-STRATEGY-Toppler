@@ -99,7 +99,7 @@ void scr_writetext_broken_center(long y, const char *s);
  */
 void scr_writeformattext(long x, long y, const char *s);
 /* returns the length of formatted text in pixels. */
-long scr_formattextlength(long x, long y, const char *s);
+long scr_formattextlength(long x, const char *s);
 
 /* returns the number of pixels the first chars characters in
  text needs in the display (if the string is only n chars long
@@ -131,7 +131,7 @@ void scr_drawedit(long vert, long angle, bool showtime);
 void scr_draw_bonus1(long horiz, long towerpos);
 
 /* draws the bonus game layers before the tower */
-void scr_draw_bonus2(long horiz, long towerpos);
+void scr_draw_bonus2(long horiz);
 
 void scr_draw_submarine(long vert, long x, long number);
 void scr_draw_fish(long vert, long x, long number);

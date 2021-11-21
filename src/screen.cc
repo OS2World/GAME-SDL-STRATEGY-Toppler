@@ -1371,7 +1371,7 @@ void scr_writeformattext(long x, long y, const char *s) {
   }
 }
 
-long scr_formattextlength(long x, long y, const char *s) {
+long scr_formattextlength(long x, const char *s) {
   mbstate_t state;
   memset (&state, '\0', sizeof (state));
   wchar_t tmp;
@@ -1758,7 +1758,7 @@ void scr_draw_bonus1(long horiz, long towerpos) {
   puttower(0, SCREENHEI/2, SCREENHEI, sl_tower_num*towerpos/sl_tower_den);
 }
 
-void scr_draw_bonus2(long horiz, long towerpos) {
+void scr_draw_bonus2(long horiz) {
   int l;
 
   if (config.use_full_scroller())

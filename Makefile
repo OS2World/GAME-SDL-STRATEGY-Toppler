@@ -22,6 +22,7 @@ PREFIX = /usr
 BINDIR = $(PREFIX)/bin
 DATADIR = $(PREFIX)/share
 STATEDIR = $(PREFIX)/var/toppler
+LOCALEDIR = $(PREFIX)/locale
 DESTDIR =
 CROSS =
 
@@ -57,6 +58,8 @@ PKGS += zlib
 DEFS += -DVERSION='"$(VERSION)"'
 DEFS += -DTOP_DATADIR='"$(DATADIR)"'
 DEFS += -DHISCOREDIR='"$(STATEDIR)"'
+DEFS += -DENABLE_NLS=1
+DEFS += -DLOCALEDIR='"$(LOCALEDIR)"'
 
 FILES_H := $(wildcard src/*.h)
 FILES_CPP := $(wildcard src/*.cc)

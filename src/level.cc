@@ -41,10 +41,13 @@
 #define TBF_DEADLY   0x0008 /* block is deadly */
 #define TBF_ROBOT    0x0010 /* block is a robot */
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-truncation"
+
 struct _tblockdata {
     const char *nam; /* name */
     char       ch;   /* representation in saved tower file */
-    Uint16     tf;   /* flags; TBF_foo */
+    Uint16     tf = 0;   /* flags; TBF_foo */
 } static towerblockdata[NUM_TBLOCKS] = {
     { "space",            ' ', TBF_EMPTY },
     { "lift top stop",    'v', TBF_EMPTY|TBF_STATION },
@@ -175,13 +178,16 @@ static void add_mission(const char *fname, bool archive = false) {
     if (!f) return;
 
     unsigned char mnamelength;
-    fread(&mnamelength, 1, 1, f);
+    size_t read = fread(&mnamelength, 1, 1, f);
+    assert_msg(read == 1, "could not read data");
 
     if (mnamelength > 29) mnamelength = 29;
 
-    fread(mname, mnamelength, 1, f);
+    read = fread(mname, mnamelength, 1, f);
+    assert_msg(read == mnamelength, "could not read data");
     mname[mnamelength] = 0;
-    fread(&prio, 1, 1, f);
+    read = fread(&prio, 1, 1, f);
+    assert_msg(read == 1, "could not read data");
     fclose(f);
   }
 
@@ -288,7 +294,7 @@ void lev_findmissions() {
     for (int i = 0; i < n; i++) {
 
       char fname[200];
-      sprintf(fname, "%s%s", pathname, eps[i]->d_name);
+      snprintf(fname, 199, "%s%s", pathname, eps[i]->d_name);
 
       add_mission(fname);
 
@@ -324,7 +330,8 @@ void lev_findmissions() {
     for (int i = 0; i < n; i++) {
 
       char fname[200];
-      snprintf(fname, 200, "%s%s", pathname, eps[i]->d_name);
+      fname[199] = 0;
+      snprintf(fname, 199, "%s%s", pathname, eps[i]->d_name);
 
       add_mission(fname);
     }
@@ -392,7 +399,7 @@ bool lev_loadmission(Uint16 num) {
   if (m->archive) {
 
     file f(dataarchive, m->fname);
-    int fsize = f.size();
+    Uint32 fsize = f.size();
 
     mission = new unsigned char[fsize];
     f.read(mission, fsize);
@@ -403,12 +410,13 @@ bool lev_loadmission(Uint16 num) {
 
     /* find out file size */
     fseek(in, 0, SEEK_END);
-    int fsize = ftell(in);
+    unsigned long fsize = ftell(in);
 
     /* get enough memory and load the whole file into memory */
     mission = new unsigned char[fsize];
     fseek(in, 0, SEEK_SET);
-    fread(mission, fsize, 1, in);
+    size_t read = fread(mission, fsize, 1, in);
+    assert_msg(read == fsize, "could not read data");
 
     fclose(in);
   }
@@ -902,13 +910,17 @@ bool lev_loadtower(const char *fname) {
 
     if (feof(in)) break;
 
+    char * read;
+
     /* look for next section start */
-    fgets(line, 200, in);
+    read = fgets(line, 200, in);
+    assert_msg(read != nullptr, "could not read data");
     if (line[0] != '[')
       continue;
 
     if (strncmp(&line[1], tss_string_name, strlen(tss_string_name)) == 0) {
-      fgets(towername, TOWERNAMELEN+1, in);
+      read = fgets(towername, TOWERNAMELEN+1, in);
+      assert_msg(read != nullptr, "could not read data");
       /* remove not allowed characters */
       {
         int inp = 0;
@@ -921,19 +933,23 @@ bool lev_loadtower(const char *fname) {
         towername[outp] = 0;
       }
     } else if (strncmp(&line[1], tss_string_color, strlen(tss_string_color)) == 0) {
-      fgets(line, 200, in);
+      read = fgets(line, 200, in);
+      assert_msg(read != nullptr, "could not read data");
       sscanf(line, "%hhu, %hhu, %hhu\n", &towercolor_red, &towercolor_green, &towercolor_blue);
     } else if (strncmp(&line[1], tss_string_time, strlen(tss_string_time)) == 0) {
-      fgets(line, 200, in);
+      read = fgets(line, 200, in);
+      assert_msg(read != nullptr, "could not read data");
       sscanf(line, "%hu\n", &towertime);
     } else if (strncmp(&line[1], tss_string_data, strlen(tss_string_data)) == 0) {
 
-      fgets(line, 200, in);
+      read = fgets(line, 200, in);
+      assert_msg(read != nullptr, "could not read data");
       sscanf(line, "%hhu\n", &towerheight);
 
       for (int row = towerheight - 1; row >= 0; row--) {
 
-        fgets(line, 200, in);
+        read = fgets(line, 200, in);
+        assert_msg(read != nullptr, "could not read data");
 
         for (int col = 0; col < TOWERWID; col++)
           tower[row][col] = conv_char2towercode(line[col]);
@@ -946,13 +962,15 @@ bool lev_loadtower(const char *fname) {
               towerdemo = new Uint16[towerdemo_len];
 
               for (int idx = 0; idx < towerdemo_len; idx++) {
-                  fgets(line, 200, in);
+                  read = fgets(line, 200, in);
+                  assert_msg(read != nullptr, "could not read data");
                   sscanf(line, "%hu\n", &towerdemo[idx]);
               }
           } else towerdemo = NULL;
       }
     } else if (strncmp(&line[1], tss_string_robot, strlen(tss_string_robot)) == 0) {
-      fgets(line, 200, in);
+      read = fgets(line, 200, in);
+      assert_msg(read != nullptr, "could not read data");
       {
         int i;
         sscanf(line, "%u\n", &i);
@@ -1015,21 +1033,6 @@ bool lev_savetower(const char *fname) {
 }
 
 #endif
-
-/* rotate row clock and counter clockwise */
-void lev_rotaterow(int row, bool clockwise) {
-  if (clockwise) {
-    int k = tower[row][0];
-    for (int i = 1; i < TOWERWID; i++)
-      tower[row][i - 1] = tower[row][i];
-    tower[row][TOWERWID-1] = k;
-  } else {
-    int k = tower[row][TOWERWID-1];
-    for (int i = TOWERWID-1; i >= 0; i++)
-      tower[row][i] = tower[row][i - 1];
-    tower[row][0] = k;
-  }
-}
 
 /* insert and delete one row */
 void lev_insertrow(int position) {
@@ -1546,7 +1549,8 @@ void lev_mission_finish() {
 
   /* write out the number of towers in this mission */
   fseek(fmission, 0, SEEK_SET);
-  fread(&c, 1, 1, fmission);
+  size_t read = fread(&c, 1, 1, fmission);
+  assert_msg(read == 1, "could not read data");
 
   fseek(fmission, c + 2, SEEK_SET);
   fwrite(&nmission, 1, 1, fmission);

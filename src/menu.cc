@@ -576,6 +576,7 @@ men_hiscores_background_proc(_menusystem *ms)
         hiscores_xpos -= 10;
         break;
       } else hiscores_state = 1;
+      [[fallthrough]];
     case 1: /* hold the scores on screen */
       if (hiscores_timer < 100) {
         hiscores_timer++;
@@ -599,6 +600,7 @@ men_hiscores_background_proc(_menusystem *ms)
           next_page = pager;
         }
       }
+      [[fallthrough]];
     case 2: /* move the scores out */
       if (hiscores_xpos > -(hiscores_maxlen + 40)) {
         hiscores_timer = 0;
@@ -865,7 +867,7 @@ static const char *
 men_main_timer_proc(_menusystem *ms)
 {
   if (ms) {
-    Uint8 num_demos = 0;
+    Uint16 num_demos = 0;
     Uint8 demos[256];
     Uint16 miss = rand() % lev_missionnumber();
     Uint8 num_towers;

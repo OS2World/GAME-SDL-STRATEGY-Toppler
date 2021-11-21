@@ -73,7 +73,7 @@ void textsystem::addline(char *line)
   numlines++;
 
   if (line) {
-    olen = scr_formattextlength(0,0,line);
+    olen = scr_formattextlength(0,line);
     if (olen < 0) olen = 0;
   }
   else olen = 0;

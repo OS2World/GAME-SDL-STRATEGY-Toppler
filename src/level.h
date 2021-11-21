@@ -227,10 +227,6 @@ void lev_restore(int row, int col, unsigned char bg);
 bool lev_loadtower(const char *fname);
 bool lev_savetower(const char *fname);
 
-/* rotate row clock and counter clockwise */
-void lev_rotaterow(int row, bool clockwise);
-
-
 /* insert and delete one row */
 void lev_insertrow(int position);
 void lev_deleterow(int position);

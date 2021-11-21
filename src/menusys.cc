@@ -371,6 +371,7 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
             }
             break;
           }
+          [[fallthrough]];
         case break_key : ms->exitmenu = true; break;
         default:
           break;
