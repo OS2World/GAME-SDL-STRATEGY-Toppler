@@ -82,16 +82,6 @@ FILES_BINDIR += $(CROSS)toppler$(EXEEXT)
 $(CROSS)toppler$(EXEEXT): $(FILES_O)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(FILES_O) $$($(PKG_CONFIG) --libs $(PKGS)) $(LIBS)
 
-# the sources of the various tools that we need
-# the tools are all single file programs
-TOOL_FILES_C := $(wildcard datafile/*.c)
-TOOL_FILES_H := $(wildcard datafile/*.h)
-TOOLS := $(patsubst datafile/%,_build/tools/%,$(TOOL_FILES_C))
-.SECONDARY: $(TOOLS)
-_build/tools/%: datafile/% $(TOOLS_FILES_H)
-	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
-
 # the rules for the datafile
 
 SOUNDS = datafile/sounds/alarm.wav datafile/sounds/boing.wav datafile/sounds/bubbles.wav datafile/sounds/fanfare.wav \
