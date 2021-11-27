@@ -255,15 +255,15 @@ DATFILES += _build/m1.ttm
 .SECONDARY: _build/m1.ttm
 _build/m1.ttm: _build/tools/cremission \
 	datafile/levels/mission1/m1t1 datafile/levels/mission1/m1t2 datafile/levels/mission1/m1t3 datafile/levels/mission1/m1t4 datafile/levels/mission1/m1t5 datafile/levels/mission1/m1t6 datafile/levels/mission1/m1t7 datafile/levels/mission1/m1t8
-	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Mission 1" ../m1 10 \
-		../../datafile/levels/mission1/m1t1 \
-		../../datafile/levels/mission1/m1t2 \
-		../../datafile/levels/mission1/m1t3 \
-		../../datafile/levels/mission1/m1t4 \
-		../../datafile/levels/mission1/m1t5 \
-		../../datafile/levels/mission1/m1t6 \
-		../../datafile/levels/mission1/m1t7 \
-		../../datafile/levels/mission1/m1t8 )
+	( cd _build && tools/cremission "Mission 1" m1 10 \
+		../datafile/levels/mission1/m1t1 \
+		../datafile/levels/mission1/m1t2 \
+		../datafile/levels/mission1/m1t3 \
+		../datafile/levels/mission1/m1t4 \
+		../datafile/levels/mission1/m1t5 \
+		../datafile/levels/mission1/m1t6 \
+		../datafile/levels/mission1/m1t7 \
+		../datafile/levels/mission1/m1t8 )
 
 # RULE FOR MISSION 2
 
@@ -271,15 +271,15 @@ DATFILES += _build/m2.ttm
 .SECONDARY: _build/m2.ttm
 _build/m2.ttm: _build/tools/cremission \
 	datafile/levels/mission2/m2t1 datafile/levels/mission2/m2t2 datafile/levels/mission2/m2t3 datafile/levels/mission2/m2t4 datafile/levels/mission2/m2t5 datafile/levels/mission2/m2t6 datafile/levels/mission2/m2t7 datafile/levels/mission2/m2t8
-	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Mission 2" ../m2 11 \
-		../../datafile/levels/mission2/m2t1 \
-		../../datafile/levels/mission2/m2t2 \
-		../../datafile/levels/mission2/m2t3 \
-		../../datafile/levels/mission2/m2t4 \
-		../../datafile/levels/mission2/m2t5 \
-		../../datafile/levels/mission2/m2t6 \
-		../../datafile/levels/mission2/m2t7 \
-		../../datafile/levels/mission2/m2t8 )
+	( cd _build && tools/cremission "Mission 2" m2 11 \
+		../datafile/levels/mission2/m2t1 \
+		../datafile/levels/mission2/m2t2 \
+		../datafile/levels/mission2/m2t3 \
+		../datafile/levels/mission2/m2t4 \
+		../datafile/levels/mission2/m2t5 \
+		../datafile/levels/mission2/m2t6 \
+		../datafile/levels/mission2/m2t7 \
+		../datafile/levels/mission2/m2t8 )
 
 # RULE FOR CLARENCE MISSION 1
 
@@ -287,15 +287,15 @@ DATFILES += _build/ball1.ttm
 .SECONDARY: _build/ball1.ttm
 _build/ball1.ttm: _build/tools/cremission \
 	datafile/levels/ball1/lev1 datafile/levels/ball1/lev2 datafile/levels/ball1/lev3 datafile/levels/ball1/lev4 datafile/levels/ball1/lev5 datafile/levels/ball1/lev6 datafile/levels/ball1/lev7 datafile/levels/ball1/lev8
-	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Ball 1" ../ball1 13 \
-		../../datafile/levels/ball1/lev1 \
-		../../datafile/levels/ball1/lev2 \
-		../../datafile/levels/ball1/lev3 \
-		../../datafile/levels/ball1/lev4 \
-		../../datafile/levels/ball1/lev5 \
-		../../datafile/levels/ball1/lev6 \
-		../../datafile/levels/ball1/lev7 \
-		../../datafile/levels/ball1/lev8 )
+	( cd _build && tools/cremission "Ball 1" ball1 13 \
+		../datafile/levels/ball1/lev1 \
+		../datafile/levels/ball1/lev2 \
+		../datafile/levels/ball1/lev3 \
+		../datafile/levels/ball1/lev4 \
+		../datafile/levels/ball1/lev5 \
+		../datafile/levels/ball1/lev6 \
+		../datafile/levels/ball1/lev7 \
+		../datafile/levels/ball1/lev8 )
 
 # RULE FOR CLARENCE MISSION 2
 
@@ -303,15 +303,15 @@ DATFILES += _build/ball2.ttm
 .SECONDARY: _build/ball2.ttm
 _build/ball2.ttm: _build/tools/cremission \
 	datafile/levels/ball2/lev1 datafile/levels/ball2/lev2 datafile/levels/ball2/lev3 datafile/levels/ball2/lev4 datafile/levels/ball2/lev5 datafile/levels/ball2/lev6 datafile/levels/ball2/lev7 datafile/levels/ball2/lev8
-	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Ball 2" ../ball2 14 \
-		../../datafile/levels/ball2/lev1 \
-		../../datafile/levels/ball2/lev2 \
-		../../datafile/levels/ball2/lev3 \
-		../../datafile/levels/ball2/lev4 \
-		../../datafile/levels/ball2/lev5 \
-		../../datafile/levels/ball2/lev6 \
-		../../datafile/levels/ball2/lev7 \
-		../../datafile/levels/ball2/lev8 )
+	( cd _build && tools/cremission "Ball 2" ball2 14 \
+		../datafile/levels/ball2/lev1 \
+		../datafile/levels/ball2/lev2 \
+		../datafile/levels/ball2/lev3 \
+		../datafile/levels/ball2/lev4 \
+		../datafile/levels/ball2/lev5 \
+		../datafile/levels/ball2/lev6 \
+		../datafile/levels/ball2/lev7 \
+		../datafile/levels/ball2/lev8 )
 
 # RULE FOR CLARENCE MISSION 3
 
@@ -319,15 +319,15 @@ DATFILES += _build/ball3.ttm
 .SECONDARY: _build/ball3.ttm
 _build/ball3.ttm: _build/tools/cremission \
 	datafile/levels/ball3/lev1 datafile/levels/ball3/lev2 datafile/levels/ball3/lev3 datafile/levels/ball3/lev4 datafile/levels/ball3/lev5 datafile/levels/ball3/lev6 datafile/levels/ball3/lev7 datafile/levels/ball3/lev8
-	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Ball 3" ../ball3 15 \
-		../../datafile/levels/ball3/lev1 \
-		../../datafile/levels/ball3/lev2 \
-		../../datafile/levels/ball3/lev3 \
-		../../datafile/levels/ball3/lev4 \
-		../../datafile/levels/ball3/lev5 \
-		../../datafile/levels/ball3/lev6 \
-		../../datafile/levels/ball3/lev7 \
-		../../datafile/levels/ball3/lev8 )
+	( cd _build && tools/cremission "Ball 3" ball3 15 \
+		../datafile/levels/ball3/lev1 \
+		../datafile/levels/ball3/lev2 \
+		../datafile/levels/ball3/lev3 \
+		../datafile/levels/ball3/lev4 \
+		../datafile/levels/ball3/lev5 \
+		../datafile/levels/ball3/lev6 \
+		../datafile/levels/ball3/lev7 \
+		../datafile/levels/ball3/lev8 )
 
 # RULE FOR PASIS MISSION 1
 
@@ -335,15 +335,15 @@ DATFILES += _build/abc.ttm
 .SECONDARY: _build/abc.ttm
 _build/abc.ttm: _build/tools/cremission \
 	datafile/levels/kallinen1/t1 datafile/levels/kallinen1/t2 datafile/levels/kallinen1/t3 datafile/levels/kallinen1/t4 datafile/levels/kallinen1/t5 datafile/levels/kallinen1/t6 datafile/levels/kallinen1/t7 datafile/levels/kallinen1/t8
-	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "ABC Towers" ../abc 12 \
-		../../datafile/levels/kallinen1/t1 \
-		../../datafile/levels/kallinen1/t2 \
-		../../datafile/levels/kallinen1/t3 \
-		../../datafile/levels/kallinen1/t4 \
-		../../datafile/levels/kallinen1/t5 \
-		../../datafile/levels/kallinen1/t6 \
-		../../datafile/levels/kallinen1/t7 \
-		../../datafile/levels/kallinen1/t8 )
+	( cd _build && tools/cremission "ABC Towers" abc 12 \
+		../datafile/levels/kallinen1/t1 \
+		../datafile/levels/kallinen1/t2 \
+		../datafile/levels/kallinen1/t3 \
+		../datafile/levels/kallinen1/t4 \
+		../datafile/levels/kallinen1/t5 \
+		../datafile/levels/kallinen1/t6 \
+		../datafile/levels/kallinen1/t7 \
+		../datafile/levels/kallinen1/t8 )
 
 # RULE FOR PASIS MISSION 2
 
@@ -351,9 +351,9 @@ DATFILES += _build/pasi2.ttm
 .SECONDARY: _build/pasi2.ttm
 _build/pasi2.ttm: _build/tools/cremission \
 	datafile/levels/kallinen2/t1 datafile/levels/kallinen2/t2
-	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Pasis 2 Towers" ../pasi2 12 \
-		../../datafile/levels/kallinen2/t1 \
-		../../datafile/levels/kallinen2/t2 )
+	( cd _build && tools/cremission "Pasis 2 Towers" pasi2 12 \
+		../datafile/levels/kallinen2/t1 \
+		../datafile/levels/kallinen2/t2 )
 
 # RULE FOR DAVIDS MISSION 1
 
@@ -361,15 +361,15 @@ DATFILES += _build/david1.ttm
 .SECONDARY: _build/david1.ttm
 _build/david1.ttm: _build/tools/cremission \
 	datafile/levels/david1/lev1 datafile/levels/david1/lev2 datafile/levels/david1/lev3 datafile/levels/david1/lev4 datafile/levels/david1/lev5 datafile/levels/david1/lev6 datafile/levels/david1/lev7 datafile/levels/david1/lev8
-	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Challenge 1" ../david1 12 \
-		../../datafile/levels/david1/lev1 \
-		../../datafile/levels/david1/lev2 \
-		../../datafile/levels/david1/lev3 \
-		../../datafile/levels/david1/lev4 \
-		../../datafile/levels/david1/lev5 \
-		../../datafile/levels/david1/lev6 \
-		../../datafile/levels/david1/lev7 \
-		../../datafile/levels/david1/lev8 )
+	( cd _build && tools/cremission "Challenge 1" david1 12 \
+		../datafile/levels/david1/lev1 \
+		../datafile/levels/david1/lev2 \
+		../datafile/levels/david1/lev3 \
+		../datafile/levels/david1/lev4 \
+		../datafile/levels/david1/lev5 \
+		../datafile/levels/david1/lev6 \
+		../datafile/levels/david1/lev7 \
+		../datafile/levels/david1/lev8 )
 
 # RULE FOR DAVIDS MISSION 2
 
@@ -377,11 +377,11 @@ DATFILES += _build/david2.ttm
 .SECONDARY: _build/david2.ttm
 _build/david2.ttm: _build/tools/cremission \
 	datafile/levels/david2/l1 datafile/levels/david2/l2 datafile/levels/david2/l3 datafile/levels/david2/l4
-	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Challenge 2" ../david2 12 \
-		../../datafile/levels/david2/l1 \
-		../../datafile/levels/david2/l2 \
-		../../datafile/levels/david2/l3 \
-		../../datafile/levels/david2/l4 )
+	( cd _build && tools/cremission "Challenge 2" david2 12 \
+		../datafile/levels/david2/l1 \
+		../datafile/levels/david2/l2 \
+		../datafile/levels/david2/l3 \
+		../datafile/levels/david2/l4 )
 
 #-------------------------------------------------------#
 # rules to create the tool programs                     #
