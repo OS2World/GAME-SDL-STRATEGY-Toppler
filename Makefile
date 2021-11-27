@@ -1,6 +1,6 @@
 # Tower Toppler
 #
-# Domino-Chain is the legal property of its developers, whose
+# Tower Toppler is the legal property of its developers, whose
 # names are listed in the AUTHORS file, which is included
 # within the source distribution.
 #
