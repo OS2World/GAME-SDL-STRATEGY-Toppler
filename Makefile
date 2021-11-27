@@ -95,6 +95,7 @@ DATFILES += $(SOUNDS)
 # rules to create the data files necesary for the cross #
 #-------------------------------------------------------#
 DATFILES += _build/cross.dat
+.SECONDARY: _build/cross.dat
 _build/cross.dat: _build/tools/cross _build/tools/assembler _build/tools/colorreduction datafile/cross_pov/cross.pov datafile/cross_pov/cross.ini datafile/sprites_pov/environment.pov
 	( cd _build && mkdir -p cross_pov )
 	( cd _build/cross_pov && $(POVRAY) ../../datafile/cross_pov/cross.ini +L../../datafile/cross_pov -D )
@@ -107,6 +108,7 @@ _build/cross.dat: _build/tools/cross _build/tools/assembler _build/tools/colorre
 # rules to create the data files necesary for the font #
 #------------------------------------------------------#
 DATFILES += _build/font.dat
+.SECONDARY: _build/font.dat
 _build/font.dat: _build/tools/font datafile/font.xcf _build/tools/colorreduction
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"font_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"font_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
@@ -118,6 +120,7 @@ _build/font.dat: _build/tools/font datafile/font.xcf _build/tools/colorreduction
 # rules to create the data files necesary for the graphics #
 #----------------------------------------------------------#
 DATFILES += _build/graphics.dat
+.SECONDARY: _build/graphics.dat
 _build/graphics.dat: _build/tools/graphics datafile/graphics_brick.xcf
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/graphics_brick.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"graphics_brick.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/graphics_pinacle.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"graphics_pinacle.png\" \"ttt\")(gimp-quit 1))" )
@@ -129,6 +132,7 @@ _build/graphics.dat: _build/tools/graphics datafile/graphics_brick.xcf
 DATFILES += _build/menu.dat
 MENULEVELS_DIR=datafile/levels/mission1
 MENULEVELS=$(wildcard ${MENULEVELS_DIR}/*)
+.SECONDARY: _build/menu.dat
 _build/menu.dat: _build/tools/menu _build/tools/tower2inc _build/tools/colorreduction ${MENULEVELS}
 	( cd _build && mkdir -p menu_pov )
 	( cd _build/menu_pov && ../tools/tower2inc "turm%i.inc" ../.. $(MENULEVELS) )
@@ -140,6 +144,7 @@ _build/menu.dat: _build/tools/menu _build/tools/tower2inc _build/tools/colorredu
 # rules to create the data files necesary for the scroller #
 #----------------------------------------------------------#
 DATFILES += _build/scroller.dat
+.SECONDARY: _build/scroller.dat
 _build/scroller.dat: _build/tools/scroller datafile/scroller.xcf _build/tools/colorreduction
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"scroller1_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"scroller2_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
@@ -161,6 +166,7 @@ _build/scroller.dat: _build/tools/scroller datafile/scroller.xcf _build/tools/co
 # rules to create the data files necesary for the sprites #
 #---------------------------------------------------------#
 DATFILES += _build/sprites.dat
+.SECONDARY: _build/sprites.dat
 _build/sprites.dat: _build/tools/sprites _build/tools/assembler _build/tools/colorreduction \
              datafile/sprites_pov/box/obj.pov datafile/sprites_pov/box/obj.ini \
              datafile/sprites_pov/balls/obj.pov datafile/sprites_pov/balls/obj.ini \
@@ -219,6 +225,7 @@ _build/sprites.dat: _build/tools/sprites _build/tools/assembler _build/tools/col
 # rules to create the data files necesary for the title #
 #-------------------------------------------------------#
 DATFILES += _build/titles.dat
+.SECONDARY: _build/titles.dat
 _build/titles.dat: _build/tools/titles datafile/titles.xcf _build/tools/colorreduction
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"titles_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"titles_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
@@ -230,6 +237,7 @@ _build/titles.dat: _build/tools/titles datafile/titles.xcf _build/tools/colorred
 # rules to create the data files necesary for the dude  #
 #-------------------------------------------------------#
 DATFILES += _build/dude.dat
+.SECONDARY: _build/dude.dat
 _build/dude.dat: _build/tools/dude datafile/dude.xcf _build/tools/colorreduction
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"dude_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"dude_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
@@ -244,6 +252,7 @@ _build/dude.dat: _build/tools/dude datafile/dude.xcf _build/tools/colorreduction
 # RULE FOR MISSION 1
 
 DATFILES += _build/m1.ttm
+.SECONDARY: _build/m1.ttm
 _build/m1.ttm: _build/tools/cremission \
 	datafile/levels/mission1/m1t1 datafile/levels/mission1/m1t2 datafile/levels/mission1/m1t3 datafile/levels/mission1/m1t4 datafile/levels/mission1/m1t5 datafile/levels/mission1/m1t6 datafile/levels/mission1/m1t7 datafile/levels/mission1/m1t8
 	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Mission 1" ../m1 10 \
@@ -259,6 +268,7 @@ _build/m1.ttm: _build/tools/cremission \
 # RULE FOR MISSION 2
 
 DATFILES += _build/m2.ttm
+.SECONDARY: _build/m2.ttm
 _build/m2.ttm: _build/tools/cremission \
 	datafile/levels/mission2/m2t1 datafile/levels/mission2/m2t2 datafile/levels/mission2/m2t3 datafile/levels/mission2/m2t4 datafile/levels/mission2/m2t5 datafile/levels/mission2/m2t6 datafile/levels/mission2/m2t7 datafile/levels/mission2/m2t8
 	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Mission 2" ../m2 11 \
@@ -274,6 +284,7 @@ _build/m2.ttm: _build/tools/cremission \
 # RULE FOR CLARENCE MISSION 1
 
 DATFILES += _build/ball1.ttm
+.SECONDARY: _build/ball1.ttm
 _build/ball1.ttm: _build/tools/cremission \
 	datafile/levels/ball1/lev1 datafile/levels/ball1/lev2 datafile/levels/ball1/lev3 datafile/levels/ball1/lev4 datafile/levels/ball1/lev5 datafile/levels/ball1/lev6 datafile/levels/ball1/lev7 datafile/levels/ball1/lev8
 	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Ball 1" ../ball1 13 \
@@ -289,6 +300,7 @@ _build/ball1.ttm: _build/tools/cremission \
 # RULE FOR CLARENCE MISSION 2
 
 DATFILES += _build/ball2.ttm
+.SECONDARY: _build/ball2.ttm
 _build/ball2.ttm: _build/tools/cremission \
 	datafile/levels/ball2/lev1 datafile/levels/ball2/lev2 datafile/levels/ball2/lev3 datafile/levels/ball2/lev4 datafile/levels/ball2/lev5 datafile/levels/ball2/lev6 datafile/levels/ball2/lev7 datafile/levels/ball2/lev8
 	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Ball 2" ../ball2 14 \
@@ -304,6 +316,7 @@ _build/ball2.ttm: _build/tools/cremission \
 # RULE FOR CLARENCE MISSION 3
 
 DATFILES += _build/ball3.ttm
+.SECONDARY: _build/ball3.ttm
 _build/ball3.ttm: _build/tools/cremission \
 	datafile/levels/ball3/lev1 datafile/levels/ball3/lev2 datafile/levels/ball3/lev3 datafile/levels/ball3/lev4 datafile/levels/ball3/lev5 datafile/levels/ball3/lev6 datafile/levels/ball3/lev7 datafile/levels/ball3/lev8
 	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Ball 3" ../ball3 15 \
@@ -319,6 +332,7 @@ _build/ball3.ttm: _build/tools/cremission \
 # RULE FOR PASIS MISSION 1
 
 DATFILES += _build/abc.ttm
+.SECONDARY: _build/abc.ttm
 _build/abc.ttm: _build/tools/cremission \
 	datafile/levels/kallinen1/t1 datafile/levels/kallinen1/t2 datafile/levels/kallinen1/t3 datafile/levels/kallinen1/t4 datafile/levels/kallinen1/t5 datafile/levels/kallinen1/t6 datafile/levels/kallinen1/t7 datafile/levels/kallinen1/t8
 	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "ABC Towers" ../abc 12 \
@@ -334,6 +348,7 @@ _build/abc.ttm: _build/tools/cremission \
 # RULE FOR PASIS MISSION 2
 
 DATFILES += _build/pasi2.ttm
+.SECONDARY: _build/pasi2.ttm
 _build/pasi2.ttm: _build/tools/cremission \
 	datafile/levels/kallinen2/t1 datafile/levels/kallinen2/t2
 	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Pasis 2 Towers" ../pasi2 12 \
@@ -343,6 +358,7 @@ _build/pasi2.ttm: _build/tools/cremission \
 # RULE FOR DAVIDS MISSION 1
 
 DATFILES += _build/david1.ttm
+.SECONDARY: _build/david1.ttm
 _build/david1.ttm: _build/tools/cremission \
 	datafile/levels/david1/lev1 datafile/levels/david1/lev2 datafile/levels/david1/lev3 datafile/levels/david1/lev4 datafile/levels/david1/lev5 datafile/levels/david1/lev6 datafile/levels/david1/lev7 datafile/levels/david1/lev8
 	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Challenge 1" ../david1 12 \
@@ -358,6 +374,7 @@ _build/david1.ttm: _build/tools/cremission \
 # RULE FOR DAVIDS MISSION 2
 
 DATFILES += _build/david2.ttm
+.SECONDARY: _build/david2.ttm
 _build/david2.ttm: _build/tools/cremission \
 	datafile/levels/david2/l1 datafile/levels/david2/l2 datafile/levels/david2/l3 datafile/levels/david2/l4
 	( cd _build && mkdir -p levels && cd levels && ../tools/cremission "Challenge 2" ../david2 12 \
@@ -369,54 +386,67 @@ _build/david2.ttm: _build/tools/cremission \
 #-------------------------------------------------------#
 # rules to create the tool programs                     #
 #-------------------------------------------------------#
+.SECONDARY: _build/tools/colorreduction
 _build/tools/colorreduction: datafile/colorreduction.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/assembler
 _build/tools/assembler: datafile/assembler.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/crearc
 _build/tools/crearc: datafile/crearc.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/dude
 _build/tools/dude: datafile/dude.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/titles
 _build/tools/titles: datafile/titles.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/sprites
 _build/tools/sprites: datafile/sprites.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/scroller
 _build/tools/scroller: datafile/scroller.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/font
 _build/tools/font: datafile/font.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/cross
 _build/tools/cross: datafile/cross.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/graphics
 _build/tools/graphics: datafile/graphics.c datafile/colorreduction.h datafile/pngsaver.h
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/menu
 _build/tools/menu: datafile/menu.c
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/tower2inc
 _build/tools/tower2inc: datafile/menu_pov/tower2inc.cc
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -g -Isrc -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
+.SECONDARY: _build/tools/cremission
 _build/tools/cremission: datafile/levels/cremission.cc
 	@mkdir -p $(dir $@)
 	$(CXX_NATIVE) $(CFLAGS) -g -Isrc -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
