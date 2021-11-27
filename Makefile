@@ -132,7 +132,7 @@ MENULEVELS=$(wildcard ${MENULEVELS_DIR}/*)
 _build/menu.dat: _build/tools/menu _build/tools/tower2inc _build/tools/colorreduction ${MENULEVELS}
 	( cd _build && mkdir -p menu_pov )
 	( cd _build/menu_pov && ../tools/tower2inc "turm%i.inc" ../.. $(MENULEVELS) )
-	( cd _build/menu_pov && $(POVRAY) ../../datafile/menu_pov/menu.ini +L../../datafile/menu_pov )
+	( cd _build/menu_pov && $(POVRAY) ../../datafile/menu_pov/menu.ini +L../../datafile/menu_pov -D )
 	( cd _build && ./tools/colorreduction menu_pov/menu_rgb.png 256 menu.png )
 	( cd _build && ./tools/menu )
 
