@@ -363,7 +363,7 @@ static void createMission(void) {
   if (!missionname[0])
     return;
 
-  if (!lev_mission_new(missionname)) {
+  if (!lev_mission_new(missionname, missionname)) {
 
     scr_drawedit(0, 0, false);
     scr_writetext_center(30, _("Mission creation"));

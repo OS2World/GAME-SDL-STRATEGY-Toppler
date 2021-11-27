@@ -914,6 +914,9 @@ bool lev_loadtower(const char *fname) {
 
     /* look for next section start */
     read = fgets(line, 200, in);
+
+    if (read == nullptr && feof(in)) break;
+
     assert_msg(read != nullptr, "could not read data");
     if (line[0] != '[')
       continue;
@@ -1359,11 +1362,11 @@ static FILE * fmission = NULL;
 static Uint8 nmission = 0;
 static Uint32 missionidx[256];
 
-bool lev_mission_new(char * name, Uint8 prio) {
+bool lev_mission_new(char * name, char * filname, Uint8 prio) {
   assert_msg(!fmission, "called mission_finish twice");
 
   char fname[200];
-  snprintf(fname, 200, "%s.ttm", name);
+  snprintf(fname, 200, "%s.ttm", filname);
 
   fmission = create_local_data_file(fname);
 

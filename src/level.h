@@ -274,7 +274,7 @@ lev_problem lev_is_consistent(int &row, int &col);
  * the mission mission_finish(). never use another calling order
  * or you may create corrupted mission files.
  */
-bool lev_mission_new(char * name, Uint8 prio = 255);
+bool lev_mission_new(char * name, char * filname, Uint8 prio = 255);
 void lev_mission_addtower(char * name);
 void lev_mission_finish();
 

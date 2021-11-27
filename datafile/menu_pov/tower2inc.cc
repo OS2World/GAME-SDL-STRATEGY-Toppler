@@ -9,6 +9,8 @@
 #include <archi.cc>
 #include <level.h>
 #include <level.cc>
+#include <decl.h>
+#include <decl.cc>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -90,4 +92,4 @@ int main(int argc, char **argv) {
     fclose(outf);
   }
 }
-  
+

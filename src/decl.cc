@@ -206,6 +206,10 @@ static char * acat3(const char *a, const char *b, const char *c)
 
 static char * topplername(const char *name)
 {
+#ifdef CREATOR
+    return strdup(name);
+#endif
+
 #ifndef WIN32
   return acat3(homedir(),"/.toppler/", name);
 #else
