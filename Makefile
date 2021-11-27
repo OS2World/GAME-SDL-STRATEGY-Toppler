@@ -216,8 +216,8 @@ _build/sprites.dat: _build/tools/sprites _build/tools/assembler _build/tools/col
 	( cd _build && ./tools/colorreduction sprites_balls_rgb_colors.png 256 sprites_balls_colors.png )
 	( cd _build && ./tools/colorreduction sprites_robots_mask_rgb.png 256 sprites_robots_mask.png )
 	( cd _build && ./tools/colorreduction sprites_robots_colors_rgb.png 256 sprites_robots_colors.png )
-	( mkdir -p _build/fish && ln -sf ../../datafile/fish/render _build/fish/render )
-	( mkdir -p _build/submarine && ln -sf ../../datafile/submarine/render _build/submarine/render )
+	( mkdir -p _build/fish/render && cp datafile/fish/render/* _build/fish/render )
+	( mkdir -p _build/submarine/render && cp datafile/submarine/render/* _build/submarine/render )
 	( cp datafile/sprites_torpedo_* _build )
 	( cd _build && ./tools/sprites )
 
