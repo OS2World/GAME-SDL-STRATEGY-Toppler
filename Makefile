@@ -459,6 +459,13 @@ toppler.dat: _build/tools/crearc $(DATFILES)
 	./_build/tools/crearc toppler.dat $(DATFILES) $(MISSIONS)
 
 
+.PHONY: clean
+clean:
+	rm -rf _build
+	rm toppler
+	rm toppler.dat
+
+
 .PHONY: all
 all: $(FILES_BINDIR)
 
