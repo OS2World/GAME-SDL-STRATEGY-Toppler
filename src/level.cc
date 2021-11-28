@@ -183,7 +183,7 @@ static void add_mission(const char *fname, bool archive = false) {
 
     if (mnamelength > 29) mnamelength = 29;
 
-    read = fread(mname, mnamelength, 1, f);
+    read = fread(mname, 1, mnamelength, f);
     assert_msg(read == mnamelength, "could not read data");
     mname[mnamelength] = 0;
     read = fread(&prio, 1, 1, f);
@@ -415,7 +415,7 @@ bool lev_loadmission(Uint16 num) {
     /* get enough memory and load the whole file into memory */
     mission = new unsigned char[fsize];
     fseek(in, 0, SEEK_SET);
-    size_t read = fread(mission, fsize, 1, in);
+    size_t read = fread(mission, 1, fsize, in);
     assert_msg(read == fsize, "could not read data");
 
     fclose(in);
