@@ -229,7 +229,7 @@ Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, b
 }
 
 
-static Uint16 scr_gensprites(spritecontainer *spr, int num, int w, int h, bool sprite, bool use_alpha, bool screenformat) {
+static Uint16 scr_gensprites(spritecontainer *spr, int num, int w, int h, bool sprite, bool use_alpha) {
   Uint16 erg = 0;
   SDL_Surface *z;
 
@@ -329,8 +329,8 @@ static void loadgraphics(Uint8 what) {
     battlementdata = (Uint8*)malloc(SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
     fi.read(battlementdata, SPR_BATTLFRAMES * SPR_BATTLWID * SPR_BATTLHEI);
 
-    slicestart = scr_gensprites(&restsprites, SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false, false, true);
-    battlementstart = scr_gensprites(&restsprites, SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false, false, true);
+    slicestart = scr_gensprites(&restsprites, SPR_SLICESPRITES, SPR_SLICEWID, SPR_SLICEHEI, false, false);
+    battlementstart = scr_gensprites(&restsprites, SPR_BATTLFRAMES, SPR_BATTLWID, SPR_BATTLHEI, false, false);
 
     for (t = -36; t < 37; t++) {
 
@@ -339,7 +339,7 @@ static void loadgraphics(Uint8 what) {
 
       for (int et = 0; et < 3; et++)
         if (doors[t+36].width != 0) {
-          doors[t+36].s[et] = scr_gensprites(&restsprites, 1, doors[t+36].width, 16, false, false, true);
+          doors[t+36].s[et] = scr_gensprites(&restsprites, 1, doors[t+36].width, 16, false, false);
           doors[t+36].data[et] = (Uint8*)malloc(doors[t+36].width*16);
           fi.read(doors[t+36].data[et], doors[t+36].width*16);
         } else {
@@ -423,7 +423,7 @@ static void loadgraphics(Uint8 what) {
     crossdata = (Uint8*)malloc(120*SPR_CROSSWID*SPR_CROSSHEI*2);
     fi.read(crossdata, 120*SPR_CROSSWID*SPR_CROSSHEI*2);
 
-    crossst = scr_gensprites(&objectsprites, 120, SPR_CROSSWID, SPR_CROSSHEI, true, config.use_alpha_sprites(), false);
+    crossst = scr_gensprites(&objectsprites, 120, SPR_CROSSWID, SPR_CROSSHEI, true, config.use_alpha_sprites());
   }
 }
 
