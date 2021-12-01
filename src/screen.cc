@@ -35,10 +35,10 @@
 #include <math.h>
 #include <wchar.h>
 
-static SDL_Surface *display;
-static SDL_Window *sdlWindow;
-static SDL_Renderer *sdlRenderer;
-static SDL_Texture *sdlTexture;
+static SDL_Surface *display = nullptr;
+static SDL_Window *sdlWindow = nullptr;
+static SDL_Renderer *sdlRenderer = nullptr;
+static SDL_Texture *sdlTexture = nullptr;
 
 
 static int color_ramp_radj = 3;
@@ -627,8 +627,18 @@ void scr_init(void) {
 }
 
 void scr_reinit() {
-  SDL_CreateWindowAndRenderer(SCREENWID, SCREENHEI, 0, &sdlWindow, &sdlRenderer);
+  if (display)
+  {
+    SDL_DestroyTexture(sdlTexture);
+    SDL_DestroyRenderer(sdlRenderer);
+    SDL_DestroyWindow(sdlWindow);
+    SDL_FreeSurface(display);
+  }
+
+
+  SDL_CreateWindowAndRenderer(SCREENWID, SCREENHEI, config.fullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0, &sdlWindow, &sdlRenderer);
   SDL_SetWindowTitle(sdlWindow, "Nebulous");
+  SDL_SetWindowResizable(sdlWindow, SDL_TRUE);
   SDL_RenderSetLogicalSize(sdlRenderer, SCREENWID, SCREENHEI);
 
   sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREENWID, SCREENHEI);
