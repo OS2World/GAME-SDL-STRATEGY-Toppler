@@ -626,7 +626,8 @@ void scr_init(void) {
 
 }
 
-void scr_reinit() {
+static void doneWindow()
+{
   if (display)
   {
     SDL_DestroyTexture(sdlTexture);
@@ -634,7 +635,11 @@ void scr_reinit() {
     SDL_DestroyWindow(sdlWindow);
     SDL_FreeSurface(display);
   }
+}
 
+void scr_reinit() {
+
+  doneWindow();
 
   SDL_CreateWindowAndRenderer(SCREENWID, SCREENHEI, config.fullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0, &sdlWindow, &sdlRenderer);
   SDL_SetWindowTitle(sdlWindow, "Nebulous");
@@ -649,6 +654,8 @@ void scr_reinit() {
 void scr_done(void) {
   free_memory(0xff);
   sts_done();
+
+  doneWindow();
 }
 
 static void cleardesk(long height) {
