@@ -51,15 +51,15 @@ default: all
 VERSION := $(shell cat src/version)
 ALL_SOURCES := $(wildcard src/*)
 
-PKGS += SDL_mixer
+PKGS += SDL2_mixer
 PKGS += libpng
-PKGS += sdl
+PKGS += sdl2
 PKGS += zlib
 
 PKGS_NATIVE += zlib
-PKGS_NATIVE += sdl
+PKGS_NATIVE += sdl2
 PKGS_NATIVE += libpng
-PKGS_NATIVE += SDL_image
+PKGS_NATIVE += SDL2_image
 
 PKG_CFLAGS_NATIVE = $$($(PKG_CONFIG_NATIVE) --cflags $(PKGS_NATIVE))
 PKG_LIBS_NATIVE = $$($(PKG_CONFIG_NATIVE) --libs $(PKGS_NATIVE))

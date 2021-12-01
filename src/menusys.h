@@ -57,7 +57,7 @@ typedef struct {
    menuopt_callback_proc oproc;  /* callback proc, supplies actions and the name */
    int  ostate;                  /* callback proc can use this */
    menuoptflags  oflags;         /* MOF_foo */
-   SDLKey quickkey;              /* quick jump key; if user presses this key,
+   SDL_Keycode quickkey;              /* quick jump key; if user presses this key,
                                   * this menu option is hilited.
                                   */
 } _menuoption;
@@ -84,7 +84,7 @@ typedef struct _menusystem {
                                   * keys passed to it, and normal key/mouse
                                   * processing doesn't happen.
                                   */
-   SDLKey key;                   /* the key that was last pressed */
+   SDL_Keycode key;                   /* the key that was last pressed */
 
    struct _menusystem * parent;  /* the current parrent, or NULL */
 
@@ -119,7 +119,7 @@ _menusystem *new_menu_system(const char *title, menuopt_callback_proc pr,
 
 /* add an option to the menu */
 _menusystem *add_menu_option(_menusystem *ms, const char *name, menuopt_callback_proc pr,
-                                    SDLKey quickkey = SDLK_UNKNOWN, menuoptflags flags = MOF_NONE, int state = 0);
+                                    SDL_Keycode quickkey = SDLK_UNKNOWN, menuoptflags flags = MOF_NONE, int state = 0);
 
 /* displays the given menu on screen and lets the user interact with it*/
 _menusystem *run_menu_system(_menusystem *ms, _menusystem *parent);

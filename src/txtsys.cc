@@ -84,7 +84,7 @@ void textsystem::addline(char *line)
 void textsystem::run()
 {
   bool ende = false;
-  SDLKey key = SDLK_UNKNOWN;
+  SDL_Keycode key = SDLK_UNKNOWN;
 
   do {
     (void)key_readkey();

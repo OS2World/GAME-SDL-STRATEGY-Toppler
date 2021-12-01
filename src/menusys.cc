@@ -63,7 +63,7 @@ _menusystem *
 add_menu_option(_menusystem *ms,
                 const char *name,
                 menuopt_callback_proc pr,
-                SDLKey quickkey,
+                SDL_Keycode quickkey,
                 menuoptflags flags,
                 int state) {
   _menuoption *tmp;
@@ -446,7 +446,7 @@ draw_input_box(int x, int y, int len, int cursor, char *txt)
 }
 
 bool men_input(char *origs, int max_len, int xpos, int ypos, const char *allowed) {
-  SDLKey sdlinp;
+  SDL_Keycode sdlinp;
   char inpc;
   ttkey inptt;
   static int pos = strlen(origs);

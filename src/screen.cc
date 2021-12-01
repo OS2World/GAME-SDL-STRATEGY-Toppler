@@ -36,6 +36,10 @@
 #include <wchar.h>
 
 static SDL_Surface *display;
+static SDL_Window *sdlWindow;
+static SDL_Renderer *sdlRenderer;
+static SDL_Texture *sdlTexture;
+
 
 static int color_ramp_radj = 3;
 static int color_ramp_gadj = 5;
@@ -180,11 +184,10 @@ Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, b
   Uint32 pixel;
 
   for (int t = 0; t < num; t++) {
-    z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite) ? SDL_SRCALPHA : 0,
-                             w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite & use_alpha) ? 0xFF000000 : 0);
+    z = SDL_CreateRGBSurface(0, w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 
     if (sprite & !use_alpha)
-      SDL_SetColorKey(z, SDL_SRCCOLORKEY | SDL_RLEACCEL, SDL_MapRGB(z->format, 1, 1, 1));
+      SDL_SetColorKey(z, SDL_RLEACCEL, SDL_MapRGB(z->format, 1, 1, 1));
 
     for (int y = 0; y < h; y++)
       for (int x = 0; x < w; x++) {
@@ -216,10 +219,6 @@ Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, b
         putpixel(z,x,y,pixel);
       }
 
-    SDL_Surface * z2 = SDL_DisplayFormatAlpha(z);
-    SDL_FreeSurface(z);
-    z = z2;
-
     if (t == 0)
       erg = spr->save(z);
     else
@@ -235,19 +234,12 @@ static Uint16 scr_gensprites(spritecontainer *spr, int num, int w, int h, bool s
   SDL_Surface *z;
 
   for (int t = 0; t < num; t++) {
-    z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite && use_alpha) ? SDL_SRCALPHA : 0,
-                             w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite && use_alpha) ? 0xFF000000 : 0);
+    z = SDL_CreateRGBSurface(0, w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 
     if (sprite & !use_alpha)
       /* SDL_RLEACCEL is not allowed here, because we need to edit the data later
        on for the new colors */
-      SDL_SetColorKey(z, SDL_SRCCOLORKEY, SDL_MapRGB(z->format, 1, 1, 1));
-
-    if (screenformat) {
-      SDL_Surface * z2 = SDL_DisplayFormat(z);
-      SDL_FreeSurface(z);
-      z = z2;
-    }
+      SDL_SetColorKey(z, 0, SDL_MapRGBA(z->format, 1, 1, 1, 0));
 
     if (t == 0)
       erg = spr->save(z);
@@ -265,13 +257,7 @@ static void scr_regensprites(Uint8 *data, SDL_Surface * const target, int num, i
   Uint32 pixel;
 
   if (screenformat) {
-    z = SDL_CreateRGBSurface(SDL_SWSURFACE | (sprite && use_alpha) ? SDL_SRCALPHA : 0,
-                             w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, (sprite && use_alpha) ? 0xFF000000 : 0);
-
-    if (sprite & !use_alpha)
-      /* SDL_RLEACCEL is not allowed here, because we need to edit the data later
-       on for the new colors */
-      SDL_SetColorKey(z, SDL_SRCCOLORKEY, SDL_MapRGB(z->format, 1, 1, 1));
+    z = SDL_CreateRGBSurface(0, w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
   } else
     z = target;
 
@@ -348,7 +334,7 @@ static void loadgraphics(Uint8 what) {
 
     for (t = -36; t < 37; t++) {
 
-      doors[t+36].xstart = fi.getword();
+      doors[t+36].xstart = (Sint16)fi.getword();
       doors[t+36].width = fi.getword();
 
       for (int et = 0; et < 3; et++)
@@ -641,8 +627,13 @@ void scr_init(void) {
 }
 
 void scr_reinit() {
-  display = SDL_SetVideoMode(SCREENWID, SCREENHEI, 16, (config.fullscreen()) ? (SDL_FULLSCREEN) : (0));
-  assert_msg(display, "could not open display");
+  SDL_CreateWindowAndRenderer(SCREENWID, SCREENHEI, 0, &sdlWindow, &sdlRenderer);
+  SDL_SetWindowTitle(sdlWindow, "Nebulous");
+  SDL_RenderSetLogicalSize(sdlRenderer, SCREENWID, SCREENHEI);
+
+  sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREENWID, SCREENHEI);
+
+  display = SDL_CreateRGBSurface(0, SCREENWID, SCREENHEI, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 }
 
 void scr_done(void) {
@@ -903,10 +894,9 @@ void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb,
 
   if (alpha != 255) {
 
-    SDL_Surface *s = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, br, h, 16,
+    SDL_Surface *s = SDL_CreateRGBSurface(0, br, h, 32,
                                           display->format->Rmask, display->format->Gmask,
-                                          display->format->Bmask, 0);
-    SDL_SetAlpha(s, SDL_SRCALPHA, alpha);
+                                          display->format->Bmask, display->format->Amask);
 
     SDL_Rect r;
     r.w = br;
@@ -914,7 +904,7 @@ void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb,
     r.x = 0;
     r.y = 0;
 
-    SDL_FillRect(s, &r, SDL_MapRGB(display->format, colr, colg, colb));
+    SDL_FillRect(s, &r, SDL_MapRGBA(s->format, colr, colg, colb, alpha));
 
     scr_blit(s, x, y);
 
@@ -927,7 +917,7 @@ void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb,
     r.h = h;
     r.x = x;
     r.y = y;
-    SDL_FillRect(display, &r, SDL_MapRGBA(display->format, colr, colg, colb, alpha));
+    SDL_FillRect(display, &r, SDL_MapRGBA(display->format, colr, colg, colb, 255));
   }
 }
 
@@ -942,12 +932,18 @@ scr_putrect(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 colb, Uin
 
 /* exchange active and inactive page */
 void scr_swap(void) {
-  if (!tt_has_focus) {
+  if (!tt_has_focus)
+  {
       scr_darkenscreen();
-      SDL_UpdateRect(display, 0, 0, 0, 0);
+      SDL_UpdateTexture(sdlTexture, NULL, display->pixels, display->pitch);
+      SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+      SDL_RenderPresent(sdlRenderer);
       wait_for_focus();
   }
-  SDL_UpdateRect(display, 0, 0, 0, 0);
+
+  SDL_UpdateTexture(sdlTexture, NULL, display->pixels, display->pitch);
+  SDL_RenderCopy(sdlRenderer, sdlTexture, NULL, NULL);
+  SDL_RenderPresent(sdlRenderer);
 }
 
 void scr_setclipping(int x, int y, int w, int h) {
@@ -1111,21 +1107,8 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
     scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
     break;
   case TB_STEP_VANISHER:
-    if (config.use_alpha_sprites()) {
-      SDL_Surface *s = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_SRCALPHA, SPR_STEPWID, SPR_STEPHEI, 24, 0xff, 0xff00, 0xff0000, 0);
-      SDL_Rect r;
-      r.w = SPR_STEPWID;
-      r.h = SPR_STEPHEI;
-      r.x = 0;
-      r.y = 0;
-      SDL_BlitSurface(restsprites.data(((angle % SPR_STEPFRAMES) + step)), NULL, s, &r);
-      SDL_SetAlpha(s, SDL_SRCALPHA, 96);
-      scr_blit(s, x - (SPR_STEPWID / 2), h);
-      SDL_FreeSurface(s);
-    } else {
-      if (state & 1)
-        scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
-    }
+    if (state & 1)
+      scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
     break;
   case TB_STEP_LSLIDER:
     scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) + state % 4, h);

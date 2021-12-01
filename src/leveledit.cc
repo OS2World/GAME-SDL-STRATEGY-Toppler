@@ -91,7 +91,7 @@ typedef enum {
 
 struct _ed_key {
    key_actions action;
-   SDLKey key;
+   SDL_Keycode key;
    char   character = '\0';
    Uint16 mod = 0; /* KMOD_NONE|KMOD_SHIFT|KMOD_CTRL|KMOD_ALT */
 };
@@ -211,7 +211,7 @@ static bool edit_towercolor(int row, int col) {
   char cbuf[32];
   int tmpcol, z, tmp;
   int oldc[3], newc[3], curc[3];
-  SDLKey c;
+  SDL_Keycode c;
 
   const char *colorname[] = {_("Red"), _("Green"), _("Blue")};
 
@@ -488,7 +488,7 @@ void le_edit(void) {
 
   bool ende = false;
   bool changed = false;
-  SDLKey inp = SDLK_UNKNOWN;
+  SDL_Keycode inp = SDLK_UNKNOWN;
   char inp_char;
   Uint16 keymod;
   int row = 0, col = 0;
@@ -550,7 +550,6 @@ void le_edit(void) {
     if (keymod & KMOD_SHIFT) keymod |= KMOD_SHIFT;
     if (keymod & KMOD_CTRL) keymod |= KMOD_CTRL;
     if (keymod & KMOD_ALT) keymod |= KMOD_ALT;
-    if (keymod & KMOD_META) keymod |= KMOD_META;
 
 
     int k, action = -1;
