@@ -25,9 +25,9 @@
 #include "configuration.h"
 #include "highscore.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <time.h>
-#include <string.h>
+#include <cstring>
 #include <unistd.h>
 
 #include <stdexcept>

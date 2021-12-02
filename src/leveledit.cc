@@ -30,8 +30,8 @@
 #include "txtsys.h"
 #include "configuration.h"
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 /* Editor key actions.
  If you add here, change _ed_key_actions[] in leveledit.cc */

@@ -21,8 +21,8 @@
 
 #include <SDL.h>
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>

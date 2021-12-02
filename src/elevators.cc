@@ -22,7 +22,7 @@
 #include "decl.h"
 #include "toppler.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #define MAX_ELE 10
 

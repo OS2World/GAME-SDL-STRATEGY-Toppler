@@ -31,8 +31,8 @@
 #include "snowball.h"
 #include "sound.h"
 
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 
 typedef enum {
   STATE_PLAYING,

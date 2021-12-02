@@ -24,7 +24,7 @@
 #include "toppler.h"
 #include "sound.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 #define MAX_OBJECTS 4
 

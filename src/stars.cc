@@ -22,8 +22,9 @@
 #include "sprites.h"
 #include "screen.h"
 
-#include "SDL.h"
-#include "stdlib.h"
+#include <SDL.h>
+
+#include <cstdlib>
 
 #define starstep 5
 

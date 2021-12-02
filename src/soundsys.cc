@@ -20,8 +20,8 @@
 #include "soundsys.h"
 #include "archi.h"
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 
 ttsounds::ttsounds(void)
 {

@@ -20,8 +20,8 @@
 
 #include "decl.h"
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 spritecontainer::~spritecontainer(void) {
   freedata();

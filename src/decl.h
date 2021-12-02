@@ -19,10 +19,8 @@
 #ifndef DECL_H
 #define DECL_H
 
-//#include <config.h>
-
-#include <stdio.h>
-#include <stdarg.h>
+#include <cstdio>
+#include <cstdarg>
 #include <dirent.h>
 
 #if ENABLE_NLS == 1

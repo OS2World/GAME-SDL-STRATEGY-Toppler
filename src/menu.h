@@ -21,10 +21,10 @@
 
 #include "decl.h"
 
+#include "menusys.h"
+
 #include <SDL_types.h>
 #include <SDL_keyboard.h>
-
-#include "menusys.h"
 
 /* load graphics */
 void men_init(void);

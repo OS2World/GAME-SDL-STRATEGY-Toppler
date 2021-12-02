@@ -17,9 +17,11 @@
  */
 
 #include "configuration.h"
-#include <string.h>
-#include <stdlib.h>
+
 #include "keyb.h"
+
+#include <cstring>
+#include <cstdlib>
 
 static bool
 str2bool(char *s) {

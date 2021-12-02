@@ -21,7 +21,7 @@
 
 #include "decl.h"
 
-#include <stdio.h>
+#include <cstdio>
 
 #define TOWERNAMELEN 19
 #define PASSWORD_LEN 5

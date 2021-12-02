@@ -27,8 +27,8 @@
 #endif
 
 #include "decl.h"
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include <unistd.h>
 
 #define TOWERWID 16

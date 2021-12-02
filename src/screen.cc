@@ -30,9 +30,9 @@
 #include "keyb.h"
 #include "configuration.h"
 
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
+#include <cstring>
+#include <cstdlib>
+#include <cmath>
 #include <wchar.h>
 
 static SDL_Surface *display = nullptr;

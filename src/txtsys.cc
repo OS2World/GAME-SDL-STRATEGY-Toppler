@@ -17,11 +17,13 @@
  */
 
 #include "txtsys.h"
+
 #include "screen.h"
 #include "keyb.h"
 #include "menu.h"
-#include <stdlib.h>
-#include <string.h>
+
+#include <cstdlib>
+#include <cstring>
 
 textsystem::textsystem(char *title, menuopt_callback_proc pr)
 {
