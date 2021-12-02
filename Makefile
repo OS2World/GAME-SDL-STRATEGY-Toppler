@@ -29,7 +29,7 @@ CROSS =
 CONVERT = convert
 CXX = $(CROSS)$(CXX_NATIVE)
 CXX_NATIVE = g++
-CXXFLAGS = -Wall -Wextra -g -O2 -std=c++17
+CXXFLAGS = -Wall -Wextra -g -O2 -std=c++20
 EXEEXT = $(if $(filter %-w64-mingw32.static-,$(CROSS)),.exe,)
 INSTALL = install
 LDFLAGS =

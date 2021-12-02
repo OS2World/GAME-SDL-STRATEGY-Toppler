@@ -153,14 +153,14 @@ char conv_towercode2char(Uint8 code) {
 }
 
 
-static void add_mission(const char *fname, bool archive = false) {
+static void add_mission(std::string fname, bool archive = false) {
 
   char mname[30];
   Uint8 prio;
 
   if (archive) {
 
-    file f(dataarchive, fname);
+    auto f = dataarchive->open(fname);
 
     unsigned char mnamelength;
     f.read(&mnamelength, 1);
@@ -173,7 +173,7 @@ static void add_mission(const char *fname, bool archive = false) {
 
   } else {
 
-    FILE * f = fopen(fname, "rb");
+    FILE * f = fopen(fname.c_str(), "rb");
 
     if (!f) return;
 
@@ -217,7 +217,7 @@ static void add_mission(const char *fname, bool archive = false) {
     if (m->prio > prio) {
       mission_node * n = new mission_node;
       strcpy(n->name, mname);
-      strcpy(n->fname, fname);
+      strcpy(n->fname, fname.c_str());
       n->prio = prio;
       n->next = m;
       n->archive = archive;
@@ -236,7 +236,7 @@ static void add_mission(const char *fname, bool archive = false) {
   /* insert at the end */
   m = new mission_node;
   strcpy(m->name, mname);
-  strcpy(m->fname, fname);
+  strcpy(m->fname, fname.c_str());
   m->prio = prio;
   m->next = NULL;
   m->archive = archive;
@@ -267,15 +267,9 @@ void lev_findmissions() {
 
   /* first check inside the archive */
 
-  for (int fn = 0; fn < dataarchive->fileNumber(); fn++) {
-    const char * n = dataarchive->fname(fn);
-
-    int len = strlen(n);
-
-    if ((len > 4) && (n[len - 1] == 'm') && (n[len - 2] == 't') &&
-        (n[len - 3] == 't') && (n[len - 4] == '.'))
-      add_mission(n, true);
-  }
+  for (auto f : dataarchive->filelist())
+      if (f.name.ends_with(".ttm"))
+          add_mission(f.name, true);
 
 #ifdef WIN32
   {
@@ -398,7 +392,7 @@ bool lev_loadmission(Uint16 num) {
 
   if (m->archive) {
 
-    file f(dataarchive, m->fname);
+    auto f = dataarchive->open(m->fname);
     Uint32 fsize = f.size();
 
     mission = new unsigned char[fsize];

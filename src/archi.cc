@@ -18,166 +18,126 @@
 
 #include "archi.h"
 #include "decl.h"
+
 #include <zlib.h>
-#include <string.h>
-#include <stdlib.h>
 
-/* this value is used as a sanity check for filnename lengths
- */
-#define FNAMELEN 250
+#include <bit>
 
-archive::archive(FILE *stream) : f(stream) {
+static uint32_t byteswap(uint32_t v)
+{
+    return (v >> 24) | (v << 24) | ((v >> 8) & 0xff00) | ((v << 8) & 0xff0000);
+}
 
-  size_t read = 0;
+archive::archive(FILE *stream) : f(stream)
+{
+    size_t read = 0;
 
-  assert_msg(f, "Data file not found");
+    assert_msg(f, "Data file not found");
 
-  /* find out the number of files inside the archive
-   * alloce the neccessary memory
-   */
-  read = fread(&filecount, 1, 1, f);
-  assert_msg(read == 1, "failed to read data");
-  files = new fileindex[filecount];
-  assert_msg(files, "Failed to alloc memory for archive index.");
+    uint8_t filecount;
 
-  /* read the information for each file */
-  for (Uint8 file = 0; file < filecount; file++) {
+    /* find out the number of files inside the archive
+     * alloce the neccessary memory
+     */
+    read = fread(&filecount, 1, 1, f);
+    assert_msg(read == 1, "failed to read data");
+    files.resize(filecount);
 
-    Uint8 strlen = 0;
-
-    /* find ut the length of the name string */
+    /* read the information for each file */
+    for (auto & file : files)
     {
-      char c;
-      long currentpos = ftell(f);
+        while (true)
+        {
+            char c;
+            read = fread(&c, 1, 1, f);
+            assert_msg(read == 1, "failed to read data");
 
-      do {
-        strlen++;
-        assert_msg(strlen <= FNAMELEN, "Filename too long, datafile corrupt?");
-        read = fread(&c, 1, 1, f);
+            if (!c) break;
+
+            file.name += c;
+        }
+
         assert_msg(read == 1, "failed to read data");
-      } while (c);
 
-      fseek(f, currentpos, SEEK_SET);
+        /* load start from archive */
+        read = fread(&file.start, 1, 4, f);
+        assert_msg(read == 4, "failed to read data");
+
+        read = fread(&file.size, 1, 4, f);
+        assert_msg(read == 4, "failed to read data");
+
+        read = fread(&file.compress, 1, 4, f);
+        assert_msg(read == 4, "failed to read data");
+
+        if constexpr (std::endian::native == std::endian::big)
+        {
+            file.start = byteswap(file.start);
+            file.size = byteswap(file.size);
+            file.compress = byteswap(file.compress);
+        }
     }
+}
 
-    /* alloc memory for string and read it */
-    files[file].name = new char[strlen];
-    for (int pos = 0; pos < strlen; pos++)
+archive::~archive()
+{
+    fclose(f);
+}
+
+archive::file archive::open(std::string_view name)
+{
+    for (auto & ff : files)
     {
-      read = fread(&files[file].name[pos], 1, 1, f);
-      assert_msg(read == 1, "failed to read data");
+        if (ff.name == name)
+        {
+            /* allocate buffer for compressed data */
+            auto b = std::make_unique<Uint8[]>(ff.compress);
+
+            /* allocate buffer for uncompressed data */
+            auto buffer = std::make_unique<Uint8[]>(ff.size);
+
+
+            /* read the compressed data */
+            fseek(f, ff.start, SEEK_SET);
+            size_t read = fread(b.get(), 1, ff.compress, f);
+            assert_msg(read == ff.compress, "failed to read data");
+
+            /* decompress it and check results */
+            uLongf fsize = ff.size;
+            assert_msg(uncompress(buffer.get(), &fsize, b.get(), ff.compress) == Z_OK, "Decompression problem, data file corrupt?");
+            assert_msg(fsize == ff.size, "Data file corrupt.");
+
+            return file(std::move(buffer), ff.size);
+        }
     }
 
-    Uint8 tmp;
-
-    /* load start from archive */
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].start = ((Uint32)(tmp)) << 0;
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].start |= ((Uint32)(tmp)) << 8;
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].start |= ((Uint32)(tmp)) << 16;
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].start |= ((Uint32)(tmp)) << 24;
-
-    /* load filesize from archive */
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].size = ((Uint32)(tmp)) << 0;
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].size |= ((Uint32)(tmp)) << 8;
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].size |= ((Uint32)(tmp)) << 16;
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].size |= ((Uint32)(tmp)) << 24;
-
-    /* load compressed size from archive */
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].compress = ((Uint32)(tmp)) << 0;
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].compress |= ((Uint32)(tmp)) << 8;
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].compress |= ((Uint32)(tmp)) << 16;
-    read = fread(&tmp, 1, 1, f);
-    assert_msg(read == 1, "failed to read data");
-    files[file].compress |= ((Uint32)(tmp)) << 24;
-  }
+    /* if we arrive here we couldn't find the file we looked for */
+    assert_msg(0, "File not found in archive!");
 }
 
-archive::~archive() {
+Uint32 archive::file::read(void *buf, Uint32 size)
+{
+    if (bufferpos + size > fsize)
+        size = fsize - bufferpos;
 
-  /* free memory allocated for filenames */
-  for (int i = 0; i < filecount; i++)
-    delete [] files[i].name;
+    memcpy(buf, &buffer[bufferpos], size);
+    bufferpos += size;
 
-  /* free the file header array */
-  delete [] files;
-
-  fclose(f);
+    return size;
 }
 
-file::file(const archive *arc, const char *name) : bufferpos(0) {
+Uint16 archive::file::getword(void)
+{
+    if (bufferpos + 2 >= fsize)
+        return 0;
 
-  for (Uint8 i = 0; i < arc->filecount; i++) {
-    if (strncmp(name, arc->files[i].name, FNAMELEN) == 0) {
+    Uint16 w = (Uint16)buffer[bufferpos] + ((Uint16)buffer[bufferpos+1] << 8);
+    bufferpos+=2;
 
-      /* allocate buffer for compressed data */
-      Uint8 *b = new Uint8[arc->files[i].compress];
-
-      /* allocate buffer for uncompressed data */
-      fsize = arc->files[i].size;
-      buffer = new Uint8[fsize];
-
-      /* read the compressed data */
-      fseek(arc->f, arc->files[i].start, SEEK_SET);
-      size_t read = fread(b, arc->files[i].compress, 1, arc->f);
-      assert_msg(read == 1, "failed to read data");
-
-      /* decompress it and check results */
-      assert_msg(uncompress(buffer, &fsize, b, arc->files[i].compress) == Z_OK, "Decompression problem, data file corrupt?");
-      assert_msg(fsize == arc->files[i].size, "Data file corrupt.");
-
-      /* free temporary buffer */
-      delete [] b;
-
-      return;
-    }
-  }
-
-  /* if we arrive here we couldn't find the file we looked for */
-  assert_msg(0, "File not found in archive!");
+    return w;
 }
 
-file::~file() { delete [] buffer; }
-
-Uint32 file::read(void *buf, Uint32 size) {
-  memcpy(buf, &buffer[bufferpos], size);
-  bufferpos += size;
-  return size;
-}
-
-Uint8 file::getbyte(void) {
-  return buffer[bufferpos++];
-}
-
-Uint16 file::getword(void) {
-  Uint16 w = (Uint16)buffer[bufferpos] + ((Uint16)buffer[bufferpos+1] << 8);
-  bufferpos+=2;
-  return w;
-}
-
-SDL_RWops *file::rwOps(void) {
-  return SDL_RWFromMem(buffer, fsize);
+SDL_RWops * archive::file::rwOps(void) {
+    return SDL_RWFromMem(buffer.get(), fsize);
 }
 
 

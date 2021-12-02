@@ -177,7 +177,7 @@ void putpixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
 
 
 
-Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha) {
+Uint16 scr_loadsprites(spritecontainer *spr, archive::file * fi, int num, int w, int h, bool sprite, const Uint8 *pal, bool use_alpha) {
   Uint16 erg = 0;
   Uint8 b, a;
   SDL_Surface *z;
@@ -303,7 +303,7 @@ static void scr_regensprites(Uint8 *data, SDL_Surface * const target, int num, i
   }
 }
 
-void scr_read_palette(file * fi, Uint8 *pal) {
+void scr_read_palette(archive::file * fi, Uint8 *pal) {
   Uint8 b;
   b = fi->getbyte();
 
@@ -319,7 +319,7 @@ static void loadgraphics(Uint8 what) {
 
   if (what == 0xff) {
 
-    file fi(dataarchive, grafdat);
+    auto fi = dataarchive->open(grafdat);
 
     fi.read(towerpal, 2*256);
 
@@ -365,7 +365,7 @@ static void loadgraphics(Uint8 what) {
   }
 
   {
-    file fi(dataarchive, topplerdat);
+    auto fi = dataarchive->open(topplerdat);
 
     scr_read_palette(&fi, pal);
 
@@ -373,7 +373,7 @@ static void loadgraphics(Uint8 what) {
   }
 
   {
-    file fi(dataarchive, spritedat);
+    auto fi = dataarchive->open(spritedat);
 
     scr_read_palette(&fi, pal);
 
@@ -410,7 +410,7 @@ static void loadgraphics(Uint8 what) {
   }
 
   {
-    file fi(dataarchive, crossdat);
+    auto fi = dataarchive->open(crossdat);
 
     Uint8 numcol = fi.getbyte();
 
@@ -509,7 +509,7 @@ static void loadfont(void) {
   Uint16 c;
   int fontheight;
 
-  file fi(dataarchive, fontdat);
+  auto fi = dataarchive->open(fontdat);
 
   scr_read_palette(&fi, pal);
 
@@ -527,7 +527,7 @@ static void loadfont(void) {
 
 static void loadscroller(void) {
 
-  file fi(dataarchive, scrollerdat);
+  auto fi = dataarchive->open(scrollerdat);
 
   Uint8 layers;
   Uint8 towerpos;

@@ -73,7 +73,7 @@ void ttsounds::addsound(const char *fname, int id, int vol, int loops)
     sounds = tmp;
   }
 
-  file f(dataarchive, fname);
+  auto f = dataarchive->open(fname);
 
   sounds[add_pos].sound = Mix_LoadWAV_RW(f.rwOps(), 1);
 

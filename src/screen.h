@@ -61,8 +61,8 @@ void scr_done(void);
 
 /* loads a number of sprites, enters them into the sprite collection
  and returns the index of the first sprite */
-void scr_read_palette(file * fi, Uint8 *pal);
-Uint16 scr_loadsprites(spritecontainer *spr, file * fi, int num, int w, int h, bool sprite, const Uint8 *pal, bool usealpha);
+void scr_read_palette(archive::file * fi, Uint8 *pal);
+Uint16 scr_loadsprites(spritecontainer *spr, archive::file * fi, int num, int w, int h, bool sprite, const Uint8 *pal, bool usealpha);
 
 
 /* changes the colors of the slices, doors and battlement
