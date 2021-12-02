@@ -187,7 +187,7 @@ Uint16 scr_loadsprites(spritecontainer *spr, archive::file * fi, int num, int w,
     z = SDL_CreateRGBSurface(0, w, h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 
     if (sprite & !use_alpha)
-      SDL_SetColorKey(z, SDL_RLEACCEL, SDL_MapRGB(z->format, 1, 1, 1));
+      SDL_SetColorKey(z, SDL_TRUE, SDL_MapRGB(z->format, 1, 1, 1));
 
     for (int y = 0; y < h; y++)
       for (int x = 0; x < w; x++) {
@@ -202,7 +202,7 @@ Uint16 scr_loadsprites(spritecontainer *spr, archive::file * fi, int num, int w,
               pixel=SDL_MapRGB(z->format,1,1,1);
             else
             {
-              if (((pal[b*3+2] == 1) && (pal[b*3+1] == 1)) || (pal[b*3] == 1))
+              if ((pal[b*3+2] == 1) && (pal[b*3+1] == 1) && (pal[b*3] == 1))
                 pixel=SDL_MapRGB(z->format,pal[b*3 + 0],pal[b*3 + 1],pal[b*3 + 2]+1);
               else
                 /* ok, this is the case where we have a sprite and don't want
@@ -239,7 +239,7 @@ static Uint16 scr_gensprites(spritecontainer *spr, int num, int w, int h, bool s
     if (sprite & !use_alpha)
       /* SDL_RLEACCEL is not allowed here, because we need to edit the data later
        on for the new colors */
-      SDL_SetColorKey(z, 0, SDL_MapRGBA(z->format, 1, 1, 1, 0));
+      SDL_SetColorKey(z, SDL_TRUE, SDL_MapRGBA(z->format, 1, 1, 1, 0));
 
     if (t == 0)
       erg = spr->save(z);
