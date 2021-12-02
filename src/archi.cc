@@ -141,4 +141,4 @@ SDL_RWops * archive::file::rwOps(void) {
 }
 
 
-archive * dataarchive;
+std::unique_ptr<archive> dataarchive;

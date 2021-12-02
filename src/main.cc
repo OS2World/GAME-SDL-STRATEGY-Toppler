@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
   // to the right spot without a lot of jiggery pokery.
   // - jasonk@toast442.org
 
-  dataarchive = new archive(open_data_file("toppler.dat"));
+  dataarchive = std::make_unique<archive>(open_data_file("toppler.dat"));
 
 #if ENABLE_NLS == 1
   setlocale(LC_MESSAGES, "");

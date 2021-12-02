@@ -132,6 +132,6 @@ class archive {
  * class definition and this global variable at the same time, it's not so wrong
  * either
  */
-extern archive * dataarchive;
+extern std::unique_ptr<archive> dataarchive;
 
 #endif
