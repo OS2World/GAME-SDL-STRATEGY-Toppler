@@ -24,11 +24,11 @@
 
 /* returns true, if the game can go on, false on user break
  */
-bool bns_game(void);
+bool bns_game();
 
 /* needs to be called bevore every new game, to (re)initialize the
  * datastructures
  */
-void bns_restart(void);
+void bns_restart();
 
 #endif

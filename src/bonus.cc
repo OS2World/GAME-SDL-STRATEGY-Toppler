@@ -87,26 +87,26 @@ static void show() {
 }
 
 /* callback proc for menu drawing the current state and dim that picture */
-static void bonus_background_proc(void) {
+static void bonus_background_proc() {
   show();
   scr_darkenscreen();
 }
 
-static bool escape(void) {
+static bool escape() {
 
   set_men_bgproc(bonus_background_proc);
   return men_game();
 }
 
-static void pause(void) {
+static void pause() {
 
   set_men_bgproc(bonus_background_proc);
   men_info(_("Pause"), -1, 1);
 }
 
-void bns_restart(void) { xpos = 0; }
+void bns_restart() { xpos = 0; }
 
-bool bns_game(void) {
+bool bns_game() {
 
   /* game local x position, moved since the start of
    * this bonus game
