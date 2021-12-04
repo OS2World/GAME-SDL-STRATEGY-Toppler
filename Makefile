@@ -444,12 +444,12 @@ _build/tools/menu: datafile/menu.c
 .SECONDARY: _build/tools/tower2inc
 _build/tools/tower2inc: datafile/menu_pov/tower2inc.cc
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -g -Isrc -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -g -Isrc -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/cremission
 _build/tools/cremission: datafile/levels/cremission.cc
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -g -Isrc -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -g -Isrc -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 #---------------------------------------------------------------------------------------#
 # global make, this creates the final data file packing all things togethers using zlib #
