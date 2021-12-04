@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
   FILE *outf;
 
   if (argc < 4) {
-    fprintf(stderr, "Usage: %s outfileformat path towerfile [towerfile ...]\n");
+    fprintf(stderr, "Usage: outfileformat path towerfile [towerfile ...]\n");
     return 1;
   }
 
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
       } else fprintf(outf,"  layer()\n");
 
       for (x = 0; x < 16; x++) {
-        char *txt = NULL;
+        const char *txt = NULL;
         Uint8 block = lev_set_tower(y, x, 0);
         (void)lev_set_tower(y, x, block);
         switch (block) {
