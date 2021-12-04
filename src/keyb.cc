@@ -28,7 +28,7 @@ static Uint16 mouse_x, mouse_y;
 static bool mouse_moved;
 static Uint16 mouse_button;
 static int joy_inited = 0;
-SDL_Joystick *joy;
+static SDL_Joystick *joy;
 
 class quit_action_class {};
 
