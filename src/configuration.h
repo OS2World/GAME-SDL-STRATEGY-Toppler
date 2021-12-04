@@ -19,10 +19,12 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#include "decl.h"
+#include <vector>
+#include <string>
 
 #include <cstdio>
 
+// TODO remove once everything is converted
 #define TOWERNAMELEN 19
 #define PASSWORD_LEN 5
 
@@ -49,8 +51,8 @@ public:
   bool use_water() const { return i_use_water; }
   void use_water(bool on) { need_save = true; i_use_water = on; }
 
-  const char *editor_towername() const { return i_editor_towername; }
-  void editor_towername(char name[TOWERNAMELEN+1]);
+  const std::string & editor_towername() const { return i_editor_towername; }
+  void editor_towername(const std::string & name) { need_save = true; i_editor_towername = name; }
 
   bool use_alpha_sprites() const { return i_use_alpha_sprites; }
   void use_alpha_sprites(bool on) { need_save = true; i_use_alpha_sprites = on; }
@@ -90,11 +92,11 @@ public:
   int  start_lives() const { return i_start_lives; }
   void start_lives(int lv) { need_save = true; i_start_lives = lv; }
 
-  const char *curr_password() const { return i_curr_password; }
-  void curr_password(char pwd[PASSWORD_LEN+1]);
+  const std::string & curr_password() const { return i_curr_password; }
+  void curr_password(const std::string & pwd) { need_save = true; i_curr_password = pwd; }
 
   int  debug_level() const { return i_debug_level; }
-  void debug_level(int l) { need_save = true; i_debug_level = l; dcl_setdebuglevel(l); }
+  void debug_level(int l);
 
   int  game_speed() const { return i_game_speed; }
   void game_speed(int spd) { need_save = true; i_game_speed = spd; }
@@ -114,23 +116,22 @@ private:
   } cnf_type;
 
   void parse(FILE *in);
-  void register_entry(const char *cnf_name, cnf_type  cnf_typ, void *cnf_var, long maxlen);
+  void register_entry(const std::string & cnf_name, cnf_type  cnf_typ, void *cnf_var, long maxlen);
 
   typedef struct config_data {
-    config_data *next;
-    const char *cnf_name;
+    std::string cnf_name;
     cnf_type  cnf_typ;
     void     *cnf_var;
     long      maxlen;
   } config_data;
 
-  config_data *first_data;
+  std::vector<config_data> data;
 
   bool i_fullscreen;
   bool i_nosound;
   bool i_nomusic;
   bool i_use_water;
-  char i_editor_towername[TOWERNAMELEN+1];
+  std::string i_editor_towername;
   bool i_use_alpha_sprites;
   bool i_use_alpha_layers;
   bool i_use_alpha_font;
@@ -141,7 +142,7 @@ private:
   int  i_editor_towerpagesize;
   int  i_editor_towerstarthei;
   int  i_start_lives;
-  char i_curr_password[PASSWORD_LEN+1];
+  std::string i_curr_password;
   int  i_debug_level;
   int  i_game_speed;
   int  i_nobonus;

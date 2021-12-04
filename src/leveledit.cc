@@ -706,14 +706,14 @@ void le_edit(void) {
         key_wait_for_none(editor_background_proc);
         {
           char name[TOWERNAMELEN+1];
-          strncpy(name, config.editor_towername(), TOWERNAMELEN);
+          strncpy(name, config.editor_towername().data(), TOWERNAMELEN);
           name[TOWERNAMELEN] = 0;
           while (!men_input(name, TOWERNAMELEN)) ;
           config.editor_towername(name);
         }
         bg_text = NULL;
-        if ((strlen(config.editor_towername()) > 0) &&
-            lev_loadtower(config.editor_towername())) {
+        if ((strlen(config.editor_towername().c_str()) > 0) &&
+            lev_loadtower(config.editor_towername().c_str())) {
             scr_settowercolor(lev_towercol_red(),
                                lev_towercol_green(),
                                lev_towercol_blue());
@@ -727,13 +727,13 @@ void le_edit(void) {
         key_wait_for_none(editor_background_proc);
         {
           char name[TOWERNAMELEN+1];
-          strncpy(name, config.editor_towername(), TOWERNAMELEN);
+          strncpy(name, config.editor_towername().c_str(), TOWERNAMELEN);
           name[TOWERNAMELEN] = 0;
           while (!men_input(name, TOWERNAMELEN)) ;
           config.editor_towername(name);
         }
         bg_text = NULL;
-        lev_savetower(config.editor_towername());
+        lev_savetower(config.editor_towername().c_str());
         changed = false;
         break;
 

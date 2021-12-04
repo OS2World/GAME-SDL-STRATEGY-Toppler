@@ -136,13 +136,14 @@ static const char *game_options_menu_password(_menusystem *prevmenu) {
 
   if (prevmenu) {
     /* one more character to also copy the termination */
-    strncpy(pwd, config.curr_password(), PASSWORD_LEN+1);
+    strncpy(pwd, config.curr_password().c_str(), PASSWORD_LEN);
+    pwd[PASSWORD_LEN] = 0;
     while (!men_input(pwd, PASSWORD_LEN, -1, -1, PASSWORD_CHARS)) ;
     config.curr_password(pwd);
     /* FIXME: change -1, -1 to correct position; Need to fix menu system
      first... */
   }
-  snprintf(buf, 50, _("Password: %s"), config.curr_password());
+  snprintf(buf, 50, _("Password: %s"), config.curr_password().c_str());
   return buf;
 }
 
@@ -768,7 +769,7 @@ main_game_loop()
       return;
   }
 
-  tower = lev_tower_passwd_entry(config.curr_password());
+  tower = lev_tower_passwd_entry(config.curr_password().c_str());
 
   gam_newgame();
   bns_restart();
