@@ -21,6 +21,8 @@
 
 #include <SDL_types.h>
 
+#include <string>
+
 /* this modules contains all the function for highscoretable access
  * because this is the only section that needs the sticky bit privileges
  * it's the one that handled the group id things as well
@@ -33,20 +35,20 @@
  * highscore table file to use. This files will then be used the
  * complete running time
  */
-void hsc_init(void);
+void hsc_init();
 
 /* selects one mission by name, if there is currently no table
  * for this mission the table is assumed to be empty
  */
-void hsc_select(const char * mission);
+void hsc_select(const std::string & mission);
 
 /* how many value entries has the selected table? */
-Uint8 hsc_entries(void);
+Uint8 hsc_entries();
 
 /* fills name, points and tower with the values of the nr-th entry,
  * if you give 0 pointers the values are ignored,
  * name must be at least SCORENAMELEN+1 characters long */
-void hsc_entry(Uint8 nr, char *name, Uint32 *points, Uint8 *tower);
+void hsc_entry(Uint8 nr, std::string & name, Uint32 & points, Uint8 & tower);
 
 /* returns true, if the player will enter the highscore table with his points
  * you can use this function on locked and unlocked highscore tables
@@ -59,6 +61,6 @@ bool hsc_canEnter(Uint32 points);
  * returned is the position in the table the user got, or 0xff if he didn't get in
  * the table will be saved automatically
  */
-Uint8 hsc_enter(Uint32 points, Uint8 tower, char *name);
+Uint8 hsc_enter(Uint32 points, Uint8 tower, const std::string & name);
 
 #endif

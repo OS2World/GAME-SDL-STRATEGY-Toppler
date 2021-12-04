@@ -525,18 +525,19 @@ static void
 
   static char buf1[SCORENAMELEN + 5];
   static char buf2[SCORENAMELEN + 5];
-  static char buf3[SCORENAMELEN + 5];
+  static std::string buf3;
 
-  buf1[0] = buf2[0] = buf3[0] = '\0';
+  buf1[0] = buf2[0] = '\0';
+  buf3 = "";
 
-  hsc_entry(p, buf3, &pt, &tw);
+  hsc_entry(p, buf3, pt, tw);
 
   snprintf(buf1, SCORENAMELEN + 5, "%i.", p + 1);
   snprintf(buf2, SCORENAMELEN + 5, "%i", pt);
 
   *pos = buf1;
   *points = buf2;
-  *name = buf3;
+  *name = buf3.data();
 }
 
 static void

@@ -103,9 +103,11 @@ int main(int argc, char *argv[]) {
   printf(_("Nebulous version %s"), VERSION);
   printf("\n");
 
-  hsc_init();
 
   if (parse_arguments(argc, argv)) {
+
+    hsc_init();
+
     SDL_InitSubSystem(SDL_INIT_VIDEO);
 
     int mouse = SDL_ShowCursor(config.fullscreen() ? 0 : 1);

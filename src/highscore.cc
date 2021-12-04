@@ -20,15 +20,12 @@
 #include "decl.h"
 #include "screen.h"
 
-#include <cstdlib>
-#include <cstring>
 #include <cstdio>
-#include <fcntl.h>
-#include <unistd.h>
+#include <cstring>
 
-#ifdef __QNXNTO__
-   #include <strings.h>
-#endif // __QNXNTO__
+#ifndef WIN32
+#include <fcntl.h>
+#endif
 
 #define NUMHISCORES 10
 
@@ -36,94 +33,102 @@
 
 #pragma GCC diagnostic ignored "-Wunused-result"
 
-/* the group ids of the game */
-static gid_t UserGroupID, GameGroupID;
-
-/* true, if we use the global highscore table, false if not */
+// true, if we use the global highscore table, false if not
+// if we use the global highscore we will create a lock file
 static bool globalHighscore;
 
 /* the name of the highscore table we use the name because the
  * file might change any time and so it's better to close and reopen
  * every time we need access
  */
-static char highscoreName[200];
+static std::string highscoreName;
 
 typedef struct {
   Uint32 points;
-  char name[SCORENAMELEN+1];
+  char name[SCORENAMELEN];
   Sint16 tower; /* tower reached, -1 = mission finished */
 } _scores;
 
 static _scores scores[NUMHISCORES];
 
-/* this is the name of the surrenlty selected mission */
-static char missionname[100];
+/* this is the name of the currenlty selected mission */
+static std::string missionname;
 
-#ifdef WIN32
-#define setegid(x)
-#endif
+static void savescores(FILE *f)
+{
+    unsigned char len;
+    char mname[256];
 
-static void savescores(FILE *f) {
+    while (!feof(f))
+    {
+        // try to read mission
+        if ((fread(&len, 1, 1, f) == 1) && (fread(mname, 1, len, f) == len))
+        {
+            // check if the current mission is the current mission in file
+            mname[len] = 0;
+            if (missionname == mname)
+            {
+                // this is necessary because some system can not switch
+                // on the fly from reading to writing
+                fseek(f, ftell(f), SEEK_SET);
 
-  unsigned char len;
-  char mname[256];
+                fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
+                return;
+            }
+            else
+            {
+                // mission names don't match
+                // skip this mission
+                fseek(f, ftell(f) + sizeof(_scores)*NUMHISCORES, SEEK_SET);
+            }
+        }
+        else
+            // could not read, probably end of file
+            break;
 
-  while (!feof(f)) {
-
-    if ((fread(&len, 1, 1, f) == 1) &&
-        (fread(mname, 1, len, f) == len)) {
-      mname[len] = 0;
-      if (strcasecmp(mname, missionname) == 0) {
-
-        // this is necessary because some system can not switch
-        // on the fly from reading to writing
-        fseek(f, ftell(f), SEEK_SET);
-
-        fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
-        return;
-      }
-    } else
-      break;
-
-    fseek(f, ftell(f) + sizeof(_scores)*NUMHISCORES, SEEK_SET);
-  }
-
-  unsigned char tmp = strlen(missionname);
-
-  fwrite(&tmp, 1, 1, f);
-  fwrite(missionname, 1, tmp, f);
-  fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
-}
-
-static void loadscores(FILE *f) {
-
-  unsigned char len;
-  char mname[256];
-
-  while (f && !feof(f)) {
-
-    if ((fread(&len, 1, 1, f) == 1) &&
-        (fread(mname, 1, len, f) == len) &&
-        (fread(scores, 1, sizeof(_scores) * NUMHISCORES, f) == sizeof(_scores) * NUMHISCORES)) {
-      mname[len] = 0;
-      if (strcasecmp(mname, missionname) == 0)
-        return;
     }
-  }
 
-  for (int t = 0; t < NUMHISCORES; t++) {
-    scores[t].points = 0;
-    scores[t].name[0] = 0;
-  }
+    // when we get here we are at the end of file and have
+    // not found the mission, so add an empty score table
+    unsigned char tmp = missionname.size();
+
+    fwrite(&tmp, 1, 1, f);
+    fwrite(missionname.c_str(), 1, tmp, f);
+    fwrite(scores, sizeof(_scores)*NUMHISCORES, 1, f);
 }
 
-static bool hsc_lock(void) {
+static void loadscores(FILE *f)
+{
+    unsigned char len;
+    char mname[256];
 
+    while (f && !feof(f))
+    {
+
+        if ((fread(&len, 1, 1, f) == 1) && (fread(mname, 1, len, f) == len) &&
+            (fread(scores, 1, sizeof(_scores) * NUMHISCORES, f) == sizeof(_scores) * NUMHISCORES))
+        {
+            mname[len] = 0;
+            if (missionname == mname)
+                // mission found and read
+                return;
+        }
+    }
+
+    // mission not found in the highscore, so create an empty one
+    for (int t = 0; t < NUMHISCORES; t++) {
+        scores[t].points = 0;
+        scores[t].name[0] = 0;
+    }
+}
+
+static bool hsc_lock(void)
+{
 #ifndef WIN32
 
-  if (globalHighscore) {
-
-    setegid(GameGroupID);
+  if (globalHighscore)
+  {
+    // create lock for highscore table
     int lockfd;
 
     while ((lockfd = open(HISCOREDIR "/" SCOREFNAME ".lck", O_CREAT | O_RDWR | O_EXCL, S_IRUSR | S_IWUSR)) == -1) {
@@ -131,17 +136,13 @@ static bool hsc_lock(void) {
       scr_swap();
     }
     close(lockfd);
-    setegid(UserGroupID);
   }
 
 #endif
 
-  if (globalHighscore) setegid(GameGroupID);
-  FILE *f = fopen(highscoreName, "rb");
-  if (globalHighscore) setegid(UserGroupID);
-
+  // load the table
+  FILE *f = fopen(highscoreName.c_str(), "rb");
   loadscores(f);
-
   if (f) fclose(f);
 
   return true;
@@ -151,10 +152,10 @@ static void hsc_unlock(void) {
 
 #ifndef WIN32
 
-  if (globalHighscore) {
-    setegid(GameGroupID);
-    unlink(HISCOREDIR "/" SCOREFNAME ".lck");
-    setegid(UserGroupID);
+  // free the lock
+  if (globalHighscore)
+  {
+      unlink(HISCOREDIR "/" SCOREFNAME ".lck");
   }
 
 #endif
@@ -170,15 +171,13 @@ void hsc_init(void) {
 
 #ifndef WIN32
 
-  /* fine at first save the group ids and drom group privileges */
-  UserGroupID = getgid ();
-  GameGroupID = getegid ();
-
-  setegid(UserGroupID);
-
   /* asume we use local highscore table */
   globalHighscore = false;
-  snprintf(highscoreName, 199, "%s/.toppler/%s", homedir(), SCOREFNAME);
+  {
+      char ttt[210];
+      snprintf(ttt, 199, "%s/.toppler/%s", homedir(), SCOREFNAME);
+      highscoreName = ttt;
+  }
 
   /* now check if we have access to a global highscore table */
 
@@ -191,9 +190,7 @@ void hsc_init(void) {
   char fname[200];
   snprintf(fname, 200, HISCOREDIR "/" SCOREFNAME);
 
-  setegid(GameGroupID);
   FILE * f = fopen(fname, "r+");
-  setegid(UserGroupID);
 
   if (f) {
 
@@ -204,66 +201,71 @@ void hsc_init(void) {
      */
     snprintf(fname, 200, HISCOREDIR "/" SCOREFNAME "%i", rand());
 
-    setegid(GameGroupID);
     f = fopen(fname, "w+");
-    setegid(UserGroupID);
 
     if (f) {
 
       fclose(f);
-      setegid(GameGroupID);
       unlink(fname);
-      setegid(UserGroupID);
 
       /* ok, we've got all the rights we need */
-      snprintf(highscoreName, 200, HISCOREDIR "/" SCOREFNAME);
+      {
+          char ttt[210];
+          snprintf(ttt, 200, HISCOREDIR "/" SCOREFNAME);
+          highscoreName = ttt;
+      }
       globalHighscore = true;
     }
+    else
+    {
+      debugprintf(2, "could not open create the lock file, no write access to global hiscore directory\n", fname);
+    }
+  }
+  else
+  {
+     debugprintf(2, "could not open global highscore file %s\n", fname);
   }
 
+#else
+  debugprintf(2, "no path for global highscore\n");
 #endif
 
   /* no dir to the global highscore table -> not global highscore table */
-
-  if (globalHighscore)
-    debugprintf(2, "using global highscore at %s\n", highscoreName);
-  else
-    debugprintf(2, "using local highscore at %s\n", highscoreName);
 
 #else // ifdef WIN32
 
   /* for non unix systems we use only local highscore tables */
   globalHighscore = false;
-  snprintf(highscoreName, 200, SCOREFNAME);
+  highscoreName = SCOREFNAME;
 
 #endif
 
+  if (globalHighscore)
+    debugprintf(2, "using global highscore at %s\n", highscoreName.c_str());
+  else
+    debugprintf(2, "using local highscore at %s\n", highscoreName.c_str());
 }
 
-void hsc_select(const char * mission) {
-  strncpy(missionname, mission, 99);
-
-  if (globalHighscore) setegid(GameGroupID);
-  FILE *f = fopen(highscoreName, "rb");
-  if (globalHighscore) setegid(UserGroupID);
-
+void hsc_select(const std::string & mission)
+{
+  missionname = mission;
+  FILE *f = fopen(highscoreName.c_str(), "rb");
   loadscores(f);
-
   if (f) fclose(f);
 }
 
 Uint8 hsc_entries(void) { return NUMHISCORES; }
 
-void hsc_entry(Uint8 nr, char *name, Uint32 *points, Uint8 *tower) {
-
+void hsc_entry(Uint8 nr, std::string & name, Uint32 & points, Uint8 & tower)
+{
   if (nr < NUMHISCORES) {
-    if (name) strncpy(name, scores[nr].name, SCORENAMELEN);
-    if (points) *points = scores[nr].points;
-    if (tower) *tower = scores[nr].tower;
+    name = scores[nr].name;
+    points = scores[nr].points;
+    tower = scores[nr].tower;
   } else {
-    if (name) name[0] = 0;
-    if (points) *points = 0;
-    if (tower) *tower = 0;
+    name = "";
+    points = 0;
+    tower = 0;
   }
 }
 
@@ -271,7 +273,7 @@ bool hsc_canEnter(Uint32 points) {
   return points > scores[NUMHISCORES-1].points;
 }
 
-Uint8 hsc_enter(Uint32 points, Uint8 tower, char *name) {
+Uint8 hsc_enter(Uint32 points, Uint8 tower, const std::string & name) {
 
   if (hsc_lock()) {
 
@@ -285,21 +287,19 @@ Uint8 hsc_enter(Uint32 points, Uint8 tower, char *name) {
 
     if (t < NUMHISCORES) {
 
-      strncpy(scores[t].name, name, SCORENAMELEN);
+      strncpy(scores[t].name, name.c_str(), SCORENAMELEN);
       scores[t].points = points;
       scores[t].tower = tower;
 
       FILE *f;
 
       if (globalHighscore) {
-        if (globalHighscore) setegid(GameGroupID);
-        f = fopen(highscoreName, "r+b");
-        if (globalHighscore) setegid(UserGroupID);
+        f = fopen(highscoreName.c_str(), "r+b");
       } else {
 
         /* local highscore: this one might require creating the file */
-        fclose(fopen(highscoreName, "a+"));
-        f = fopen(highscoreName, "r+b");
+        fclose(fopen(highscoreName.c_str(), "a+"));
+        f = fopen(highscoreName.c_str(), "r+b");
       }
 
       savescores(f);
