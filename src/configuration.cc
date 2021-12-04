@@ -46,7 +46,10 @@ void configuration::parse(FILE * in)
                             *(bool *)t.cnf_var = str2bool(param);
                             break;
                         case CT_STRING:
-                            *(std::string *)t.cnf_var = param;
+                            {
+                                std::string tmp = param;
+                                *(std::string *)t.cnf_var = std::string(tmp).substr(1, tmp.size()-2);
+                            }
                             break;
                         case CT_INT:
                             *(int *)t.cnf_var = atoi(param);
