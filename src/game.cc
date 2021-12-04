@@ -31,9 +31,6 @@
 #include "snowball.h"
 #include "sound.h"
 
-#include <cstring>
-#include <cstdlib>
-
 typedef enum {
   STATE_PLAYING,
   STATE_ABORTED,
@@ -65,7 +62,7 @@ void gam_arrival(void) {
 
   rob_initialize();
   snb_init();
-  char *passwd = lev_get_passwd();
+  std::string passwd = lev_get_passwd();
 
   bool svisible = true;
   int substart = 0;
@@ -88,9 +85,9 @@ void gam_arrival(void) {
     else
       scr_writetext_broken_center((SCREENHEI*2 / 6), _("Nameless Tower"));
 
-    if (passwd && lev_show_passwd(lev_towernr())) {
+    if (passwd.size() && lev_show_passwd(lev_towernr())) {
       char buf[50];
-      snprintf(buf, 50, _("Password:   %s"), passwd);
+      snprintf(buf, 50, _("Password:   %s"), passwd.c_str());
       scr_writetext_center(SCREENHEI * 5 / 6, buf);
     }
     scr_swap();

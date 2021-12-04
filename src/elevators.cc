@@ -22,8 +22,6 @@
 #include "decl.h"
 #include "toppler.h"
 
-#include <cstdlib>
-
 #define MAX_ELE 10
 
 /* elevators are handled in a quite complicated way: while

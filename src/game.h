@@ -52,6 +52,7 @@ void gam_arrival(void);
                   without the recording
    if demo == 0, normal game
 */
+// TODO use a vector for the demo
 gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *demobuf);
 
 /* pick up the toppler at the base of the tower */
