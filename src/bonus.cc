@@ -98,7 +98,7 @@ static bool escape() {
   return men_game();
 }
 
-static void pause() {
+static void bns_pause() {
 
   set_men_bgproc(bonus_background_proc);
   men_info(_("Pause"), -1, 1);
@@ -206,7 +206,7 @@ bool bns_game() {
       }
 
     if (key_keypressed(pause_key))
-      pause();
+      bns_pause();
 
     key_readkey();
 
