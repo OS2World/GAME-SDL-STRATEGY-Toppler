@@ -25,8 +25,6 @@
 #include "level.h"
 #include "sound.h"
 
-#include <cstdlib>
-
 #define fishcnt         16
 #define gametime        500
 #define scrollerspeed   2
