@@ -24,10 +24,10 @@
 static int an;
 static long subKind;
 static long ve;
-static long time;
+static long curtime;
 
 void snb_init(void) {
-  time = -1;
+  curtime = -1;
 }
 
 /* move the snowball and check if it hits something */
@@ -40,19 +40,19 @@ void snb_movesnowball(void) {
 
   int nr;
 
-  if (time < 0) return;
+  if (curtime < 0) return;
 
-  if (time == 12) {
-    time = -1;
+  if (curtime == 12) {
+    curtime = -1;
     return;
   }
 
-  time++;
+  curtime++;
   an = (an + subKind * 2) & 0x7f;
-  ve += schusshoch[time - 1];
+  ve += schusshoch[curtime - 1];
 
   if (!lev_testfigure(an, ve, -1, 0, 2, 2, 5)) {
-    time = -1;
+    curtime = -1;
     return;
   }
 
@@ -63,11 +63,11 @@ void snb_movesnowball(void) {
   else {
     ttsounds::instance()->startsound(SND_HIT);
     pts_add(rob_gothit(nr));
-    time = -1;
+    curtime = -1;
   }
 }
 
-bool snb_exists(void) { return time != -1; }
+bool snb_exists(void) { return curtime != -1; }
 
 void snb_start(int verticalpos, int anglepos, bool look_left) {
 
@@ -80,7 +80,7 @@ void snb_start(int verticalpos, int anglepos, bool look_left) {
     subKind = 1;
   }
   an &= 0x7f;
-  time = 0;
+  curtime = 0;
 }
 
 int snb_verticalpos(void) { return ve; }
