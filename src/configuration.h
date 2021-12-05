@@ -104,6 +104,8 @@ public:
   int  nobonus() const { return i_nobonus; }
   void nobonus(bool on) { need_save = true; i_nobonus = on; }
 
+  void requestsave() { need_save = true; }
+
 private:
 
   FILE *f;

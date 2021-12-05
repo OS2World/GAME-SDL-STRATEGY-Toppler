@@ -108,6 +108,7 @@ static const char *redefine_menu_up(_menusystem *ms) {
     case 1:
       if (ms->key != SDLK_UNKNOWN) {
         key_redefine(key[ms->hilited % REDEFINEREC], ms->key);
+        config.requestsave();
         ms->mstate = 2;
         ms->opt_steal_control = ms->hilited;
         blink = 0;
