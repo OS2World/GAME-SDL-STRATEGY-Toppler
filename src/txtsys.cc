@@ -22,185 +22,151 @@
 #include "keyb.h"
 #include "menu.h"
 
-#include <cstdlib>
-#include <cstring>
-
-textsystem::textsystem(char *title, menuopt_callback_proc pr)
+textsystem::textsystem(std::string t, menuopt_callback_proc pr)
 {
-  if (title) {
-    this->title = new char[strlen(title)+1];
-    strcpy(this->title, title);
-  } else this->title = NULL;
+    title = std::move(t);
 
-  numlines = 0;
-  max_length = 0;
-  lines = NULL;
-  mproc = pr;
-  xoffs = yoffs = disp_xoffs = disp_yoffs = 0;
-  ystart = (title) ? FONTHEI + 15 : 0;
-  shownlines = ((SCREENHEI - ystart) / FONTHEI) + 1;
+    max_length = 0;
+    xoffs = yoffs = disp_xoffs = disp_yoffs = 0;
+
+    mproc = pr;
+
+    ystart = (!title.empty()) ? FONTHEI + 15 : 0;
+
+    shownlines = ((SCREENHEI - ystart) / FONTHEI) + 1;
 }
 
-textsystem::~textsystem()
+void textsystem::addline(std::string line)
 {
-  int i;
-
-  if (lines && numlines) {
-    for (i = 0; i < numlines; i++)
-      if (lines[i])
-        delete [] lines[i];
-    delete [] lines;
-  }
-  if (title) delete [] title;
-}
-
-void textsystem::addline(char *line)
-{
-  int olen;
-
-  char **tmp = new char *[numlines+1];
-  if (!tmp) return;
-
-  if (lines) {
-    memcpy(tmp, lines, sizeof(char *) * numlines);
-    delete [] lines;
-  }
-
-  if (line && (strlen(line)>0)) {
-    tmp[numlines] = new char[strlen(line)+1];
-    strcpy(tmp[numlines], line);
-  } else tmp[numlines] = NULL;
-
-  lines = tmp;
-  numlines++;
-
-  if (line) {
-    olen = scr_formattextlength(0,line);
-    if (olen < 0) olen = 0;
-  }
-  else olen = 0;
-
-  if (max_length < olen) max_length = olen;
+    lines.push_back(line);
+    max_length = std::max(scr_formattextlength(0,line.c_str()), max_length);
 }
 
 void textsystem::run()
 {
-  bool ende = false;
-  SDL_Keycode key = SDLK_UNKNOWN;
+    bool ende = false;
+    SDL_Keycode key = SDLK_UNKNOWN;
 
-  do {
-    (void)key_readkey();
+    do {
+        (void)key_readkey();
 
-    draw();
+        draw();
 
-    key = key_sdlkey();
+        key = key_sdlkey();
 
-    switch (key_sdlkey2conv(key, false)) {
-    case up_key:
-      if (yoffs >= FONTHEI) yoffs -= FONTHEI;
-      else yoffs = 0;
-      break;
-    case down_key:
-      if (yoffs + (shownlines*FONTHEI) < (numlines*FONTHEI)) yoffs += FONTHEI;
-      else yoffs = (numlines - shownlines+1)*FONTHEI;
-      break;
-    case break_key:
-      ende = true;
-      break;
-    case left_key:
-      if (xoffs >= FONTWID) xoffs -= FONTWID;
-      else xoffs = 0;
-      break;
-    case right_key:
-      if (xoffs <= max_length-SCREENWID-FONTWID) xoffs += FONTWID;
-      else xoffs = max_length-SCREENWID;
-      break;
-    default:
-      switch (key) {
-      case SDLK_PAGEUP:
-        if (yoffs >= shownlines*FONTHEI) yoffs -= shownlines*FONTHEI;
-        else yoffs = 0;
-        break;
-      case SDLK_SPACE:
-      case SDLK_PAGEDOWN:
-        if ((yoffs/FONTHEI) + (shownlines*2) <= numlines)
-          yoffs += shownlines*FONTHEI;
-        else yoffs = (numlines - shownlines+1)*FONTHEI;
-        break;
-      case SDLK_HOME:
-        yoffs = 0;
-        break;
-      case SDLK_END:
-        yoffs = (numlines - shownlines+1)*FONTHEI;
-        break;
-      case SDLK_RETURN:
-      case SDLK_ESCAPE:
-        ende = true;
-        break;
-      default: break;
-      }
-    }
+        switch (key_sdlkey2conv(key, false))
+        {
+            case up_key:
+                if (yoffs >= FONTHEI) yoffs -= FONTHEI;
+                else yoffs = 0;
+                break;
 
-  } while (!ende);
+            case down_key:
+                if (yoffs + (shownlines*FONTHEI) < ((long)lines.size()*FONTHEI)) yoffs += FONTHEI;
+                else yoffs = (lines.size() - shownlines+1)*FONTHEI;
+                break;
+
+            case break_key:
+                ende = true;
+                break;
+
+            case left_key:
+                if (xoffs >= FONTWID) xoffs -= FONTWID;
+                else xoffs = 0;
+                break;
+
+            case right_key:
+                if (xoffs <= max_length-SCREENWID-FONTWID) xoffs += FONTWID;
+                else xoffs = max_length-SCREENWID;
+                break;
+
+            default:
+                switch (key) {
+                    case SDLK_PAGEUP:
+                        if (yoffs >= shownlines*FONTHEI) yoffs -= shownlines*FONTHEI;
+                        else yoffs = 0;
+                        break;
+                    case SDLK_SPACE:
+                    case SDLK_PAGEDOWN:
+                        if ((yoffs/FONTHEI) + (shownlines*2) <= (int)lines.size())
+                            yoffs += shownlines*FONTHEI;
+                        else yoffs = (lines.size() - shownlines+1)*FONTHEI;
+                        break;
+                    case SDLK_HOME:
+                        yoffs = 0;
+                        break;
+                    case SDLK_END:
+                        yoffs = (lines.size() - shownlines+1)*FONTHEI;
+                        break;
+                    case SDLK_RETURN:
+                    case SDLK_ESCAPE:
+                        ende = true;
+                        break;
+                    default: break;
+                }
+        }
+
+    } while (!ende);
 }
 
-void
-textsystem::draw()
+void textsystem::draw()
 {
-  char pointup[2], pointdown[2], pointleft[2], pointright[2];
+    static const char pointup[2] = { fontptrup, 0 };
+    static const char pointdown[2] = { fontptrdown, 0 };
+    static const char pointleft[2] = { fontptrleft, 0 };
+    static const char pointright[2] = { fontptrright, 0 };
 
-  pointup[0] = fontptrup;
-  pointup[1] = 0;
-  pointdown[0] = fontptrdown;
-  pointdown[1] = 0;
-  pointleft[0] = fontptrleft;
-  pointleft[1] = 0;
-  pointright[0] = fontptrright;
-  pointright[1] = 0;
+    if (mproc)
+        (*mproc) (NULL);
 
-  if (mproc)
-    (*mproc) (NULL);
+    scr_writetext_center(5, title.c_str());
 
-  if (title)
-    scr_writetext_center(5, title);
-
-  if (disp_yoffs < yoffs) {
-    disp_yoffs += ((yoffs - disp_yoffs+3) / 4)+1;
-    if (disp_yoffs > yoffs) disp_yoffs = yoffs;
-  } else if (disp_yoffs > yoffs) {
-    disp_yoffs -= ((disp_yoffs - yoffs+3) / 4)+1;
-    if (disp_yoffs < yoffs) disp_yoffs = yoffs;
-  }
-
-  if (disp_xoffs < xoffs) {
-    disp_xoffs += ((xoffs - disp_xoffs) / 4)+1;
-    if (disp_xoffs > xoffs) disp_xoffs = xoffs;
-  } else if (disp_xoffs > xoffs) {
-    disp_xoffs -= ((disp_xoffs - xoffs) / 4)+1;
-    if (disp_xoffs < xoffs) disp_xoffs = xoffs;
-  }
-
-  scr_setclipping(0, ystart, SCREENWID, SCREENHEI);
-  for (int k = 0; k <= shownlines; k++)
-    if (k+(disp_yoffs / FONTHEI) < numlines) {
-      if (lines[k+(disp_yoffs / FONTHEI)])
-        scr_writeformattext(-disp_xoffs,
-                            k*FONTHEI + ystart - (disp_yoffs % FONTHEI),
-                            lines[k+(disp_yoffs / FONTHEI)]);
+    // smoothly move the actual position to the target position
+    if (disp_yoffs < yoffs)
+    {
+        disp_yoffs += ((yoffs - disp_yoffs+3) / 4)+1;
+        if (disp_yoffs > yoffs) disp_yoffs = yoffs;
+    } else if (disp_yoffs > yoffs)
+    {
+        disp_yoffs -= ((disp_yoffs - yoffs+3) / 4)+1;
+        if (disp_yoffs < yoffs) disp_yoffs = yoffs;
     }
 
-  scr_setclipping();
+    if (disp_xoffs < xoffs)
+    {
+        disp_xoffs += ((xoffs - disp_xoffs) / 4)+1;
+        if (disp_xoffs > xoffs) disp_xoffs = xoffs;
+    } else if (disp_xoffs > xoffs)
+    {
+        disp_xoffs -= ((disp_xoffs - xoffs) / 4)+1;
+        if (disp_xoffs < xoffs) disp_xoffs = xoffs;
+    }
 
-  if (disp_yoffs > 0)
-    scr_writetext(SCREENWID-FONTWID, 34, pointup);
-  if ((disp_yoffs / FONTHEI) + shownlines < numlines)
-    scr_writetext(SCREENWID-FONTWID, SCREENHEI-FONTHEI, pointdown);
+    scr_setclipping(0, ystart, SCREENWID, SCREENHEI);
 
-  if (disp_xoffs > 0)
-    scr_writetext(FONTWID, 5, pointleft);
-  if (disp_xoffs < max_length - SCREENWID)
-    scr_writetext(SCREENWID-FONTWID, 5, pointright);
+    // draw the text lines
+    for (int k = 0; k <= shownlines; k++)
+        if (k+(disp_yoffs / FONTHEI) < (int)lines.size())
+            if (!lines[k+(disp_yoffs / FONTHEI)].empty())
+                scr_writeformattext(-disp_xoffs,
+                        k*FONTHEI + ystart - (disp_yoffs % FONTHEI),
+                        lines[k+(disp_yoffs / FONTHEI)].c_str());
 
-  scr_swap();
-  dcl_wait();
+    scr_setclipping();
+
+    // draw arrows
+    if (disp_yoffs > 0)
+        scr_writetext(SCREENWID-FONTWID, 34, pointup);
+
+    if ((disp_yoffs / FONTHEI) + shownlines < (int)lines.size())
+        scr_writetext(SCREENWID-FONTWID, SCREENHEI-FONTHEI, pointdown);
+
+    if (disp_xoffs > 0)
+        scr_writetext(FONTWID, 5, pointleft);
+
+    if (disp_xoffs < max_length - SCREENWID)
+        scr_writetext(SCREENWID-FONTWID, 5, pointright);
+
+    scr_swap();
+    dcl_wait();
 }
