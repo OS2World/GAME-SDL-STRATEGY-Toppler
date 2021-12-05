@@ -412,10 +412,8 @@ static void createMission(void) {
 static void le_showkeyhelp() {
   int k;
   int maxkeylen = 0;
-  textsystem *ts = new textsystem(_("Editor Key Help"), editor_background_menu_proc);
+  textsystem ts(_("Editor Key Help"), editor_background_menu_proc);
   char tabbuf1[11], tabbuf2[13];
-
-  if (!ts) return;
 
   for (k = 0; k < SIZE(_ed_keys); k++) {
       char knam[256];
@@ -445,12 +443,11 @@ static void le_showkeyhelp() {
       snprintf(tmpb, 256, "~T%s%%s~T%s%%s", tabbuf2, tabbuf1);
       snprintf(buf, 256, tmpb, knam, _(_ed_key_actions[_ed_keys[k].action]));
 
-      ts->addline(buf);
+      ts.addline(buf);
   }
   bg_darken = true;
-  ts->run();
+  ts.run();
   bg_darken = false;
-  delete ts;
 }
 
 static int clipboard_rows = 0;
