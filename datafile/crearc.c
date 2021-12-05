@@ -26,7 +26,12 @@ int calcsize(filenode * files, int count) {
   int sz = 0;
 
   for (int i = 0; i < count; i++)
-    sz += 13 + strlen(files[i].name);
+  {
+    unsigned char tmp = strlen(files[i].name);
+    while (tmp && (files[i].name[tmp-1] != '/'))
+      tmp--;
+    sz += 13 + tmp;
+  }
 
   return sz;
 }
