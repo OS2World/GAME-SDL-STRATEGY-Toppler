@@ -18,47 +18,22 @@
 
 #include "sprites.h"
 
-#include "decl.h"
-
-#include <cstdlib>
-#include <cstring>
-
 spritecontainer::~spritecontainer(void) {
   freedata();
 }
 
-void spritecontainer::freedata(void) {
-  for (int i = 0; i < usage; i++)
-    SDL_FreeSurface(array[i]);
+void spritecontainer::freedata(void)
+{
+  for (auto s : array)
+    SDL_FreeSurface(s);
 
-  delete [] array;
-
-  array = 0;
-  usage = 0;
-  size = 0;
+  array.clear();
 }
 
-Uint16 spritecontainer::save(SDL_Surface *s) {
-  if (usage == size) {
-    SDL_Surface **array2 = new SDL_Surface*[size + 200];
-
-    assert_msg(array2, "could not alloc memory for sprite array");
-
-    if (usage)
-      memcpy(array2, array, usage * sizeof(SDL_Surface*));
-
-    if (array)
-      delete [] array;
-
-    array = array2;
-
-    size += 200;
-  }
-
-  Uint16 erg = usage;
-  array[usage++] = s;
-
-  return erg;
+Uint16 spritecontainer::save(SDL_Surface *s)
+{
+  array.push_back(s);
+  return array.size()-1;
 }
 
 spritecontainer fontsprites;

@@ -24,8 +24,6 @@
 #include "toppler.h"
 #include "sound.h"
 
-#include <cstdlib>
-
 #define MAX_OBJECTS 4
 
 /* this field contains the robots */

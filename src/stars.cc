@@ -24,8 +24,6 @@
 
 #include <SDL.h>
 
-#include <cstdlib>
-
 #define starstep 5
 
 typedef struct {
@@ -34,35 +32,29 @@ typedef struct {
   int size;
 } _star;
 
-static unsigned short star_spr_nr;
-static int num_stars;
-static _star *stars = (_star *)0;
+// sprite id of the first, the biggest star
+static long star_spr_nr;
+
+// the stars
+static std::vector<_star> stars;
 
 void sts_draw(void)
 {
-  for (int t = 0; t < num_stars; t++)
-    scr_blit(objectsprites.data((long)star_spr_nr + stars[t].size - (stars[t].state != 0)), stars[t].x, stars[t].y);
+    for (auto & s : stars)
+        scr_blit(objectsprites.data(star_spr_nr + s.size - ((s.state != 0) ? 1 : 0)), s.x, s.y);
 }
 
-void sts_init(int sn, int nstar) {
-  if (stars) {
-    if (nstar <= num_stars) {
-      star_spr_nr = sn;
-      num_stars = nstar;
-      return;
-    } else sts_done();
-  }
+void sts_init(int sn, int nstar)
+{
   assert_msg(nstar > 1, "sts_init with too few stars!");
 
-  stars = new _star[nstar];
-  assert_msg(stars, "Failed to alloc memory!");
-  num_stars = nstar;
+  stars.resize(nstar);
 
-  for (int t = 0; t < num_stars; t++) {
-    stars[t].x = rand() / (RAND_MAX / SCREENWID) - SPR_STARWID;
-    stars[t].y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
-    stars[t].state = 0;
-    stars[t].size = rand() / (RAND_MAX / 7);
+  for (auto & s : stars) {
+    s.x = rand() / (RAND_MAX / SCREENWID) - SPR_STARWID;
+    s.y = rand() / (RAND_MAX / SCREENHEI) - SPR_STARHEI;
+    s.state = 0;
+    s.size = rand() / (RAND_MAX / 7);
   }
 
   star_spr_nr = sn;
@@ -70,43 +62,36 @@ void sts_init(int sn, int nstar) {
 
 void sts_done(void)
 {
-  if (stars) delete [] stars;
-  num_stars = 0;
-  stars = 0;
 }
 
 void sts_blink(void)
 {
-  for (int t = 0; t < num_stars; t++) {
-    if (stars[t].state > 0) stars[t].state = (stars[t].state + 1) % 4;
-    else if (!(rand() & 0xff)) stars[t].state++;
-  }
+    for (auto & s : stars)
+        if (s.state > 0)
+            s.state = (s.state + 1) % 4;
+        else if (!(rand() & 0xff))
+            s.state++;
 }
 
 void sts_move(long x, long y)
 {
-  int t;
-
-  for (t = 0; t < num_stars; t++) {
-    stars[t].x += starstep * x;
-    stars[t].y += y;
-    if (stars[t].x > SCREENWID) {
-      stars[t].x = rand() / (RAND_MAX / starstep) - SPR_STARWID;
-      stars[t].y = rand() / (RAND_MAX / SCREENHEI);
-    } else {
-      if (stars[t].x < -SPR_STARWID) {
-        stars[t].x = SCREENWID - rand() / (RAND_MAX / starstep);
-        stars[t].y = rand() / (RAND_MAX / SCREENHEI);
-      }
+  for (auto & s : stars)
+  {
+    s.x += starstep * x;
+    s.y += y;
+    if (s.x > SCREENWID) {
+      s.x = rand() / (RAND_MAX / starstep) - SPR_STARWID;
+      s.y = rand() / (RAND_MAX / SCREENHEI);
+    } else if (s.x < -SPR_STARWID) {
+      s.x = SCREENWID - rand() / (RAND_MAX / starstep);
+      s.y = rand() / (RAND_MAX / SCREENHEI);
     }
-    if (stars[t].y > SCREENHEI) {
-      stars[t].y = -SPR_STARHEI;
-      stars[t].x = rand() / (RAND_MAX / (SCREENWID + SPR_STARWID)) - SPR_STARWID;
-    } else {
-      if (stars[t].y < -SPR_STARHEI) {
-        stars[t].y = SCREENHEI;
-        stars[t].x = rand() / (RAND_MAX / (SCREENWID + SPR_STARWID)) - SPR_STARWID;
-      }
+    if (s.y > SCREENHEI) {
+      s.y = -SPR_STARHEI;
+      s.x = rand() / (RAND_MAX / (SCREENWID + SPR_STARWID)) - SPR_STARWID;
+    } else if (s.y < -SPR_STARHEI) {
+      s.y = SCREENHEI;
+      s.x = rand() / (RAND_MAX / (SCREENWID + SPR_STARWID)) - SPR_STARWID;
     }
   }
 }

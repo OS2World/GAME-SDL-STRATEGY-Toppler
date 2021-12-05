@@ -21,26 +21,25 @@
 
 #include <SDL.h>
 
+#include <vector>
+
 /* coordinates a collection of sprites */
 
 class spritecontainer {
 
 public:
 
-  spritecontainer(void) : size(0), usage(0), array(0) {};
+  spritecontainer(void) {};
   ~spritecontainer(void);
 
   void freedata(void);
 
-  SDL_Surface * data(const Uint16 nr) const {if (nr < usage) return array[nr]; else return 0; }
+  SDL_Surface * data(const Uint16 nr) const { if (nr < array.size()) return array[nr]; else return nullptr; }
   Uint16 save(SDL_Surface * s);
 
 private:
 
-  Uint16 size;
-  Uint16 usage;
-
-  SDL_Surface ** array;
+  std::vector<SDL_Surface*> array;
 };
 
 extern spritecontainer fontsprites;   // for all sprites that are alpha toggled with font option

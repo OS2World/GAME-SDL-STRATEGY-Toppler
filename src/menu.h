@@ -19,12 +19,7 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "decl.h"
-
 #include "menusys.h"
-
-#include <SDL_types.h>
-#include <SDL_keyboard.h>
 
 /* load graphics */
 void men_init(void);
