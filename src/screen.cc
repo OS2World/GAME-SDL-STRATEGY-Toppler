@@ -1064,7 +1064,7 @@ static void draw_tower_editor(long vert, long angle, int state) {
 
 
 /* draws something of the environment */
-static void putcase(unsigned char w, long x, long h) {
+static void putcase(unsigned char w, long x, long h, int depth) {
   long angle = 0;
   switch (w) {
 
@@ -1076,7 +1076,7 @@ static void putcase(unsigned char w, long x, long h) {
   case TB_ELEV_TOP:
   case TB_ELEV_MIDDLE:
     scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h);
-
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_ELEVAWID/2), h, SPR_ELEVAWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
 
   case TB_STEP:
@@ -1084,6 +1084,7 @@ static void putcase(unsigned char w, long x, long h) {
   case TB_STEP_LSLIDER:
   case TB_STEP_RSLIDER:
     scr_blit(restsprites.data((angle % SPR_STEPFRAMES) + step), x - (SPR_STEPWID / 2), h);
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_STEPWID/2), h, SPR_STEPWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
 
     break;
 
@@ -1093,17 +1094,19 @@ static void putcase(unsigned char w, long x, long h) {
   case TB_STICK_DOOR:
   case TB_STICK_DOOR_TARGET:
     scr_blit(restsprites.data(stick), x - (SPR_STICKWID / 2), h);
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_STICKWID/2), h, SPR_STICKWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
 
     break;
 
   case TB_BOX:
     scr_blit(objectsprites.data(boxst + boxstate), x - (SPR_BOXWID / 2), h);
+    // no shading of the flashing box....
 
     break;
   }
 }
 
-static void putcase_editor(unsigned char w, long x, long h, int state) {
+static void putcase_editor(unsigned char w, long x, long h, int state, int depth) {
   long angle = 0;
   switch (w) {
 
@@ -1113,30 +1116,40 @@ static void putcase_editor(unsigned char w, long x, long h, int state) {
 
   case TB_ELEV_BOTTOM:
     scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - (state % 4));
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_ELEVAWID/2), h, SPR_ELEVAWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
   case TB_STATION_MIDDLE:
     scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - SPR_SLICEHEI/2 + abs(state - 8));
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_ELEVAWID/2), h, SPR_ELEVAWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
   case TB_STATION_TOP:
     scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h + (state % 4));
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_ELEVAWID/2), h, SPR_ELEVAWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
   case TB_STEP:
     scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_STEPWID/2), h, SPR_STEPWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
   case TB_STEP_VANISHER:
     if (state & 1)
+    {
       scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2), h);
+      if (config.use_alpha_sprites()) scr_putbar(x-(SPR_STEPWID/2), h, SPR_STEPWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
+    }
     break;
   case TB_STEP_LSLIDER:
     scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) + state % 4, h);
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_STEPWID/2), h, SPR_STEPWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
 
   case TB_STEP_RSLIDER:
     scr_blit(restsprites.data(((angle % SPR_STEPFRAMES) + step)), x - (SPR_STEPWID / 2) - state % 4, h);
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_STEPWID/2), h, SPR_STEPWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
 
   case TB_STICK:
     scr_blit(restsprites.data(stick), x - (SPR_STICKWID / 2), h);
+    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_STICKWID/2), h, SPR_STICKWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
 
   case TB_BOX:
@@ -1344,7 +1357,7 @@ void scr_writeformattext(long x, long y, const char *s) {
         t += nbytes;
 
         towerblock = conv_char2towercode(tmp);
-        putcase(towerblock, x+16, y);
+        putcase(towerblock, x+16, y, 255);
         x += 32;
         break;
       case 'e':
@@ -1355,7 +1368,7 @@ void scr_writeformattext(long x, long y, const char *s) {
         t += nbytes;
 
         towerblock = conv_char2towercode(tmp);
-        putcase_editor(towerblock, x+16, y, boxstate);
+        putcase_editor(towerblock, x+16, y, boxstate, 255);
         x += 32;
         break;
       default:
@@ -1477,6 +1490,8 @@ static void putthings(long vert, long a, long angle) {
     /* calc the x pos where the thing has to be drawn */
     int x = sintab[a % TOWER_ANGLES] + (SCREENWID/2);
 
+    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 255);
+
     int slice = 0;
     int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;
 
@@ -1484,7 +1499,7 @@ static void putthings(long vert, long a, long angle) {
 
       /* if we are over the bottom of the screen, draw the slice */
       if (ypos < SCREENHEI)
-        putcase(lev_tower(slice, col), x, ypos);
+        putcase(lev_tower(slice, col), x, ypos, depth);
 
       slice++;
       ypos -= SPR_SLICEHEI;
@@ -1520,6 +1535,8 @@ static void putthings_editor(long vert, long a, long angle, int state) {
     /* calc the x pos where the thing has to be drawn */
     int x = sintab[a % TOWER_ANGLES] + (SCREENWID/2);
 
+    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 255);
+
     int slice = 0;
     int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;
 
@@ -1527,7 +1544,7 @@ static void putthings_editor(long vert, long a, long angle, int state) {
 
       /* if we are over the bottom of the screen, draw the slice */
       if (ypos < SCREENHEI)
-        putcase_editor(lev_tower(slice, col), x, ypos, state);
+        putcase_editor(lev_tower(slice, col), x, ypos, state, depth);
 
       slice++;
       ypos -= SPR_SLICEHEI;
