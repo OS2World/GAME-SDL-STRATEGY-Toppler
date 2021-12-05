@@ -35,9 +35,15 @@ int main(int argn, char *args[]) {
   printf("create %s\n", args[1]);
   lev_mission_new(args[1], args[2], atoi(args[3]));
 
-  for (i = 4; i < argn; i++) {
+  FILE * names = fopen(args[4], "w");
+
+  fprintf(names, "_(\"%s\")\n", args[1]);
+
+  for (i = 5; i < argn; i++) {
     printf("add %s\n", args[i]);
     lev_mission_addtower(args[i]);
+
+    fprintf(names, "/* Tower name, you can translate freely */\n_(\"%s\")\n", lev_towername().c_str());
   }
 
   printf("finish\n");

@@ -251,11 +251,10 @@ _build/dude.dat: _build/tools/dude datafile/dude.xcf _build/tools/colorreduction
 
 # RULE FOR MISSION 1
 
-DATFILES += _build/m1.ttm
-.SECONDARY: _build/m1.ttm
+MISSIONFILES += /m1
 _build/m1.ttm: _build/tools/cremission \
 	datafile/levels/mission1/m1t1 datafile/levels/mission1/m1t2 datafile/levels/mission1/m1t3 datafile/levels/mission1/m1t4 datafile/levels/mission1/m1t5 datafile/levels/mission1/m1t6 datafile/levels/mission1/m1t7 datafile/levels/mission1/m1t8
-	( cd _build && tools/cremission "Mission 1" m1 10 \
+	( cd _build && tools/cremission "Mission 1" m1 10 nms_m1.txt \
 		../datafile/levels/mission1/m1t1 \
 		../datafile/levels/mission1/m1t2 \
 		../datafile/levels/mission1/m1t3 \
@@ -267,11 +266,10 @@ _build/m1.ttm: _build/tools/cremission \
 
 # RULE FOR MISSION 2
 
-DATFILES += _build/m2.ttm
-.SECONDARY: _build/m2.ttm
+MISSIONFILES += /m2
 _build/m2.ttm: _build/tools/cremission \
 	datafile/levels/mission2/m2t1 datafile/levels/mission2/m2t2 datafile/levels/mission2/m2t3 datafile/levels/mission2/m2t4 datafile/levels/mission2/m2t5 datafile/levels/mission2/m2t6 datafile/levels/mission2/m2t7 datafile/levels/mission2/m2t8
-	( cd _build && tools/cremission "Mission 2" m2 11 \
+	( cd _build && tools/cremission "Mission 2" m2 11 nms_m2.txt \
 		../datafile/levels/mission2/m2t1 \
 		../datafile/levels/mission2/m2t2 \
 		../datafile/levels/mission2/m2t3 \
@@ -283,11 +281,10 @@ _build/m2.ttm: _build/tools/cremission \
 
 # RULE FOR CLARENCE MISSION 1
 
-DATFILES += _build/ball1.ttm
-.SECONDARY: _build/ball1.ttm
+MISSIONFILES += /ball1
 _build/ball1.ttm: _build/tools/cremission \
 	datafile/levels/ball1/lev1 datafile/levels/ball1/lev2 datafile/levels/ball1/lev3 datafile/levels/ball1/lev4 datafile/levels/ball1/lev5 datafile/levels/ball1/lev6 datafile/levels/ball1/lev7 datafile/levels/ball1/lev8
-	( cd _build && tools/cremission "Ball 1" ball1 13 \
+	( cd _build && tools/cremission "Ball 1" ball1 13 nms_ball1.txt \
 		../datafile/levels/ball1/lev1 \
 		../datafile/levels/ball1/lev2 \
 		../datafile/levels/ball1/lev3 \
@@ -299,11 +296,10 @@ _build/ball1.ttm: _build/tools/cremission \
 
 # RULE FOR CLARENCE MISSION 2
 
-DATFILES += _build/ball2.ttm
-.SECONDARY: _build/ball2.ttm
+MISSIONFILES += /ball2
 _build/ball2.ttm: _build/tools/cremission \
 	datafile/levels/ball2/lev1 datafile/levels/ball2/lev2 datafile/levels/ball2/lev3 datafile/levels/ball2/lev4 datafile/levels/ball2/lev5 datafile/levels/ball2/lev6 datafile/levels/ball2/lev7 datafile/levels/ball2/lev8
-	( cd _build && tools/cremission "Ball 2" ball2 14 \
+	( cd _build && tools/cremission "Ball 2" ball2 14 nms_ball2.txt \
 		../datafile/levels/ball2/lev1 \
 		../datafile/levels/ball2/lev2 \
 		../datafile/levels/ball2/lev3 \
@@ -315,11 +311,10 @@ _build/ball2.ttm: _build/tools/cremission \
 
 # RULE FOR CLARENCE MISSION 3
 
-DATFILES += _build/ball3.ttm
-.SECONDARY: _build/ball3.ttm
+MISSIONFILES += /ball3
 _build/ball3.ttm: _build/tools/cremission \
 	datafile/levels/ball3/lev1 datafile/levels/ball3/lev2 datafile/levels/ball3/lev3 datafile/levels/ball3/lev4 datafile/levels/ball3/lev5 datafile/levels/ball3/lev6 datafile/levels/ball3/lev7 datafile/levels/ball3/lev8
-	( cd _build && tools/cremission "Ball 3" ball3 15 \
+	( cd _build && tools/cremission "Ball 3" ball3 15 nms_ball3.txt \
 		../datafile/levels/ball3/lev1 \
 		../datafile/levels/ball3/lev2 \
 		../datafile/levels/ball3/lev3 \
@@ -331,11 +326,10 @@ _build/ball3.ttm: _build/tools/cremission \
 
 # RULE FOR PASIS MISSION 1
 
-DATFILES += _build/abc.ttm
-.SECONDARY: _build/abc.ttm
+MISSIONFILES += /abc
 _build/abc.ttm: _build/tools/cremission \
 	datafile/levels/kallinen1/t1 datafile/levels/kallinen1/t2 datafile/levels/kallinen1/t3 datafile/levels/kallinen1/t4 datafile/levels/kallinen1/t5 datafile/levels/kallinen1/t6 datafile/levels/kallinen1/t7 datafile/levels/kallinen1/t8
-	( cd _build && tools/cremission "ABC Towers" abc 12 \
+	( cd _build && tools/cremission "ABC Towers" abc 12 nms_abc.txt \
 		../datafile/levels/kallinen1/t1 \
 		../datafile/levels/kallinen1/t2 \
 		../datafile/levels/kallinen1/t3 \
@@ -347,21 +341,19 @@ _build/abc.ttm: _build/tools/cremission \
 
 # RULE FOR PASIS MISSION 2
 
-DATFILES += _build/pasi2.ttm
-.SECONDARY: _build/pasi2.ttm
+MISSIONFILES += /pasi2
 _build/pasi2.ttm: _build/tools/cremission \
 	datafile/levels/kallinen2/t1 datafile/levels/kallinen2/t2
-	( cd _build && tools/cremission "Pasis 2 Towers" pasi2 12 \
+	( cd _build && tools/cremission "Pasis 2 Towers" pasi2 12 nms_pasi2.txt \
 		../datafile/levels/kallinen2/t1 \
 		../datafile/levels/kallinen2/t2 )
 
 # RULE FOR DAVIDS MISSION 1
 
-DATFILES += _build/david1.ttm
-.SECONDARY: _build/david1.ttm
+MISSIONFILES += /david1
 _build/david1.ttm: _build/tools/cremission \
 	datafile/levels/david1/lev1 datafile/levels/david1/lev2 datafile/levels/david1/lev3 datafile/levels/david1/lev4 datafile/levels/david1/lev5 datafile/levels/david1/lev6 datafile/levels/david1/lev7 datafile/levels/david1/lev8
-	( cd _build && tools/cremission "Challenge 1" david1 12 \
+	( cd _build && tools/cremission "Challenge 1" david1 12 nms_david1.txt \
 		../datafile/levels/david1/lev1 \
 		../datafile/levels/david1/lev2 \
 		../datafile/levels/david1/lev3 \
@@ -373,15 +365,20 @@ _build/david1.ttm: _build/tools/cremission \
 
 # RULE FOR DAVIDS MISSION 2
 
-DATFILES += _build/david2.ttm
-.SECONDARY: _build/david2.ttm
+MISSIONFILES += /david2
 _build/david2.ttm: _build/tools/cremission \
 	datafile/levels/david2/l1 datafile/levels/david2/l2 datafile/levels/david2/l3 datafile/levels/david2/l4
-	( cd _build && tools/cremission "Challenge 2" david2 12 \
+	( cd _build && tools/cremission "Challenge 2" david2 12 nms_david2.txt \
 		../datafile/levels/david2/l1 \
 		../datafile/levels/david2/l2 \
 		../datafile/levels/david2/l3 \
 		../datafile/levels/david2/l4 )
+
+# the automatic stuff for the mission files
+# create mission build files
+MISSIONBUILTFILES = $(patsubst /%,_build/%.ttm,$(MISSIONFILES))
+.SECONDARY: $(MISSIONBUILTFILES)
+DATFILES += $(MISSIONBUILTFILES)
 
 #-------------------------------------------------------#
 # rules to create the tool programs                     #
