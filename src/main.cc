@@ -25,11 +25,6 @@
 #include "configuration.h"
 #include "highscore.h"
 
-#include <cstdlib>
-#include <time.h>
-#include <cstring>
-#include <unistd.h>
-
 #include <stdexcept>
 
 #if ENABLE_NLS == 1
