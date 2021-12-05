@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
     fread(buffer, files[t].size, 1, f);
 
     files[t].compressed = largestsize;
-    compress(buffer2, (uLongf *)&(files[t].compressed), buffer, files[t].size);
+    compress2(buffer2, (uLongf *)&(files[t].compressed), buffer, files[t].size, 9);
     erg = largestsize;
     uncompress(buffer3, (uLongf *)&(erg), buffer2, files[t].compressed);
 
