@@ -30,8 +30,7 @@
 #include "txtsys.h"
 #include "configuration.h"
 
-#include <cstdlib>
-#include <cstring>
+#include <string>
 
 /* Editor key actions.
  If you add here, change _ed_key_actions[] in leveledit.cc */
@@ -169,14 +168,14 @@ const struct _ed_key _ed_keys[] = {
 
 static int bg_row;
 static int bg_col;
-static char *bg_text = NULL;
+static std::string bg_text;
 static bool bg_darken = false;
 
 /* men_yn() background drawing callback proc */
 static void editor_background_proc(void) {
    scr_drawedit(bg_row * 4, bg_col * 8, false);
    if (bg_darken) scr_darkenscreen();
-   if (bg_text) scr_writetext_center(5, bg_text);
+   if (!bg_text.empty()) scr_writetext_center(5, bg_text.c_str());
 }
 
 static const char *editor_background_menu_proc(_menusystem * /*ms*/) {
@@ -330,7 +329,7 @@ static void edit_checktower(int &row, int &col) {
   bg_darken = false;
   row = bg_row;
   col = bg_col;
-  bg_text = NULL;
+  bg_text.clear();
 }
 
 char *keymod2str(Uint16 kmod) {
@@ -484,8 +483,8 @@ void le_tower_paste(int row, int col) {
     cursor_moved = false;
 }
 
-void le_edit(void) {
-
+void le_edit()
+{
   bool ende = false;
   bool changed = false;
   SDL_Keycode inp = SDLK_UNKNOWN;
@@ -711,7 +710,7 @@ void le_edit(void) {
           while (!men_input(name, TOWERNAMELEN)) ;
           config.editor_towername(name);
         }
-        bg_text = NULL;
+        bg_text.clear();
         if ((strlen(config.editor_towername().c_str()) > 0) &&
             lev_loadtower(config.editor_towername().c_str())) {
             scr_settowercolor(lev_towercol_red(),
@@ -732,7 +731,7 @@ void le_edit(void) {
           while (!men_input(name, TOWERNAMELEN)) ;
           config.editor_towername(name);
         }
-        bg_text = NULL;
+        bg_text.clear();
         lev_savetower(config.editor_towername().c_str());
         changed = false;
         break;
@@ -826,7 +825,7 @@ void le_edit(void) {
           bg_darken = true;
           key_wait_for_none(editor_background_proc);
           while (!men_input((char *)buf, 15, -1, -1, "0123456789")) ;
-          bg_text = NULL;
+          bg_text.clear();
 
           lev_set_towertime(atoi(buf));
         }
@@ -842,7 +841,7 @@ void le_edit(void) {
             bg_darken = true;
             key_wait_for_none(editor_background_proc);
             while (!men_input((char *)buf, 15, -1, -1, "-+0123456789")) ;
-            bg_text = NULL;
+            bg_text.clear();
 
             i = atoi(buf);
             if ((i > 0) && (buf[0] == '+')) {
@@ -930,7 +929,7 @@ void le_edit(void) {
 
             lev_set_towername(tmp);
         }
-        bg_text = NULL;
+        bg_text.clear();
         changed = true;
         break;
       case EDACT_SHOWKEYHELP:
