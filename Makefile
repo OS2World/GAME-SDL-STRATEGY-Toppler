@@ -397,9 +397,9 @@ _build/tools/assembler: datafile/assembler.c
 	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/crearc
-_build/tools/crearc: datafile/crearc.c
+_build/tools/crearc: datafile/crearc.cpp
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/dude
 _build/tools/dude: datafile/dude.c

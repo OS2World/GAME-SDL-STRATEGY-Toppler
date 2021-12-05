@@ -4,12 +4,15 @@
 
 #include <zlib.h>
 
+#include <string>
+
 #define MAXFNAMELEN 150 /* pathnames need a bot more space */
 #define NUMFILES 256
 #define BUFPADDING 0
 
 typedef struct filenode {
-  char name[MAXFNAMELEN];
+  char name[MAXFNAMELEN];   // actual file name
+  std::string aname;  // name of file in the archive
   long start, size, compressed;
 } filenode;
 
@@ -26,13 +29,9 @@ int calcsize(filenode * files, int count) {
   int sz = 0;
 
   for (int i = 0; i < count; i++)
-  {
-    unsigned char tmp = strlen(files[i].name);
-    while (tmp && (files[i].name[tmp-1] != '/'))
-      tmp--;
-    sz += 13 + tmp;
-  }
+    sz += 13 + files[i].aname.size();
 
+  printf("%i files %i headersize\n", count, sz);
   return sz;
 }
 
@@ -52,6 +51,12 @@ int main(int argc, char *argv[])
 
   for (t = 2; (t < argc) && (filecount < NUMFILES); t++) {
     strncpy(files[filecount].name, argv[t], MAXFNAMELEN);
+
+    files[filecount].aname = files[filecount].name;
+    files[filecount].aname = files[filecount].aname.substr(files[filecount].aname.rfind("/")+1);
+
+    printf("%s -> %s\n", files[filecount].name, files[filecount].aname.c_str());
+
 
     f = fopen(argv[t], "rb");
     if (!f)
@@ -86,12 +91,7 @@ int main(int argc, char *argv[])
   fwrite(files, calcsize(files, filecount), 1, outf);
 
   for (t = 0; t < filecount; t++) {
-    char name[MAXFNAMELEN];
-
-    strncpy(name, files[t].name, MAXFNAMELEN);
-    name[MAXFNAMELEN] = '\0';
-
-    f = fopen(name, "rb");
+    f = fopen(files[t].name, "rb");
 
     files[t].size = filesize(f);
     files[t].start = ftell(outf);
@@ -121,19 +121,9 @@ int main(int argc, char *argv[])
   fwrite(&filecount, 1, 1, outf);
 
   for (t = 0; t < filecount; t++) {
-    unsigned char tmp = strlen(files[t].name);
+    fwrite(files[t].aname.c_str(), files[t].aname.size()+1, 1, outf);
 
-    while (tmp && (files[t].name[tmp-1] != '/'))
-      tmp--;
-
-    while (files[t].name[tmp]) {
-      fwrite(&(files[t].name[tmp]), 1, 1, outf);
-      tmp++;
-    }
-
-    fwrite(&files[t].name[tmp], 1, 1, outf);
-
-    tmp = (files[t].start >> 0) & 0xff;
+    unsigned char tmp = (files[t].start >> 0) & 0xff;
     fwrite(&tmp, 1, 1, outf);
     tmp = (files[t].start >> 8) & 0xff;
     fwrite(&tmp, 1, 1, outf);
