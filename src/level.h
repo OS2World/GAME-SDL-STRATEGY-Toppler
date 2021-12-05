@@ -21,6 +21,9 @@
 
 #include <SDL_types.h>
 
+#include <string>
+#include <vector>
+
 /* handles one mission with towers and the necessary manipulations
  on the towerlayout when the game is going on */
 
@@ -86,20 +89,20 @@ void lev_findmissions();
 Uint16 lev_missionnumber();
 
 /* returns the name of the Nth mission */
-const char * lev_missionname(Uint16 num);
+const std::string & lev_missionname(Uint16 num);
 
 /* Convert a char into towerblock */
-Uint8 conv_char2towercode(wchar_t ch);
+Uint8 conv_char2towercode(char ch);
 
 /* Get tower password. Note that the password changes when
    the tower changes. */
-char *lev_get_passwd(void);
+std::string lev_get_passwd(void);
 /* Do we show the tower password to user at the beginning
    of current tower? */
 bool lev_show_passwd(int levnum);
 /* Which tower does password allow entry to in the
    current mission? */
-int lev_tower_passwd_entry(const char *passwd);
+int lev_tower_passwd_entry(const std::string & passwd);
 
 /* loads a mission from the file with the given name */
 bool lev_loadmission(Uint16 num);
@@ -132,12 +135,13 @@ Uint8 lev_set_tower(Uint16 row, Uint8 column, Uint8 block);
 Uint8 lev_towerrows(void);
 
 /* the name of the tower */
-char *lev_towername(void);
-void lev_set_towername(const char *str);
+const std::string & lev_towername(void);
+void lev_set_towername(const std::string & str);
 
 /* tower demo */
-void lev_set_towerdemo(int demolen, Uint16 *demobuf);
-void lev_get_towerdemo(int &demolen, Uint16 *&demobuf);
+void lev_set_towerdemo(std::vector<Uint16> && demo);
+void lev_clear_towerdemo();
+const std::vector<Uint16> & lev_get_towerdemo();
 
 /* the number of the actual tower */
 Uint8 lev_towernr(void);
@@ -224,8 +228,8 @@ void lev_restore(int row, int col, unsigned char bg);
 /* --- the following commands are for the level editor ---  */
 
 /* load and save a tower in a human readable format */
-bool lev_loadtower(const char *fname);
-bool lev_savetower(const char *fname);
+bool lev_loadtower(const std::string & fname);
+bool lev_savetower(const std::string & fname);
 
 /* insert and delete one row */
 void lev_insertrow(int position);
@@ -260,8 +264,8 @@ void lev_puttopstation(int row, int col);
  * allocate the necessary RAM and the restore function
  * frees the RAM again
  */
-void lev_save(unsigned char *&data);
-void lev_restore(unsigned char *&data);
+std::vector<Uint8> lev_save();
+void lev_restore(const std::vector<Uint8> & data);
 
 /* check the tower for consistency. This function checks doors
  * and elevators, and if something is found, row and col contain the
@@ -274,8 +278,8 @@ lev_problem lev_is_consistent(int &row, int &col);
  * the mission mission_finish(). never use another calling order
  * or you may create corrupted mission files.
  */
-bool lev_mission_new(char * name, char * filname, Uint8 prio = 255);
-void lev_mission_addtower(char * name);
+bool lev_mission_new(const std::string & name, const std::string & filname, Uint8 prio = 255);
+void lev_mission_addtower(const std::string & name);
 void lev_mission_finish();
 
 #endif

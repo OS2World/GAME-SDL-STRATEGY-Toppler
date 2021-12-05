@@ -636,7 +636,7 @@ men_hiscores_background_proc(_menusystem *ms)
 
 static void show_scores(bool back = true, int mark = -1) {
   static char buf[50];
-  snprintf(buf, 50, _("Scores for %s"), lev_missionname(currentmission));
+  snprintf(buf, 50, _("Scores for %s"), lev_missionname(currentmission).c_str());
   _menusystem *ms = new_menu_system(buf, men_hiscores_background_proc, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return;
@@ -757,9 +757,8 @@ main_game_loop()
   unsigned char tower;
   Uint8 anglepos;
   Uint16 resttime;
-  int demo = 0;
+  std::vector<Uint16> dummydemo;
   int gameresult;
-  Uint16 *tmpbuf = NULL;
 
   if (!lev_loadmission(currentmission)) {
     if (!men_yn(_("This mission contains\n"
@@ -782,7 +781,7 @@ main_game_loop()
       scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
       ttsounds::instance()->setsoundvol(SND_WATER, 128);
       gam_arrival();
-      gameresult = gam_towergame(anglepos, resttime, demo, &tmpbuf);
+      gameresult = gam_towergame(anglepos, resttime, dummydemo, 0);
     } while ((gameresult == GAME_DIED) && pts_lifesleft());
 
     if (gameresult == GAME_FINISHED) {
@@ -842,7 +841,7 @@ men_main_startgame_proc(_menusystem *ms)
     }
   }
   static char s[30];
-  snprintf(s, 30, _("%c Start: %s %c"), fontptrleft, _(lev_missionname(currentmission)), fontptrright);
+  snprintf(s, 30, _("%c Start: %s %c"), fontptrleft, _(lev_missionname(currentmission).c_str()), fontptrright);
   return s;
 }
 
@@ -874,8 +873,6 @@ men_main_timer_proc(_menusystem *ms)
     Uint16 miss = rand() % lev_missionnumber();
     Uint8 num_towers;
 
-    int demolen;
-    Uint16 *demobuf;
     Uint8 anglepos;
     Uint16 resttime;
 
@@ -887,8 +884,8 @@ men_main_timer_proc(_menusystem *ms)
 
         for (Uint8 idx = 0; (idx < num_towers) && (num_demos < 256); idx++) {
           lev_selecttower(idx);
-          lev_get_towerdemo(demolen, demobuf);
-          if (demolen) demos[num_demos++] = idx;
+          auto demo = lev_get_towerdemo();
+          if (!demo.empty()) demos[num_demos++] = idx;
         }
       }
     }
@@ -896,7 +893,7 @@ men_main_timer_proc(_menusystem *ms)
     if (num_demos < 1) return NULL;
 
     lev_selecttower(demos[rand() % num_demos]);
-    lev_get_towerdemo(demolen, demobuf);
+    auto demo = lev_get_towerdemo();
 
     dcl_update_speed(config.game_speed());
     gam_newgame();
@@ -904,7 +901,7 @@ men_main_timer_proc(_menusystem *ms)
     scr_settowercolor(lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());
     ttsounds::instance()->setsoundvol(SND_WATER, 128);
     rob_initialize();
-    (void)gam_towergame(anglepos, resttime, demolen, &demobuf);
+    (void)gam_towergame(anglepos, resttime, demo, 0);
     ttsounds::instance()->stopsound(SND_WATER);
     dcl_update_speed(MENU_DCLSPEED);
   }

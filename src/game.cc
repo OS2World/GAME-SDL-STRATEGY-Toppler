@@ -80,8 +80,8 @@ void gam_arrival(void) {
     scr_darkenscreen();
     scr_writetext_center((SCREENHEI / 6), _("You are entering the"));
 
-    if (strlen(lev_towername()))
-      scr_writetext_broken_center((SCREENHEI*2 / 6), _(lev_towername()));
+    if (lev_towername().size())
+      scr_writetext_broken_center((SCREENHEI*2 / 6), _(lev_towername().c_str()));
     else
       scr_writetext_broken_center((SCREENHEI*2 / 6), _("Nameless Tower"));
 
@@ -477,7 +477,7 @@ static void pause(int &tower_position, int tower_anglepos, int time) {
            top_anglepos(), tower_anglepos);
 }
 
-gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *demobuf) {
+gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, std::vector<Uint16> & demo, int mode) {
 
   static Uint8 door3[6] = {
     0x17, 0x18, 0x18, 0x19, 0x19, 0xb
@@ -488,9 +488,8 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
 
   gam_states state = STATE_PLAYING;
 
-  int demolen = 0, demo_alloc = 0;
   Uint16 demokeys = 0;
-  Uint16 *dbuf = *(Uint16 **)demobuf;
+  size_t demopos = 0;
 
   screenflag drawflags = SF_NONE;
 
@@ -507,10 +506,8 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   /* time left for the player to reach the tower */
   int time = lev_towertime();
 
-  if (demo == -1) drawflags = SF_REC;
-  else if (demo > 0) drawflags = SF_DEMO;
-
-  assert_msg(!(((demo == -1) || (demo > 0)) && !demobuf), "Trying to play or record a null demo.");
+  if (mode == 1) drawflags = SF_REC;
+  else if (demo.size()) drawflags = SF_DEMO;
 
   top_init();
 
@@ -526,47 +523,27 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
     bg_tower_angle = tower_angle;
     bg_time = time;
 
-    if ((demo > 0) && (demolen < demo) && dbuf) {
-      demokeys = dbuf[demolen++];
+    if (!demo.empty() && (demopos < demo.size())) {
+      demokeys = demo[demopos++];
       get_keys(left_right, up_down, space, demokeys);
-      if ((demolen >= demo) || key_keystat()) state = STATE_ABORTED;
+      if ((demopos >= demo.size()) || key_keystat()) state = STATE_ABORTED;
     } else {
       demokeys = key_keystat();
       get_keys(left_right, up_down, space, demokeys);
     }
 
-    if (demo == -1) {
-      if ((demolen >= demo_alloc) || (dbuf == NULL)) {
-        demo_alloc += 200;
-        Uint16 *tmp = new Uint16[demo_alloc];
-        if (demolen && (dbuf)) {
-          (void)memcpy(tmp, dbuf, demolen*sizeof(Uint16));
-          delete [] dbuf;
-        }
-        dbuf = tmp;
-        *(Uint16 **)demobuf = tmp;
-      }
-      dbuf[demolen++] = demokeys;
-    }
+    if (mode == 1)
+        demo.push_back(demokeys);
 
-    if ((demo >= 0) && (demolen > demo)) {
-      state = STATE_ABORTED;
-      break;
-    }
-
-    if (key_keypressed(break_key)) {
-      if (demo) state = STATE_ABORTED;
-      else
+    if (key_keypressed(break_key) && (mode != 1) && demo.empty()) {
         escape(state, tower_position, tower_angle, time);
     }
 
     if (key_keypressed(pause_key)) {
-      if (demo) state = STATE_ABORTED;
-      else
         pause(tower_position, tower_angle, time);
     }
 
-    if (!demo) key_readkey();
+    if (demo.empty() && (mode != 1)) key_readkey();
 
     ele_update();
     snb_movesnowball();
@@ -587,7 +564,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
     dcl_wait();
   } while (!top_ended() && (state == STATE_PLAYING));
 
-  if (top_targetreached() && !demo) {
+  if (top_targetreached() && demo.empty() && mode == 0) {
     bonus(tower_position, tower_angle, time, lev_lasttower());
     rob_disappearall();
 
@@ -601,7 +578,7 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
       dcl_wait();
     }
 
-    /* first remove all the layera above the target door */
+    /* first remove all the layers above the target door */
     while (lev_towerrows() > tower_position / 4 + 4) {
 
       lev_removelayer(lev_towerrows()-1);
@@ -640,11 +617,6 @@ gam_result gam_towergame(Uint8 &anglepos, Uint16 &resttime, int &demo, void *dem
   anglepos = top_anglepos();
   resttime = time;
   key_readkey();
-
-  if (demo == -1) {
-    demo = demolen;
-  }
-  if (demo) state = STATE_ABORTED;
 
   switch (state) {
 

@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
       return 3;
     }
 
-    fprintf(outf,"\n/* %s */\n", lev_towername());
+    fprintf(outf,"\n/* %s */\n", lev_towername().c_str());
 
     fprintf(outf, "\n#declare farb = color rgb <%d/255,%d/255,%d/255>;\n\n",
             lev_towercol_red(), lev_towercol_green(), lev_towercol_blue());

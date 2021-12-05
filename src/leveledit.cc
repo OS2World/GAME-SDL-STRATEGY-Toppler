@@ -414,7 +414,7 @@ static void le_showkeyhelp() {
   int k;
   int maxkeylen = 0;
   textsystem *ts = new textsystem(_("Editor Key Help"), editor_background_menu_proc);
-  char tabbuf1[6], tabbuf2[6];
+  char tabbuf1[11], tabbuf2[13];
 
   if (!ts) return;
 
@@ -426,7 +426,7 @@ static void le_showkeyhelp() {
       if (l > maxkeylen) maxkeylen = l;
   }
 
-  snprintf(tabbuf1, 6, "%3i", maxkeylen + FONTWID);
+  snprintf(tabbuf1, 11, "%3i", maxkeylen + FONTWID);
   if (tabbuf1[0] < '0') tabbuf1[0] = '0';
   if (tabbuf1[1] < '0') tabbuf1[1] = '0';
   if (tabbuf1[2] < '0') tabbuf1[2] = '0';
@@ -438,7 +438,7 @@ static void le_showkeyhelp() {
 
       snprintf(knam, 256, "%s%s", keymod2str(_ed_keys[k].mod), SDL_GetKeyName(_ed_keys[k].key));
 
-      snprintf(tabbuf2, 6, "%3i", maxkeylen - scr_textlength(knam));
+      snprintf(tabbuf2, 13, "%3i", maxkeylen - scr_textlength(knam));
       if (tabbuf2[0] < '0') tabbuf2[0] = '0';
       if (tabbuf2[1] < '0') tabbuf2[1] = '0';
       if (tabbuf2[2] < '0') tabbuf2[2] = '0';
@@ -519,7 +519,7 @@ void le_edit(void) {
                     lev_towercol_blue());
 
   lev_set_towername("");
-  lev_set_towerdemo(0, NULL);
+  lev_clear_towerdemo();
 
   while (!ende) {
 
@@ -741,20 +741,18 @@ void le_edit(void) {
         {
             Uint8 dummy1;
             Uint16 dummy2;
-            unsigned char *p;
-            int demolen = -1;
-            Uint16 *demobuf = NULL;
             int speed = dcl_update_speed(config.game_speed());
-            lev_set_towerdemo(0, NULL);
-            lev_save(p);
+            lev_clear_towerdemo();
+            auto p = lev_save();
             gam_newgame();
             rob_initialize();
             snb_init();
             ttsounds::instance()->startsound(SND_WATER);
-            gam_towergame(dummy1, dummy2, demolen, &demobuf);
+            std::vector<Uint16> demo;
+            gam_towergame(dummy1, dummy2, demo, 1);
             ttsounds::instance()->stopsound(SND_WATER);
             lev_restore(p);
-            lev_set_towerdemo(demolen, demobuf);
+            lev_set_towerdemo(std::move(demo));
             key_readkey();
             set_men_bgproc(editor_background_proc);
             dcl_update_speed(speed);
@@ -762,20 +760,17 @@ void le_edit(void) {
         break;
       case EDACT_PLAY_DEMO:
         {
-            int demolen = 0;
-            Uint16 *demobuf = NULL;
-            lev_get_towerdemo(demolen, demobuf);
-            if (demolen > 0) {
+            auto demo = lev_get_towerdemo();
+            if (!demo.empty()) {
                 Uint8 dummy1;
                 Uint16 dummy2;
-                unsigned char *p;
                 int speed = dcl_update_speed(config.game_speed());
-                lev_save(p);
+                auto p = lev_save();
                 gam_newgame();
                 rob_initialize();
                 snb_init();
                 ttsounds::instance()->startsound(SND_WATER);
-                gam_towergame(dummy1, dummy2, demolen, &demobuf);
+                gam_towergame(dummy1, dummy2, demo, 0);
                 ttsounds::instance()->stopsound(SND_WATER);
                 lev_restore(p);
                 key_readkey();
@@ -791,16 +786,14 @@ void le_edit(void) {
         {
           Uint8 dummy1;
           Uint16 dummy2;
-          int dummy3 = -2;
+          std::vector<Uint16> dummy3;
           int speed = dcl_update_speed(config.game_speed());
-          Uint16 *dummybuf = NULL;
-          unsigned char *p;
-          lev_save(p);
+          auto p = lev_save();
           gam_newgame();
           rob_initialize();
           snb_init();
           ttsounds::instance()->startsound(SND_WATER);
-          gam_towergame(dummy1, dummy2, dummy3, &dummybuf);
+          gam_towergame(dummy1, dummy2, dummy3, 2);
           ttsounds::instance()->stopsound(SND_WATER);
           lev_restore(p);
           key_readkey();
@@ -928,7 +921,15 @@ void le_edit(void) {
         bg_text = _("Name the tower:");
         bg_darken = true;
         key_wait_for_none(editor_background_proc);
-        while (!men_input(lev_towername(), TOWERNAMELEN)) ;
+        {
+            // TODO this must be done nicer
+            char tmp[TOWERNAMELEN+1];
+            memcpy(tmp, lev_towername().c_str(), TOWERNAMELEN);
+            tmp[TOWERNAMELEN] = 0;
+            while (!men_input(tmp, TOWERNAMELEN)) ;
+
+            lev_set_towername(tmp);
+        }
         bg_text = NULL;
         changed = true;
         break;

@@ -27,9 +27,6 @@
 #endif
 
 #include "decl.h"
-#include <cstdlib>
-#include <cstring>
-#include <unistd.h>
 
 #define TOWERWID 16
 
@@ -44,11 +41,11 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-truncation"
 
-struct _tblockdata {
+static const struct _tblockdata {
     const char *nam; /* name */
     char       ch;   /* representation in saved tower file */
     Uint16     tf = 0;   /* flags; TBF_foo */
-} static towerblockdata[NUM_TBLOCKS] = {
+} towerblockdata[NUM_TBLOCKS] = {
     { "space",            ' ', TBF_EMPTY },
     { "lift top stop",    'v', TBF_EMPTY|TBF_STATION },
     { "lift middle stop", '+', TBF_EMPTY|TBF_STATION },
@@ -95,33 +92,33 @@ enum towersection {
     TSS_ROBOT
 };
 
-char tss_string_name[] = "name";
-char tss_string_time[] = "time";
-char tss_string_color[] = "color";
-char tss_string_data[] = "data";
-char tss_string_demo[] = "demo";
-char tss_string_robot[] = "robot";
+static const char tss_string_name[] = "name";
+static const char tss_string_time[] = "time";
+static const char tss_string_color[] = "color";
+static const char tss_string_data[] = "data";
+static const char tss_string_demo[] = "demo";
+static const char tss_string_robot[] = "robot";
 
-static Uint8 * mission = NULL;
+static std::vector<Uint8> mission;
 static Uint8 towerheight;
 static Uint8 towerrobot;
+// TODO this would be nicer as a vector of arrays or something like this
+// as right now we are limited to a hight of 256 layers
 static Uint8 tower[256][TOWERWID];
-static char towername[TOWERNAMELEN+1];
+static std::string towername;
 static Uint8 towernumber;
 static Uint8 towercolor_red, towercolor_green, towercolor_blue;
 static Uint16 towertime;
-static Uint16 *towerdemo = NULL;
-static int towerdemo_len = 0;
+static std::vector<Uint16> towerdemo;
 
 typedef struct mission_node {
-  char name[30];
-  char fname[100];
+  std::string name;
+  std::string fname;
   bool archive;       // is the mission inside the archive, or not
   Uint8 prio;         // the lower prio, the further in front the mission will be in the list
-  mission_node *next;
 } mission_node;
 
-mission_node * missions;
+std::vector<mission_node> missions;
 
 #ifndef CREATOR
 
@@ -138,7 +135,7 @@ static int missionfiles (const struct dirent *file)
 
 #endif
 
-Uint8 conv_char2towercode(wchar_t ch) {
+Uint8 conv_char2towercode(char ch) {
   if (ch)
     for (int x = 0; x < NUM_TBLOCKS; x++)
       // we can do that because we use only chars below 128
@@ -152,6 +149,8 @@ char conv_towercode2char(Uint8 code) {
   return towerblockdata[TB_EMPTY].ch;
 }
 
+
+#ifndef CREATOR
 
 static void add_mission(std::string fname, bool archive = false) {
 
@@ -191,64 +190,22 @@ static void add_mission(std::string fname, bool archive = false) {
     fclose(f);
   }
 
-  mission_node * m = missions;
-  mission_node * l = NULL;
-
   /* first check if the mission is already there */
-  while (m) {
+  /* no two missions with the same name */
+  for (auto & m : missions)
+      if (m.name == mname)
+          return;
 
-    int erg = strcmp(m->name, mname);
-    /* no two missions with the same name */
-    if (erg == 0) {
-      return;
-    }
-    l = m;
-    m = m->next;
-  }
+  auto i = std::find_if(missions.begin(), missions.end(), [prio](auto & m) { return m.prio > prio; });
 
-  m = missions;
-  l = NULL;
+  mission_node n;
+  n.name = mname;
+  n.fname = fname;
+  n.prio = prio;
+  n.archive = archive;
 
-  while (m) {
-
-    /* we have passed our target, the current mission must
-     * be inserted before this mission
-     */
-    if (m->prio > prio) {
-      mission_node * n = new mission_node;
-      strcpy(n->name, mname);
-      strcpy(n->fname, fname.c_str());
-      n->prio = prio;
-      n->next = m;
-      n->archive = archive;
-
-      if (l)
-        l->next = n;
-      else
-        missions = n;
-
-      return;
-    }
-    l = m;
-    m = m->next;
-  }
-
-  /* insert at the end */
-  m = new mission_node;
-  strcpy(m->name, mname);
-  strcpy(m->fname, fname.c_str());
-  m->prio = prio;
-  m->next = NULL;
-  m->archive = archive;
-
-  if (l)
-    l->next = m;
-  else
-    missions = m;
-
+  missions.insert(i, n);
 }
-
-#ifndef CREATOR
 
 void lev_findmissions() {
 
@@ -256,14 +213,7 @@ void lev_findmissions() {
 
   struct dirent **eps = NULL;
 
-  missions = NULL;
-
-  /* check if already called, if so free the old list */
-  while (missions) {
-    mission_node *n = missions;
-    missions = missions->next;
-    delete n;
-  }
+  missions.clear();
 
   /* first check inside the archive */
 
@@ -340,76 +290,41 @@ void lev_findmissions() {
 #endif
 
 void lev_done() {
-  if (mission) {
-    delete [] mission;
-    mission = NULL;
-  }
-
-  mission_node * m = missions;
-
-  while (m) {
-    m = m->next;
-    delete missions;
-    missions = m;
-  }
-
-  if (towerdemo) delete [] towerdemo;
 }
 
 
 Uint16 lev_missionnumber() {
-  int num = 0;
-  mission_node * m = missions;
-
-  while (m) {
-    num++;
-    m = m->next;
-  }
-
-  return num;
+  return missions.size();
 }
 
-const char * lev_missionname(Uint16 num) {
-  mission_node * m = missions;
-
-  while (num) {
-    m = m->next;
-    num--;
-  }
-
-  return m->name;
+const std::string & lev_missionname(Uint16 num) {
+  return missions[num].name;
 }
 
 bool lev_loadmission(Uint16 num) {
 
-  mission_node *m = missions;
-  while (num) {
-    num--;
-    m = m->next;
-  }
+  auto & m = missions[num];
 
-  if (mission) delete [] mission;
+  if (m.archive) {
 
-  if (m->archive) {
-
-    auto f = dataarchive->open(m->fname);
+    auto f = dataarchive->open(m.fname);
     Uint32 fsize = f.size();
 
-    mission = new unsigned char[fsize];
-    f.read(mission, fsize);
+    mission.resize(fsize);
+    f.read(mission.data(), fsize);
 
   } else {
 
-    FILE * in = fopen(m->fname, "rb");
+    FILE * in = fopen(m.fname.c_str(), "rb");
 
     /* find out file size */
     fseek(in, 0, SEEK_END);
     unsigned long fsize = ftell(in);
 
     /* get enough memory and load the whole file into memory */
-    mission = new unsigned char[fsize];
+    mission.resize(fsize);
     fseek(in, 0, SEEK_SET);
-    size_t read = fread(mission, 1, fsize, in);
+    size_t read = fread(mission.data(), 1, fsize, in);
     assert_msg(read == fsize, "could not read data");
 
     fclose(in);
@@ -439,7 +354,7 @@ void lev_selecttower(Uint8 number) {
   Uint8 section;
   Uint32 section_len;
 
-  lev_set_towerdemo(0, NULL);
+  lev_clear_towerdemo();
 
   // find start of towerdata in mission
   {
@@ -464,8 +379,8 @@ void lev_selecttower(Uint8 number) {
     section_len += Uint32(mission[towerstart++]) << 24;
     switch ((towersection)section) {
     case TSS_TOWERNAME:
-      memmove(towername, &mission[towerstart], section_len);
-      towername[section_len] = 0;
+      towername.resize(section_len);
+      memmove(towername.data(), &mission[towerstart], section_len);
       break;
     case TSS_TOWERTIME:
       towertime = mission[towerstart] + (int(mission[towerstart + 1]) << 8);
@@ -500,27 +415,28 @@ void lev_selecttower(Uint8 number) {
     case TSS_DEMO:
       {
         // get tower demo
-        Uint16 *tmpbuf = NULL;
+        std::vector<Uint16> demo;
         Uint16 tmpbuf_len = mission[towerstart];
         tmpbuf_len += Uint16(mission[towerstart+1]) << 8;
         Uint16 ofs = 2;
 
         if (tmpbuf_len) {
-          tmpbuf = new Uint16[tmpbuf_len];
           Uint16 idx = 0;
-          while (idx < tmpbuf_len) {
+          while (idx < tmpbuf_len)
+          {
             Uint8 run = mission[towerstart + ofs++];
             Uint16 data = mission[towerstart + ofs++];
             data += Uint16(mission[towerstart + ofs++]) << 8;
 
             while (run) {
-              tmpbuf[idx++] = data;
+              demo.push_back(data);
+              idx++;
               run--;
             }
           }
         }
 
-        lev_set_towerdemo(tmpbuf_len, tmpbuf);
+        lev_set_towerdemo(std::move(demo));
         break;
       }
     case TSS_ROBOT:
@@ -536,38 +452,32 @@ void lev_selecttower(Uint8 number) {
   } while ((towersection)section != TSS_END);
 }
 
-char *
-gen_passwd(int pwlen, const char *allowed, int buflen, char *buf)
+// TODO make buf a vector
+static std::string gen_passwd(int pwlen, const std::string & allowed, int buflen, char *buf)
 {
-  static char passwd[PASSWORD_LEN + 1];
-  int len = buflen;
-  int alen;
-  int i;
-
-  if (!allowed) return NULL;
-
-  alen = strlen(allowed);
+  int alen = allowed.size();
 
   if (pwlen > PASSWORD_LEN) pwlen = PASSWORD_LEN;
 
-  if (buflen < (pwlen*5)) len = pwlen*5;
+  int len = buflen;
+  if (len < (pwlen*5)) len = pwlen*5;
 
-  (void)memset(passwd, 0, PASSWORD_LEN);
+  char passwd[PASSWORD_LEN + 1];
+  memset(passwd, 0, PASSWORD_LEN+1);
 
-  for (i = 0; i < len; i++) {
+  for (int i = 0; i < len; i++)
+  {
     passwd[i % pwlen] += buf[i % buflen];
     if (passwd[i % pwlen] > alen) passwd[(i+1) % pwlen]++;
   }
 
-  for (i = 0; i < pwlen; i++)
+  for (int i = 0; i < pwlen; i++)
     passwd[i] = allowed[abs(passwd[i]) % alen];
-
-  passwd[pwlen] = '\0';
 
   return passwd;
 }
 
-char *lev_get_passwd(void) {
+std::string lev_get_passwd(void) {
     return gen_passwd(PASSWORD_LEN, PASSWORD_CHARS, 256*TOWERWID, (char *)tower);
 }
 
@@ -577,17 +487,18 @@ bool lev_show_passwd(int levnum) {
           ((levnum % 3) == 0));
 }
 
-int lev_tower_passwd_entry(const char *passwd) {
-  int i;
-  if (!passwd) return 0;
-  for (i = 0; i < lev_towercount(); i++) {
-    lev_selecttower(i);
-    if (!strcmp(passwd,lev_get_passwd())) return i;
-  }
-  return 0;
+int lev_tower_passwd_entry(const std::string & passwd)
+{
+    for (int i = 0; i < lev_towercount(); i++)
+    {
+        lev_selecttower(i);
+        if (passwd == lev_get_passwd()) return i;
+    }
+    return 0;
 }
 
-void lev_clear_tower(void) {
+void lev_clear_tower(void)
+{
     memset(&tower, TB_EMPTY, 256*TOWERWID);
 }
 
@@ -623,24 +534,29 @@ Uint8 lev_towerrows(void) {
   return towerheight;
 }
 
-char * lev_towername(void) {
+const std::string & lev_towername(void) {
   return towername;
 }
 
-void lev_set_towerdemo(int demolen, Uint16 *demobuf) {
-    if (towerdemo) delete [] towerdemo;
-    towerdemo = demobuf;
-    towerdemo_len = demolen;
+// TODO demobuffer should be vector
+void lev_set_towerdemo(std::vector<Uint16> && demo)
+{
+    towerdemo = std::move(demo);
 }
 
-void lev_get_towerdemo(int &demolen, Uint16 *&demobuf) {
-    demobuf = towerdemo;
-    demolen = towerdemo_len;
+void lev_clear_towerdemo()
+{
+    towerdemo.clear();
 }
 
-void lev_set_towername(const char *str) {
-    (void) strncpy(towername, str, TOWERNAMELEN);
-    towername[TOWERNAMELEN] = '\0';
+// TODO use vector
+const std::vector<Uint16> & lev_get_towerdemo() {
+    return towerdemo;
+}
+
+void lev_set_towername(const std::string & str)
+{
+    towername = str;
 }
 
 Uint8 lev_towernr(void) {
@@ -806,6 +722,7 @@ bool lev_is_robot(int row, int col) {
   return ((towerblockdata[tower[row][col]].tf & TBF_ROBOT) != 0);
 }
 
+#ifndef CREATOR
 
 static bool inside_cyclic_intervall(int x, int start, int end, int cycle) {
 
@@ -815,7 +732,6 @@ static bool inside_cyclic_intervall(int x, int start, int end, int cycle) {
   return (x >= start) && (x < end);
 }
 
-#ifndef CREATOR
 
 /* returns true, if the given figure can be at the given position
  without colliding with fixed objects of the tower */
@@ -888,14 +804,14 @@ void lev_restore(int row, int col, unsigned char bg) {
 
 
 /* load and save a tower */
-bool lev_loadtower(const char *fname) {
-  FILE *in = open_local_data_file(fname);
+bool lev_loadtower(const std::string & fname) {
+  FILE *in = open_local_data_file(fname.c_str());
   char line[200];
 
   if (in == NULL) return false;
 
   lev_clear_tower();
-  lev_set_towerdemo(0, NULL);
+  lev_clear_towerdemo();
   towertime = 0;
   towerheight = 0;
   towerrobot = 0;
@@ -916,18 +832,19 @@ bool lev_loadtower(const char *fname) {
       continue;
 
     if (strncmp(&line[1], tss_string_name, strlen(tss_string_name)) == 0) {
-      read = fgets(towername, TOWERNAMELEN+1, in);
+      char tmp[TOWERNAMELEN+1];
+
+      read = fgets(tmp, TOWERNAMELEN+1, in);
       assert_msg(read != nullptr, "could not read data");
       /* remove not allowed characters */
       {
         int inp = 0;
-        int outp = 0;
-        while(towername[inp]) {
+        while(towername[inp])
+        {
           if ((towername[inp] >= 32) && (towername[inp] < 127))
-            towername[outp++] = towername[inp];
+            towername += tmp[inp];
           inp++;
         }
-        towername[outp] = 0;
       }
     } else if (strncmp(&line[1], tss_string_color, strlen(tss_string_color)) == 0) {
       read = fgets(line, 200, in);
@@ -953,17 +870,20 @@ bool lev_loadtower(const char *fname) {
       }
     } else if (strncmp(&line[1], tss_string_demo, strlen(tss_string_demo)) == 0) {
       if (fgets(line, 200, in)) {
-          sscanf(line, "%i\n", &towerdemo_len);
+          int len;
+          sscanf(line, "%i\n", &len);
 
-          if (towerdemo_len > 0) {
-              towerdemo = new Uint16[towerdemo_len];
+          if (len > 0) {
+              towerdemo.resize(len);
 
-              for (int idx = 0; idx < towerdemo_len; idx++) {
+              for (int idx = 0; idx < len; idx++) {
                   read = fgets(line, 200, in);
                   assert_msg(read != nullptr, "could not read data");
-                  sscanf(line, "%hu\n", &towerdemo[idx]);
+                  Uint16 tmp;
+                  sscanf(line, "%hu\n", &tmp);
+                  towerdemo[idx] = tmp;
               }
-          } else towerdemo = NULL;
+          } else towerdemo.clear();
       }
     } else if (strncmp(&line[1], tss_string_robot, strlen(tss_string_robot)) == 0) {
       read = fgets(line, 200, in);
@@ -986,13 +906,13 @@ bool lev_loadtower(const char *fname) {
 
 #ifndef CREATOR
 
-bool lev_savetower(const char *fname) {
-  FILE *out = create_local_data_file(fname);
+bool lev_savetower(const std::string & fname) {
+  FILE *out = create_local_data_file(fname.c_str());
 
   if (out == NULL) return false;
 
   fprintf(out, "[%s]\n", tss_string_name);
-  fprintf(out, "%s\n", towername);
+  fprintf(out, "%s\n", towername.c_str());
 
   fprintf(out, "[%s]\n", tss_string_color);
   fprintf(out, "%hhu, %hhu, %hhu\n", towercolor_red, towercolor_green, towercolor_blue);
@@ -1017,12 +937,9 @@ bool lev_savetower(const char *fname) {
   }
 
   fprintf(out, "[%s]\n", tss_string_demo);
-  fprintf(out, "%i\n", towerdemo_len);
-  if (towerdemo && (towerdemo_len > 0)) {
-    for (int idx = 0; idx < towerdemo_len; idx++) {
-      fprintf(out, "%hu\n", towerdemo[idx]);
-    }
-  }
+  fprintf(out, "%zu\n", towerdemo.size());
+  for (auto d : towerdemo)
+      fprintf(out, "%hu\n", d);
 
   fclose(out);
 
@@ -1131,18 +1048,21 @@ void lev_putmiddlestation(int row, int col) { tower[row][col] = TB_STATION_MIDDL
 void lev_puttopstation(int row, int col) { tower[row][col] = TB_STATION_TOP; }
 
 
-void lev_save(unsigned char *&data) {
-  data = new unsigned char[256*TOWERWID+1];
+std::vector<Uint8> lev_save()
+{
+  std::vector<Uint8> data;
+  data.resize(256*TOWERWID+1);
 
   data[0] = towerheight;
-  memmove(&data[1], tower, 256 * TOWERWID);
+  memmove(data.data()+1, tower, 256 * TOWERWID);
+
+  return data;
 }
 
-void lev_restore(unsigned char *&data) {
-  memmove(tower, &data[1], 256 * TOWERWID);
+void lev_restore(const std::vector<Uint8> & data)
+{
+  memmove(tower, data.data()+1, 256 * TOWERWID);
   towerheight = data[0];
-
-  delete [] data;
 }
 
 lev_problem lev_is_consistent(int &row, int &col) {
@@ -1345,7 +1265,7 @@ lev_problem lev_is_consistent(int &row, int &col) {
 
   /* other, non-tower related problems */
   if (lev_towertime() < 5) return TPROB_SHORTTIME;
-  if (!strlen(lev_towername())) return TPROB_NONAME;
+  if (lev_towername().empty()) return TPROB_NONAME;
 
   return TPROB_NONE;
 }
@@ -1356,21 +1276,22 @@ static FILE * fmission = NULL;
 static Uint8 nmission = 0;
 static Uint32 missionidx[256];
 
-bool lev_mission_new(char * name, char * filname, Uint8 prio) {
+bool lev_mission_new(const std::string & name, const std::string & filname, Uint8 prio) {
   assert_msg(!fmission, "called mission_finish twice");
 
+  // TODO remove
   char fname[200];
-  snprintf(fname, 200, "%s.ttm", filname);
+  snprintf(fname, 200, "%s.ttm", filname.c_str());
 
   fmission = create_local_data_file(fname);
 
   if (!fmission) return false;
 
-  unsigned char tmp = strlen(name);
+  unsigned char tmp = name.size();
 
   /* write out name */
-  fwrite(&tmp, 1 ,1, fmission);
-  fwrite(name, 1, tmp, fmission);
+  fwrite(&tmp, 1, 1, fmission);
+  fwrite(name.c_str(), 1, tmp, fmission);
 
   fwrite(&prio, 1, 1, fmission);
 
@@ -1383,7 +1304,7 @@ bool lev_mission_new(char * name, char * filname, Uint8 prio) {
   return true;
 }
 
-void write_fmission_section(Uint8 section, Uint32 section_len) {
+static void write_fmission_section(Uint8 section, Uint32 section_len) {
     Uint8 tmp;
     fwrite(&section, 1, 1, fmission);
 
@@ -1397,23 +1318,22 @@ void write_fmission_section(Uint8 section, Uint32 section_len) {
     fwrite(&tmp, 1, 1, fmission);
 }
 
-void lev_mission_addtower(char * name) {
+void lev_mission_addtower(const std::string & name) {
   assert_msg(fmission, "called mission_addtower without mission_new");
 
   Uint8 rows, col;
   Sint16 row;
   Uint8 namelen, tmp;
   Uint32 section_len;
-  int idx;
 
   missionidx[nmission] = ftell(fmission);
   nmission++;
 
   if (!lev_loadtower(name)) return;
 
-  namelen = strlen(towername);
+  namelen = towername.size();
   write_fmission_section(TSS_TOWERNAME, namelen);
-  fwrite(towername, 1, namelen, fmission);
+  fwrite(towername.c_str(), 1, namelen, fmission);
 
   write_fmission_section(TSS_ROBOT, 1);
   fwrite(&towerrobot, 1, 1, fmission);
@@ -1467,7 +1387,8 @@ void lev_mission_addtower(char * name) {
 
   /* output towerdemo */
 
-  if (towerdemo && (towerdemo_len > 0)) {
+  if (!towerdemo.empty())
+  {
     Uint8 run;
     Uint16 data;
 
@@ -1476,7 +1397,7 @@ void lev_mission_addtower(char * name) {
     data = towerdemo[0];
     section_len = 2;
 
-    for (idx = 1; idx < towerdemo_len; idx++) {
+    for (size_t idx = 1; idx < towerdemo.size(); idx++) {
       if ((data != towerdemo[idx]) || (run == 0xff)) {
         section_len += 3;
 
@@ -1490,16 +1411,16 @@ void lev_mission_addtower(char * name) {
     write_fmission_section(TSS_DEMO, section_len);
 
     /* output length */
-    tmp = towerdemo_len & 0xff;
+    tmp = towerdemo.size() & 0xff;
     fwrite(&tmp, 1, 1, fmission);
-    tmp = (towerdemo_len >> 8) & 0xff;
+    tmp = (towerdemo.size() >> 8) & 0xff;
     fwrite(&tmp, 1, 1, fmission);
 
     /* output data using a simple runlength encoder */
     run = 1;
     data = towerdemo[0];
 
-    for (idx = 1; idx < towerdemo_len; idx++) {
+    for (size_t idx = 1; idx < towerdemo.size(); idx++) {
       if ((data != towerdemo[idx]) || (run == 0xff)) {
         fwrite(&run, 1, 1, fmission);
         tmp = data & 0xff;
