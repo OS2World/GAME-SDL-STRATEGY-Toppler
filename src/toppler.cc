@@ -25,38 +25,38 @@
 #include "sound.h"
 
 /* the position of the animal on the tower */
-int anglepos;
-long verticalpos;
+static int anglepos;
+static long verticalpos;
 
 /* the state of the toppler */
-int state, substate;
+static int state, substate;
 
 /* have we entered the target door */
-bool targetdoor;
+static bool targetdoor;
 
 /* some help variables for the falling toppler */
-int falling_howmuch;
-long falling_direction;
-int falling_minimum;
+static int falling_howmuch;
+static long falling_direction;
+static int falling_minimum;
 
 /* some variables defining how to jump */
-int jumping_direction, jumping_how, jumping_howlong;
+static int jumping_direction, jumping_how, jumping_howlong;
 
 /* used to time the turning of the tower when a door was entered */
-int door_turner;
+static int door_turner;
 
-long elevator_direction;
+static long elevator_direction;
 
 /* how much must the toppler topple down */
-int topple_min;
+static int topple_min;
 
 /* used when on an elevator to delay the toppling until we
  reached the next brick layer */
-bool topple_delay;
+static bool topple_delay;
 
 /* technique points; is decreased each time the toppler gets
  thrown down */
-int technic;
+static int technic;
 
 /* true if the toppler is visible */
 static bool tvisible;
