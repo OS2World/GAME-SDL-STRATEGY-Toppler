@@ -833,15 +833,16 @@ bool lev_loadtower(const std::string & fname) {
 
     if (strncmp(&line[1], tss_string_name, strlen(tss_string_name)) == 0) {
       char tmp[TOWERNAMELEN+1];
+      towername.clear();
 
       read = fgets(tmp, TOWERNAMELEN+1, in);
       assert_msg(read != nullptr, "could not read data");
       /* remove not allowed characters */
       {
         int inp = 0;
-        while(towername[inp])
+        while(tmp[inp])
         {
-          if ((towername[inp] >= 32) && (towername[inp] < 127))
+          if ((tmp[inp] >= 32) && (tmp[inp] < 127))
             towername += tmp[inp];
           inp++;
         }
