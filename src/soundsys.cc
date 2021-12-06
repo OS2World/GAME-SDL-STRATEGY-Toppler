@@ -20,17 +20,10 @@
 #include "soundsys.h"
 #include "archi.h"
 
-#include <cstdio>
-#include <cstring>
-
 ttsounds::ttsounds(void)
 {
   useSound = false;
-  n_sounds = 0;
-  sounds = NULL;
-
   debugprintf(9, "ttsounds::ttsounds\n");
-
   title = 0;
 }
 
@@ -38,57 +31,27 @@ ttsounds::~ttsounds(void)
 {
   closesound();
 
-  for (int t = 0; t < n_sounds; t++)
-    if (sounds[t].sound)
-      Mix_FreeChunk(sounds[t].sound);
-
-  delete [] sounds;
+  for (auto & s : sounds)
+      if (s.sound)
+          Mix_FreeChunk(s.sound);
 
   debugprintf(9, "ttsounds::~ttsounds\n");
 }
 
 void ttsounds::addsound(const char *fname, int id, int vol, int loops)
 {
-  struct ttsnddat *tmp;
-  bool need_add = true;
-  int add_pos = n_sounds;
-
-  if (sounds && n_sounds)
-    for (int t = 0; t < n_sounds; t++)
-      if (!sounds[t].in_use) {
-        need_add = false;
-        add_pos = t;
-        break;
-      }
-
-  if (need_add) {
-    tmp = new struct ttsnddat [n_sounds + 1];
-
-    if (!tmp) return;
-
-    if (n_sounds) {
-      memcpy(tmp, sounds, sizeof(struct ttsnddat) * n_sounds);
-      delete [] sounds;
-    }
-    sounds = tmp;
-  }
-
   auto f = dataarchive->open(fname);
 
-  sounds[add_pos].sound = Mix_LoadWAV_RW(f.rwOps(), 1);
+  ttsnddat d;
 
-  if (sounds[add_pos].sound) {
-    sounds[add_pos].in_use = true;
-    sounds[add_pos].play = false;
-    sounds[add_pos].id_num = id;
-    sounds[add_pos].channel = -1;
-    sounds[add_pos].volume = vol;
-    sounds[add_pos].loops = loops;
-    debugprintf(8,"ttsounds::addsound(\"%s\", %i, %i) = %i\n", fname, vol, loops, add_pos);
-  } else
-    debugprintf(0,"ttsounds::addsound(): No such file as '%s'\n", fname);
+  d.play = false;
+  d.id_num = id;
+  d.channel = -1;
+  d.volume = vol;
+  d.loops = loops;
+  d.sound = Mix_LoadWAV_RW(f.rwOps(), 1);
 
-  n_sounds++;
+  sounds.push_back(d);
 
   return;
 }
@@ -97,28 +60,27 @@ void ttsounds::play(void)
 {
   if (!useSound) return;
 
-  for (int t = 0; t < n_sounds; t++)
-    if (sounds[t].in_use && sounds[t].play) {
-
-      sounds[t].channel = Mix_PlayChannel(-1, sounds[t].sound, sounds[t].loops);
-      Mix_Volume(sounds[t].channel, sounds[t].volume);
-
-      sounds[t].play = false;
-    }
+  for (auto & s : sounds)
+      if (s.play)
+      {
+          s.channel = Mix_PlayChannel(-1, s.sound, s.loops);
+          Mix_Volume(s.channel, s.volume);
+          s.play = false;
+      }
   debugprintf(9,"ttsounds::play()\n");
 }
 
 void ttsounds::stop(void)
 {
-  for (int t = 0; t < n_sounds; t++) stopsound(t);
+  for (size_t t = 0; t < sounds.size(); t++) stopsound(t);
 }
 
-void ttsounds::stopsound(int snd)
+void ttsounds::stopsound(size_t snd)
 {
   if (useSound) {
-    if ((snd >= 0) && (snd < n_sounds)) {
-      if (sounds[snd].channel != -1) {
-
+    if (snd < sounds.size()) {
+      if (sounds[snd].channel != -1)
+      {
         Mix_HaltChannel(sounds[snd].channel);
         sounds[snd].channel = -1;
       }
@@ -128,19 +90,19 @@ void ttsounds::stopsound(int snd)
   debugprintf(9,"ttsounds::stopsound(%i)\n", snd);
 }
 
-void ttsounds::startsound(int snd)
+void ttsounds::startsound(size_t snd)
 {
   if (!useSound) return;
 
-  if ((snd >= 0) && (snd < n_sounds)) sounds[snd].play = true;
+  if (snd < sounds.size()) sounds[snd].play = true;
 
   debugprintf(9,"ttsounds::startsound(%i)\n", snd);
 }
 
-void ttsounds::setsoundvol(int snd, int vol)
+void ttsounds::setsoundvol(size_t snd, int vol)
 {
   if (useSound) {
-    if ((snd >= 0) && (snd < n_sounds)) {
+    if (snd < sounds.size()) {
       if (sounds[snd].channel != -1) {
 
         Mix_Volume(sounds[snd].channel, vol);
@@ -153,79 +115,89 @@ void ttsounds::setsoundvol(int snd, int vol)
   }
 }
 
-ttsounds * ttsounds::instance(void) {
-  if (!inst)
-    inst = new ttsounds();
+ttsounds * ttsounds::instance(void)
+{
+    if (!inst)
+        inst = new ttsounds();
 
-  return inst;
+    return inst;
 }
 
 class ttsounds *ttsounds::inst = 0;
 
-void ttsounds::opensound(void) {
-  if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
-    debugprintf(0, "Couldn't init the sound system, muting.\n");
-    return;
-  }
-
-  if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
-    debugprintf(0, "Could not open audio, muting.\n");
-    SDL_QuitSubSystem(SDL_INIT_AUDIO);
-    return;
-  }
-
-  useSound = true;
-}
-
-void ttsounds::closesound(void) {
-  if (!useSound) return;
-
-  while (Mix_Playing(-1)) dcl_wait();
-
-  Mix_CloseAudio();
-  SDL_QuitSubSystem(SDL_INIT_AUDIO);
-
-  useSound = false;
-}
-
-
-void ttsounds::playmusic(const char * fname) {
-  if (!useSound) return;
-
-  char f[500];
-  if (get_data_file_path(fname, f, 500)) {
-    title = Mix_LoadMUS(f);
-    Mix_PlayMusic(title, -1);
-    musicVolume = MIX_MAX_VOLUME;
-  }
-}
-void ttsounds::stopmusic(void) {
-  if (!useSound) return;
-
-  if (title) {
-    Mix_FadeOutMusic(1000);
-
-    while (Mix_FadingMusic() != MIX_NO_FADING) dcl_wait();
-  }
-}
-
-void ttsounds::fadeToVol(int vol) {
-  if (!title) return;
-
-  while (musicVolume != vol) {
-
-    if (musicVolume > vol) {
-      musicVolume -= 4;
-      if (musicVolume < vol)
-        musicVolume = vol;
-    } else {
-      musicVolume += 4;
-      if (musicVolume > vol)
-        musicVolume = vol;
+void ttsounds::opensound(void)
+{
+    if(SDL_InitSubSystem(SDL_INIT_AUDIO) != 0)
+    {
+        debugprintf(0, "Couldn't init the sound system, muting.\n");
+        return;
     }
 
-    Mix_VolumeMusic(musicVolume);
-    dcl_wait();
-  }
+    if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 1024) < 0)
+    {
+        debugprintf(0, "Could not open audio, muting.\n");
+        SDL_QuitSubSystem(SDL_INIT_AUDIO);
+        return;
+    }
+
+    useSound = true;
+}
+
+void ttsounds::closesound(void)
+{
+    if (!useSound) return;
+
+    while (Mix_Playing(-1)) dcl_wait();
+
+    Mix_CloseAudio();
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
+
+    useSound = false;
+}
+
+void ttsounds::playmusic(const char * fname)
+{
+    if (!useSound) return;
+
+    char f[500];
+    if (get_data_file_path(fname, f, 500)) {
+        title = Mix_LoadMUS(f);
+        Mix_PlayMusic(title, -1);
+        musicVolume = MIX_MAX_VOLUME;
+    }
+}
+
+void ttsounds::stopmusic(void)
+{
+    if (!useSound) return;
+
+    if (title)
+    {
+        Mix_FadeOutMusic(1000);
+
+        while (Mix_FadingMusic() != MIX_NO_FADING)
+            dcl_wait();
+    }
+}
+
+void ttsounds::fadeToVol(int vol)
+{
+    if (!title) return;
+
+    while (musicVolume != vol)
+    {
+        if (musicVolume > vol) {
+            musicVolume -= 4;
+            if (musicVolume < vol)
+                musicVolume = vol;
+        } else {
+            musicVolume += 4;
+            if (musicVolume > vol)
+                musicVolume = vol;
+        }
+
+        Mix_VolumeMusic(musicVolume);
+        dcl_wait();
+    }
 }
 

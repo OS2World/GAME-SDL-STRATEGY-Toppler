@@ -21,8 +21,9 @@
 
 #include <SDL_mixer.h>
 
+#include <vector>
+
 struct ttsnddat {
-  bool in_use; //is this datablock in use (sndfile is loaded)
   bool play;   //is this block goind to get played next time?
   int id_num;  //unique ID # of this sound
   int channel; //sound channel
@@ -40,9 +41,9 @@ public:
   void play(void); //play all active sounds
   void stop(void); //stop all sounds
 
-  void stopsound(int snd); //stop the sound from playing
-  void startsound(int snd); //the sound will play in the next update
-  void setsoundvol(int snd, int vol); //set sound volume
+  void stopsound(size_t snd); //stop the sound from playing
+  void startsound(size_t snd); //the sound will play in the next update
+  void setsoundvol(size_t snd, int vol); //set sound volume
 
   void playmusic(const char * file); //start playing a background music
   void stopmusic(void);            // stop playing the background music
@@ -66,8 +67,7 @@ private:
    */
   bool useSound;
 
-  int n_sounds; // # of sounds allocated
-  struct ttsnddat *sounds;
+  std::vector<ttsnddat> sounds;
 
   Mix_Music * title;
   int musicVolume;
