@@ -17,6 +17,7 @@
  */
 
 #include "bonus.h"
+
 #include "keyb.h"
 #include "screen.h"
 #include "menu.h"

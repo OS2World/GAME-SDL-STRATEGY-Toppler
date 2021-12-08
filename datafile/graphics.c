@@ -168,17 +168,17 @@ void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth
 
         } else if (xpos > -xl) {
           double pixelpos = ((double)xr-xpos) / ((double)xr+xl) * doorlength;
-  
+
           pixelpos += 0.5;
 
           double stonepos = pixelpos;
-  
+
           if (layer == 1)
             stonepos += (brick->w/2);
-  
+
           while (stonepos >= brick->w)
             stonepos -= brick->w;
-  
+
           b = *((Uint32 *)(((Uint8*)brick->pixels) + ystone * brick->pitch + (int)stonepos * brick->format->BytesPerPixel));
 
           double n = (1-(pixelpos - (lr-5)) / (2*5)) * (nr -0.2) + 0.2;
@@ -486,7 +486,7 @@ void getdoor(Uint16 ys, FILE *out) {
 }
 
 int main() {
-  
+
   FILE *outp = fopen("graphics.dat", "wb");
 
   int y, t, x;
