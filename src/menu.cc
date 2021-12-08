@@ -133,17 +133,15 @@ static const char *redefine_menu_up(_menusystem *ms) {
 
 static const char *game_options_menu_password(_menusystem *prevmenu) {
   static char buf[50];
-  char pwd[PASSWORD_LEN+1];
 
   if (prevmenu) {
-    /* one more character to also copy the termination */
-    strncpy(pwd, config.curr_password().c_str(), PASSWORD_LEN);
-    pwd[PASSWORD_LEN] = 0;
+    std::string pwd = config.curr_password();
     while (!men_input(pwd, PASSWORD_LEN, -1, -1, PASSWORD_CHARS)) ;
     config.curr_password(pwd);
     /* FIXME: change -1, -1 to correct position; Need to fix menu system
      first... */
   }
+  // TODO c++
   snprintf(buf, 50, _("Password: %s"), config.curr_password().c_str());
   return buf;
 }
@@ -518,46 +516,36 @@ static int hiscores_maxlen_points = 0;
 static int hiscores_maxlen_name = 0;
 static int hiscores_maxlen = 0;
 
-static void
-  get_hiscores_string(int p, char **pos, char **points, char **name)
+static void get_hiscores_string(int p, std::string & pos, std::string & points, std::string & name)
 {
   Uint32 pt;
   Uint8 tw;
-
-  static char buf1[SCORENAMELEN + 5];
-  static char buf2[SCORENAMELEN + 5];
-  static std::string buf3;
-
-  buf1[0] = buf2[0] = '\0';
-  buf3 = "";
+  std::string buf3;
 
   hsc_entry(p, buf3, pt, tw);
 
-  snprintf(buf1, SCORENAMELEN + 5, "%i.", p + 1);
-  snprintf(buf2, SCORENAMELEN + 5, "%i", pt);
-
-  *pos = buf1;
-  *points = buf2;
-  *name = buf3.data();
+  pos = std::to_string(p)+".";
+  points = std::to_string(pt);
+  name = buf3;
 }
 
 static void
 calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
 {
   for (int x = 0; x < hsc_entries(); x++) {
-    char *a, *b, *c;
+    std::string a, b, c;
     int clen;
 
-    get_hiscores_string(x, &a, &b, &c);
+    get_hiscores_string(x, a, b, c);
 
-    clen = scr_textlength(a);
+    clen = scr_textlength(a.c_str());
     if (clen > *max_pos) *max_pos = clen;
 
-    clen = scr_textlength(b);
+    clen = scr_textlength(b.c_str());
     if (clen < 64) clen = 64;
     if (clen > *max_points) *max_points = clen;
 
-    clen = scr_textlength(c);
+    clen = scr_textlength(c.c_str());
     if (clen > *max_name) *max_name = clen;
   }
 }
@@ -619,16 +607,16 @@ men_hiscores_background_proc(_menusystem *ms)
     for (int t = 0; t < HISCORES_PER_PAGE; t++) {
       int cs = t + (hiscores_pager * HISCORES_PER_PAGE);
       int ypos = (t*(FONTHEI+1)) + fontsprites.data(titledata)->h + FONTHEI*2;
-      char *pos, *points, *name;
-      get_hiscores_string(cs, &pos, &points, &name);
+      std::string pos, points, name;
+      get_hiscores_string(cs, pos, points, name);
       if (cs == hiscores_hilited) {
         int clen = hiscores_maxlen_pos + hiscores_maxlen_points + hiscores_maxlen_name + 20 * 2 + 20;
         scr_putbar(hiscores_xpos - 5, ypos - 3,
                    clen, FONTHEI + 3, blink_r, blink_g, blink_b, (config.use_alpha_darkening())?128:255);
       }
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), ypos, pos);
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points - scr_textlength(points), ypos, points);
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + 20 + hiscores_maxlen_points, ypos, name);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos.c_str()), ypos, pos.c_str());
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points - scr_textlength(points.c_str()), ypos, points.c_str());
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + 20 + hiscores_maxlen_points, ypos, name.c_str());
     }
     scr_color_ramp(&blink_r, &blink_g, &blink_b);
   }
@@ -731,18 +719,14 @@ static void men_highscore(unsigned long pt, int twr) {
 
     set_men_bgproc(congrats_background_proc);
 
-    char name[SCORENAMELEN+1];
+    std::string name;
 
 #ifndef WIN32
     /* copy the login name into the name entered into the highscore table */
-    strncpy(name, getenv("LOGNAME"), SCORENAMELEN);
-    name[SCORENAMELEN] = 0; // to be sure we have a terminated string
-#else
-    /* on systems without login we have no name */
-    name[0] = 0;
+    name = getenv("LOGNAME");
 #endif
 
-    while (!men_input(name, SCORENAMELEN)) ;
+    while (!men_input(name, SCORENAMELEN-1)) ;
 
     pos = hsc_enter(pt, twr, name);
   }

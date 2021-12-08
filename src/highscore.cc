@@ -21,14 +21,15 @@
 #include "screen.h"
 
 #include <cstdio>
-#include <cstring>
 
 #ifndef WIN32
 #include <fcntl.h>
 #endif
 
+// number of entries per scoring table
 #define NUMHISCORES 10
 
+// name of the file containing the scores
 #define SCOREFNAME "toppler.hsc"
 
 #pragma GCC diagnostic ignored "-Wunused-result"
@@ -37,18 +38,26 @@
 // if we use the global highscore we will create a lock file
 static bool globalHighscore;
 
-/* the name of the highscore table we use the name because the
- * file might change any time and so it's better to close and reopen
- * every time we need access
- */
+// the name of the highscore table we use the name because the
+// file might change any time and so it's better to close and reopen
+// every time we need access
 static std::string highscoreName;
 
 typedef struct {
-  Uint32 points;
-  char name[SCORENAMELEN];
-  Sint16 tower; /* tower reached, -1 = mission finished */
+    // number of points
+    Uint32 points;
+
+    // the name of the player, limited to that many characters
+    // null terminated
+    char name[SCORENAMELEN];
+
+    // the tower reached, right now not really used, just stored
+    // -1 = mission finished
+    Sint16 tower;
 } _scores;
 
+// the currently loaded score table for the mission in
+// missionname variable
 static _scores scores[NUMHISCORES];
 
 /* this is the name of the currenlty selected mission */
@@ -148,8 +157,8 @@ static bool hsc_lock(void)
   return true;
 }
 
-static void hsc_unlock(void) {
-
+static void hsc_unlock(void)
+{
 #ifndef WIN32
 
   // free the lock
@@ -163,156 +172,155 @@ static void hsc_unlock(void) {
 
 void hsc_init(void) {
 
-  for (int t = 0; t < NUMHISCORES; t++) {
-    scores[t].points = 0;
-    scores[t].name[0] = 0;
-    scores[t].tower = 0;
-  }
+    for (int t = 0; t < NUMHISCORES; t++)
+    {
+        scores[t].points = 0;
+        scores[t].name[0] = 0;
+        scores[t].tower = 0;
+    }
 
 #ifndef WIN32
 
-  /* asume we use local highscore table */
-  globalHighscore = false;
-  {
-      char ttt[210];
-      snprintf(ttt, 199, "%s/.toppler/%s", homedir(), SCOREFNAME);
-      highscoreName = ttt;
-  }
+    /* asume we use local highscore table */
+    globalHighscore = false;
+    highscoreName = homedir();
+    highscoreName += std::string("/.toppler/");
+    highscoreName += SCOREFNAME;
 
-  /* now check if we have access to a global highscore table */
+    /* now check if we have access to a global highscore table */
 
 #ifdef HISCOREDIR
 
-  /* ok the dir is given, we need to be able to do 2 things: */
+    /* ok the dir is given, we need to be able to do 2 things: */
 
-  /* 1. get read and write access to the file */
+    /* 1. get read and write access to the file */
 
-  char fname[200];
-  snprintf(fname, 200, HISCOREDIR "/" SCOREFNAME);
+    std::string fname = HISCOREDIR;
+    fname += '/';
+    fname += SCOREFNAME;
 
-  FILE * f = fopen(fname, "r+");
-
-  if (f) {
-
-    fclose(f);
-
-    /* 2. get write access to the directory to create the lock file
-     * to check this we try to chreate a file with a random name
-     */
-    snprintf(fname, 200, HISCOREDIR "/" SCOREFNAME "%i", rand());
-
-    f = fopen(fname, "w+");
+    FILE * f = fopen(fname.c_str(), "r+");
 
     if (f) {
 
-      fclose(f);
-      unlink(fname);
+        fclose(f);
 
-      /* ok, we've got all the rights we need */
-      {
-          char ttt[210];
-          snprintf(ttt, 200, HISCOREDIR "/" SCOREFNAME);
-          highscoreName = ttt;
-      }
-      globalHighscore = true;
+        /* 2. get write access to the directory to create the lock file
+         * to check this we try to chreate a file with a random name
+         */
+        std::string fname2 = fname + std::to_string(rand());
+        f = fopen(fname2.c_str(), "w+");
+        if (f)
+        {
+            /* ok, we've got all the rights we need */
+            fclose(f);
+            unlink(fname2.c_str());
+            highscoreName = fname;
+            globalHighscore = true;
+        }
+        else
+        {
+            debugprintf(2, "could not open create the lock file, no write access to global hiscore directory\n", fname);
+        }
     }
     else
     {
-      debugprintf(2, "could not open create the lock file, no write access to global hiscore directory\n", fname);
+        debugprintf(2, "could not open global highscore file %s\n", fname);
     }
-  }
-  else
-  {
-     debugprintf(2, "could not open global highscore file %s\n", fname);
-  }
 
 #else
-  debugprintf(2, "no path for global highscore\n");
+    debugprintf(2, "no path for global highscore\n");
 #endif
 
-  /* no dir to the global highscore table -> not global highscore table */
+    /* no dir to the global highscore table -> not global highscore table */
 
 #else // ifdef WIN32
 
-  /* for non unix systems we use only local highscore tables */
-  globalHighscore = false;
-  highscoreName = SCOREFNAME;
+    /* for non unix systems we use only local highscore tables */
+    globalHighscore = false;
+    highscoreName = SCOREFNAME;
 
 #endif
 
-  if (globalHighscore)
-    debugprintf(2, "using global highscore at %s\n", highscoreName.c_str());
-  else
-    debugprintf(2, "using local highscore at %s\n", highscoreName.c_str());
+    if (globalHighscore)
+        debugprintf(2, "using global highscore at %s\n", highscoreName.c_str());
+    else
+        debugprintf(2, "using local highscore at %s\n", highscoreName.c_str());
 }
 
 void hsc_select(const std::string & mission)
 {
-  missionname = mission;
-  FILE *f = fopen(highscoreName.c_str(), "rb");
-  loadscores(f);
-  if (f) fclose(f);
+    missionname = mission;
+    FILE *f = fopen(highscoreName.c_str(), "rb");
+    loadscores(f);
+    if (f) fclose(f);
 }
 
 Uint8 hsc_entries(void) { return NUMHISCORES; }
 
 void hsc_entry(Uint8 nr, std::string & name, Uint32 & points, Uint8 & tower)
 {
-  if (nr < NUMHISCORES) {
-    name = scores[nr].name;
-    points = scores[nr].points;
-    tower = scores[nr].tower;
-  } else {
-    name = "";
-    points = 0;
-    tower = 0;
-  }
+    if (nr < NUMHISCORES) {
+        name = scores[nr].name;
+        points = scores[nr].points;
+        tower = scores[nr].tower;
+    } else {
+        name = "";
+        points = 0;
+        tower = 0;
+    }
 }
 
-bool hsc_canEnter(Uint32 points) {
-  return points > scores[NUMHISCORES-1].points;
+bool hsc_canEnter(Uint32 points)
+{
+    return points > scores[NUMHISCORES-1].points;
 }
 
-Uint8 hsc_enter(Uint32 points, Uint8 tower, const std::string & name) {
+Uint8 hsc_enter(Uint32 points, Uint8 tower, const std::string & name)
+{
+    if (hsc_lock())
+    {
+        int t = NUMHISCORES;
 
-  if (hsc_lock()) {
+        while ((t > 0) && (points > scores[t-1].points))
+        {
+            if (t < NUMHISCORES)
+                scores[t] = scores[t-1];
+            t--;
+        }
 
-    int t = NUMHISCORES;
+        if (t < NUMHISCORES)
+        {
+            // fill in the entry
+            for (size_t i = 0; i < std::min<size_t>(name.size()+1, SCORENAMELEN-1); i++)
+                scores[t].name[i] = name[i];
+            scores[t].name[SCORENAMELEN-1] = 0;
+            scores[t].points = points;
+            scores[t].tower = tower;
 
-    while ((t > 0) && (points > scores[t-1].points)) {
-      if (t < NUMHISCORES)
-        scores[t] = scores[t-1];
-      t--;
+            FILE *f;
+
+            if (globalHighscore)
+            {
+                f = fopen(highscoreName.c_str(), "r+b");
+            } else
+            {
+                /* local highscore: this one might require creating the file */
+                fclose(fopen(highscoreName.c_str(), "a+"));
+                f = fopen(highscoreName.c_str(), "r+b");
+            }
+
+            savescores(f);
+            fclose(f);
+
+            hsc_unlock();
+
+            return t;
+        }
+
+        hsc_unlock();
     }
 
-    if (t < NUMHISCORES) {
-
-      strncpy(scores[t].name, name.c_str(), SCORENAMELEN);
-      scores[t].points = points;
-      scores[t].tower = tower;
-
-      FILE *f;
-
-      if (globalHighscore) {
-        f = fopen(highscoreName.c_str(), "r+b");
-      } else {
-
-        /* local highscore: this one might require creating the file */
-        fclose(fopen(highscoreName.c_str(), "a+"));
-        f = fopen(highscoreName.c_str(), "r+b");
-      }
-
-      savescores(f);
-      fclose(f);
-
-      hsc_unlock();
-
-      return t;
-    }
-
-    hsc_unlock();
-  }
-
-  return 0xff;
+    return 0xff;
 }
 

@@ -401,8 +401,7 @@ void men_info(char *s, long timeout, int fire) {
 
 static int input_box_cursor_state = 0;
 
-void
-draw_input_box(int x, int y, int len, int cursor, char *txt)
+static void draw_input_box(int x, int y, int len, int cursor, const char *txt)
 {
   static int col_r = 0, col_g = 200, col_b = 120;
   int nlen = len, slen = len;
@@ -445,40 +444,39 @@ draw_input_box(int x, int y, int len, int cursor, char *txt)
   scr_color_ramp(&col_r, &col_g, &col_b);
 }
 
-bool men_input(char *origs, int max_len, int xpos, int ypos, const char *allowed) {
+bool men_input(std::string & origs, int max_len, int xpos, int ypos, const char *allowed) {
   SDL_Keycode sdlinp;
   char inpc;
   ttkey inptt;
-  static int pos = strlen(origs);
-  int ztmp;
-  static char s[256];
+  static int pos = origs.size();
+  static std::string s;
   static bool copy_origs = true;
   bool restore_origs = false;
   bool ende = false;
 
-  if ((strlen(origs) >= 256)) return true;
+  if (origs.size() >= 256) return true;
 
   if (copy_origs) {
-    strcpy(s, origs);
+    s = origs;
     copy_origs = false;
-    pos = strlen(origs);
+    pos = s.size();
   }
 
   (void)key_readkey();
 
   if (menu_background_proc) (*menu_background_proc) ();
 
-  draw_input_box(xpos,ypos, max_len, pos, s);
+  draw_input_box(xpos,ypos, max_len, pos, s.c_str());
   scr_swap();
   dcl_wait();
 
   key_keydatas(sdlinp, inptt, inpc);
 
   switch (sdlinp) {
-  case SDLK_RIGHT: if ((unsigned)pos < strlen(s)) pos++; break;
+  case SDLK_RIGHT: if ((unsigned)pos < s.size()) pos++; break;
   case SDLK_LEFT: if (pos > 0) pos--; break;
-  case SDLK_ESCAPE:if (strlen(s)) {
-    s[0] = '\0';
+  case SDLK_ESCAPE:if (!s.empty()) {
+    s.clear();
     pos = 0;
     restore_origs = false;
   } else {
@@ -489,16 +487,14 @@ bool men_input(char *origs, int max_len, int xpos, int ypos, const char *allowed
   case SDLK_RETURN: restore_origs = false; copy_origs = true; ende = true;
   break;
   case SDLK_DELETE:
-    if (strlen(s) >= (unsigned)pos) {
-      for (ztmp = pos; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
-      s[ztmp] = '\0';
+    if (s.size() >= (unsigned)pos) {
+      s.erase(s.begin()+pos);
     }
     break;
   case SDLK_BACKSPACE:
     if (pos > 0) {
       if (pos <= max_len) {
-        for (ztmp = pos-1; ztmp < max_len-1; ztmp++) s[ztmp] = s[ztmp+1];
-        s[ztmp] = '\0';
+        s.erase(s.begin()+(pos-1));
       }
       pos--;
     }
@@ -515,18 +511,16 @@ bool men_input(char *origs, int max_len, int xpos, int ypos, const char *allowed
     } else {
       if (inpc < ' ' || inpc > 'z') break;
     }
-    if ((strlen(s) >= (unsigned)pos) &&
-        (strlen(s) < (unsigned)max_len)) {
-      for (ztmp = max_len-1; ztmp >= pos; ztmp--) s[ztmp+1] = s[ztmp];
-      s[pos] = inpc;
-      s[max_len] = '\0';
+    if ((s.size() >= (unsigned)pos) &&
+        (s.size() < (unsigned)max_len)) {
+      s.insert(pos, 1, inpc);
       pos++;
     }
     break;
   }
   if (ende) {
-    if (!restore_origs) strcpy(origs, s);
-    s[0] = 0;
+    if (!restore_origs) origs = s;
+    s.clear();
     copy_origs = true;
   } else {
     copy_origs = false;

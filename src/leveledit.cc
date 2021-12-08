@@ -355,14 +355,13 @@ static void createMission(void) {
 
   set_men_bgproc(NULL);
 
-  char missionname[25];
-  missionname[0] = 0;
+  std::string missionname;
   while (!men_input(missionname, 15)) ;
 
-  if (!missionname[0])
+  if (missionname.empty())
     return;
 
-  if (!lev_mission_new(missionname, missionname)) {
+  if (!lev_mission_new(missionname.c_str(), missionname.c_str())) {
 
     scr_drawedit(0, 0, false);
     scr_writetext_center(30, _("Mission creation"));
@@ -382,7 +381,6 @@ static void createMission(void) {
   }
 
   int currenttower = 1;
-  char towername[30];
 
   while (true) {
 
@@ -394,12 +392,12 @@ static void createMission(void) {
     snprintf(s, 30, _("tower no %i"), currenttower);
     scr_writetext_center(110, s);
 
-    towername[0] = 0;
+    std::string towername;
     while (!men_input(towername, 25)) ;
 
-    if (!towername[0]) break;
+    if (towername.empty()) break;
 
-    lev_mission_addtower(towername);
+    lev_mission_addtower(towername.c_str());
 
     currenttower++;
   }
@@ -701,9 +699,7 @@ void le_edit()
         bg_darken = true;
         key_wait_for_none(editor_background_proc);
         {
-          char name[TOWERNAMELEN+1];
-          strncpy(name, config.editor_towername().data(), TOWERNAMELEN);
-          name[TOWERNAMELEN] = 0;
+          std::string name = config.editor_towername();
           while (!men_input(name, TOWERNAMELEN)) ;
           config.editor_towername(name);
         }
@@ -722,9 +718,7 @@ void le_edit()
         bg_darken = true;
         key_wait_for_none(editor_background_proc);
         {
-          char name[TOWERNAMELEN+1];
-          strncpy(name, config.editor_towername().c_str(), TOWERNAMELEN);
-          name[TOWERNAMELEN] = 0;
+          std::string name = config.editor_towername();
           while (!men_input(name, TOWERNAMELEN)) ;
           config.editor_towername(name);
         }
@@ -814,33 +808,28 @@ void le_edit()
         break;
       case EDACT_SETTIME:
         {
-          char buf[64];
-
-          snprintf(buf, 64, "%d", lev_towertime());
-
+          std::string buf = std::to_string(lev_towertime());
           bg_text = _("Enter tower time:");
           bg_darken = true;
           key_wait_for_none(editor_background_proc);
-          while (!men_input((char *)buf, 15, -1, -1, "0123456789")) ;
+          while (!men_input(buf, 15, -1, -1, "0123456789")) ;
           bg_text.clear();
 
-          lev_set_towertime(atoi(buf));
+          lev_set_towertime(std::stoi(buf));
         }
         break;
       case EDACT_ADJHEIGHT:
         {
-            char buf[64];
+            std::string buf = "0";
             int i;
-
-            snprintf(buf, 64, "0");
 
             bg_text = _("Adjust tower height:");
             bg_darken = true;
             key_wait_for_none(editor_background_proc);
-            while (!men_input((char *)buf, 15, -1, -1, "-+0123456789")) ;
+            while (!men_input(buf, 15, -1, -1, "-+0123456789")) ;
             bg_text.clear();
 
-            i = atoi(buf);
+            i = std::stoi(buf);
             if ((i > 0) && (buf[0] == '+')) {
                 while (i-- > 0) lev_insertrow(row);
             } else
@@ -919,11 +908,8 @@ void le_edit()
         key_wait_for_none(editor_background_proc);
         {
             // TODO this must be done nicer
-            char tmp[TOWERNAMELEN+1];
-            memcpy(tmp, lev_towername().c_str(), TOWERNAMELEN);
-            tmp[TOWERNAMELEN] = 0;
+            std::string tmp = lev_towername();
             while (!men_input(tmp, TOWERNAMELEN)) ;
-
             lev_set_towername(tmp);
         }
         bg_text.clear();

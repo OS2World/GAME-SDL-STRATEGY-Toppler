@@ -21,7 +21,9 @@
 
 #include "decl.h"
 
-#include "SDL_keyboard.h"
+#include <SDL_keyboard.h>
+
+#include <string>
 
 /* This module defines a menu system that has the following features
 */
@@ -95,7 +97,7 @@ typedef struct _menusystem {
  * This function returns immediately, and the return
  * value tells whether the user finished editing the string.
  */
-bool men_input(char *origs, int max_len, int xpos = -1,
+bool men_input(std::string & origs, int max_len, int xpos = -1,
                int ypos = (SCREENHEI  * 2) / 3,
                const char *allowed = NULL);
 
