@@ -181,7 +181,7 @@ bool get_data_file_path(const std::string & name, std::string & f) {
 #endif
 }
 
-static std::string topplername(const std::string & name)
+std::string local_file_name(const std::string & name)
 {
 #ifdef CREATOR
     return name;
@@ -198,7 +198,7 @@ FILE *open_local_config_file(const std::string & name)
 {
   checkdir();
 
-  std::string n = topplername(name);
+  std::string n = local_file_name(name);
 
   if (dcl_fileexists(n))
     return fopen(n.c_str(), "r+");
@@ -210,7 +210,7 @@ FILE *create_local_config_file(const std::string & name)
 {
   checkdir();
 
-  std::string n = topplername(name);
+  std::string n = local_file_name(name);
   return fopen(n.c_str(), "wb+");
 }
 
@@ -220,7 +220,7 @@ FILE *open_local_data_file(const std::string & name)
 {
   checkdir();
 
-  std::string n = topplername(name);
+  std::string n = local_file_name(name);
   return fopen(n.c_str(), "rb");
 }
 
@@ -228,7 +228,7 @@ FILE *create_local_data_file(const std::string & name)
 {
   checkdir();
 
-  std::string n = topplername(name);
+  std::string n = local_file_name(name);
   return fopen(n.c_str(), "wb+");
 }
 

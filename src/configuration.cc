@@ -28,11 +28,15 @@ static bool str2bool(const std::string & s)
     if (s == "yes" || s == "true")
         return true;
     else
-        return (std::stoi(s) != 0);
+        return (std::atoi(s.c_str()) != 0);
 }
 
-void configuration::parse(FILE * in)
+void configuration::parse(const std::string & inf)
 {
+    FILE * in = fopen(inf.c_str(), "r");
+
+    if (!in) return;
+
     char line[201], param[201];
 
     while (!feof(in))
@@ -64,6 +68,8 @@ void configuration::parse(FILE * in)
                     }
                     break;
                 }
+
+    fclose(in);
 }
 
 void configuration::register_entry(const std::string & cnf_name, cnf_type  cnf_typ, void *cnf_var, long maxlen)
@@ -83,7 +89,7 @@ void configuration::register_entry(const std::string & cnf_name, cnf_type  cnf_t
 #define CNF_INT(a,b) register_entry(a, CT_INT, b, 0)
 #define CNF_KEY(a,b) register_entry(a, CT_KEY, NULL, b)
 
-configuration::configuration(FILE *glob, FILE *local)
+configuration::configuration(const std::string & glob, const std::string & local)
 {
     i_fullscreen = false;
     i_nosound  = false;
@@ -102,7 +108,7 @@ configuration::configuration(FILE *glob, FILE *local)
     i_game_speed = DEFAULT_GAME_SPEED;
     i_nobonus = false;
 
-    need_save = (local == 0);
+    need_save = local.empty();
 
     CNF_BOOL( "fullscreen",          &i_fullscreen );
     CNF_BOOL( "nosound",             &i_nosound );
@@ -127,14 +133,10 @@ configuration::configuration(FILE *glob, FILE *local)
     CNF_INT(  "game_speed",          &i_game_speed);
     CNF_BOOL( "nobonus",             &i_nobonus);
 
-    if (glob)
-    {
-        parse(glob);
-        fclose(glob);
-    }
+    parse(glob);
+    parse(local);
 
-    f = local;
-    if (f) parse(f);
+    fname = local;
 
     i_start_lives = std::clamp(i_start_lives, 1, 3);
     i_game_speed = std::clamp(i_game_speed, 0, MAX_GAME_SPEED);
@@ -142,44 +144,44 @@ configuration::configuration(FILE *glob, FILE *local)
 
 configuration::~configuration(void)
 {
-    if (need_save && !f)
-        f = create_local_config_file(".toppler.rc");
+    FILE * f = nullptr;
 
-    if (need_save && f)
+    if (need_save)
     {
-        fseek(f, 0, SEEK_SET);
+        if (fname.empty())
+            f = create_local_config_file(".toppler.rc");
+        else
+            f = fopen(fname.c_str(), "w");
 
-        for (auto & t : data)
+        if (f)
         {
-            fprintf(f, "%s: ", t.cnf_name.c_str());
-
-            switch (t.cnf_typ)
+            for (auto & t : data)
             {
-                case CT_BOOL:
-                    fprintf(f, "%s", (*(bool *)t.cnf_var)?("yes"):("no"));
-                    break;
-                case CT_STRING:
-                    fprintf(f, "\"%s\"", ((std::string*)(t.cnf_var))->c_str());
-                    break;
-                case CT_INT:
-                    fprintf(f, "%i", *(int *)t.cnf_var);
-                    break;
-                case CT_KEY:
-                    fprintf(f, "%i", (int)key_conv2sdlkey((ttkey)t.maxlen, true));
-                    break;
-                default:
-                    assert_msg(0, "Unknown config data type.");
-                    break;
+                fprintf(f, "%s: ", t.cnf_name.c_str());
+
+                switch (t.cnf_typ)
+                {
+                    case CT_BOOL:
+                        fprintf(f, "%s", (*(bool *)t.cnf_var)?("yes"):("no"));
+                        break;
+                    case CT_STRING:
+                        fprintf(f, "\"%s\"", ((std::string*)(t.cnf_var))->c_str());
+                        break;
+                    case CT_INT:
+                        fprintf(f, "%i", *(int *)t.cnf_var);
+                        break;
+                    case CT_KEY:
+                        fprintf(f, "%i", (int)key_conv2sdlkey((ttkey)t.maxlen, true));
+                        break;
+                    default:
+                        assert_msg(0, "Unknown config data type.");
+                        break;
+                }
+
+                fprintf(f, "\n");
             }
-
-            fprintf(f, "\n");
+            fclose(f);
         }
-    }
-
-    if (f)
-    {
-        fclose(f);
-        f = nullptr;
     }
 }
 
@@ -190,4 +192,4 @@ void configuration::debug_level(int l)
     dcl_setdebuglevel(l);
 }
 
-configuration config(open_local_config_file(".toppler.rc"), open_local_config_file(".toppler.rc"));
+configuration config(local_file_name(".toppler.rc"), local_file_name(".toppler.rc"));

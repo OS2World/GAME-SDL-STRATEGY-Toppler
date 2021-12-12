@@ -22,8 +22,6 @@
 #include <vector>
 #include <string>
 
-#include <cstdio>
-
 // TODO remove once everything is converted
 #define TOWERNAMELEN 19
 #define PASSWORD_LEN 5
@@ -36,7 +34,7 @@ class configuration {
 
 public:
 
-  configuration(FILE *glob, FILE *local);
+  configuration(const std::string & glob, const std::string & local);
   ~configuration();
 
   bool fullscreen() const { return i_fullscreen; }
@@ -108,7 +106,7 @@ public:
 
 private:
 
-  FILE *f;
+  std::string fname;
 
   typedef enum {
       CT_BOOL,
@@ -117,7 +115,7 @@ private:
       CT_KEY
   } cnf_type;
 
-  void parse(FILE *in);
+  void parse(const std::string & in);
   void register_entry(const std::string & cnf_name, cnf_type  cnf_typ, void *cnf_var, long maxlen);
 
   typedef struct config_data {

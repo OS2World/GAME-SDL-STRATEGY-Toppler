@@ -178,6 +178,7 @@ bool dcl_wait_overflow(void);
 bool dcl_fileexists(const std::string & n);
 
 /* opens files looking into the right directories */
+std::string local_file_name(const std::string & name);
 FILE *open_data_file(const std::string & name);
 FILE *open_local_config_file(const std::string & name);
 FILE *create_local_config_file(const std::string & name);
