@@ -79,9 +79,9 @@ void debugprintf(int lvl, const char *fmt, ...) {
  the dir the file is supposed to be in and look there
  but this is not really portable so this
  */
-bool dcl_fileexists(const char *n) {
+bool dcl_fileexists(const std::string & n) {
 
-  FILE *f = fopen(n, "r");
+  FILE *f = fopen(n.c_str(), "r");
 
   if (f) {
     fclose(f);
@@ -90,7 +90,7 @@ bool dcl_fileexists(const char *n) {
     return false;
 }
 
-char * homedir()
+std::string homedir()
 {
 
 #ifndef WIN32
@@ -105,89 +105,74 @@ char * homedir()
 
 }
 
-static char * acat(const char *a, const char *b)
-{
-  size_t len = strlen(a)+strlen(b)+2;
-  char *s = (char*)malloc(len);
-  snprintf(s, len-1,"%s%s",a,b);
-  return s;
-}
-
-
 /* checks if home/.toppler exists and creates it, if not */
 static void checkdir(void) {
 
 #ifndef WIN32
 
-  char *n = acat(homedir(),"/.toppler");
+  std::string n = homedir() + "/.toppler";
 
-  DIR *d = opendir(n);
+  DIR *d = opendir(n.c_str());
 
   if (!d) {
-    mkdir(n, S_IRWXU);
+    mkdir(n.c_str(), S_IRWXU);
   }
 
   closedir(d);
-
-  free(n);
 #endif
 
 }
 
-FILE *open_data_file(const char *name) {
+FILE *open_data_file(const std::string & name) {
 
 
 #ifndef WIN32
   FILE *f = NULL;
   // look into actual directory
   if (dcl_fileexists(name))
-    return fopen(name, "rb");
+    return fopen(name.c_str(), "rb");
 
   // look into the data dir
-  char *n = acat(TOP_DATADIR"/", name);
+  std::string n = std::string(TOP_DATADIR) + "/" + name;
 
   if (dcl_fileexists(n))
-    f = fopen(n, "rb");
-
-  free(n);
+    f = fopen(n.c_str(), "rb");
 
   return f;
 
 #else
 
   if (dcl_fileexists(name))
-    return fopen(name, "rb");
+    return fopen(name.c_str(), "rb");
 
   return NULL;
 
 #endif
 }
 
-bool get_data_file_path(const char * name, char * f, int len) {
+bool get_data_file_path(const std::string & name, std::string & f) {
 
 #ifndef WIN32
   // look into actual directory
   if (dcl_fileexists(name)) {
-    snprintf(f, len, "%s", name);
+    f = name;
     return true;
   }
 
   // look into the data dir
-  char *n = acat(TOP_DATADIR"/", name);
+  std::string n = std::string(TOP_DATADIR) + "/" + name;
 
   if (dcl_fileexists(n)) {
-    snprintf(f, len, "%s", n);
-    free(n);
+    f = n;
     return true;
   }
 
-  free(n);
   return false;
 
 #else
 
   if (dcl_fileexists(name)) {
-    snprintf(f, len, name);
+    f = name;
     return true;
   }
 
@@ -196,71 +181,55 @@ bool get_data_file_path(const char * name, char * f, int len) {
 #endif
 }
 
-static char * acat3(const char *a, const char *b, const char *c)
-{
-  size_t len = strlen(a)+strlen(b)+strlen(c)+2;
-  char *s = (char*)malloc(len);
-  snprintf(s, len-1,"%s%s%s",a,b,c);
-  return s;
-}
-
-static char * topplername(const char *name)
+static std::string topplername(const std::string & name)
 {
 #ifdef CREATOR
-    return strdup(name);
+    return name;
 #endif
 
 #ifndef WIN32
-  return acat3(homedir(),"/.toppler/", name);
+  return homedir() + "/.toppler/" + name;
 #else
-  return strdup(name);
+  return name;
 #endif
 }
 
-FILE *open_local_config_file(const char *name) {
-
-  FILE *f = NULL;
+FILE *open_local_config_file(const std::string & name)
+{
   checkdir();
 
-  char *n = topplername(name);
+  std::string n = topplername(name);
 
   if (dcl_fileexists(n))
-    f = fopen(n, "r+");
+    return fopen(n.c_str(), "r+");
 
-  free(n);
-  return f;
+  return nullptr;
 }
 
-FILE *create_local_config_file(const char *name) {
-
+FILE *create_local_config_file(const std::string & name)
+{
   checkdir();
 
-  char *n = topplername(name);
-  FILE *f = fopen(n, "wb+");
-  free(n);
-  return f;
+  std::string n = topplername(name);
+  return fopen(n.c_str(), "wb+");
 }
 
 /* used for tower and mission saving */
 
-FILE *open_local_data_file(const char *name) {
-
+FILE *open_local_data_file(const std::string & name)
+{
   checkdir();
 
-  char *n = topplername(name);
-  FILE *f = fopen(n, "rb");
-  free(n);
-  return f;
+  std::string n = topplername(name);
+  return fopen(n.c_str(), "rb");
 }
 
-FILE *create_local_data_file(const char *name) {
-
+FILE *create_local_data_file(const std::string & name)
+{
   checkdir();
 
-  char *n = topplername(name);
-  FILE * f = fopen(n, "wb+");
-  free(n);
-  return f;
+  std::string n = topplername(name);
+  return fopen(n.c_str(), "wb+");
 }
 
 static int sort_by_name(const void *a, const void *b) {

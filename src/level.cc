@@ -250,7 +250,7 @@ void lev_findmissions() {
 
 #ifndef WIN32
 
-  snprintf(pathname, 100, "%s/.toppler/", homedir());
+  snprintf(pathname, 100, "%s/.toppler/", homedir().c_str());
   n = alpha_scandir(pathname, &eps, missionfiles);
 
   if (n >= 0) {
@@ -805,7 +805,7 @@ void lev_restore(int row, int col, unsigned char bg) {
 
 /* load and save a tower */
 bool lev_loadtower(const std::string & fname) {
-  FILE *in = open_local_data_file(fname.c_str());
+  FILE *in = open_local_data_file(fname);
   char line[200];
 
   if (in == NULL) return false;
@@ -908,7 +908,7 @@ bool lev_loadtower(const std::string & fname) {
 #ifndef CREATOR
 
 bool lev_savetower(const std::string & fname) {
-  FILE *out = create_local_data_file(fname.c_str());
+  FILE *out = create_local_data_file(fname);
 
   if (out == NULL) return false;
 

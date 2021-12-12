@@ -22,6 +22,7 @@
 #include <SDL_mixer.h>
 
 #include <vector>
+#include <string>
 
 struct ttsnddat {
   bool play;   //is this block goind to get played next time?
@@ -45,7 +46,7 @@ public:
   void startsound(size_t snd); //the sound will play in the next update
   void setsoundvol(size_t snd, int vol); //set sound volume
 
-  void playmusic(const char * file); //start playing a background music
+  void playmusic(const std::string & file); //start playing a background music
   void stopmusic(void);            // stop playing the background music
   void fadeToVol(int vol);
 

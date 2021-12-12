@@ -155,13 +155,14 @@ void ttsounds::closesound(void)
     useSound = false;
 }
 
-void ttsounds::playmusic(const char * fname)
+void ttsounds::playmusic(const std::string & fname)
 {
     if (!useSound) return;
 
-    char f[500];
-    if (get_data_file_path(fname, f, 500)) {
-        title = Mix_LoadMUS(f);
+    std::string f;
+
+    if (get_data_file_path(fname, f)) {
+        title = Mix_LoadMUS(f.c_str());
         Mix_PlayMusic(title, -1);
         musicVolume = MIX_MAX_VOLUME;
     }

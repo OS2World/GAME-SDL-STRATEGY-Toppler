@@ -23,6 +23,8 @@
 #include <cstdarg>
 #include <dirent.h>
 
+#include <string>
+
 #if ENABLE_NLS == 1
 #include <libintl.h>
 #endif
@@ -176,21 +178,21 @@ void dcl_wait(void);
 bool dcl_wait_overflow(void);
 
 /* true, if files exitst */
-bool dcl_fileexists(const char *n);
+bool dcl_fileexists(const std::string & n);
 
 /* opens files looking into the right directories */
-FILE *open_data_file(const char *name);
-FILE *open_local_config_file(const char *name);
-FILE *create_local_config_file(const char *name);
-FILE *open_local_data_file(const char *name);
-FILE *create_local_data_file(const char *name);
-char * homedir();
+FILE *open_data_file(const std::string & name);
+FILE *open_local_config_file(const std::string & name);
+FILE *create_local_config_file(const std::string & name);
+FILE *open_local_data_file(const std::string & name);
+FILE *create_local_data_file(const std::string & name);
+std::string homedir();
 
 /* returns the filename that would be opened with open_data_file in
  * f, f is max len characters
  * returns true, if the file pointer of open_data_file would be not NULL
  */
-bool get_data_file_path(const char * fname, char * f, int len);
+bool get_data_file_path(const std::string & fname, std::string & f);
 
 /* Is the TT window active? */
 extern bool tt_has_focus;
