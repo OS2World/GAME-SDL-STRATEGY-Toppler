@@ -18,13 +18,10 @@
 
 #include "menusys.h"
 
-#include "string.h"
 #include "screen.h"
 #include "sprites.h"
 #include "configuration.h"
 #include "keyb.h"
-
-#include <ctype.h>
 
 static menubg_callback_proc menu_background_proc = NULL;
 
@@ -414,7 +411,7 @@ static void draw_input_box(int x, int y, int len, int cursor, const std::string 
   scr_color_ramp(&col_r, &col_g, &col_b);
 }
 
-bool men_input(std::string & origs, int max_len, int xpos, int ypos, const char *allowed) {
+bool men_input(std::string & origs, int max_len, int xpos, int ypos, const std::string & allowed) {
   SDL_Keycode sdlinp;
   char inpc;
   ttkey inptt;
@@ -471,11 +468,11 @@ bool men_input(std::string & origs, int max_len, int xpos, int ypos, const char 
     break;
   default:
     if (pos >= max_len || (inpc < ' ')) break;
-    if (allowed) {
-      if (!strchr(allowed, inpc)) {
-        if (strchr(allowed, toupper(inpc))) inpc = toupper(inpc);
+    if (!allowed.empty()) {
+      if (allowed.find(inpc) == allowed.npos) {
+        if (allowed.find(toupper(inpc)) != allowed.npos) inpc = toupper(inpc);
         else
-          if (strchr(allowed, tolower(inpc))) inpc = tolower(inpc);
+          if (allowed.find(tolower(inpc)) != allowed.npos) inpc = tolower(inpc);
           else break;
       }
     } else {

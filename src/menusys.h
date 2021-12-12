@@ -96,7 +96,7 @@ typedef struct _menusystem {
  */
 bool men_input(std::string & origs, int max_len, int xpos = -1,
                int ypos = (SCREENHEI  * 2) / 3,
-               const char *allowed = NULL);
+               const std::string & allowed = "");
 
 /* asks a yes/no question; return 0 if "no",
    1 if "yes" */
