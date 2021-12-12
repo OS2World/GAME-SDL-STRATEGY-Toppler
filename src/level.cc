@@ -122,15 +122,9 @@ std::vector<mission_node> missions;
 
 #ifndef CREATOR
 
-static int missionfiles (const struct dirent *file)
+static bool missionfiles (const std::string & file)
 {
-  int len = strlen(file->d_name);
-
-  return ((len > 4) &&
-          (file->d_name[len - 1] == 'm') &&
-          (file->d_name[len - 2] == 't') &&
-          (file->d_name[len - 3] == 't') &&
-          (file->d_name[len - 4] == '.'));
+  return file.ends_with(".ttm");
 }
 
 #endif
@@ -209,82 +203,38 @@ static void add_mission(std::string fname, bool archive = false) {
 
 void lev_findmissions() {
 
-  char pathname[100];
-
-  struct dirent **eps = NULL;
-
   missions.clear();
 
   /* first check inside the archive */
 
   for (auto f : dataarchive->filelist())
-      if (f.name.ends_with(".ttm"))
+      if (missionfiles(f.name))
           add_mission(f.name, true);
 
 #ifdef WIN32
   {
     char n[100];
     getcwd(n, 100);
-    sprintf(pathname, "%s\\", n);
+    pathname = n;
+    pathname = pathname + "\\"
   }
+
 #else
-  sprintf(pathname, "%s", "./");
+  std::string pathname = "./";
 #endif
 
-  int n = alpha_scandir(pathname, &eps, missionfiles);
-
-  if (n >= 0) {
-
-    for (int i = 0; i < n; i++) {
-
-      char fname[200];
-      snprintf(fname, 199, "%s%s", pathname, eps[i]->d_name);
-
-      add_mission(fname);
-
-      free(eps[i]);
-    }
-  }
-  free(eps);
-  eps = NULL;
+  for (auto & e : alpha_scandir(pathname, missionfiles))
+      add_mission(e);
 
 #ifndef WIN32
 
-  snprintf(pathname, 100, "%s/.toppler/", homedir().c_str());
-  n = alpha_scandir(pathname, &eps, missionfiles);
+  for (auto & e : alpha_scandir(homedir() + "/.toppler/", missionfiles))
+      add_mission(e);
 
-  if (n >= 0) {
-
-    for (int i = 0; i < n; i++) {
-
-      char fname[200];
-      snprintf(fname, 200, "%s%s", pathname, eps[i]->d_name);
-
-      add_mission(fname);
-    }
-  }
-  free(eps);
-  eps = NULL;
-
-  snprintf(pathname, 100, "%s/", TOP_DATADIR);
-  n = alpha_scandir(pathname, &eps, missionfiles);
-
-  if (n >= 0) {
-
-    for (int i = 0; i < n; i++) {
-
-      char fname[200];
-      fname[199] = 0;
-      snprintf(fname, 199, "%s%s", pathname, eps[i]->d_name);
-
-      add_mission(fname);
-    }
-  }
-  free(eps);
-  eps = NULL;
+  for (auto & e : alpha_scandir(std::string(TOP_DATADIR) + "/", missionfiles))
+      add_mission(e);
 
 #endif
-
 }
 
 #endif

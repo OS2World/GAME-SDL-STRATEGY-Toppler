@@ -19,11 +19,8 @@
 #ifndef DECL_H
 #define DECL_H
 
-#include <cstdio>
-#include <cstdarg>
-#include <dirent.h>
-
 #include <string>
+#include <functional>
 
 #if ENABLE_NLS == 1
 #include <libintl.h>
@@ -210,8 +207,7 @@ int dcl_update_speed(int spd);
  files in the given dir filtered dith the function given at
  3rd parameter
  */
-int alpha_scandir(const char *dir, struct dirent ***namelist,
-                  int (*select)(const struct dirent *));
+std::vector<std::string> alpha_scandir(const std::string & dir, std::function<bool(const std::string & f)> filter);
 
 /* for internationalisation */
 #if ENABLE_NLS == 1

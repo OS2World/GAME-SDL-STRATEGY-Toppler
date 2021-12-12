@@ -232,45 +232,23 @@ FILE *create_local_data_file(const std::string & name)
   return fopen(n.c_str(), "wb+");
 }
 
-static int sort_by_name(const void *a, const void *b) {
-  return(strcmp((*((struct dirent **)a))->d_name, ((*(struct dirent **)b))->d_name));
-}
+std::vector<std::string> alpha_scandir(const std::string & path, std::function<bool(const std::string & f)> filter)
+{
+    std::vector<std::string> entries;
 
-int alpha_scandir(const char *dir, struct dirent ***namelist,
-            int (*select)(const struct dirent *)) {
-  DIR *d;
-  struct dirent *entry;
-  int i = 0;
-  size_t entrysize;
-
-  if ((d = opendir(dir)) == NULL)
-     return(-1);
-
-  *namelist = NULL;
-  while ((entry = readdir(d)) != NULL)
-  {
-    if (select == NULL || (select != NULL && (*select)(entry)))
+    DIR * dir = ::opendir(path.c_str());
+    if (dir == NULL)
+        // throw std::runtime_error("Can't open directory: " + path);
+        return entries;
+    for (struct dirent * i = ::readdir(dir); i != NULL; i = ::readdir(dir))
     {
-      *namelist = (struct dirent **)realloc((void *)(*namelist), (size_t)((i + 1) * sizeof(struct dirent *)));
-      if (*namelist == NULL)
-        return(-1);
-      entrysize = sizeof(struct dirent) - sizeof(entry->d_name) + strlen(entry->d_name) + 1;
-      (*namelist)[i] = (struct dirent *)malloc(entrysize);
-      if ((*namelist)[i] == NULL)
-        return(-1);
-      memcpy((*namelist)[i], entry, entrysize);
-      i++;
+        std::string n = i->d_name;
+        if (filter(n))
+            entries.push_back(i->d_name);
     }
-  }
-  if (closedir(d))
-    return(-1);
-
-  if (i == 0)
-    return(-1);
-
-  qsort((void *)(*namelist), (size_t)i, sizeof(struct dirent *), sort_by_name);
-
-  return(i);
+    ::closedir(dir);
+    std::sort(entries.begin(), entries.end());
+    return entries;
 }
 
 #ifdef WIN32
