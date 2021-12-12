@@ -28,7 +28,7 @@ static bool str2bool(const std::string & s)
     if (s == "yes" || s == "true")
         return true;
     else
-        return (atoi(s.c_str()) != 0);
+        return (std::stoi(s) != 0);
 }
 
 void configuration::parse(FILE * in)
