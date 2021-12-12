@@ -24,6 +24,8 @@
 
 #include <SDL.h>
 
+#include <string>
+
 /* this module handles nearly all the output onto the screen */
 
 /* screen flags for scr_drawall() */

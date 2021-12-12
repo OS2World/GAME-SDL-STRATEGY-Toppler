@@ -33,6 +33,7 @@
 #include "robots.h"
 #include "configuration.h"
 #include "highscore.h"
+#include "menusys.h"
 
 #include <SDL_endian.h>
 

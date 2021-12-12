@@ -19,7 +19,7 @@
 #ifndef TXTSYS_H
 #define TXTSYS_H
 
-#include "menu.h"
+#include "menusys.h"
 
 #include <string>
 #include <vector>

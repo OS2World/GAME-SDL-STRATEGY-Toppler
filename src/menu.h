@@ -19,8 +19,6 @@
 #ifndef MENU_H
 #define MENU_H
 
-#include "menusys.h"
-
 /* load graphics */
 void men_init(void);
 

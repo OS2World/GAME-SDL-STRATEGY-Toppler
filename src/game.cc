@@ -24,6 +24,7 @@
 #include "screen.h"
 #include "keyb.h"
 #include "menu.h"
+#include "menusys.h"
 #include "level.h"
 #include "elevators.h"
 #include "robots.h"

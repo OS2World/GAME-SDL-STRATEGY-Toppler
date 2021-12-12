@@ -27,6 +27,7 @@
 #include "robots.h"
 #include "snowball.h"
 #include "menu.h"
+#include "menusys.h"
 #include "txtsys.h"
 #include "configuration.h"
 

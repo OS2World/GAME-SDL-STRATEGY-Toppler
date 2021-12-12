@@ -21,8 +21,6 @@
 
 #include "soundsys.h"
 
-#include <SDL_mixer.h>
-
 /* this module handles all the soundoutput necessary for the game */
 
 enum {

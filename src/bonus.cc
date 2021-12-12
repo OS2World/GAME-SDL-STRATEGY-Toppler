@@ -25,6 +25,7 @@
 #include "points.h"
 #include "level.h"
 #include "sound.h"
+#include "menusys.h"
 
 #define fishcnt         16
 #define gametime        500
