@@ -75,20 +75,19 @@ static const char *debug_menu_extrascore(_menusystem *ms) {
 }
 #endif /* GAME_DEBUG_KEYS */
 
-static const char *
+static std::string
 men_main_background_proc(_menusystem *ms)
 {
   if (ms) {
     scr_blit(restsprites.data(menupicture), 0, 0);
     scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
-    return NULL;
   }
   return "";
 }
 
 #define REDEFINEREC 5
 static int times_called = 0;
-static const char *redefine_menu_up(_menusystem *ms) {
+static std::string redefine_menu_up(_menusystem *ms) {
   static char buf[50];
   const char *code[REDEFINEREC] = {_("Up"), _("Down"), _("Left"), _("Right"), _("Fire")};
   const char *keystr;
@@ -131,7 +130,7 @@ static const char *redefine_menu_up(_menusystem *ms) {
   return buf;
 }
 
-static const char *game_options_menu_password(_menusystem *prevmenu) {
+static std::string game_options_menu_password(_menusystem *prevmenu) {
   static char buf[50];
 
   if (prevmenu) {
@@ -146,7 +145,7 @@ static const char *game_options_menu_password(_menusystem *prevmenu) {
   return buf;
 }
 
-static const char *game_options_menu_statustop(_menusystem *prevmenu) {
+static std::string game_options_menu_statustop(_menusystem *prevmenu) {
   static char txt[30];
   if (prevmenu) {
     config.status_top(!config.status_top());
@@ -157,7 +156,7 @@ static const char *game_options_menu_statustop(_menusystem *prevmenu) {
   return txt;
 }
 
-static const char *game_options_menu_lives(_menusystem *prevmenu) {
+static std::string game_options_menu_lives(_menusystem *prevmenu) {
   static char buf[50];
   int i;
   if (prevmenu) {
@@ -170,7 +169,7 @@ static const char *game_options_menu_lives(_menusystem *prevmenu) {
       config.start_lives(config.start_lives() - 1);
       if (config.start_lives() < 1) config.start_lives(1);
       break;
-    default: return NULL;
+    default: return "";
     }
   }
   sprintf(buf, _("Lives: "));
@@ -179,8 +178,7 @@ static const char *game_options_menu_lives(_menusystem *prevmenu) {
   return buf;
 }
 
-static const char *
-game_options_menu_speed(_menusystem *prevmenu)
+static std::string game_options_menu_speed(_menusystem *prevmenu)
 {
   // Changing game_speed during a game has no effect until a
   // a new game is started.
@@ -198,15 +196,14 @@ game_options_menu_speed(_menusystem *prevmenu)
     case fire_key:
       config.game_speed((config.game_speed() + 1) % (MAX_GAME_SPEED+1));
       break;
-    default: return NULL;
+    default: return "";
     }
   }
   snprintf(buf, 50, _("Game Speed: %i"), config.game_speed());
   return buf;
 }
 
-static const char *
-game_options_bonus(_menusystem *ms)
+static std::string game_options_bonus(_menusystem *ms)
 {
   static char txt[30];
   if (ms) {
@@ -219,20 +216,18 @@ game_options_bonus(_menusystem *ms)
 }
 
 
-static const char *men_game_options_menu(_menusystem *prevmenu) {
+static std::string men_game_options_menu(_menusystem *prevmenu) {
   static const char * s = _("Game Options");
   if (prevmenu) {
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
-    ms = add_menu_option(ms, NULL, game_options_menu_password, SDLK_UNKNOWN, MOF_LEFT);
-    ms = add_menu_option(ms, NULL, game_options_menu_lives, SDLK_UNKNOWN,
-                         (menuoptflags)((int)MOF_PASSKEYS|(int)MOF_LEFT));
-    ms = add_menu_option(ms, NULL, game_options_menu_statustop);
-    ms = add_menu_option(ms, NULL, game_options_menu_speed, SDLK_UNKNOWN,
-                         (menuoptflags)((int)MOF_PASSKEYS|(int)MOF_LEFT));
-    ms = add_menu_option(ms, NULL, game_options_bonus);
+    ms = add_menu_option(ms, "", game_options_menu_password, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, "", game_options_menu_lives, SDLK_UNKNOWN, (menuoptflags)((int)MOF_PASSKEYS|(int)MOF_LEFT));
+    ms = add_menu_option(ms, "", game_options_menu_statustop);
+    ms = add_menu_option(ms, "", game_options_menu_speed, SDLK_UNKNOWN, (menuoptflags)((int)MOF_PASSKEYS|(int)MOF_LEFT));
+    ms = add_menu_option(ms, "", game_options_bonus);
 
-    ms = add_menu_option(ms, NULL, NULL);
+    ms = add_menu_option(ms, "", NULL);
     ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, prevmenu);
@@ -242,17 +237,17 @@ static const char *men_game_options_menu(_menusystem *prevmenu) {
   return s;
 }
 
-static const char *run_redefine_menu(_menusystem *prevmenu) {
+static std::string run_redefine_menu(_menusystem *prevmenu) {
   if (prevmenu) {
     _menusystem *ms = new_menu_system(_("Redefine Keys"), NULL, 0, fontsprites.data(titledata)->h+30);
 
     times_called = 0;
 
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
-    ms = add_menu_option(ms, NULL, redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, "", redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, "", redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, "", redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, "", redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
+    ms = add_menu_option(ms, "", redefine_menu_up, SDLK_UNKNOWN, MOF_LEFT);
     ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, prevmenu);
@@ -262,8 +257,7 @@ static const char *run_redefine_menu(_menusystem *prevmenu) {
   return _("Redefine Keys");
 }
 
-static const char *
-men_options_windowed(_menusystem *ms)
+static std::string men_options_windowed(_menusystem *ms)
 {
   static char txt[30];
   if (ms) {
@@ -277,8 +271,7 @@ men_options_windowed(_menusystem *ms)
   return txt;
 }
 
-static const char *
-men_options_sounds(_menusystem *ms)
+static std::string men_options_sounds(_menusystem *ms)
 {
   static char txt[30];
   if (ms) {
@@ -300,8 +293,7 @@ men_options_sounds(_menusystem *ms)
   return txt;
 }
 
-  static const char *
-men_options_music(_menusystem *ms)
+static std::string men_options_music(_menusystem *ms)
 {
   static char txt[30];
   if (ms) {
@@ -340,8 +332,7 @@ reload_layer_graphics(void) {
   scr_reload_sprites(RL_SCROLLER);
 }
 
-static const char *
-men_alpha_font(_menusystem *ms)
+static std::string men_alpha_font(_menusystem *ms)
 {
   static char txt[30];
   if (ms) {
@@ -354,8 +345,7 @@ men_alpha_font(_menusystem *ms)
   return txt;
 }
 
-static const char *
-men_alpha_sprites(_menusystem *ms)
+static std::string men_alpha_sprites(_menusystem *ms)
 {
   static char txt[30];
   if (ms) {
@@ -368,8 +358,7 @@ men_alpha_sprites(_menusystem *ms)
   return txt;
 }
 
-static const char *
-men_alpha_layer(_menusystem *ms)
+static std::string men_alpha_layer(_menusystem *ms)
 {
   static char txt[30];
   if (ms) {
@@ -382,8 +371,7 @@ men_alpha_layer(_menusystem *ms)
   return txt;
 }
 
-static const char *
-men_alpha_menu(_menusystem *ms)
+static std::string men_alpha_menu(_menusystem *ms)
 {
   static char txt[30];
   if (ms) {
@@ -395,8 +383,7 @@ men_alpha_menu(_menusystem *ms)
   return txt;
 }
 
-static const char *
-men_waves_menu(_menusystem *ms)
+static std::string men_waves_menu(_menusystem *ms)
 {
   if (ms) {
     switch (key_sdlkey2conv(ms->key, false)) {
@@ -411,7 +398,7 @@ men_waves_menu(_menusystem *ms)
       config.waves_type(config.waves_type() - 1);
       if (config.waves_type() < 0) config.waves_type(0);
       break;
-    default: return NULL;
+    default: return "";
     }
   }
   switch(config.waves_type()) {
@@ -422,8 +409,7 @@ men_waves_menu(_menusystem *ms)
   }
 }
 
-static const char *
-men_full_scroller(_menusystem *ms)
+static std::string men_full_scroller(_menusystem *ms)
 {
   if (ms) {
     config.use_full_scroller(!config.use_full_scroller());
@@ -433,21 +419,20 @@ men_full_scroller(_menusystem *ms)
 }
 
 
-static const char *
-men_alpha_options(_menusystem *mainmenu) {
+static std::string men_alpha_options(_menusystem *mainmenu) {
   static const char * s = _("Alpha Options");
   if (mainmenu) {
 
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
-    if (!ms) return NULL;
+    if (!ms) return "";
 
-    ms = add_menu_option(ms, NULL, men_alpha_font, SDLK_UNKNOWN, MOF_RIGHT);
-    ms = add_menu_option(ms, NULL, men_alpha_sprites, SDLK_UNKNOWN, MOF_RIGHT);
-    ms = add_menu_option(ms, NULL, men_alpha_layer, SDLK_UNKNOWN, MOF_RIGHT);
-    ms = add_menu_option(ms, NULL, men_alpha_menu, SDLK_UNKNOWN, MOF_RIGHT);
+    ms = add_menu_option(ms, "", men_alpha_font, SDLK_UNKNOWN, MOF_RIGHT);
+    ms = add_menu_option(ms, "", men_alpha_sprites, SDLK_UNKNOWN, MOF_RIGHT);
+    ms = add_menu_option(ms, "", men_alpha_layer, SDLK_UNKNOWN, MOF_RIGHT);
+    ms = add_menu_option(ms, "", men_alpha_menu, SDLK_UNKNOWN, MOF_RIGHT);
 
-    ms = add_menu_option(ms, NULL, NULL);
+    ms = add_menu_option(ms, "", NULL);
     ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, mainmenu);
@@ -457,21 +442,20 @@ men_alpha_options(_menusystem *mainmenu) {
   return s;
 }
 
-static const char *
-men_options_graphic(_menusystem *mainmenu) {
+static std::string men_options_graphic(_menusystem *mainmenu) {
   static const char *s = _("Graphics");
   if (mainmenu) {
 
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
-    if (!ms) return NULL;
+    if (!ms) return "";
 
-    ms = add_menu_option(ms, NULL, men_options_windowed);
-    ms = add_menu_option(ms, NULL, men_alpha_options);
-    ms = add_menu_option(ms, NULL, men_waves_menu, SDLK_UNKNOWN, MOF_PASSKEYS);
-    ms = add_menu_option(ms, NULL, men_full_scroller, SDLK_UNKNOWN);
+    ms = add_menu_option(ms, "", men_options_windowed);
+    ms = add_menu_option(ms, "", men_alpha_options);
+    ms = add_menu_option(ms, "", men_waves_menu, SDLK_UNKNOWN, MOF_PASSKEYS);
+    ms = add_menu_option(ms, "", men_full_scroller, SDLK_UNKNOWN);
 
-    ms = add_menu_option(ms, NULL, NULL);
+    ms = add_menu_option(ms, "", NULL);
     ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, mainmenu);
@@ -481,22 +465,21 @@ men_options_graphic(_menusystem *mainmenu) {
   return s;
 }
 
-static const char *
-men_options(_menusystem *mainmenu) {
+static std::string men_options(_menusystem *mainmenu) {
   static const char * s = _("Options");
   if (mainmenu) {
 
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
-    if (!ms) return NULL;
+    if (!ms) return "";
 
-    ms = add_menu_option(ms, NULL, men_game_options_menu);
-    ms = add_menu_option(ms, NULL, run_redefine_menu);
-    ms = add_menu_option(ms, NULL, men_options_graphic);
-    ms = add_menu_option(ms, NULL, men_options_sounds);
-    ms = add_menu_option(ms, NULL, men_options_music);
+    ms = add_menu_option(ms, "", men_game_options_menu);
+    ms = add_menu_option(ms, "", run_redefine_menu);
+    ms = add_menu_option(ms, "", men_options_graphic);
+    ms = add_menu_option(ms, "", men_options_sounds);
+    ms = add_menu_option(ms, "", men_options_music);
 
-    ms = add_menu_option(ms, NULL, NULL);
+    ms = add_menu_option(ms, "", NULL);
     ms = add_menu_option(ms, _("Back"), NULL);
 
     ms = run_menu_system(ms, mainmenu);
@@ -550,8 +533,7 @@ calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
   }
 }
 
-static const char *
-men_hiscores_background_proc(_menusystem *ms)
+static std::string men_hiscores_background_proc(_menusystem *ms)
 {
   static int blink_r = 120, blink_g = 200, blink_b = 40;
   static int next_page = 0;
@@ -644,7 +626,7 @@ static void show_scores(bool back = true, int mark = -1) {
   hiscores_hilited = mark;
 
   /* fake options; the empty lines are used by the background proc */
-  for (int tmpz = 0; tmpz < HISCORES_PER_PAGE; tmpz++) ms = add_menu_option(ms, NULL, NULL);
+  for (int tmpz = 0; tmpz < HISCORES_PER_PAGE; tmpz++) ms = add_menu_option(ms, "", NULL);
 
   if (back)
     ms = add_menu_option(ms, _("Back"), NULL);
@@ -807,7 +789,7 @@ men_main_bonusgame_proc(_menusystem *ms)
 }
 #endif /* HUNT_THE_FISH */
 
-static const char *
+static std::string
 men_main_startgame_proc(_menusystem *ms)
 {
   if (ms) {
@@ -822,7 +804,7 @@ men_main_startgame_proc(_menusystem *ms)
       break;
     case right_key: currentmission = (currentmission + 1) % missioncount; break;
     case left_key: currentmission = (currentmission + missioncount - 1) % missioncount; break;
-    default: return NULL;
+    default: return "";
     }
   }
   static char s[30];
@@ -830,7 +812,7 @@ men_main_startgame_proc(_menusystem *ms)
   return s;
 }
 
-static const char *
+static std::string
 men_main_highscore_proc(_menusystem *ms)
 {
   if (ms) {
@@ -839,7 +821,7 @@ men_main_highscore_proc(_menusystem *ms)
   return _("Highscores");
 }
 
-static const char *
+static std::string
 men_main_leveleditor_proc(_menusystem *ms)
 {
   if (ms) {
@@ -849,7 +831,7 @@ men_main_leveleditor_proc(_menusystem *ms)
   return _("Level Editor");
 }
 
-static const char *
+static std::string
 men_main_timer_proc(_menusystem *ms)
 {
   if (ms) {
@@ -875,7 +857,7 @@ men_main_timer_proc(_menusystem *ms)
       }
     }
 
-    if (num_demos < 1) return NULL;
+    if (num_demos < 1) return "";
 
     lev_selecttower(demos[rand() % num_demos]);
     auto demo = lev_get_towerdemo();
@@ -890,11 +872,10 @@ men_main_timer_proc(_menusystem *ms)
     ttsounds::instance()->stopsound(SND_WATER);
     dcl_update_speed(MENU_DCLSPEED);
   }
-  return NULL;
+  return "";
 }
 
-static const char *
-men_game_return2game(_menusystem *tms)
+static std::string men_game_return2game(_menusystem *tms)
 {
   if (tms) {
     tms->exitmenu = true;
@@ -903,8 +884,7 @@ men_game_return2game(_menusystem *tms)
   return _("Return to Game");
 }
 
-static const char *
-men_game_leavegame(_menusystem *tms)
+static std::string men_game_leavegame(_menusystem *tms)
 {
   if (tms) {
     tms->exitmenu = true;
@@ -919,9 +899,9 @@ men_game_leavegame(_menusystem *tms)
 void run_debug_menu(void) {
   _menusystem *ms = new_menu_system(_("DEBUG MENU"), NULL, 0, SCREENHEI / 5);
 
-  ms = add_menu_option(ms, NULL, debug_menu_extralife);
-  ms = add_menu_option(ms, NULL, debug_menu_extrascore);
-  ms = add_menu_option(ms, NULL, NULL);
+  ms = add_menu_option(ms, "", debug_menu_extralife);
+  ms = add_menu_option(ms, "", debug_menu_extrascore);
+  ms = add_menu_option(ms, "", NULL);
   ms = add_menu_option(ms, _("Back to Game"), NULL);
 
   ms = run_menu_system(ms, 0);
@@ -937,21 +917,21 @@ void men_init(void) {
 void men_main() {
   _menusystem *ms;
 
-  ms = new_menu_system(NULL, men_main_background_proc, 0, fontsprites.data(titledata)->h + 30);
+  ms = new_menu_system("", men_main_background_proc, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return;
 
   ms = set_menu_system_timeproc(ms, 200, men_main_timer_proc);
 
-  ms = add_menu_option(ms, NULL, men_main_startgame_proc, SDLK_s, MOF_PASSKEYS);
-  ms = add_menu_option(ms, NULL, NULL);
-  ms = add_menu_option(ms, NULL, men_main_highscore_proc, SDLK_h);
-  ms = add_menu_option(ms, NULL, men_options, SDLK_o);
-  ms = add_menu_option(ms, NULL, men_main_leveleditor_proc, SDLK_e);
+  ms = add_menu_option(ms, "", men_main_startgame_proc, SDLK_s, MOF_PASSKEYS);
+  ms = add_menu_option(ms, "", NULL);
+  ms = add_menu_option(ms, "", men_main_highscore_proc, SDLK_h);
+  ms = add_menu_option(ms, "", men_options, SDLK_o);
+  ms = add_menu_option(ms, "", men_main_leveleditor_proc, SDLK_e);
 #ifdef HUNT_THE_FISH
-  ms = add_menu_option(ms, NULL, men_main_bonusgame_proc);
+  ms = add_menu_option(ms, "", men_main_bonusgame_proc);
 #endif
-  ms = add_menu_option(ms, NULL, NULL);
+  ms = add_menu_option(ms, "", NULL);
   ms = add_menu_option(ms, _("Quit"), NULL, SDLK_q);
 
   ms->wraparound = true;
@@ -966,14 +946,14 @@ bool men_game() {
   bool do_quit;
   int  speed = dcl_update_speed(MENU_DCLSPEED);
 
-  ms = new_menu_system(NULL, NULL, 0, fontsprites.data(titledata)->h + 30);
+  ms = new_menu_system("", NULL, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return 0;
 
-  ms = add_menu_option(ms, NULL, men_game_return2game);
-  ms = add_menu_option(ms, NULL, men_options, SDLK_o);
-  ms = add_menu_option(ms, NULL, NULL);
-  ms = add_menu_option(ms, NULL, men_game_leavegame);
+  ms = add_menu_option(ms, "", men_game_return2game);
+  ms = add_menu_option(ms, "", men_options, SDLK_o);
+  ms = add_menu_option(ms, "", NULL);
+  ms = add_menu_option(ms, "", men_game_leavegame);
 
   ms->wraparound = true;
 

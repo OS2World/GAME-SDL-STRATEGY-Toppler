@@ -32,18 +32,12 @@ void set_men_bgproc(menubg_callback_proc proc) {
   menu_background_proc = proc;
 }
 
-_menusystem *new_menu_system(const char *title, menuopt_callback_proc pr, int molen, int ystart)
+_menusystem *new_menu_system(const std::string & title, menuopt_callback_proc pr, int molen, int ystart)
 {
   _menusystem *ms = new _menusystem;
 
   if (ms) {
-    memset(ms->title, '\0', MENUTITLELEN);
-    if (title) {
-      memcpy(ms->title, title, (strlen(title) < MENUTITLELEN) ? strlen(title) + 1 : (MENUTITLELEN-1));
-    }
-
-    ms->numoptions = 0;
-    ms->moption = NULL;
+    ms->title = title;
     ms->mstate = 0;
     ms->mproc = pr;
     ms->maxoptlen = molen;
@@ -61,45 +55,29 @@ _menusystem *new_menu_system(const char *title, menuopt_callback_proc pr, int mo
 
 _menusystem *
 add_menu_option(_menusystem *ms,
-                const char *name,
+                const std::string & name,
                 menuopt_callback_proc pr,
                 SDL_Keycode quickkey,
                 menuoptflags flags,
-                int state) {
-  _menuoption *tmp;
-  int olen = 0;
+                int state)
+{
+  _menuoption tmp;
 
   if (!ms) return ms;
 
-  tmp = new _menuoption[ms->numoptions+1];
-
-  if (!tmp) return ms;
-
-  memcpy(tmp, ms->moption, sizeof(_menuoption)*ms->numoptions);
-  delete [] ms->moption;
-
-  memset(tmp[ms->numoptions].oname, '\0', MENUOPTIONLEN);
+  tmp.oname = name;
+  tmp.oproc = pr;
+  tmp.ostate = state;
+  tmp.oflags = flags;
+  tmp.quickkey = quickkey;
 
   /* if no name, but has callback proc, query name from it. */
-  if (!name && pr) name = (*pr) (NULL);
+  if (tmp.oname.empty() && pr) tmp.oname = (*pr) (NULL);
 
-  if (name) {
-    olen = strlen(name);
-    memcpy(tmp[ms->numoptions].oname, name, (olen < MENUOPTIONLEN) ? olen + 1 : (MENUOPTIONLEN-1));
-  }
-
-  tmp[ms->numoptions].oproc = pr;
-  tmp[ms->numoptions].ostate = state;
-  tmp[ms->numoptions].oflags = flags;
-  tmp[ms->numoptions].quickkey = quickkey;
-
-  ms->moption = tmp;
-  ms->numoptions++;
-  if (name)
-    olen = scr_textlength(name);
-  else
-    olen = 0;
+  auto olen = scr_textlength(tmp.oname.c_str());
   if (ms->maxoptlen < olen) ms->maxoptlen = olen;
+
+  ms->moption.push_back(tmp);
 
   return ms;
 }
@@ -109,8 +87,6 @@ free_menu_system(_menusystem *ms)
 {
   if (!ms) return;
 
-  delete [] ms->moption;
-  ms->numoptions = 0;
   ms->mstate = 0;
   ms->mproc = NULL;
   delete ms;
@@ -136,18 +112,18 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
 
   int y, offs = 0, len, realy, minx, miny, maxx, maxy, scrlen,
     newhilite = -1, yz, titlehei;
-  bool has_title = (ms->title) && (strlen(ms->title) != 0);
+  bool has_title = !ms->title.empty();
 
   if (ms->wraparound) {
     if (ms->hilited < 0)
-      ms->hilited = ms->numoptions - 1;
-    else if (ms->hilited >= ms->numoptions)
+      ms->hilited = ms->moption.size() - 1;
+    else if (ms->hilited >= ms->moption.size())
       ms->hilited = 0;
   } else {
     if (ms->hilited < 0)
       ms->hilited = 0;
-    else if (ms->hilited >= ms->numoptions)
-      ms->hilited = ms->numoptions - 1;
+    else if (ms->hilited >= ms->moption.size())
+      ms->hilited = ms->moption.size() - 1;
   }
 
   draw_background(ms);
@@ -157,7 +133,7 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
   if (has_title) {
     int pos = 0;
     int start = 0;
-    int len = strlen(ms->title);
+    int len = ms->title.size();
 
     while (pos <= len) {
 
@@ -166,7 +142,7 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
         bool end = ms->title[pos] == 0;
 
         ms->title[pos] = 0;
-        scr_writetext_center(ms->ystart + titlehei * FONTHEI, ms->title + start);
+        scr_writetext_center(ms->ystart + titlehei * FONTHEI, ms->title.c_str() + start);
         titlehei ++;
 
         if (!end)
@@ -188,10 +164,10 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
 
   yz = ms->ystart + (titlehei) * FONTHEI;
 
-  for (y = 0; (yz+y+1 < SCREENHEI) && (y+offs < ms->numoptions); y++) {
+  for (y = 0; (yz+y+1 < SCREENHEI) && (y+offs < ms->moption.size()); y++) {
     realy = yz + y * FONTHEI;
-    len = strlen(ms->moption[y+offs].oname);
-    scrlen = scr_textlength(ms->moption[y+offs].oname, len);
+    len = ms->moption[y+offs].oname.size();
+    scrlen = scr_textlength(ms->moption[y+offs].oname.c_str(), len);
     minx = (SCREENWID - scrlen) / 2;
     miny = realy;
     maxx = (SCREENWID + scrlen) / 2;
@@ -223,18 +199,18 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
   maxy = y;
 
   for (y = 0; y < maxy; y++) {
-    if (strlen(ms->moption[y+offs].oname)) {
+    if (!ms->moption[y+offs].oname.empty()) {
       miny = ms->ystart + (y + titlehei)*FONTHEI;
       if ((ms->moption[y+offs].oflags & MOF_LEFT))
         scr_writetext((SCREENWID - ms->maxoptlen) / 2 + 4, miny,
-                      ms->moption[y+offs].oname);
+                      ms->moption[y+offs].oname.c_str());
       else
         if ((ms->moption[y+offs].oflags & MOF_RIGHT))
           scr_writetext((SCREENWID + ms->maxoptlen) / 2 - 4
-                        - scr_textlength(ms->moption[y+offs].oname), miny,
-                        ms->moption[y+offs].oname);
+                        - scr_textlength(ms->moption[y+offs].oname.c_str()), miny,
+                        ms->moption[y+offs].oname.c_str());
         else
-          scr_writetext_center(miny, ms->moption[y+offs].oname);
+          scr_writetext_center(miny, ms->moption[y+offs].oname.c_str());
     }
   }
 
@@ -249,13 +225,10 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
 void
 menu_system_caller(_menusystem *ms)
 {
-  const char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
-  if (tmpbuf) {
-    int olen = strlen(tmpbuf);
-    memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
-    memcpy(ms->moption[ms->hilited].oname, tmpbuf,
-           (olen < MENUOPTIONLEN) ? olen + 1 : (MENUOPTIONLEN-1));
-    olen = scr_textlength(tmpbuf);
+  std::string tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
+  if (!tmpbuf.empty()) {
+    ms->moption[ms->hilited].oname = tmpbuf;
+    auto olen = scr_textlength(tmpbuf.c_str());
     if (ms->maxoptlen < olen) ms->maxoptlen = olen;
     ms->key = SDLK_UNKNOWN;
   }
@@ -274,10 +247,8 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
   ms->parent = parent;
 
   /* find the first option with text */
-  if (!strlen(ms->moption[ms->hilited].oname))
-    do {
-      ms->hilited = (ms->hilited + 1) % ms->numoptions;
-    } while (!strlen(ms->moption[ms->hilited].oname));
+  while (ms->moption[ms->hilited].oname.empty())
+    ms->hilited = (ms->hilited + 1) % ms->moption.size();
 
   (void)key_sdlkey();
 
@@ -295,7 +266,7 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
     }
 
     if ((ms->opt_steal_control >= 0) &&
-        (ms->opt_steal_control < ms->numoptions) &&
+        (ms->opt_steal_control < ms->moption.size()) &&
         ms->moption[ms->opt_steal_control].oproc) {
       ms->key = key_sdlkey();
       ms->hilited = ms->opt_steal_control;
@@ -312,7 +283,7 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
 
       if (!stolen) {
         ms->curr_mtime = 0;
-        for (int tmpz = 0; tmpz < ms->numoptions; tmpz++)
+        for (int tmpz = 0; tmpz < ms->moption.size(); tmpz++)
           if (ms->moption[tmpz].quickkey == ms->key) {
             ms->hilited = tmpz;
             ms->key = SDLK_UNKNOWN;
@@ -329,12 +300,12 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
         case down_key:
           if (ms->wraparound) {
             do {
-              ms->hilited = (ms->hilited + 1) % ms->numoptions;
-            } while (!strlen(ms->moption[ms->hilited].oname));
+              ms->hilited = (ms->hilited + 1) % ms->moption.size();
+            } while (ms->moption[ms->hilited].oname.empty());
           } else {
-            if (ms->hilited < ms->numoptions) {
+            if (ms->hilited < ms->moption.size()) {
               ms->hilited++;
-              if (!strlen(ms->moption[ms->hilited].oname)) ms->hilited++;
+              if (ms->moption[ms->hilited].oname.empty()) ms->hilited++;
             }
           }
           break;
@@ -342,8 +313,8 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
           if (ms->wraparound) {
             do {
               ms->hilited--;
-              if (ms->hilited < 0) ms->hilited = ms->numoptions - 1;
-            } while (!strlen(ms->moption[ms->hilited].oname));
+              if (ms->hilited < 0) ms->hilited = ms->moption.size() - 1;
+            } while (ms->moption[ms->hilited].oname.empty());
           } else {
             int tmpz = ms->hilited;
             if (ms->hilited > 0) {
@@ -353,20 +324,18 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
                   break;
                 }
                 ms->hilited--;
-              } while (!strlen(ms->moption[ms->hilited].oname));
+              } while (ms->moption[ms->hilited].oname.empty());
             }
           }
           break;
         case fire_key:
-          if ((ms->hilited >= 0) && (ms->hilited < ms->numoptions) &&
+          if ((ms->hilited >= 0) && (ms->hilited < ms->moption.size()) &&
               ms->moption[ms->hilited].oproc) {
-            const char *tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
-            if (tmpbuf) {
-              int olen = strlen(tmpbuf);
-              memset(ms->moption[ms->hilited].oname, '\0', MENUOPTIONLEN);
-              memcpy(ms->moption[ms->hilited].oname, tmpbuf,
-                     (olen < MENUOPTIONLEN) ? olen + 1 : (MENUOPTIONLEN-1));
-              olen = scr_textlength(tmpbuf);
+            std::string tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
+            if (!tmpbuf.empty())
+            {
+              ms->moption[ms->hilited].oname = tmpbuf;
+              auto olen = scr_textlength(tmpbuf.c_str());
               if (ms->maxoptlen < olen) ms->maxoptlen = olen;
             }
             break;
@@ -382,11 +351,11 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
   return ms;
 }
 
-void men_info(char *s, long timeout, int fire) {
+void men_info(const std::string & s, long timeout, int fire) {
   bool ende = false;
   do {
     if (menu_background_proc) (*menu_background_proc) ();
-    scr_writetext_center((SCREENHEI / 5), s);
+    scr_writetext_center((SCREENHEI / 5), s.c_str());
     if (fire)
       scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, (fire == 1) ? _("Press fire") : _("Press space"));
     scr_swap();
@@ -401,11 +370,12 @@ void men_info(char *s, long timeout, int fire) {
 
 static int input_box_cursor_state = 0;
 
-static void draw_input_box(int x, int y, int len, int cursor, const char *txt)
+static void draw_input_box(int x, int y, int len, int cursor, const std::string & txt)
 {
   static int col_r = 0, col_g = 200, col_b = 120;
   int nlen = len, slen = len;
   int arrows = 0;
+  size_t txtpos = 0;
 
   if ((len+3)*FONTMAXWID > SCREENWID)
     nlen = (SCREENWID / FONTMAXWID) - 3;
@@ -416,23 +386,23 @@ static void draw_input_box(int x, int y, int len, int cursor, const char *txt)
 
   scr_putbar(x, y, nlen * FONTMAXWID, FONTHEI, 0, 0, 0, (config.use_alpha_darkening())?128:255);
 
-  if (scr_textlength(txt) >= nlen*FONTMAXWID) {
+  if (scr_textlength(txt.substr(txtpos).c_str()) >= nlen*FONTMAXWID) {
     while ((cursor >= 0) &&
-           (scr_textlength(txt, cursor+(nlen/2)) >= (nlen)*FONTMAXWID)) {
+           (scr_textlength(txt.substr(txtpos).c_str(), cursor+(nlen/2)) >= nlen*FONTMAXWID)) {
       cursor--;
-      txt++;
+      txtpos++;
       arrows = 1;
     }
   }
-  if (scr_textlength(txt) >= nlen*FONTMAXWID) {
+  if (scr_textlength(txt.substr(txtpos).c_str()) >= nlen*FONTMAXWID) {
     arrows |= 2;
-    while ((slen > 0) && (scr_textlength(txt, slen) >= nlen*FONTMAXWID)) slen--;
+    while ((slen > 0) && (scr_textlength(txt.substr(txtpos).c_str(), slen) >= nlen*FONTMAXWID)) slen--;
   }
 
-  scr_writetext(x+1,y, txt, slen);
+  scr_writetext(x+1,y, txt.substr(txtpos).c_str(), slen);
 
   if ((input_box_cursor_state & 4) && (cursor >= 0))
-    scr_putbar(x + scr_textlength(txt, cursor) + 1, y, FONTMINWID, FONTHEI,
+    scr_putbar(x + scr_textlength(txt.substr(txtpos).c_str(), cursor) + 1, y, FONTMINWID, FONTHEI,
                col_r, col_g, col_b, (config.use_alpha_darkening())?128:255);
   scr_putrect(x,y, nlen * FONTMAXWID, FONTHEI, col_r, col_g, col_b, 255);
 
@@ -466,7 +436,7 @@ bool men_input(std::string & origs, int max_len, int xpos, int ypos, const char 
 
   if (menu_background_proc) (*menu_background_proc) ();
 
-  draw_input_box(xpos,ypos, max_len, pos, s.c_str());
+  draw_input_box(xpos,ypos, max_len, pos, s);
   scr_swap();
   dcl_wait();
 
@@ -539,27 +509,27 @@ set_menu_system_timeproc(_menusystem *ms, long t, menuopt_callback_proc pr)
   return ms;
 }
 
-static const char *
+static std::string
 men_yn_option_yes(_menusystem *ms)
 {
   if (ms) {
     ms->mstate = 1;
     ms->exitmenu = true;
-    return NULL;
+    return "";
   } else return _("Yes");
 }
 
-static const char *
+static std::string
 men_yn_option_no(_menusystem *ms)
 {
   if (ms) {
     ms->mstate = 0;
     ms->exitmenu = true;
-    return NULL;
+    return "";
   } else return _("No");
 }
 
-unsigned char men_yn(char *s, bool defchoice, menuopt_callback_proc pr) {
+unsigned char men_yn(const std::string & s, bool defchoice, menuopt_callback_proc pr) {
   _menusystem *ms = new_menu_system(s, pr, 0, SCREENHEI / 5);
 
   bool doquit = false;

@@ -24,12 +24,10 @@
 #include <SDL_keyboard.h>
 
 #include <string>
+#include <vector>
 
 /* This module defines a menu system that has the following features
 */
-
-#define MENUTITLELEN  1000
-#define MENUOPTIONLEN MENUTITLELEN
 
 /* Menu option flags */
 typedef enum {
@@ -46,7 +44,7 @@ struct _menusystem;
    string describing this option. If the parameter
    is null, then this is called just to get the
    string back. */
-typedef const char *FDECL((*menuopt_callback_proc), (struct _menusystem *));
+typedef std::string FDECL((*menuopt_callback_proc), (struct _menusystem *));
 
 /* menu background callback procedure. this should draw the
    background screen for the menu. */
@@ -55,7 +53,7 @@ typedef void FDECL((*menubg_callback_proc), (void));
 
 /* menu option */
 typedef struct {
-   char oname[MENUOPTIONLEN];    /* text shown to user */
+   std::string oname;    /* text shown to user */
    menuopt_callback_proc oproc;  /* callback proc, supplies actions and the name */
    int  ostate;                  /* callback proc can use this */
    menuoptflags  oflags;         /* MOF_foo */
@@ -66,9 +64,8 @@ typedef struct {
 
 
 typedef struct _menusystem {
-   char title[MENUTITLELEN];     /* title of the menu */
-   int numoptions;               /* # of options in this menu */
-   _menuoption *moption;         /* the options */
+   std::string title;     /* title of the menu */
+   std::vector<_menuoption> moption;
    menuopt_callback_proc mproc;
    menuopt_callback_proc timeproc;
    long curr_mtime;              /* current time this menu has been running */
@@ -103,11 +100,11 @@ bool men_input(std::string & origs, int max_len, int xpos = -1,
 
 /* asks a yes/no question; return 0 if "no",
    1 if "yes" */
-unsigned char men_yn(char *s, bool defchoice, menuopt_callback_proc pr = 0);
+unsigned char men_yn(const std::string & s, bool defchoice, menuopt_callback_proc pr = 0);
 
 /* shows string s, waits a certain time, (-1 = indefinitely),
    and if fire = 1 -> "press fire", if fire = 2 -> "press space" */
-void men_info(char *s, long timeout = -1, int fire = 0);
+void men_info(const std::string &  s, long timeout = -1, int fire = 0);
 
 
 /* sets the function that gets called whenever the background
@@ -116,11 +113,11 @@ void set_men_bgproc(menubg_callback_proc proc);
 
 
 /* create a new menu */
-_menusystem *new_menu_system(const char *title, menuopt_callback_proc pr,
+_menusystem *new_menu_system(const std::string & title, menuopt_callback_proc pr,
                                     int molen = 0, int ystart = 25);
 
 /* add an option to the menu */
-_menusystem *add_menu_option(_menusystem *ms, const char *name, menuopt_callback_proc pr,
+_menusystem *add_menu_option(_menusystem *ms, const std::string & name, menuopt_callback_proc pr,
                                     SDL_Keycode quickkey = SDLK_UNKNOWN, menuoptflags flags = MOF_NONE, int state = 0);
 
 /* displays the given menu on screen and lets the user interact with it*/

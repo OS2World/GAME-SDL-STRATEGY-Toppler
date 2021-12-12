@@ -178,9 +178,9 @@ static void editor_background_proc(void) {
    if (!bg_text.empty()) scr_writetext_center(5, bg_text.c_str());
 }
 
-static const char *editor_background_menu_proc(_menusystem * /*ms*/) {
+static std::string editor_background_menu_proc(_menusystem * /*ms*/) {
     editor_background_proc();
-    return 0;
+    return "";
 }
 
 static bool really_quit() {
