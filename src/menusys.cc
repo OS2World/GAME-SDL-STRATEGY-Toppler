@@ -73,7 +73,7 @@ add_menu_option(_menusystem *ms,
   /* if no name, but has callback proc, query name from it. */
   if (tmp.oname.empty() && pr) tmp.oname = (*pr) (NULL);
 
-  auto olen = scr_textlength(tmp.oname.c_str());
+  auto olen = scr_textlength(tmp.oname);
   if (ms->maxoptlen < olen) ms->maxoptlen = olen;
 
   ms->moption.push_back(tmp);
@@ -141,7 +141,7 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
         bool end = ms->title[pos] == 0;
 
         ms->title[pos] = 0;
-        scr_writetext_center(ms->ystart + titlehei * FONTHEI, ms->title.c_str() + start);
+        scr_writetext_center(ms->ystart + titlehei * FONTHEI, ms->title.substr(start));
         titlehei ++;
 
         if (!end)
@@ -166,7 +166,7 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
   for (y = 0; (yz+y+1 < SCREENHEI) && (std::cmp_less(y+offs, ms->moption.size())); y++) {
     realy = yz + y * FONTHEI;
     len = ms->moption[y+offs].oname.size();
-    scrlen = scr_textlength(ms->moption[y+offs].oname.c_str(), len);
+    scrlen = scr_textlength(ms->moption[y+offs].oname, len);
     minx = (SCREENWID - scrlen) / 2;
     miny = realy;
     maxx = (SCREENWID + scrlen) / 2;
@@ -202,14 +202,14 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
       miny = ms->ystart + (y + titlehei)*FONTHEI;
       if ((ms->moption[y+offs].oflags & MOF_LEFT))
         scr_writetext((SCREENWID - ms->maxoptlen) / 2 + 4, miny,
-                      ms->moption[y+offs].oname.c_str());
+                      ms->moption[y+offs].oname);
       else
         if ((ms->moption[y+offs].oflags & MOF_RIGHT))
           scr_writetext((SCREENWID + ms->maxoptlen) / 2 - 4
-                        - scr_textlength(ms->moption[y+offs].oname.c_str()), miny,
-                        ms->moption[y+offs].oname.c_str());
+                        - scr_textlength(ms->moption[y+offs].oname), miny,
+                        ms->moption[y+offs].oname);
         else
-          scr_writetext_center(miny, ms->moption[y+offs].oname.c_str());
+          scr_writetext_center(miny, ms->moption[y+offs].oname);
     }
   }
 
@@ -227,7 +227,7 @@ menu_system_caller(_menusystem *ms)
   std::string tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
   if (!tmpbuf.empty()) {
     ms->moption[ms->hilited].oname = tmpbuf;
-    auto olen = scr_textlength(tmpbuf.c_str());
+    auto olen = scr_textlength(tmpbuf);
     if (ms->maxoptlen < olen) ms->maxoptlen = olen;
     ms->key = SDLK_UNKNOWN;
   }
@@ -334,7 +334,7 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
             if (!tmpbuf.empty())
             {
               ms->moption[ms->hilited].oname = tmpbuf;
-              auto olen = scr_textlength(tmpbuf.c_str());
+              auto olen = scr_textlength(tmpbuf);
               if (ms->maxoptlen < olen) ms->maxoptlen = olen;
             }
             break;
@@ -354,7 +354,7 @@ void men_info(const std::string & s, long timeout, int fire) {
   bool ende = false;
   do {
     if (menu_background_proc) (*menu_background_proc) ();
-    scr_writetext_center((SCREENHEI / 5), s.c_str());
+    scr_writetext_center((SCREENHEI / 5), s);
     if (fire)
       scr_writetext_center((SCREENHEI / 5) + 2 * FONTHEI, (fire == 1) ? _("Press fire") : _("Press space"));
     scr_swap();
@@ -385,23 +385,23 @@ static void draw_input_box(int x, int y, int len, int cursor, const std::string 
 
   scr_putbar(x, y, nlen * FONTMAXWID, FONTHEI, 0, 0, 0, (config.use_alpha_darkening())?128:255);
 
-  if (scr_textlength(txt.substr(txtpos).c_str()) >= nlen*FONTMAXWID) {
+  if (scr_textlength(txt.substr(txtpos)) >= nlen*FONTMAXWID) {
     while ((cursor >= 0) &&
-           (scr_textlength(txt.substr(txtpos).c_str(), cursor+(nlen/2)) >= nlen*FONTMAXWID)) {
+           (scr_textlength(txt.substr(txtpos), cursor+(nlen/2)) >= nlen*FONTMAXWID)) {
       cursor--;
       txtpos++;
       arrows = 1;
     }
   }
-  if (scr_textlength(txt.substr(txtpos).c_str()) >= nlen*FONTMAXWID) {
+  if (scr_textlength(txt.substr(txtpos)) >= nlen*FONTMAXWID) {
     arrows |= 2;
-    while ((slen > 0) && (scr_textlength(txt.substr(txtpos).c_str(), slen) >= nlen*FONTMAXWID)) slen--;
+    while ((slen > 0) && (scr_textlength(txt.substr(txtpos), slen) >= nlen*FONTMAXWID)) slen--;
   }
 
-  scr_writetext(x+1,y, txt.substr(txtpos).c_str(), slen);
+  scr_writetext(x+1,y, txt.substr(txtpos), slen);
 
   if ((input_box_cursor_state & 4) && (cursor >= 0))
-    scr_putbar(x + scr_textlength(txt.substr(txtpos).c_str(), cursor) + 1, y, FONTMINWID, FONTHEI,
+    scr_putbar(x + scr_textlength(txt.substr(txtpos), cursor) + 1, y, FONTMINWID, FONTHEI,
                col_r, col_g, col_b, (config.use_alpha_darkening())?128:255);
   scr_putrect(x,y, nlen * FONTMAXWID, FONTHEI, col_r, col_g, col_b, 255);
 

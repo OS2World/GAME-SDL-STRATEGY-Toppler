@@ -521,14 +521,14 @@ calc_hiscores_maxlen(int *max_pos, int * max_points, int *max_name)
 
     get_hiscores_string(x, a, b, c);
 
-    clen = scr_textlength(a.c_str());
+    clen = scr_textlength(a);
     if (clen > *max_pos) *max_pos = clen;
 
-    clen = scr_textlength(b.c_str());
+    clen = scr_textlength(b);
     if (clen < 64) clen = 64;
     if (clen > *max_points) *max_points = clen;
 
-    clen = scr_textlength(c.c_str());
+    clen = scr_textlength(c);
     if (clen > *max_name) *max_name = clen;
   }
 }
@@ -596,9 +596,9 @@ static std::string men_hiscores_background_proc(_menusystem *ms)
         scr_putbar(hiscores_xpos - 5, ypos - 3,
                    clen, FONTHEI + 3, blink_r, blink_g, blink_b, (config.use_alpha_darkening())?128:255);
       }
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos.c_str()), ypos, pos.c_str());
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points - scr_textlength(points.c_str()), ypos, points.c_str());
-      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + 20 + hiscores_maxlen_points, ypos, name.c_str());
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos - scr_textlength(pos), ypos, pos);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + hiscores_maxlen_points - scr_textlength(points), ypos, points);
+      scr_writetext(hiscores_xpos + hiscores_maxlen_pos + 20 + 20 + hiscores_maxlen_points, ypos, name);
     }
     scr_color_ramp(&blink_r, &blink_g, &blink_b);
   }
@@ -736,7 +736,7 @@ main_game_loop()
       return;
   }
 
-  tower = lev_tower_passwd_entry(config.curr_password().c_str());
+  tower = lev_tower_passwd_entry(config.curr_password());
 
   gam_newgame();
   bns_restart();

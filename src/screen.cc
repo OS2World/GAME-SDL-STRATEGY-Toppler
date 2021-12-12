@@ -842,7 +842,7 @@ static void putwater(long height) {
   wavetime++;
 }
 
-int scr_textlength(const char *s, int chars) {
+int scr_textlength(const std::string & s, int chars) {
   int len = 0;
   int pos = 0;
   mbstate_t state;
@@ -869,22 +869,22 @@ int scr_textlength(const char *s, int chars) {
   return len;
 }
 
-void scr_writetext_center(long y, const char *s) {
+void scr_writetext_center(long y, const std::string & s) {
   scr_writetext ((SCREENWID - scr_textlength(s)) / 2, y, s);
 }
 
-void scr_writetext_broken_center(long y, const char *s) {
+void scr_writetext_broken_center(long y, const std::string & s) {
 
   // ok, we try to break the text into several lines, if the lines are longer then the
   // screenwidth
 
-  int len = strlen(s);
+  int len = s.size();
   int start = 0;
   int end = len;
 
   while (start < len) {
 
-    while (scr_textlength(s+start, end-start+1) > SCREENWID) {
+    while (scr_textlength(s.substr(start, end-start+1)) > SCREENWID) {
       end--;
       while ((end > start) && (s[end] != ' ')) end--;
 
@@ -896,7 +896,7 @@ void scr_writetext_broken_center(long y, const char *s) {
 
     if (s[end] == ' ') end--;
 
-    scr_writetext((SCREENWID - scr_textlength(s+start, end-start+1)) / 2, y, s+start, end-start+1);
+    scr_writetext((SCREENWID - scr_textlength(s.substr(start, end-start+1))) / 2, y, s.substr(start), end-start+1);
 
     start = end+1;
     end = len;
@@ -1225,7 +1225,7 @@ static void putrobot(int t, int m, long x, long h)
   scr_blit(objectsprites.data(nr), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI);
 }
 
-void scr_writetext(long x, long y, const char *s, int maxchars) {
+void scr_writetext(long x, long y, const std::string & s, int maxchars) {
 
   mbstate_t state;
   memset (&state, '\0', sizeof (state));
@@ -1234,11 +1234,11 @@ void scr_writetext(long x, long y, const char *s, int maxchars) {
   int t = 0;
 
   if (maxchars == -1)
-    maxchars = strlen(s);
+    maxchars = s.size();
 
   while (s[t] && (maxchars > 0)) {
 
-    size_t nbytes = mbrtowc (&tmp, &s[t], maxchars, &state);
+    size_t nbytes = mbrtowc (&tmp, s.c_str()+t, maxchars, &state);
 
     if (nbytes >= (size_t) -2) {
       return;
@@ -1261,20 +1261,20 @@ void scr_writetext(long x, long y, const char *s, int maxchars) {
   }
 }
 
-void scr_writeformattext(long x, long y, const char *s) {
+void scr_writeformattext(long x, long y, const std::string & s) {
 
   mbstate_t state;
   memset (&state, '\0', sizeof (state));
   wchar_t tmp;
 
-  int len = strlen(s);
+  int len = s.size();
 
   int origx = x;
   int t = 0;
   Uint8 towerblock = 0;
   while (t < len) {
 
-    size_t nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+    size_t nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
 
     if (nbytes >= (size_t) -2) {
       return;
@@ -1288,7 +1288,7 @@ void scr_writeformattext(long x, long y, const char *s) {
       break;
     case '~':
 
-      nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+      nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
       if (nbytes >= (size_t) -2) {
         return;
       }
@@ -1297,7 +1297,7 @@ void scr_writeformattext(long x, long y, const char *s) {
       switch(tmp) {
       case 't':
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) {
           return;
         }
@@ -1305,7 +1305,7 @@ void scr_writeformattext(long x, long y, const char *s) {
 
         x = (tmp - '0') * 100;
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) {
           return;
         }
@@ -1313,7 +1313,7 @@ void scr_writeformattext(long x, long y, const char *s) {
 
         x += (tmp - '0') * 10;
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) {
           return;
         }
@@ -1323,7 +1323,7 @@ void scr_writeformattext(long x, long y, const char *s) {
 
         break;
       case 'T':
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) {
           return;
         }
@@ -1331,7 +1331,7 @@ void scr_writeformattext(long x, long y, const char *s) {
 
         x = origx + (tmp - '0') * 100;
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) {
           return;
         }
@@ -1339,7 +1339,7 @@ void scr_writeformattext(long x, long y, const char *s) {
 
         x += (tmp - '0') * 10;
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) {
           return;
         }
@@ -1350,7 +1350,7 @@ void scr_writeformattext(long x, long y, const char *s) {
         break;
       case 'b':
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) {
           return;
         }
@@ -1361,7 +1361,7 @@ void scr_writeformattext(long x, long y, const char *s) {
         x += 32;
         break;
       case 'e':
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) {
           return;
         }
@@ -1384,18 +1384,18 @@ void scr_writeformattext(long x, long y, const char *s) {
   }
 }
 
-long scr_formattextlength(long x, const char *s) {
+long scr_formattextlength(long x, const std::string & s) {
   mbstate_t state;
   memset (&state, '\0', sizeof (state));
   wchar_t tmp;
 
-  int len = strlen(s);
+  int len = s.size();
 
   int origx = x;
   int t = 0;
   while (t < len) {
 
-    size_t nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+    size_t nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
     if (nbytes >= (size_t) -2) return 0;
     t += nbytes;
 
@@ -1405,54 +1405,54 @@ long scr_formattextlength(long x, const char *s) {
       break;
     case '~':
 
-      nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+      nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
       if (nbytes >= (size_t) -2) return 0;
       t += nbytes;
 
       switch(tmp) {
       case 't':
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) return 0;
         t += nbytes;
         x = (tmp - '0') * 100;
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) return 0;
         t += nbytes;
         x += (tmp - '0') * 10;
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) return 0;
         t += nbytes;
         x += (tmp - '0');
 
         break;
       case 'T':
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) return 0;
         t += nbytes;
         x = origx + (tmp - '0') * 100;
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) return 0;
         t += nbytes;
         x += (tmp - '0') * 10;
 
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) return 0;
         t += nbytes;
         x += (tmp - '0');
 
         break;
       case 'b':
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) return 0;
         t += nbytes;
         x += 32;
         break;
       case 'e':
-        nbytes = mbrtowc (&tmp, &s[t], len-t, &state);
+        nbytes = mbrtowc (&tmp, s.c_str()+t, len-t, &state);
         if (nbytes >= (size_t) -2) return 0;
         t += nbytes;
         x += 32;

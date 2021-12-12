@@ -74,15 +74,15 @@ void scr_setcrosscolor(Uint8 red, Uint8 green, Uint8 blue);
  call scr_swap() */
 
 /* writes some text onto the screen */
-void scr_writetext(long x, long y, const char *s, int maxchars = -1);
+void scr_writetext(long x, long y, const std::string & s, int maxchars = -1);
 
 /* centers the text horizontally */
-void scr_writetext_center(long y, const char *s);
+void scr_writetext_center(long y, const std::string & s);
 
 /* like scr_writetext_center, but tries to break the lines of text so
  * that they are not longer than the screen is wide
  */
-void scr_writetext_broken_center(long y, const char *s);
+void scr_writetext_broken_center(long y, const std::string & s);
 
 /* output text that can be interleaved with commands. these commands
  have the form ~ followed by letter followed by a fixed set of parameters.
@@ -97,14 +97,14 @@ void scr_writetext_broken_center(long y, const char *s);
  e#  : displays tower blocks in level editor style. The '#' is a character,
        as represented in towerblockdata[].ch.
  */
-void scr_writeformattext(long x, long y, const char *s);
+void scr_writeformattext(long x, long y, const std::string & s);
 /* returns the length of formatted text in pixels. */
-long scr_formattextlength(long x, const char *s);
+long scr_formattextlength(long x, const std::string & s);
 
 /* returns the number of pixels the first chars characters in
  text needs in the display (if the string is only n chars long
  then only n chars are calculated) */
-int scr_textlength(const char *s, int chars = 32000);
+int scr_textlength(const std::string & s, int chars = 32000);
 
 /* draws a filled rectangle with color col */
 void scr_putbar(int x, int y, int br, int h, Uint8 colr, Uint8 colg, Uint8 col, Uint8 alpha);

@@ -175,7 +175,7 @@ static bool bg_darken = false;
 static void editor_background_proc(void) {
    scr_drawedit(bg_row * 4, bg_col * 8, false);
    if (bg_darken) scr_darkenscreen();
-   if (!bg_text.empty()) scr_writetext_center(5, bg_text.c_str());
+   if (!bg_text.empty()) scr_writetext_center(5, bg_text);
 }
 
 static std::string editor_background_menu_proc(_menusystem * /*ms*/) {
@@ -361,7 +361,7 @@ static void createMission(void) {
   if (missionname.empty())
     return;
 
-  if (!lev_mission_new(missionname.c_str(), missionname.c_str())) {
+  if (!lev_mission_new(missionname, missionname)) {
 
     scr_drawedit(0, 0, false);
     scr_writetext_center(30, _("Mission creation"));
@@ -397,7 +397,7 @@ static void createMission(void) {
 
     if (towername.empty()) break;
 
-    lev_mission_addtower(towername.c_str());
+    lev_mission_addtower(towername);
 
     currenttower++;
   }
@@ -704,8 +704,8 @@ void le_edit()
           config.editor_towername(name);
         }
         bg_text.clear();
-        if ((strlen(config.editor_towername().c_str()) > 0) &&
-            lev_loadtower(config.editor_towername().c_str())) {
+        if ((!config.editor_towername().empty()) &&
+            lev_loadtower(config.editor_towername())) {
             scr_settowercolor(lev_towercol_red(),
                                lev_towercol_green(),
                                lev_towercol_blue());
@@ -723,7 +723,7 @@ void le_edit()
           config.editor_towername(name);
         }
         bg_text.clear();
-        lev_savetower(config.editor_towername().c_str());
+        lev_savetower(config.editor_towername());
         changed = false;
         break;
 

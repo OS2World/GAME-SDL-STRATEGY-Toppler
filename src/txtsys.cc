@@ -39,7 +39,7 @@ textsystem::textsystem(std::string t, menuopt_callback_proc pr)
 void textsystem::addline(std::string line)
 {
     lines.push_back(line);
-    max_length = std::max(scr_formattextlength(0,line.c_str()), max_length);
+    max_length = std::max(scr_formattextlength(0,line), max_length);
 }
 
 void textsystem::run()
@@ -119,7 +119,7 @@ void textsystem::draw()
     if (mproc)
         (*mproc) (NULL);
 
-    scr_writetext_center(5, title.c_str());
+    scr_writetext_center(5, title);
 
     // smoothly move the actual position to the target position
     if (disp_yoffs < yoffs)
@@ -150,7 +150,7 @@ void textsystem::draw()
             if (!lines[k+(disp_yoffs / FONTHEI)].empty())
                 scr_writeformattext(-disp_xoffs,
                         k*FONTHEI + ystart - (disp_yoffs % FONTHEI),
-                        lines[k+(disp_yoffs / FONTHEI)].c_str());
+                        lines[k+(disp_yoffs / FONTHEI)]);
 
     scr_setclipping();
 
