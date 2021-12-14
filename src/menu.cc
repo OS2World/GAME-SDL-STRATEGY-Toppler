@@ -132,7 +132,6 @@ static std::string redefine_menu_up(_menusystem *ms) {
 }
 
 static std::string game_options_menu_password(_menusystem *prevmenu) {
-  static char buf[50];
 
   if (prevmenu) {
     std::string pwd = config.curr_password();
@@ -141,25 +140,27 @@ static std::string game_options_menu_password(_menusystem *prevmenu) {
     /* FIXME: change -1, -1 to correct position; Need to fix menu system
      first... */
   }
-  // TODO c++
-  snprintf(buf, 50, _("Password: %s").c_str(), config.curr_password().c_str());
-  return buf;
+  return _("Password: ") + config.curr_password();
 }
 
 static std::string game_options_menu_statustop(_menusystem *prevmenu) {
-  static char txt[30];
+  std::string txt = _("Status on top") + " ";
+
   if (prevmenu) {
     config.status_top(!config.status_top());
   }
-  if (config.status_top()) sprintf(txt, "%s %c", _("Status on top").c_str(), 4);
-  else sprintf(txt, "%s %c", _("Status on top").c_str(), 3);
+
+  if (config.status_top())
+      txt += fonttagedtagbox;
+  else
+      txt += fontemptytagbox;
 
   return txt;
 }
 
 static std::string game_options_menu_lives(_menusystem *prevmenu) {
-  static char buf[50];
-  int i;
+  std::string buf = _("Lives: ");
+
   if (prevmenu) {
     switch (key_sdlkey2conv(prevmenu->key, false)) {
     case right_key:
@@ -173,9 +174,10 @@ static std::string game_options_menu_lives(_menusystem *prevmenu) {
     default: return "";
     }
   }
-  sprintf(buf, _("Lives: ").c_str());
-  for (i = 0; i < config.start_lives(); i++)
-    sprintf(buf + strlen(buf), "%c", fonttoppler);
+
+  for (int i = 0; i < config.start_lives(); i++)
+    buf += fonttoppler;
+
   return buf;
 }
 
@@ -183,7 +185,7 @@ static std::string game_options_menu_speed(_menusystem *prevmenu)
 {
   // Changing game_speed during a game has no effect until a
   // a new game is started.
-  static char buf[50];
+  std::string buf = _("Game Speed:") + " ";
   if (prevmenu) {
     switch (key_sdlkey2conv(prevmenu->key, false)) {
     case right_key:
@@ -200,18 +202,22 @@ static std::string game_options_menu_speed(_menusystem *prevmenu)
     default: return "";
     }
   }
-  snprintf(buf, 50, _("Game Speed: %i").c_str(), config.game_speed());
+
+  buf += std::to_string(config.game_speed());
   return buf;
 }
 
 static std::string game_options_bonus(_menusystem *ms)
 {
-  static char txt[30];
-  if (ms) {
+  std::string txt = _("Bonus") + " ";
+
+  if (ms)
     config.nobonus(!config.nobonus());
-  }
-  if (config.nobonus()) sprintf(txt, "%s %c", _("Bonus").c_str(), 3);
-  else sprintf(txt, "%s %c", _("Bonus").c_str(), 4);
+
+  if (config.nobonus())
+      txt += fontemptytagbox;
+  else
+      txt += fonttagedtagbox;
 
   return txt;
 }
@@ -260,21 +266,26 @@ static std::string run_redefine_menu(_menusystem *prevmenu) {
 
 static std::string men_options_windowed(_menusystem *ms)
 {
-  static char txt[30];
+  std::string txt = _("Fullscreen") + " ";
+
   if (ms) {
     config.fullscreen(!config.fullscreen());
     scr_reinit();
     SDL_ShowCursor(config.fullscreen() ? 0 : 1);
   }
-  if (config.fullscreen()) sprintf(txt, "%s %c", _("Fullscreen").c_str(), 4);
-  else sprintf(txt, "%s %c", _("Fullscreen").c_str(), 3);
+
+  if (config.fullscreen())
+      txt += fonttagedtagbox;
+  else
+      txt += fontemptytagbox;
 
   return txt;
 }
 
 static std::string men_options_sounds(_menusystem *ms)
 {
-  static char txt[30];
+  std::string txt = _("Sounds") + " ";
+
   if (ms) {
     if (config.nosound()) {
       config.nosound(false);
@@ -288,15 +299,19 @@ static std::string men_options_sounds(_menusystem *ms)
       config.nosound(true);
     }
   }
-  if (config.nosound()) sprintf(txt, "%s %c", _("Sounds").c_str(), 3);
-  else sprintf(txt, "%s %c", _("Sounds").c_str(), 4);
+
+  if (config.nosound())
+      txt += fontemptytagbox;
+  else
+      txt += fonttagedtagbox;
 
   return txt;
 }
 
 static std::string men_options_music(_menusystem *ms)
 {
-  static char txt[30];
+  std::string txt = _("Music") + " ";
+
   if (ms) {
     if (config.nomusic()) {
       config.nomusic(false);
@@ -306,80 +321,99 @@ static std::string men_options_music(_menusystem *ms)
       config.nomusic(true);
     }
   }
-  if (config.nomusic()) sprintf(txt, "%s %c", _("Music").c_str(), 3);
-  else sprintf(txt, "%s %c", _("Music").c_str(), 4);
+
+  if (config.nomusic())
+      txt += fontemptytagbox;
+  else
+      txt += fonttagedtagbox;
 
   return txt;
 }
 
 
-static void
-reload_font_graphics(void) {
+static void reload_font_graphics(void)
+{
   fontsprites.freedata();
 
   scr_reload_sprites(RL_FONT);
   men_reload_sprites(2);
 }
 
-static void
-reload_robot_graphics(void) {
+static void reload_robot_graphics(void)
+{
   objectsprites.freedata();
   scr_reload_sprites(RL_OBJECTS);
 }
 
-static void
-reload_layer_graphics(void) {
+static void reload_layer_graphics(void)
+{
   layersprites.freedata();
   scr_reload_sprites(RL_SCROLLER);
 }
 
 static std::string men_alpha_font(_menusystem *ms)
 {
-  static char txt[30];
+  std::string txt = _("Font alpha") + " ";
+
   if (ms) {
     config.use_alpha_font(!config.use_alpha_font());
     reload_font_graphics();
   }
-  if (config.use_alpha_font()) sprintf(txt, "%s %c", _("Font alpha").c_str(), 4);
-  else sprintf(txt, "%s %c", _("Font alpha").c_str(), 3);
+
+  if (config.use_alpha_font())
+      txt += fonttagedtagbox;
+  else
+      txt += fontemptytagbox;
 
   return txt;
 }
 
 static std::string men_alpha_sprites(_menusystem *ms)
 {
-  static char txt[30];
+  std::string txt = _("Sprites alpha") + " ";
+
   if (ms) {
     config.use_alpha_sprites(!config.use_alpha_sprites());
     reload_robot_graphics();
   }
-  if (config.use_alpha_sprites()) sprintf(txt, "%s %c", _("Sprites alpha").c_str(), 4);
-  else sprintf(txt, "%s %c", _("Sprites alpha").c_str(), 3);
+
+  if (config.use_alpha_sprites())
+      txt += fonttagedtagbox;
+  else
+      txt += fontemptytagbox;
 
   return txt;
 }
 
 static std::string men_alpha_layer(_menusystem *ms)
 {
-  static char txt[30];
+  std::string txt = _("Scroller alpha") + " ";
+
   if (ms) {
     config.use_alpha_layers(!config.use_alpha_layers());
     reload_layer_graphics();
   }
-  if (config.use_alpha_layers()) sprintf(txt, "%s %c", _("Scroller alpha").c_str(), 4);
-  else sprintf(txt, "%s %c", _("Scroller alpha").c_str(), 3);
+
+  if (config.use_alpha_layers())
+      txt += fonttagedtagbox;
+  else
+      txt += fontemptytagbox;
 
   return txt;
 }
 
 static std::string men_alpha_menu(_menusystem *ms)
 {
-  static char txt[30];
+  std::string txt = _("Shadowing") + " ";
+
   if (ms) {
     config.use_alpha_darkening(!config.use_alpha_darkening());
   }
-  if (config.use_alpha_darkening()) sprintf(txt, "%s %c", _("Shadowing").c_str(), 4);
-  else sprintf(txt, "%s %c", _("Shadowing").c_str(), 3);
+
+  if (config.use_alpha_darkening())
+      txt += fonttagedtagbox;
+  else
+      txt += fontemptytagbox;
 
   return txt;
 }
@@ -607,8 +641,7 @@ static std::string men_hiscores_background_proc(_menusystem *ms)
 }
 
 static void show_scores(bool back = true, int mark = -1) {
-  static char buf[50];
-  snprintf(buf, 50, _("Scores for %s").c_str(), lev_missionname(currentmission).c_str());
+  std::string buf = _("Scores for") + " " + lev_missionname(currentmission);
   _menusystem *ms = new_menu_system(buf, men_hiscores_background_proc, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return;
@@ -808,9 +841,8 @@ men_main_startgame_proc(_menusystem *ms)
     default: return "";
     }
   }
-  static char s[30];
-  snprintf(s, 30, _("%c Start: %s %c").c_str(), fontptrleft, _(lev_missionname(currentmission)).c_str(), fontptrright);
-  return s;
+
+  return std::string("") + fontptrleft + " " + _("Start:") + " " + _(lev_missionname(currentmission)) + " " + fontptrright;
 }
 
 static std::string
