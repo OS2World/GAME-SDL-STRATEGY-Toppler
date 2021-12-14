@@ -96,12 +96,12 @@ DATFILES += $(SOUNDS)
 #-------------------------------------------------------#
 DATFILES += _build/cross.dat
 .SECONDARY: _build/cross.dat
-_build/cross.dat: _build/tools/cross _build/tools/assembler _build/tools/colorreduction datafile/cross_pov/cross.pov datafile/cross_pov/cross.ini datafile/sprites_pov/environment.pov
+_build/cross.dat: _build/tools/cross _build/tools/assembler datafile/cross_pov/cross.pov datafile/cross_pov/cross.ini datafile/sprites_pov/environment.pov
 	( cd _build && mkdir -p cross_pov )
 	( cd _build/cross_pov && $(POVRAY) ../../datafile/cross_pov/cross.ini +L../../datafile/cross_pov -D 2>> ../pov.log )
 	( cd _build && ./tools/assembler vm cross_rgb cross_pov/*.png )
-	( cd _build && ./tools/colorreduction cross_rgb_mask.png 256 cross_mask.png )
-	( cd _build && ./tools/colorreduction cross_rgb_colors.png 256 cross_colors.png )
+	( cd _build && convert cross_rgb_mask.png -colors 256 PNG8:cross_mask.png )
+	( cd _build && convert cross_rgb_colors.png -colors 256 PNG8:cross_colors.png )
 	( cd _build && ./tools/cross )
 
 #------------------------------------------------------#
@@ -109,11 +109,11 @@ _build/cross.dat: _build/tools/cross _build/tools/assembler _build/tools/colorre
 #------------------------------------------------------#
 DATFILES += _build/font.dat
 .SECONDARY: _build/font.dat
-_build/font.dat: _build/tools/font datafile/font.xcf _build/tools/colorreduction
+_build/font.dat: _build/tools/font datafile/font.xcf
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"font_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/font.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"font_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && ./tools/colorreduction font_colors_rgb.png 256 font_colors.png )
-	( cd _build && ./tools/colorreduction font_mask_rgb.png 256 font_mask.png )
+	( cd _build && convert font_colors_rgb.png -colors 256 PNG8:font_colors.png )
+	( cd _build && convert font_mask_rgb.png -colors 256 PNG8:font_mask.png )
 	( cd _build && ./tools/font )
 
 #----------------------------------------------------------#
@@ -133,11 +133,11 @@ DATFILES += _build/menu.dat
 MENULEVELS_DIR=datafile/levels/mission1
 MENULEVELS=$(wildcard ${MENULEVELS_DIR}/*)
 .SECONDARY: _build/menu.dat
-_build/menu.dat: _build/tools/menu _build/tools/tower2inc _build/tools/colorreduction ${MENULEVELS}
+_build/menu.dat: _build/tools/menu _build/tools/tower2inc ${MENULEVELS}
 	( cd _build && mkdir -p menu_pov )
 	( cd _build/menu_pov && ../tools/tower2inc "turm%i.inc" ../.. $(MENULEVELS) )
 	( cd _build/menu_pov && $(POVRAY) ../../datafile/menu_pov/menu.ini +L../../datafile/menu_pov -D 2>> ../pov.log )
-	( cd _build && ./tools/colorreduction menu_pov/menu_rgb.png 256 menu.png )
+	( cd _build && convert menu_pov/menu_rgb.png -colors 256 PNG8:menu.png )
 	( cd _build && ./tools/menu )
 
 #----------------------------------------------------------#
@@ -145,19 +145,19 @@ _build/menu.dat: _build/tools/menu _build/tools/tower2inc _build/tools/colorredu
 #----------------------------------------------------------#
 DATFILES += _build/scroller.dat
 .SECONDARY: _build/scroller.dat
-_build/scroller.dat: _build/tools/scroller datafile/scroller.xcf _build/tools/colorreduction
+_build/scroller.dat: _build/tools/scroller datafile/scroller.xcf
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"scroller1_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"scroller2_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 2) \"scroller3_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 3) \"scroller1_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 4) \"scroller2_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 5) \"scroller3_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && ./tools/colorreduction scroller3_mask_rgb.png 256 scroller3_mask.png )
-	( cd _build && ./tools/colorreduction scroller2_mask_rgb.png 256 scroller2_mask.png )
-	( cd _build && ./tools/colorreduction scroller1_mask_rgb.png 256 scroller1_mask.png )
-	( cd _build && ./tools/colorreduction scroller3_colors_rgb.png 256 scroller3_colors.png )
-	( cd _build && ./tools/colorreduction scroller2_colors_rgb.png 256 scroller2_colors.png )
-	( cd _build && ./tools/colorreduction scroller1_colors_rgb.png 256 scroller1_colors.png )
+	( cd _build && convert scroller3_mask_rgb.png -colors 256 PNG8:scroller3_mask.png )
+	( cd _build && convert scroller2_mask_rgb.png -colors 256 PNG8:scroller2_mask.png )
+	( cd _build && convert scroller1_mask_rgb.png -colors 256 PNG8:scroller1_mask.png )
+	( cd _build && convert scroller3_colors_rgb.png -colors 256 PNG8:scroller3_colors.png )
+	( cd _build && convert scroller2_colors_rgb.png -colors 256 PNG8:scroller2_colors.png )
+	( cd _build && convert scroller1_colors_rgb.png -colors 256 PNG8:scroller1_colors.png )
 	( cd _build && ./tools/scroller 3 2 1/1 scroller3_colors.png scroller3_mask.png 0/0/640 1/2 \
                        scroller2_colors.png scroller2_mask.png 0/0/640 1/1 \
                        scroller1_colors.png scroller1_mask.png 0/0/640 2/1 )
@@ -167,7 +167,7 @@ _build/scroller.dat: _build/tools/scroller datafile/scroller.xcf _build/tools/co
 #---------------------------------------------------------#
 DATFILES += _build/sprites.dat
 .SECONDARY: _build/sprites.dat
-_build/sprites.dat: _build/tools/sprites _build/tools/assembler _build/tools/colorreduction \
+_build/sprites.dat: _build/tools/sprites _build/tools/assembler \
              datafile/sprites_pov/box/obj.pov datafile/sprites_pov/box/obj.ini \
              datafile/sprites_pov/balls/obj.pov datafile/sprites_pov/balls/obj.ini \
              datafile/sprites_pov/snowball/obj.pov datafile/sprites_pov/snowball/obj.ini \
@@ -208,14 +208,14 @@ _build/sprites.dat: _build/tools/sprites _build/tools/assembler _build/tools/col
 	( cd _build/sprites_pov && mkdir -p box && cd box && $(POVRAY) ../../../datafile/sprites_pov/box/obj.ini +L../../../datafile/sprites_pov/box -D 2>> ../pov.log )
 	( cd _build && ./tools/assembler hm sprites_balls_rgb sprites_pov/balls/obj*.png )
 	( cd _build && ./tools/assembler hm sprites_box_rgb sprites_pov/box/obj*.png )
-	( cd _build && ./tools/colorreduction sprites_pov/snowball/obj1.png 256 sprites_snowball_mask.png )
-	( cd _build && ./tools/colorreduction sprites_pov/snowball/obj0.png 256 sprites_snowball_colors.png )
-	( cd _build && ./tools/colorreduction sprites_box_rgb_mask.png 256 sprites_box_mask.png )
-	( cd _build && ./tools/colorreduction sprites_box_rgb_colors.png 256 sprites_box_colors.png )
-	( cd _build && ./tools/colorreduction sprites_balls_rgb_mask.png 256 sprites_balls_mask.png )
-	( cd _build && ./tools/colorreduction sprites_balls_rgb_colors.png 256 sprites_balls_colors.png )
-	( cd _build && ./tools/colorreduction sprites_robots_mask_rgb.png 256 sprites_robots_mask.png )
-	( cd _build && ./tools/colorreduction sprites_robots_colors_rgb.png 256 sprites_robots_colors.png )
+	( cd _build && convert sprites_pov/snowball/obj1.png -colors 256 PNG8:sprites_snowball_mask.png )
+	( cd _build && convert sprites_pov/snowball/obj0.png -colors 256 PNG8:sprites_snowball_colors.png )
+	( cd _build && convert sprites_box_rgb_mask.png -colors 256 PNG8:sprites_box_mask.png )
+	( cd _build && convert sprites_box_rgb_colors.png -colors 256 PNG8:sprites_box_colors.png )
+	( cd _build && convert sprites_balls_rgb_mask.png -colors 256 PNG8:sprites_balls_mask.png )
+	( cd _build && convert sprites_balls_rgb_colors.png -colors 256 PNG8:sprites_balls_colors.png )
+	( cd _build && convert sprites_robots_mask_rgb.png -colors 256 PNG8:sprites_robots_mask.png )
+	( cd _build && convert sprites_robots_colors_rgb.png -colors 256 PNG8:sprites_robots_colors.png )
 	( mkdir -p _build/fish/render && cp datafile/fish/render/* _build/fish/render )
 	( mkdir -p _build/submarine/render && cp datafile/submarine/render/* _build/submarine/render )
 	( cp datafile/sprites_torpedo_* _build )
@@ -226,11 +226,11 @@ _build/sprites.dat: _build/tools/sprites _build/tools/assembler _build/tools/col
 #-------------------------------------------------------#
 DATFILES += _build/titles.dat
 .SECONDARY: _build/titles.dat
-_build/titles.dat: _build/tools/titles datafile/titles.xcf _build/tools/colorreduction
+_build/titles.dat: _build/tools/titles datafile/titles.xcf
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"titles_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/titles.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"titles_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && ./tools/colorreduction titles_colors_rgb.png 256 titles_colors.png )
-	( cd _build && ./tools/colorreduction titles_mask_rgb.png 256 titles_mask.png )
+	( cd _build && convert titles_colors_rgb.png -colors 256 PNG8:titles_colors.png )
+	( cd _build && convert titles_mask_rgb.png -colors 256 PNG8:titles_mask.png )
 	( cd _build && ./tools/titles )
 
 #-------------------------------------------------------#
@@ -238,11 +238,11 @@ _build/titles.dat: _build/tools/titles datafile/titles.xcf _build/tools/colorred
 #-------------------------------------------------------#
 DATFILES += _build/dude.dat
 .SECONDARY: _build/dude.dat
-_build/dude.dat: _build/tools/dude datafile/dude.xcf _build/tools/colorreduction
+_build/dude.dat: _build/tools/dude datafile/dude.xcf
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"dude_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
 	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/dude.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"dude_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && ./tools/colorreduction dude_colors_rgb.png 256 dude_colors.png )
-	( cd _build && ./tools/colorreduction dude_mask_rgb.png 256 dude_mask.png )
+	( cd _build && convert dude_colors_rgb.png -colors 256 PNG8:dude_colors.png )
+	( cd _build && convert dude_mask_rgb.png -colors 256 PNG8:dude_mask.png )
 	( cd _build && ./tools/dude )
 
 #-------------------------------------------------------#
