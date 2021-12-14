@@ -99,7 +99,7 @@ struct _ed_key {
 #define TOWERPAGESIZE 5 /* pageup/pagedown moving */
 #define TOWERSTARTHEI 4 /* tower starting height */
 
-const char *_ed_key_actions[NUMEDITORACTIONS] = {
+const std::string _ed_key_actions[NUMEDITORACTIONS] = {
    N_("Quit"),          N_("Move up"),        N_("Move down"),       N_("Move left"),
    N_("Move right"),    N_("Insert row"),     N_("Delete row"),      N_("Rotate 180"),
    N_("Put space"),     N_("Put step"),       N_("Put vanisher"),    N_("Put slider left"),
@@ -213,7 +213,7 @@ static bool edit_towercolor(int row, int col) {
   int oldc[3], newc[3], curc[3];
   SDL_Keycode c;
 
-  const char *colorname[] = {_("Red"), _("Green"), _("Blue")};
+  const std::string colorname[] = {_("Red"), _("Green"), _("Blue")};
 
   curc[0] = newc[0] = oldc[0] = lev_towercol_red();
   curc[1] = newc[1] = oldc[1] = lev_towercol_green();
@@ -244,7 +244,7 @@ static bool edit_towercolor(int row, int col) {
       case 2: scr_putbar((SCREENWID / 2) - 128, z, tmpcol, FONTHEI, 0, 0, tmpcol / 3 + 64, 255); break;
       }
       cbuf[0] = '\0';
-      snprintf(cbuf, 32, "%5s  %.3d", colorname[tmp], tmpcol);
+      snprintf(cbuf, 32, "%5s  %.3d", colorname[tmp].c_str(), tmpcol);
       scr_writetext_center(z, cbuf);
     }
 
@@ -303,7 +303,7 @@ static void edit_checktower(int &row, int &col) {
   r = row;
   c = -col;
 
-  static char *problemstr[NUM_TPROBLEMS] = {
+  static std::string problemstr[NUM_TPROBLEMS] = {
     _("No problems found"),
     _("No starting step"),
     _("Start is blocked"),
@@ -389,9 +389,7 @@ static void createMission(void) {
     scr_writetext_center(30, _("Mission creation"));
     scr_writetext_center(80, _("enter name of"));
 
-    char s[30];
-    snprintf(s, 30, _("tower no %i"), currenttower);
-    scr_writetext_center(110, s);
+    scr_writetext_center(110, _("tower no ") + std::to_string(currenttower));
 
     std::string towername;
     while (!men_input(towername, 25)) ;
@@ -526,7 +524,7 @@ void le_edit()
 
     status[0] = '\0';
     snprintf(status, 80, "%c~t050X%d~t150Y%d~t250%s:%d",
-             changed ? '*' : ' ', -col & 0xf, row, _("cut#"), clipboard_rows);
+             changed ? '*' : ' ', -col & 0xf, row, _("cut#").c_str(), clipboard_rows);
 
     scr_putbar(SCREENWID-8, SCREENHEI-lev_towerrows(), 8, lev_towerrows(),
                lev_towercol_red(), lev_towercol_green(), lev_towercol_blue(), 255);
@@ -564,7 +562,7 @@ void le_edit()
         }
 
     if ((action != -1) || (inp_char != 0) || (inp != SDLK_UNKNOWN))
-      debugprintf(3, _("key: %s, char: %c, action: %i\n"), SDL_GetKeyName(inp), inp_char, action);
+      debugprintf(3, _("key: %s, char: %c, action: %i\n").c_str(), SDL_GetKeyName(inp), inp_char, action);
 
     if (action != -1) {
 

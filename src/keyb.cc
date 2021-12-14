@@ -151,7 +151,7 @@ static void handleEvents(void) {
       mouse_button = e.button.button;
       break;
     case SDL_QUIT:
-      fprintf(stderr, _("Wheee!!\n"));
+      fprintf(stderr, _("Wheee!!\n").c_str());
       exit(0);
       break;
 

@@ -90,7 +90,7 @@ men_main_background_proc(_menusystem *ms)
 static int times_called = 0;
 static std::string redefine_menu_up(_menusystem *ms) {
   static char buf[50];
-  const char *code[REDEFINEREC] = {_("Up"), _("Down"), _("Left"), _("Right"), _("Fire")};
+  const std::string code[REDEFINEREC] = {_("Up"), _("Down"), _("Left"), _("Right"), _("Fire")};
   const char *keystr;
   static int blink, times_called;
   const ttkey key[REDEFINEREC] = {up_key, down_key, left_key, right_key, fire_key};
@@ -122,10 +122,10 @@ static std::string redefine_menu_up(_menusystem *ms) {
     if ((blink & 4) || (ms->mstate != 1))
       keystr = SDL_GetKeyName(key_conv2sdlkey(key[ms->hilited % REDEFINEREC], true));
     else keystr = "";
-    snprintf(buf, 50, redef_fmt, code[ms->hilited % REDEFINEREC], keystr);
+    snprintf(buf, 50, redef_fmt, code[ms->hilited % REDEFINEREC].c_str(), keystr);
   } else {
     keystr = SDL_GetKeyName(key_conv2sdlkey(key[times_called], true));
-    snprintf(buf, 50, redef_fmt, code[times_called], keystr);
+    snprintf(buf, 50, redef_fmt, code[times_called].c_str(), keystr);
     times_called = (times_called + 1) % REDEFINEREC;
   }
   return buf;
@@ -142,7 +142,7 @@ static std::string game_options_menu_password(_menusystem *prevmenu) {
      first... */
   }
   // TODO c++
-  snprintf(buf, 50, _("Password: %s"), config.curr_password().c_str());
+  snprintf(buf, 50, _("Password: %s").c_str(), config.curr_password().c_str());
   return buf;
 }
 
@@ -151,8 +151,8 @@ static std::string game_options_menu_statustop(_menusystem *prevmenu) {
   if (prevmenu) {
     config.status_top(!config.status_top());
   }
-  if (config.status_top()) sprintf(txt, "%s %c", _("Status on top"), 4);
-  else sprintf(txt, "%s %c", _("Status on top"), 3);
+  if (config.status_top()) sprintf(txt, "%s %c", _("Status on top").c_str(), 4);
+  else sprintf(txt, "%s %c", _("Status on top").c_str(), 3);
 
   return txt;
 }
@@ -173,7 +173,7 @@ static std::string game_options_menu_lives(_menusystem *prevmenu) {
     default: return "";
     }
   }
-  sprintf(buf, _("Lives: "));
+  sprintf(buf, _("Lives: ").c_str());
   for (i = 0; i < config.start_lives(); i++)
     sprintf(buf + strlen(buf), "%c", fonttoppler);
   return buf;
@@ -200,7 +200,7 @@ static std::string game_options_menu_speed(_menusystem *prevmenu)
     default: return "";
     }
   }
-  snprintf(buf, 50, _("Game Speed: %i"), config.game_speed());
+  snprintf(buf, 50, _("Game Speed: %i").c_str(), config.game_speed());
   return buf;
 }
 
@@ -210,15 +210,15 @@ static std::string game_options_bonus(_menusystem *ms)
   if (ms) {
     config.nobonus(!config.nobonus());
   }
-  if (config.nobonus()) sprintf(txt, "%s %c", _("Bonus"), 3);
-  else sprintf(txt, "%s %c", _("Bonus"), 4);
+  if (config.nobonus()) sprintf(txt, "%s %c", _("Bonus").c_str(), 3);
+  else sprintf(txt, "%s %c", _("Bonus").c_str(), 4);
 
   return txt;
 }
 
 
 static std::string men_game_options_menu(_menusystem *prevmenu) {
-  static const char * s = _("Game Options");
+  static auto s = _("Game Options");
   if (prevmenu) {
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
 
@@ -266,8 +266,8 @@ static std::string men_options_windowed(_menusystem *ms)
     scr_reinit();
     SDL_ShowCursor(config.fullscreen() ? 0 : 1);
   }
-  if (config.fullscreen()) sprintf(txt, "%s %c", _("Fullscreen"), 4);
-  else sprintf(txt, "%s %c", _("Fullscreen"), 3);
+  if (config.fullscreen()) sprintf(txt, "%s %c", _("Fullscreen").c_str(), 4);
+  else sprintf(txt, "%s %c", _("Fullscreen").c_str(), 3);
 
   return txt;
 }
@@ -288,8 +288,8 @@ static std::string men_options_sounds(_menusystem *ms)
       config.nosound(true);
     }
   }
-  if (config.nosound()) sprintf(txt, "%s %c", _("Sounds"), 3);
-  else sprintf(txt, "%s %c", _("Sounds"), 4);
+  if (config.nosound()) sprintf(txt, "%s %c", _("Sounds").c_str(), 3);
+  else sprintf(txt, "%s %c", _("Sounds").c_str(), 4);
 
   return txt;
 }
@@ -306,8 +306,8 @@ static std::string men_options_music(_menusystem *ms)
       config.nomusic(true);
     }
   }
-  if (config.nomusic()) sprintf(txt, "%s %c", _("Music"), 3);
-  else sprintf(txt, "%s %c", _("Music"), 4);
+  if (config.nomusic()) sprintf(txt, "%s %c", _("Music").c_str(), 3);
+  else sprintf(txt, "%s %c", _("Music").c_str(), 4);
 
   return txt;
 }
@@ -340,8 +340,8 @@ static std::string men_alpha_font(_menusystem *ms)
     config.use_alpha_font(!config.use_alpha_font());
     reload_font_graphics();
   }
-  if (config.use_alpha_font()) sprintf(txt, "%s %c", _("Font alpha"), 4);
-  else sprintf(txt, "%s %c", _("Font alpha"), 3);
+  if (config.use_alpha_font()) sprintf(txt, "%s %c", _("Font alpha").c_str(), 4);
+  else sprintf(txt, "%s %c", _("Font alpha").c_str(), 3);
 
   return txt;
 }
@@ -353,8 +353,8 @@ static std::string men_alpha_sprites(_menusystem *ms)
     config.use_alpha_sprites(!config.use_alpha_sprites());
     reload_robot_graphics();
   }
-  if (config.use_alpha_sprites()) sprintf(txt, "%s %c", _("Sprites alpha"), 4);
-  else sprintf(txt, "%s %c", _("Sprites alpha"), 3);
+  if (config.use_alpha_sprites()) sprintf(txt, "%s %c", _("Sprites alpha").c_str(), 4);
+  else sprintf(txt, "%s %c", _("Sprites alpha").c_str(), 3);
 
   return txt;
 }
@@ -366,8 +366,8 @@ static std::string men_alpha_layer(_menusystem *ms)
     config.use_alpha_layers(!config.use_alpha_layers());
     reload_layer_graphics();
   }
-  if (config.use_alpha_layers()) sprintf(txt, "%s %c", _("Scroller alpha"), 4);
-  else sprintf(txt, "%s %c", _("Scroller alpha"), 3);
+  if (config.use_alpha_layers()) sprintf(txt, "%s %c", _("Scroller alpha").c_str(), 4);
+  else sprintf(txt, "%s %c", _("Scroller alpha").c_str(), 3);
 
   return txt;
 }
@@ -378,8 +378,8 @@ static std::string men_alpha_menu(_menusystem *ms)
   if (ms) {
     config.use_alpha_darkening(!config.use_alpha_darkening());
   }
-  if (config.use_alpha_darkening()) sprintf(txt, "%s %c", _("Shadowing"), 4);
-  else sprintf(txt, "%s %c", _("Shadowing"), 3);
+  if (config.use_alpha_darkening()) sprintf(txt, "%s %c", _("Shadowing").c_str(), 4);
+  else sprintf(txt, "%s %c", _("Shadowing").c_str(), 3);
 
   return txt;
 }
@@ -421,7 +421,7 @@ static std::string men_full_scroller(_menusystem *ms)
 
 
 static std::string men_alpha_options(_menusystem *mainmenu) {
-  static const char * s = _("Alpha Options");
+  static auto s = _("Alpha Options");
   if (mainmenu) {
 
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
@@ -444,7 +444,7 @@ static std::string men_alpha_options(_menusystem *mainmenu) {
 }
 
 static std::string men_options_graphic(_menusystem *mainmenu) {
-  static const char *s = _("Graphics");
+  static auto s = _("Graphics");
   if (mainmenu) {
 
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
@@ -467,7 +467,7 @@ static std::string men_options_graphic(_menusystem *mainmenu) {
 }
 
 static std::string men_options(_menusystem *mainmenu) {
-  static const char * s = _("Options");
+  static auto s = _("Options");
   if (mainmenu) {
 
     _menusystem *ms = new_menu_system(s, NULL, 0, fontsprites.data(titledata)->h+30);
@@ -608,7 +608,7 @@ static std::string men_hiscores_background_proc(_menusystem *ms)
 
 static void show_scores(bool back = true, int mark = -1) {
   static char buf[50];
-  snprintf(buf, 50, _("Scores for %s"), lev_missionname(currentmission).c_str());
+  snprintf(buf, 50, _("Scores for %s").c_str(), lev_missionname(currentmission).c_str());
   _menusystem *ms = new_menu_system(buf, men_hiscores_background_proc, 0, fontsprites.data(titledata)->h + 30);
 
   if (!ms) return;
@@ -650,7 +650,7 @@ congrats_background_proc(void)
    */
   const char * text = _("Congratulations! You are\n"
                         "probably good enough to\n"
-                        "enter the highscore table!");
+                        "enter the highscore table!").c_str();
 
   int ypos = 210;
 
@@ -809,7 +809,7 @@ men_main_startgame_proc(_menusystem *ms)
     }
   }
   static char s[30];
-  snprintf(s, 30, _("%c Start: %s %c"), fontptrleft, _(lev_missionname(currentmission).c_str()), fontptrright);
+  snprintf(s, 30, _("%c Start: %s %c").c_str(), fontptrleft, _(lev_missionname(currentmission)).c_str(), fontptrright);
   return s;
 }
 

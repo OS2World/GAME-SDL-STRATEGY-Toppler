@@ -846,8 +846,9 @@ int scr_textlength(const std::string & s, int chars) {
 
   while (s[pos] && (chars > 0)) {
 
-    size_t nbytes = mbrtowc (&tmp, &s[pos], chars, &state);
-    if (nbytes <= 0)
+    size_t nbytes = mbrtowc (&tmp, s.c_str()+pos, chars, &state);
+
+    if (nbytes <= 0 || nbytes == static_cast<std::size_t>(-2) || nbytes == static_cast<std::size_t>(-1))
       return 0;
 
     if (tmp == ' ') {

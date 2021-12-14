@@ -34,7 +34,7 @@
 #endif
 
 static void printhelp(void) {
-  printf(_("\n\tOptions:\n\n  -f\tEnable fullscreen mode\n  -s\tSilence, disable all sound\n  -dX\tSet debug level to X  (default: %i)\n"), config.debug_level());
+  printf(_("\n\tOptions:\n\n  -f\tEnable fullscreen mode\n  -s\tSilence, disable all sound\n  -dX\tSet debug level to X  (default: %i)\n").c_str(), config.debug_level());
 }
 
 static bool parse_arguments(int argc, char *argv[]) {
@@ -44,9 +44,9 @@ static bool parse_arguments(int argc, char *argv[]) {
     else if (strstr(argv[t], "-d") == argv[t]) {
       char parm = argv[t][2];
       if (parm >= '0' && parm <= '9') {
-        printf(_("Debug level is now %c.\n"), parm);
+        printf(_("Debug level is now %c.\n").c_str(), parm);
         config.debug_level(parm - '0');
-      } else printf(_("Illegal debug level value, using default.\n"));
+      } else printf(_("Illegal debug level value, using default.\n").c_str());
     } else {
       printhelp();
       return false;
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
   textdomain("toppler");
 #endif
 
-  printf(_("Nebulous version %s"), VERSION);
+  printf(_("Nebulous version %s").c_str(), VERSION);
   printf("\n");
 
 
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
     atexit(QuitFunction);
     srand(time(0));
     startgame();
-    printf(_("Thanks for playing!\n"));
+    printf(_("Thanks for playing!\n").c_str());
     SDL_ShowCursor(mouse);
     SDL_Quit();
   }

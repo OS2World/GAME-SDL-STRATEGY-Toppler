@@ -31,6 +31,9 @@
 #include <pwd.h>
 #endif
 
+#if ENABLE_NLS == 1
+#include <libintl.h>
+#endif
 
 static bool wait_overflow = false;
 /* Not read from config file */
@@ -330,3 +333,13 @@ size_t mbrtowc (wchar_t * out, const char *s, int n, mbstate_t * st) {
 }
 
 #endif
+
+std::string _(const std::string & in) {
+#if ENABLE_NLS == 1
+    return gettext(in.c_str());
+#else
+    return in;
+#endif
+}
+std::string N_(const std::string & in) { return in; }
+

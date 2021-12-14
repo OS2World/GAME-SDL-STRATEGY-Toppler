@@ -22,10 +22,6 @@
 #include <string>
 #include <functional>
 
-#if ENABLE_NLS == 1
-#include <libintl.h>
-#endif
-
 /* screen width and height, in pixels. */
 #define SCREENWID 640
 #define SCREENHEI 480
@@ -202,7 +198,7 @@ extern bool tt_has_focus;
 int dcl_update_speed(int spd);
 
 /* for errorchecking */
-#define assert_msg(cond,text) if (!(cond)) { printf(_("Assertion failure: %s\n"), text); exit(1); }
+#define assert_msg(cond,text) if (!(cond)) { printf(_("Assertion failure: %s\n").c_str(), text); exit(1); }
 
 /* a function that returns a alphabetically sorted list of
  files in the given dir filtered dith the function given at
@@ -211,13 +207,8 @@ int dcl_update_speed(int spd);
 std::vector<std::string> alpha_scandir(const std::string & dir, std::function<bool(const std::string & f)> filter);
 
 /* for internationalisation */
-#if ENABLE_NLS == 1
-#define _(x) gettext(x)
-#define N_(x) x
-#else
-#define _(x) x
-#define N_(x) x
-#endif
+std::string _(const std::string & in);
+std::string N_(const std::string & in);
 
 #ifdef WIN32
 typedef int mbstate_t;

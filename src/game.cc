@@ -82,15 +82,13 @@ void gam_arrival(void) {
     scr_writetext_center((SCREENHEI / 6), _("You are entering the"));
 
     if (lev_towername().size())
-      scr_writetext_broken_center((SCREENHEI*2 / 6), _(lev_towername().c_str()));
+      scr_writetext_broken_center((SCREENHEI*2 / 6), _(lev_towername()));
     else
       scr_writetext_broken_center((SCREENHEI*2 / 6), _("Nameless Tower"));
 
-    if (passwd.size() && lev_show_passwd(lev_towernr())) {
-      char buf[50];
-      snprintf(buf, 50, _("Password:   %s"), passwd.c_str());
-      scr_writetext_center(SCREENHEI * 5 / 6, buf);
-    }
+    if (passwd.size() && lev_show_passwd(lev_towernr()))
+      scr_writetext_center(SCREENHEI * 5 / 6, _("Password:    ") + passwd);
+
     scr_swap();
     ttsounds::instance()->play();
 
@@ -297,7 +295,6 @@ static void timeout(int &tower_position, int &tower_anglepos) {
 }
 
 static void writebonus(int &tower_position, int tower_anglepos, int zeit, int tec, int extra, int time, int lif, bool lifes) {
-  char s[30];
 
   scr_drawall(towerpos(top_verticalpos(), tower_position,
                        top_anglepos(), tower_anglepos), (4 - top_anglepos()) & 0x7f, time, false, 0, 0, SF_NONE);
@@ -305,21 +302,14 @@ static void writebonus(int &tower_position, int tower_anglepos, int zeit, int te
   scr_darkenscreen();
 
   if (lifes) {
-    snprintf(s, 30, _("Time:      ~t35010 X %3d"), zeit);
-    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, s);
-    snprintf(s, 30, _("Technique: ~t35010 X %3d"), tec);
-    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI, s);
-    snprintf(s, 30, _("Extra:     ~t35010 X %3d"), extra);
-    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI, s);
-    snprintf(s, 30, _("Lifes:     ~t3505000 X %3d"), lif);
-    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, s);
+    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, _("Time:      ~t35010 X ") + std::to_string(zeit));
+    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI, _("Technique: ~t35010 X ") + std::to_string(tec));
+    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI, _("Extra:     ~t35010 X ") + std::to_string(extra));
+    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, _("Lifes:     ~t3505000 X ") + std::to_string(lif));
   } else {
-    snprintf(s, 30, _("Time:      ~t35010 X %3d"), zeit);
-    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, s);
-    snprintf(s, 30, _("Technique: ~t35010 X %3d"), tec);
-    scr_writeformattext(90, (SCREENHEI / 2), s);
-    snprintf(s, 30, _("Extra:     ~t35010 X %3d"), extra);
-    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, s);
+    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, _("Time:      ~t35010 X ") + std::to_string(zeit));
+    scr_writeformattext(90, (SCREENHEI / 2), _("Technique: ~t35010 X ") + std::to_string(tec));
+    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, _("Extra:     ~t35010 X ") + std::to_string(extra));
   }
 
   scr_swap();
