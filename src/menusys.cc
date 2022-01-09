@@ -535,8 +535,8 @@ unsigned char men_yn(const std::string & s, bool defchoice, menuopt_callback_pro
 
   if (!ms) return defchoice;
 
-  ms = add_menu_option(ms, NULL, men_yn_option_no, SDLK_n);
-  ms = add_menu_option(ms, NULL, men_yn_option_yes, SDLK_y);
+  ms = add_menu_option(ms, "", men_yn_option_no, SDLK_n);
+  ms = add_menu_option(ms, "", men_yn_option_yes, SDLK_y);
 
   ms->mstate = defchoice ? 1 : 0;
 
