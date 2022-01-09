@@ -10,6 +10,7 @@
 #define steinzahl       16
 #define hoehe           16
 
+// angle to rotate the light source to the left
 #define wadd            (2 * M_PI / steinzahl)
 
 #define steprad         20
