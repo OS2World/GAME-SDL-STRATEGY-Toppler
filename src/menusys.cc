@@ -25,7 +25,7 @@
 
 #include <utility>
 
-static menubg_callback_proc menu_background_proc = NULL;
+static menubg_callback_proc menu_background_proc = nullptr;
 
 void set_men_bgproc(menubg_callback_proc proc) {
   menu_background_proc = proc;
@@ -46,7 +46,7 @@ _menusystem *new_menu_system(const std::string & title, menuopt_callback_proc pr
     ms->ystart = ystart;
     ms->key = SDLK_UNKNOWN;
     ms->mtime = ms->yhilitpos = ms->opt_steal_control = -1;
-    ms->timeproc = NULL;
+    ms->timeproc = nullptr;
   }
 
   return ms;
@@ -71,7 +71,7 @@ add_menu_option(_menusystem *ms,
   tmp.quickkey = quickkey;
 
   /* if no name, but has callback proc, query name from it. */
-  if (tmp.oname.empty() && pr) tmp.oname = (*pr) (NULL);
+  if (tmp.oname.empty() && pr) tmp.oname = (*pr) (nullptr);
 
   auto olen = scr_textlength(tmp.oname);
   if (ms->maxoptlen < olen) ms->maxoptlen = olen;
@@ -87,7 +87,7 @@ free_menu_system(_menusystem *ms)
   if (!ms) return;
 
   ms->mstate = 0;
-  ms->mproc = NULL;
+  ms->mproc = nullptr;
   delete ms;
 }
 
