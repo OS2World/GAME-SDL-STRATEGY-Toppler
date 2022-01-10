@@ -35,7 +35,7 @@ int main()
   write_palette(outp, colors);
 
   for (y = 0; y < 480; y++)
-    for (x = 0; x < 640; x++)
+    for (x = 0; x < 1280; x++)
       fwrite(&((Uint8*)colors->pixels)[y*colors->pitch+x], 1, 1, outp);
 
   fclose(outp);

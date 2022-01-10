@@ -980,6 +980,15 @@ void scr_blit(SDL_Surface * s, int x, int y) {
   SDL_BlitSurface(s, NULL, display, &r);
 }
 
+void scr_blit_center(SDL_Surface * s) {
+  SDL_Rect r;
+  r.w = s->w;
+  r.h = s->h;
+  r.x = (display->w - s->w)/2;
+  r.y = (display->h - s->h)/2;
+  SDL_BlitSurface(s, NULL, display, &r);
+}
+
 
 /* draws the tower and the doors */
 static void draw_tower(long vert, long angle) {

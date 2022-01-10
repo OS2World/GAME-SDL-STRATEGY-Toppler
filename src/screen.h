@@ -122,6 +122,8 @@ void scr_swap(void);
 
 /* blits a sprite onto the invisible surface */
 void scr_blit(SDL_Surface * s, int x, int y);
+// like scr_blit but centered on screen
+void scr_blit_center(SDL_Surface * s);
 
 /* draws everything necessary for the towergame */
 void scr_drawall(long vert, long angle, long time, bool svisible, int subshape, int substart, screenflag flags);

@@ -53,7 +53,7 @@ static void men_reload_sprites(Uint8 what) {
     auto fi = dataarchive->open(menudat);
 
     scr_read_palette(&fi, pal);
-    menupicture = scr_loadsprites(&restsprites, &fi, 1, 640, 480, false, pal, 0);
+    menupicture = scr_loadsprites(&restsprites, &fi, 1, 1280, 480, false, pal, 0);
   }
 
   if (what & 2) {
@@ -80,7 +80,7 @@ static std::string
 men_main_background_proc(_menusystem *ms)
 {
   if (ms) {
-    scr_blit(restsprites.data(menupicture), 0, 0);
+    scr_blit_center(restsprites.data(menupicture));
     scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
   }
   return "";

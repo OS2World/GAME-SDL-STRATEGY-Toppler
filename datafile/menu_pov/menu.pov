@@ -135,7 +135,7 @@ global_settings{
 camera {
   location <700,-300,300>
   up z
-  right 4/3*x
+  right 8/3*x
   sky z
   look_at <0,500,300>
 }
