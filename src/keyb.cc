@@ -17,7 +17,9 @@
  */
 
 #include "keyb.h"
+
 #include "decl.h"
+#include "screen.h"
 
 #include <SDL.h>
 
@@ -107,6 +109,9 @@ static void handleEvents(void) {
                break;
            case SDL_WINDOWEVENT_FOCUS_GAINED:
                tt_has_focus = true;
+               break;
+           case SDL_WINDOWEVENT_RESIZED:
+               scr_resize_event(e.window.data1, e.window.data2);
                break;
        }
        break;

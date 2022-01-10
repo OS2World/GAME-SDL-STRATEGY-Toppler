@@ -144,5 +144,8 @@ void scr_draw_torpedo(long vert, long x);
 /* returns the number of robots in the currently loaded data set */
 Uint8 scr_numrobots(void);
 
+// the window has been resized to the given dimensions
+void scr_resize_event(int width, int height);
+
 #endif
 

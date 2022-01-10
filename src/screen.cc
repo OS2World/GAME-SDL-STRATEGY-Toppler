@@ -632,18 +632,52 @@ static void doneWindow()
   }
 }
 
+static void setupDisplay(int width, int height)
+{
+  // calculate the new width
+  int w = width * SCREENHEI / height;
+
+  // make w even
+  if (w % 2) w++;
+
+  if (w > 1280) w = 1280;
+  if (w < 640) w = SCREENWID;
+
+  printf("resize window %i %i -> w = %i\n", width, height, w);
+
+  SDL_RenderSetLogicalSize(sdlRenderer, w, SCREENHEI);
+
+  sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, w, SCREENHEI);
+  display = SDL_CreateRGBSurface(0, w, SCREENHEI, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+
+  currentScreenWidth = w;
+  sts_init(starst + 9, NUM_STARS);
+}
+
 void scr_reinit() {
 
   doneWindow();
 
   SDL_CreateWindowAndRenderer(SCREENWID, SCREENHEI, config.fullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0, &sdlWindow, &sdlRenderer);
+  SDL_SetWindowMinimumSize(sdlWindow, 640, 480);
   SDL_SetWindowTitle(sdlWindow, "Nebulous");
   SDL_SetWindowResizable(sdlWindow, SDL_TRUE);
-  SDL_RenderSetLogicalSize(sdlRenderer, SCREENWID, SCREENHEI);
 
-  sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCREENWID, SCREENHEI);
+  int width; int height;
+  SDL_GetWindowSize(sdlWindow, &width, &height);
 
-  display = SDL_CreateRGBSurface(0, SCREENWID, SCREENHEI, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+  setupDisplay(width, height);
+}
+
+void scr_resize_event(int width, int height)
+{
+  if (display)
+  {
+    SDL_FreeSurface(display);
+    SDL_DestroyTexture(sdlTexture);
+  }
+
+  setupDisplay(width, height);
 }
 
 void scr_done(void) {

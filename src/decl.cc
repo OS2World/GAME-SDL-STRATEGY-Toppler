@@ -343,3 +343,5 @@ std::string _(const std::string & in) {
 }
 std::string N_(const std::string & in) { return in; }
 
+int currentScreenWidth = 640;
+

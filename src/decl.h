@@ -23,7 +23,9 @@
 #include <functional>
 
 /* screen width and height, in pixels. */
-#define SCREENWID 640
+extern int currentScreenWidth;
+
+#define SCREENWID currentScreenWidth
 #define SCREENHEI 480
 
 /* font width and height, in pixels. */
