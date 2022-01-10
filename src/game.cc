@@ -301,15 +301,18 @@ static void writebonus(int &tower_position, int tower_anglepos, int zeit, int te
 
   scr_darkenscreen();
 
+  std::string tab = std::string("~t") + std::to_string(350 + (SCREENWID-640)/2);
+
   if (lifes) {
-    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, _("Time:      ~t35010 X ") + std::to_string(zeit));
-    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI, _("Technique: ~t35010 X ") + std::to_string(tec));
-    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI, _("Extra:     ~t35010 X ") + std::to_string(extra));
-    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, _("Lifes:     ~t3505000 X ") + std::to_string(lif));
+
+    scr_writeformattext(90+(SCREENWID-640)/2, (SCREENHEI / 2) - FONTHEI * 3, _("Time:") + "      " + tab + "10 X " + std::to_string(zeit));
+    scr_writeformattext(90+(SCREENWID-640)/2, (SCREENHEI / 2) - FONTHEI, _("Technique:") + " " + tab + "10 X " + std::to_string(tec));
+    scr_writeformattext(90+(SCREENWID-640)/2, (SCREENHEI / 2) + FONTHEI, _("Extra:") + "     " + tab + "10 X " + std::to_string(extra));
+    scr_writeformattext(90+(SCREENWID-640)/2, (SCREENHEI / 2) + FONTHEI * 3, _("Lifes:") + "     " + tab + "5000 X " + std::to_string(lif));
   } else {
-    scr_writeformattext(90, (SCREENHEI / 2) - FONTHEI * 3, _("Time:      ~t35010 X ") + std::to_string(zeit));
-    scr_writeformattext(90, (SCREENHEI / 2), _("Technique: ~t35010 X ") + std::to_string(tec));
-    scr_writeformattext(90, (SCREENHEI / 2) + FONTHEI * 3, _("Extra:     ~t35010 X ") + std::to_string(extra));
+    scr_writeformattext(90+(SCREENWID-640)/2, (SCREENHEI / 2) - FONTHEI * 3, _("Time:") + "      " + tab + "10 X " + std::to_string(zeit));
+    scr_writeformattext(90+(SCREENWID-640)/2, (SCREENHEI / 2), _("Technique:") + " " + tab + "10 X " + std::to_string(tec));
+    scr_writeformattext(90+(SCREENWID-640)/2, (SCREENHEI / 2) + FONTHEI * 3, _("Extra:") + "     " + tab +  "10 X " + std::to_string(extra));
   }
 
   scr_swap();
