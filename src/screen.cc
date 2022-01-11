@@ -749,6 +749,22 @@ static void puttower(long angle, long height, long towerheight, int shift = 0) {
     angle = (angle + (SPR_SLICEANGLES / 2)) % TOWER_ANGLES;
     ypos -= SPR_SLICEHEI;
   }
+
+  int upend = (SCREENHEI / 2) - (lev_towerrows() * SPR_SLICEHEI - height);
+
+  if (upend > -10 && config.use_shadows())
+  {
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+0, 2*TOWER_RADIUS, 1, 0, 0, 0, 225);
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+1, 2*TOWER_RADIUS, 1, 0, 0, 0, 200);
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+2, 2*TOWER_RADIUS, 1, 0, 0, 0, 175);
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+3, 2*TOWER_RADIUS, 1, 0, 0, 0, 150);
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+4, 2*TOWER_RADIUS, 1, 0, 0, 0, 125);
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+5, 2*TOWER_RADIUS, 1, 0, 0, 0, 100);
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+6, 2*TOWER_RADIUS, 1, 0, 0, 0,  75);
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+7, 2*TOWER_RADIUS, 1, 0, 0, 0,  50);
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+8, 2*TOWER_RADIUS, 1, 0, 0, 0,  25);
+      scr_putbar(SCREENWID/2-TOWER_RADIUS, upend+9, 2*TOWER_RADIUS, 1, 0, 0, 0,   0);
+  }
 }
 
 static void putbattlement(long angle, long height) {
@@ -1099,6 +1115,177 @@ static void draw_tower_editor(long vert, long angle, int state) {
   }
 }
 
+static void darkenPixel(long x, long y, int amount)
+{
+    if (x > 0 && y > 0 && x < SCREENWID && y < SCREENHEI)
+    {
+        Uint32 * target = (Uint32*)((Uint8*)display->pixels + (y*display->pitch) + (x * display->format->BytesPerPixel));
+
+        Uint32 pixel = *target;
+
+        Uint8 r, g, b;
+
+        SDL_GetRGB(pixel, display->format, &r, &g, &b);
+
+        r = (int)r * amount / 255;
+        g = (int)g * amount / 255;
+        b = (int)b * amount / 255;
+
+        *target = SDL_MapRGB(display->format, r, g, b);
+    }
+}
+
+static void putcircleshadow(int a, int h, int rad)
+{
+  int sw = 5;
+  // sphere shadow
+  for (int y = -rad-sw; y < rad+sw; y++)
+      for (int x = -TOWER_RADIUS; x < TOWER_RADIUS; x++)
+      {
+          // find out position on the tower that we want to check
+          float z = -sqrt(TOWER_RADIUS*TOWER_RADIUS-x*x);
+
+          // calculate the position of the object
+          float ox =  sin(a*2*M_PI/ TOWER_ANGLES) * (TOWER_RADIUS + SPR_STEPWID/2);
+          float oz = -cos(a*2*M_PI/ TOWER_ANGLES) * (TOWER_RADIUS + SPR_STEPWID/2);
+
+          // to simplyfy calculations
+          // slightly rotate everything so that the light is
+          // comming directly from the front
+          float light_ang = (2 * M_PI / 16 /*steinzahl*/);
+
+          float rox = cos(light_ang)*ox - sin(light_ang)*oz;
+          float roz = sin(light_ang)*ox + cos(light_ang)*oz;
+          float rx = cos(light_ang)*x - sin(light_ang)*z;
+          float rz = sin(light_ang)*x + cos(light_ang)*z;
+
+          // now we are in shadow, iff the x position is less than wi from
+          // the position of the object
+          int diff = (rox-rx)*(rox-rx)+y*y;
+
+          if (roz < 0 && diff < (rad+sw)*(rad+sw))
+          {
+              float s = 0;
+
+              if (diff < rad*rad)
+                  s = 0;
+              else
+                  s = 1.0*(diff - rad*rad) / ((rad+sw)*(rad+sw)-rad*rad);
+
+              // finally dim the shadows when going to the right because
+              // we are supposed to be in shadow already
+              if (x > TOWER_RADIUS-32)
+                  s = 1.0 - ((1.0-s) * (0.5 + (TOWER_RADIUS-x)/64.0));
+
+              darkenPixel(x + SCREENWID/2, y+h, 100+155*s);
+          }
+      }
+}
+
+
+/* draws something of the environment */
+static void putcaseshadow(unsigned char w, long a, long h, int depth, bool drawlevelrobotshadows) {
+
+  int wi = 0;
+  int type = 0;  // 0: rectangle, 1: sphere
+
+  switch (w) {
+
+  case TB_ELEV_BOTTOM:
+  case TB_ELEV_TOP:
+  case TB_ELEV_MIDDLE:
+    wi = SPR_ELEVAWID;
+    break;
+
+  case TB_STEP:
+  case TB_STEP_VANISHER:
+  case TB_STEP_LSLIDER:
+  case TB_STEP_RSLIDER:
+    wi = SPR_STEPWID;
+    break;
+
+  case TB_STICK:
+  case TB_STICK_BOTTOM:
+  case TB_STICK_MIDDLE:
+  case TB_STICK_DOOR:
+  case TB_STICK_DOOR_TARGET:
+  case TB_BOX:
+    wi = SPR_STICKWID;
+    break;
+
+  case TB_ROBOT1:
+  case TB_ROBOT2:
+  case TB_ROBOT3:
+    type = 1;
+    wi = 15;
+    break;
+  case TB_ROBOT4:
+  case TB_ROBOT5:
+  case TB_ROBOT6:
+  case TB_ROBOT7:
+    type = 1;
+    wi = 10;
+    break;
+
+  default:
+    return;
+  }
+
+  if (type == 0)
+  {
+      int sw = 5;
+      for (int y = -sw; y < SPR_SLICEHEI+sw; y++)
+          for (int x = -TOWER_RADIUS; x < TOWER_RADIUS; x++)
+          {
+              // find out position on the tower that we want to check
+              float z = -sqrt(TOWER_RADIUS*TOWER_RADIUS-x*x);
+
+              // calculate the position of the object
+              float ox =  sin(a*2*M_PI/ TOWER_ANGLES) * (TOWER_RADIUS + SPR_STEPWID/2);
+              float oz = -cos(a*2*M_PI/ TOWER_ANGLES) * (TOWER_RADIUS + SPR_STEPWID/2);
+
+              // to simplyfy calculations
+              // slightly rotate everything so that the light is
+              // comming directly from the front
+              float light_ang = (2 * M_PI / 16 /*steinzahl*/);
+
+              float rox = cos(light_ang)*ox - sin(light_ang)*oz;
+              float roz = sin(light_ang)*ox + cos(light_ang)*oz;
+              float rx = cos(light_ang)*x - sin(light_ang)*z;
+              float rz = sin(light_ang)*x + cos(light_ang)*z;
+
+              // now we are in shadow, iff the x position is less than wi from
+              // the position of the object
+              auto diff = abs(rox-rx);
+
+              if ((roz < 0) && (diff < wi/2 + sw))
+              {
+                  float s = 0;
+
+                  if (diff > wi/2-sw)
+                      s = (1.0*diff-(wi/2-sw)) / (2*sw);
+
+                  if (y < 0)
+                      s = 1.0-((1.0-s)*(1.0-(-1.0*y/sw)));
+                  if (y >= SPR_SLICEHEI)
+                      s = 1.0-((1.0-s)*(1.0-(1.0*(y-(SPR_SLICEHEI-1))/sw)));
+
+                  // finally dim the shadows when going to the right because
+                  // we are supposed to be in shadow already
+                  if (x > TOWER_RADIUS-32)
+                      s = 1.0 - ((1.0-s) * (0.5 + (TOWER_RADIUS-x)/64.0));
+
+                  darkenPixel(x + SCREENWID/2, y+h, 100+155*s);
+              }
+          }
+  }
+  else
+  {
+      if (drawlevelrobotshadows)
+          putcircleshadow(a, h, wi);
+  }
+}
+
 
 /* draws something of the environment */
 static void putcase(unsigned char w, long x, long h, int depth) {
@@ -1113,7 +1300,7 @@ static void putcase(unsigned char w, long x, long h, int depth) {
   case TB_ELEV_TOP:
   case TB_ELEV_MIDDLE:
     scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h);
-    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_ELEVAWID/2), h, SPR_ELEVAWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
+    if (config.use_shadows()) scr_putbar(x-(SPR_ELEVAWID/2), h, SPR_ELEVAWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
 
   case TB_STEP:
@@ -1121,7 +1308,7 @@ static void putcase(unsigned char w, long x, long h, int depth) {
   case TB_STEP_LSLIDER:
   case TB_STEP_RSLIDER:
     scr_blit(restsprites.data((angle % SPR_STEPFRAMES) + step), x - (SPR_STEPWID / 2), h);
-    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_STEPWID/2), h, SPR_STEPWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
+    if (config.use_shadows()) scr_putbar(x-(SPR_STEPWID/2), h, SPR_STEPWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
 
     break;
 
@@ -1131,7 +1318,7 @@ static void putcase(unsigned char w, long x, long h, int depth) {
   case TB_STICK_DOOR:
   case TB_STICK_DOOR_TARGET:
     scr_blit(restsprites.data(stick), x - (SPR_STICKWID / 2), h);
-    if (config.use_alpha_sprites()) scr_putbar(x-(SPR_STICKWID/2), h, SPR_STICKWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
+    if (config.use_shadows()) scr_putbar(x-(SPR_STICKWID/2), h, SPR_STICKWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
 
     break;
 
@@ -1141,6 +1328,26 @@ static void putcase(unsigned char w, long x, long h, int depth) {
 
     break;
   }
+}
+
+static void darkenrobot(int nr, int x, int y, int depth)
+{
+  if (!config.use_shadows()) return;
+
+  // darken the robot when it gets behind the tower (just like the steps)
+  auto r = objectsprites.data(nr);
+
+  for (int rx = 0; rx < r->w; rx++)
+      for (int ry = 0; ry < r->h; ry++)
+      {
+          Uint32 * pixel = (uint32_t*)((uint8_t*)r->pixels + ry * r->pitch + rx * r->format->BytesPerPixel);
+          uint8_t rd, g, b, a;
+          SDL_GetRGBA(*pixel, r->format, &rd, &g, &b, &a);
+          if (a != 0)
+          {
+              scr_putbar(x+rx, y+ry, 1, 1, 0, 0, 0, depth);
+          }
+      }
 }
 
 static void putcase_editor(unsigned char w, long x, long h, int state, int depth) {
@@ -1195,35 +1402,38 @@ static void putcase_editor(unsigned char w, long x, long h, int state, int depth
 
   case TB_ROBOT1:
     scr_blit(objectsprites.data(ballst + 1), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
+    darkenrobot(ballst + 1, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2, depth);
     break;
   case TB_ROBOT2:
     scr_blit(objectsprites.data(ballst), x - (SPR_ROBOTWID / 2) + state / 2, h - SPR_ROBOTHEI/2);
+    darkenrobot(ballst, x - (SPR_ROBOTWID / 2)+state/2, h - SPR_ROBOTHEI/2, depth);
     break;
   case TB_ROBOT3:
     scr_blit(objectsprites.data(ballst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
+    darkenrobot(ballst, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2, depth);
     break;
   case TB_ROBOT4:
-    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
-             x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
+    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
+    darkenrobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8), depth);
     break;
   case TB_ROBOT5:
-    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
-             x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
+    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
+    darkenrobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2, depth);
     break;
   case TB_ROBOT6:
-    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
-             x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
+    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count), x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
+    darkenrobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2, depth);
     break;
   case TB_ROBOT7:
-    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count),
-             x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
+    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count), x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
+    darkenrobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2, depth);
     break;
   }
 }
 
 
 /* draws a robot */
-static void putrobot(int t, int m, long x, long h)
+static void putrobot(int t, int m, long x, long h, int depth)
 {
   int nr;
 
@@ -1260,6 +1470,8 @@ static void putrobot(int t, int m, long x, long h)
   }
 
   scr_blit(objectsprites.data(nr), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI);
+
+  darkenrobot(nr, x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI, depth);
 }
 
 void scr_writetext(long x, long y, const std::string & s, int maxchars) {
@@ -1527,7 +1739,7 @@ static void putthings(long vert, long a, long angle) {
     /* calc the x pos where the thing has to be drawn */
     int x = sintab[a % TOWER_ANGLES] + (SCREENWID/2);
 
-    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 255);
+    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
 
     int slice = 0;
     int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;
@@ -1552,10 +1764,70 @@ static void putthings(long vert, long a, long angle) {
       /* ok calc the angle the robots needs to be drawn at */
       int rob_a = (rob_angle(rob) - 4 + angle) & (TOWER_ANGLES - 1);
 
+      int depth = std::clamp(400-2*(sintab[(rob_a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
+
       /* check if the robot is "inside" the current column */
-      if (rob_a > a - 2 && rob_a <= a + 2)
+      if (rob_a == a)
         putrobot(rob_kind(rob), rob_time(rob),
-                 sintab[rob_a], SCREENHEI / 2 + vert - rob_vertical(rob) * 4);
+                 sintab[rob_a], SCREENHEI / 2 + vert - rob_vertical(rob) * 4, depth);
+    }
+  }
+}
+
+static void putshadow(long vert, long a, long angle, bool drawlevelrobotshadows) {
+
+  /* ok, at first lets check if there is a column right at the
+   angle to be drawn */
+  if (((a - angle) & 0x7) == 0) {
+
+    /* yes there is one, find out wich one */
+    int col = ((a - angle) / TOWER_STEPS_PER_COLUMN) & (TOWER_COLUMNS - 1);
+
+    /* calc the x pos where the thing has to be drawn */
+    int x = sintab[a % TOWER_ANGLES] + (SCREENWID/2);
+
+    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
+
+    int slice = 0;
+    int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;
+
+    while ((ypos > -SPR_SLICEHEI) && (slice < lev_towerrows())) {
+
+      /* if we are over the bottom of the screen, draw the slice */
+      if (ypos < SCREENHEI)
+      {
+        putcaseshadow(lev_tower(slice, col), a % TOWER_ANGLES, ypos, depth, drawlevelrobotshadows);
+      }
+
+      slice++;
+      ypos -= SPR_SLICEHEI;
+    }
+  }
+
+
+
+
+  /* and now check for robots to be drawn */
+  // this only draws robots that are active in the game
+  // the robots of the level editor are done with putcaseshadow above
+  for (int rob = 0; rob < 4; rob++) {
+
+    /* if the the current robot is active and not the cross */
+    if (rob_kind(rob) != OBJ_KIND_NOTHING && rob_kind(rob) != OBJ_KIND_CROSS && rob_kind(rob) != OBJ_KIND_APPEAR && rob_kind(rob) != OBJ_KIND_DISAPPEAR) {
+
+      /* ok calc the angle the robots needs to be drawn at */
+      int rob_a = (rob_angle(rob) - 4 + angle) & (TOWER_ANGLES - 1);
+
+      /* check if the robot is "inside" the current column */
+      if (rob_a == a)
+      {
+          int wi = 15;
+
+          if (rob_kind(rob) == OBJ_KIND_ROBOT_VERT || rob_kind(rob) == OBJ_KIND_ROBOT_HORIZ)
+              wi = 10;
+
+          putcircleshadow(rob_a,SCREENHEI / 2 + vert - rob_vertical(rob) * 4 - SPR_ROBOTHEI/2, wi);
+      }
     }
   }
 }
@@ -1572,7 +1844,7 @@ static void putthings_editor(long vert, long a, long angle, int state) {
     /* calc the x pos where the thing has to be drawn */
     int x = sintab[a % TOWER_ANGLES] + (SCREENWID/2);
 
-    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 255);
+    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
 
     int slice = 0;
     int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;
@@ -1618,6 +1890,17 @@ static void draw_before(long  vert, long angle)
   }
   putthings(vert, 0, angle);
 }
+
+static void draw_shadows(long vert, long angle, bool drawlevelrobotshadows)
+{
+  for (int a = 0; a < 32; a ++) {
+    putshadow(vert, 32 - a, angle, drawlevelrobotshadows);
+    putshadow(vert, 96 + a, angle, drawlevelrobotshadows);
+  }
+  putshadow(vert, 0, angle, drawlevelrobotshadows);
+
+}
+
 
 static void draw_before_editor(long  vert, long angle, int state)
 {
@@ -1690,6 +1973,9 @@ void scr_drawall(long vert,
   sts_draw();
   draw_behind(vert * 4, angle);
   draw_tower(vert * 4, angle);
+
+  if (config.use_shadows()) draw_shadows(vert*4, angle, false);
+
   draw_before(vert * 4, angle);
 
   if (snb_exists())
@@ -1698,14 +1984,65 @@ void scr_drawall(long vert,
              ((vert - snb_verticalpos()) * 4) + (SCREENHEI / 2) - SPR_AMMOHEI);
 
   if (top_visible()) {
+
+      if (config.use_shadows())
+          switch (top_shape())
+          {
+              // special cases for door enter and leave
+              case 0x14:
+              case 0x19:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2, 11);
+                  break;
+
+              case 0x15:
+              case 0x18:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2, 7);
+                  break;
+
+              case 0x16:
+              case 0x17:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2, 4);
+                  break;
+
+              // special cases for drowning
+              case 31:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2+6, 15);
+                  break;
+              case 32:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2+11, 15);
+                  break;
+              case 33:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2+17, 15);
+                  break;
+              case 34:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2+23, 15);
+                  break;
+              case 35:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2+28, 15);
+                  break;
+              case 36:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2+34, 15);
+                  break;
+
+              default:
+                  putcircleshadow(0, (vert - top_verticalpos()) * 4 + (SCREENHEI / 2)-SPR_HEROHEI/2, 15);
+                  break;
+          }
+
       scr_blit(objectsprites.data(topplerstart + top_shape() +
                               ((top_look_left()) ?  mirror : 0)),
                (SCREENWID / 2) - (SPR_HEROWID / 2),
                (vert - top_verticalpos()) * 4 + (SCREENHEI / 2) - SPR_HEROHEI);
 
     if (top_onelevator())
+    {
+      // draw shadow of elevator platform
+
+      if (config.use_shadows()) putcaseshadow(TB_ELEV_BOTTOM, 0, vert - top_verticalpos() + (SCREENHEI / 2), 0, false);
+
       scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), (SCREENWID / 2) - (SPR_ELEVAWID / 2),
                vert - top_verticalpos() + (SCREENHEI / 2));
+    }
   }
 
   if (svisible) {
@@ -1771,6 +2108,9 @@ void scr_drawedit(long vpos, long apos, bool showtime) {
 
   draw_behind_editor(vert * 4, angle, boxstate);
   draw_tower_editor(vert * 4, angle, boxstate);
+
+  if (config.use_shadows()) draw_shadows(vert*4, angle, true);
+
   draw_before_editor(vert * 4, angle, boxstate);
 
   putbattlement(angle, vert * 4);

@@ -99,6 +99,7 @@ configuration::configuration(const std::string & glob, const std::string & local
     i_use_alpha_font = true;
     i_use_alpha_darkening = true;
     i_use_full_scroller = true;
+    i_shadows = true;
     i_waves_type = waves_expensive;
     i_status_top = true;  /* is status line top or bottom of screen? */
     i_editor_towerpagesize = -1;
@@ -119,6 +120,7 @@ configuration::configuration(const std::string & glob, const std::string & local
     CNF_BOOL( "use_alpha_layers",    &i_use_alpha_layers );
     CNF_BOOL( "use_alpha_darkening", &i_use_alpha_darkening );
     CNF_BOOL( "use_full_scroller",   &i_use_full_scroller );
+    CNF_BOOL( "use_shadows",         &i_shadows );
     CNF_BOOL( "status_top",          &i_status_top );
     CNF_INT(  "editor_pagesize",     &i_editor_towerpagesize );
     CNF_INT(  "editor_towerstarthei",&i_editor_towerstarthei );

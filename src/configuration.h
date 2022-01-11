@@ -67,6 +67,10 @@ public:
   bool use_full_scroller() const { return i_use_full_scroller; }
   void use_full_scroller(bool on) { need_save = true; i_use_full_scroller = on; }
 
+  bool use_shadows() const { return i_shadows; }
+  void use_shadows(bool on) { need_save = true; i_shadows = on; }
+
+
   /* the different types of waves used in waves_type */
   enum {
     waves_nonreflecting,
@@ -137,6 +141,7 @@ private:
   bool i_use_alpha_font;
   bool i_use_alpha_darkening;
   bool i_use_full_scroller;
+  bool i_shadows;
   int  i_waves_type;
   bool i_status_top;
   int  i_editor_towerpagesize;

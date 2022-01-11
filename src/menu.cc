@@ -453,6 +453,22 @@ static std::string men_full_scroller(_menusystem *ms)
   else return _("2 layers Scoller");
 }
 
+static std::string men_shadows(_menusystem *ms)
+{
+  std::string txt = _("Shadows") + " ";
+
+  if (ms) {
+    config.use_shadows(!config.use_shadows());
+  }
+
+  if (config.use_shadows())
+      txt += fonttagedtagbox;
+  else
+      txt += fontemptytagbox;
+
+  return txt;
+}
+
 
 static std::string men_alpha_options(_menusystem *mainmenu) {
   static auto s = _("Alpha Options");
@@ -489,6 +505,7 @@ static std::string men_options_graphic(_menusystem *mainmenu) {
     ms = add_menu_option(ms, "", men_alpha_options);
     ms = add_menu_option(ms, "", men_waves_menu, SDLK_UNKNOWN, MOF_PASSKEYS);
     ms = add_menu_option(ms, "", men_full_scroller, SDLK_UNKNOWN);
+    ms = add_menu_option(ms, "", men_shadows, SDLK_UNKNOWN);
 
     ms = add_menu_option(ms, "", NULL);
     ms = add_menu_option(ms, _("Back"), NULL);
