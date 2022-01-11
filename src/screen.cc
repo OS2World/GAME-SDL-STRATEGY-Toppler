@@ -643,8 +643,6 @@ static void setupDisplay(int width, int height)
   if (w > 1280) w = 1280;
   if (w < 640) w = SCREENWID;
 
-  printf("resize window %i %i -> w = %i\n", width, height, w);
-
   SDL_RenderSetLogicalSize(sdlRenderer, w, SCREENHEI);
 
   sdlTexture = SDL_CreateTexture(sdlRenderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, w, SCREENHEI);
