@@ -91,7 +91,7 @@ static struct {
 /* bonus game scrolling layer */
 typedef struct  {
   long xpos, ypos;    // position of the layer
-  long xrepeat;       // how often the image repeats
+  long xrepeat;       // width where the image repeats (a bit redundant to width, but theoretically you could have a gap)
   long width, height; // size of the layer
   int  num, den;      // speed
   Uint16 image;
@@ -750,7 +750,7 @@ static void puttower(long angle, long height, long towerheight, int shift = 0) {
     ypos -= SPR_SLICEHEI;
   }
 
-  int upend = (SCREENHEI / 2) - (lev_towerrows() * SPR_SLICEHEI - height);
+  int upend = (SCREENHEI / 2) - (towerheight * SPR_SLICEHEI - height);
 
   if (upend > -10 && config.use_shadows())
   {
@@ -2134,10 +2134,13 @@ void scr_drawedit(long vpos, long apos, bool showtime) {
 static void put_scrollerlayer(long horiz, int layer) {
   horiz += scroll_layers[layer].xpos;
   horiz %= scroll_layers[layer].xrepeat;
-  scr_blit(layersprites.data(scroll_layers[layer].image), -horiz, scroll_layers[layer].ypos);
-  if (horiz + SCREENWID > scroll_layers[layer].xrepeat)
-    scr_blit(layersprites.data(scroll_layers[layer].image),
-             scroll_layers[layer].width - horiz, scroll_layers[layer].ypos);
+  horiz = -horiz;
+
+  while (horiz < SCREENWID)
+  {
+    scr_blit(layersprites.data(scroll_layers[layer].image), horiz, scroll_layers[layer].ypos);
+    horiz += scroll_layers[layer].xrepeat;
+  }
 }
 
 void scr_draw_bonus1(long horiz, long towerpos) {

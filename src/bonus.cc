@@ -59,13 +59,19 @@ static Uint32 xpos = 0;
 /* this function displays everything of the bonus game */
 static void show() {
 
-  /* lets first calc the position of the tower on the screen */
+  /* lets first calc the position of the tower on the screen
+   * tower pos 0 places the tower smack in the middle
+   * the tower moves with 4 per time tick to the left (negative)
+   * after halve the game time we toggle to the new tower
+   */
   Sint32 towerpos;
 
   if (curtime < gametime/2)
+    // old tower just moving to the left
     towerpos = -(4*curtime);
   else
-    towerpos = gametime * scrollerspeed - 4*curtime + SCREENWID + (SPR_SLICEWID*2);
+    // new tower when curtime == gametime the towerpos must be zero
+    towerpos = -(4*curtime) + 4*gametime;
 
   /* draw the background layers */
   scr_draw_bonus1(xpos, towerpos);
@@ -146,7 +152,7 @@ bool bns_game() {
     /* move torpedo */
     if (torpedox >= 0) {
       torpedox += 8;
-      if (torpedox > (SCREENWID+SPR_TORPWID))
+      if (torpedox > (640+SPR_TORPWID))
         torpedox = -1;
       for (b = 0; b < fishcnt; b++) {
         if (fish[b].x > 0 && fish[b].state >= 32) {
