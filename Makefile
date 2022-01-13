@@ -146,19 +146,23 @@ _build/menu.dat: _build/tools/menu _build/tools/tower2inc ${MENULEVELS}
 DATFILES += _build/scroller.dat
 .SECONDARY: _build/scroller.dat
 _build/scroller.dat: _build/tools/scroller datafile/scroller.xcf
-	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"scroller1_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"scroller2_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 2) \"scroller3_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 3) \"scroller1_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 4) \"scroller2_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 5) \"scroller3_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
-	( cd _build && convert scroller3_mask_rgb.png -colors 256 PNG8:scroller3_mask.png )
-	( cd _build && convert scroller2_mask_rgb.png -colors 256 PNG8:scroller2_mask.png )
-	( cd _build && convert scroller1_mask_rgb.png -colors 256 PNG8:scroller1_mask.png )
-	( cd _build && convert scroller3_colors_rgb.png -colors 256 PNG8:scroller3_colors.png )
-	( cd _build && convert scroller2_colors_rgb.png -colors 256 PNG8:scroller2_colors.png )
-	( cd _build && convert scroller1_colors_rgb.png -colors 256 PNG8:scroller1_colors.png )
-	( cd _build && ./tools/scroller 3 2 1/1 scroller3_colors.png scroller3_mask.png 0/0/640 1/2 \
+	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 0) \"scr1_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
+	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 1) \"scr2_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
+	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 2) \"scr3_colors_rgb.png\" \"ttt\")(gimp-quit 1))" )
+	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 3) \"scr1_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
+	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 4) \"scr2_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
+	( cd _build && $(GIMP) -i -b "(let* ((image (car(gimp-xcf-load 1 \"../datafile/scroller.xcf\" \"ttt\")))(layers (cadr(gimp-image-get-layers image))))(file-png-save-defaults 1 image (aref layers 5) \"scr3_mask_rgb.png\" \"ttt\")(gimp-quit 1))" )
+	( cd _build && ./tools/assembler hm scr1_rgb scr1_colors_rgb.png scr1_mask_rgb.png )
+	( cd _build && ./tools/assembler hm scr2_rgb scr2_colors_rgb.png scr2_mask_rgb.png )
+	( cd _build && ./tools/assembler hm scr3_rgb scr3_colors_rgb.png scr3_mask_rgb.png )
+	( cd _build && convert scr3_rgb_mask.png -colors 256 PNG8:scroller3_mask.png )
+	( cd _build && convert scr2_rgb_mask.png -colors 256 PNG8:scroller2_mask.png )
+	( cd _build && convert scr1_rgb_mask.png -colors 256 PNG8:scroller1_mask.png )
+	( cd _build && convert scr3_rgb_colors.png -colors 256 PNG8:scroller3_colors.png )
+	( cd _build && convert scr2_rgb_colors.png -colors 256 PNG8:scroller2_colors.png )
+	( cd _build && convert scr1_rgb_colors.png -colors 256 PNG8:scroller1_colors.png )
+	( cd _build && ./tools/scroller 3 2 1/1 \
+		       scroller3_colors.png scroller3_mask.png 0/0/640 1/2 \
                        scroller2_colors.png scroller2_mask.png 0/0/640 1/1 \
                        scroller1_colors.png scroller1_mask.png 0/0/640 2/1 )
 
