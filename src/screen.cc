@@ -59,6 +59,7 @@ static unsigned short ballst, boxst, snowballst, starst, crossst,
 static int topplerstart;
 
 static std::vector<std::tuple<int, int, SDL_Surface *>> circleShadowCache;
+static std::vector<std::tuple<int, int, SDL_Surface *>> rectangularShadowCache;
 
 static unsigned short  step, elevatorsprite, stick;
 
@@ -1271,6 +1272,32 @@ static void putcaseshadow(unsigned char w, long a, long h, int depth, bool drawl
   if (type == 0)
   {
       int sw = 5;
+
+
+      // first check, if we already calculated the required shadow
+      for (const auto & [ca, cwi, cs] : rectangularShadowCache)
+          if (ca == a && cwi == wi)
+          {
+              SDL_Rect r;
+              r.w = cs->w;
+              r.h = cs->h;
+              r.x = SCREENWID/2-TOWER_RADIUS;
+              r.y = h-sw;
+
+              SDL_BlitSurface(cs, nullptr, display, &r);
+
+              return;
+          }
+
+      printf("create rect entry for wi %i, angle %i\n", wi, a);
+
+      // well no entry in the cache create one
+      auto sh = SDL_CreateRGBSurface(0, 2*TOWER_RADIUS, SPR_SLICEHEI+2*sw,32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+      auto entry = std::make_tuple(a, wi, sh);
+
+      // fill with transparenc
+      SDL_FillRect(sh, nullptr, SDL_MapRGBA(sh->format, 0, 0, 0, 0));
+
       for (int y = -sw; y < SPR_SLICEHEI+sw; y++)
           for (int x = -TOWER_RADIUS; x < TOWER_RADIUS; x++)
           {
@@ -1289,7 +1316,6 @@ static void putcaseshadow(unsigned char w, long a, long h, int depth, bool drawl
               float rox = cos(light_ang)*ox - sin(light_ang)*oz;
               float roz = sin(light_ang)*ox + cos(light_ang)*oz;
               float rx = cos(light_ang)*x - sin(light_ang)*z;
-              float rz = sin(light_ang)*x + cos(light_ang)*z;
 
               // now we are in shadow, iff the x position is less than wi from
               // the position of the object
@@ -1312,9 +1338,20 @@ static void putcaseshadow(unsigned char w, long a, long h, int depth, bool drawl
                   if (x > TOWER_RADIUS-32)
                       s = 1.0 - ((1.0-s) * (0.5 + (TOWER_RADIUS-x)/64.0));
 
-                  darkenPixel(x + SCREENWID/2, y+h, 100+155*s);
+                  Uint32 * target = (Uint32*)((Uint8*)sh->pixels + ((y+sw)*sh->pitch) + ((x+TOWER_RADIUS) * sh->format->BytesPerPixel));
+                  *target = SDL_MapRGBA(sh->format, 0, 0, 0, 255-(100+155*s));
               }
           }
+
+      SDL_Rect r;
+      r.w = sh->w;
+      r.h = sh->h;
+      r.x = SCREENWID/2-TOWER_RADIUS;
+      r.y = h-sw;
+
+      SDL_BlitSurface(sh, nullptr, display, &r);
+
+      rectangularShadowCache.push_back(entry);
   }
   else
   {
