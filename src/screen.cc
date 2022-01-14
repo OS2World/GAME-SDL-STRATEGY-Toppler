@@ -1157,8 +1157,6 @@ static void putcircleshadow(int a, int h, int rad)
           return;
       }
 
-  printf("calculate shadow for rad %i angle %i\n", rad, a);
-
   // well no entry in the cache create one
   auto sh = SDL_CreateRGBSurface(0, 2*TOWER_RADIUS, 2*rad+2*sw,32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
   auto entry = std::make_tuple(a, rad, sh);
