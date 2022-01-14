@@ -1220,7 +1220,7 @@ static void putcircleshadow(int a, int h, int rad)
 
 
 /* draws something of the environment */
-static void putcaseshadow(unsigned char w, long a, long h, int depth, bool drawlevelrobotshadows) {
+static void putcaseshadow(unsigned char w, long a, long h, bool drawlevelrobotshadows) {
 
   int wi = 0;
   int type = 0;  // 0: rectangle, 1: sphere
@@ -1859,11 +1859,6 @@ static void putshadow(long vert, long a, long angle, bool drawlevelrobotshadows)
     /* yes there is one, find out wich one */
     int col = ((a - angle) / TOWER_STEPS_PER_COLUMN) & (TOWER_COLUMNS - 1);
 
-    /* calc the x pos where the thing has to be drawn */
-    int x = sintab[a % TOWER_ANGLES] + (SCREENWID/2);
-
-    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
-
     int slice = 0;
     int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;
 
@@ -1872,7 +1867,7 @@ static void putshadow(long vert, long a, long angle, bool drawlevelrobotshadows)
       /* if we are over the bottom of the screen, draw the slice */
       if (ypos < SCREENHEI)
       {
-        putcaseshadow(lev_tower(slice, col), a % TOWER_ANGLES, ypos, depth, drawlevelrobotshadows);
+        putcaseshadow(lev_tower(slice, col), a % TOWER_ANGLES, ypos, drawlevelrobotshadows);
       }
 
       slice++;
@@ -2114,7 +2109,7 @@ void scr_drawall(long vert,
     {
       // draw shadow of elevator platform
 
-      if (config.use_shadows()) putcaseshadow(TB_ELEV_BOTTOM, 0, vert - top_verticalpos() + (SCREENHEI / 2), 0, false);
+      if (config.use_shadows()) putcaseshadow(TB_ELEV_BOTTOM, 0, vert - top_verticalpos() + (SCREENHEI / 2), false);
 
       scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), (SCREENWID / 2) - (SPR_ELEVAWID / 2),
                vert - top_verticalpos() + (SCREENHEI / 2));
