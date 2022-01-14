@@ -58,6 +58,8 @@ static unsigned short ballst, boxst, snowballst, starst, crossst,
          fishst, subst, torb;
 static int topplerstart;
 
+static std::vector<std::tuple<int, int, SDL_Surface *>> circleShadowCache;
+
 static unsigned short  step, elevatorsprite, stick;
 
 /* table used to calculate the distance of an object from the center of the
@@ -1138,7 +1140,32 @@ static void darkenPixel(long x, long y, int amount)
 static void putcircleshadow(int a, int h, int rad)
 {
   int sw = 5;
-  // sphere shadow
+
+  // first check, if we already calculated the required shadow
+  for (const auto & [ca, crad, cs] : circleShadowCache)
+      if (ca == a && crad == rad)
+      {
+          SDL_Rect r;
+          r.w = cs->w;
+          r.h = cs->h;
+          r.x = SCREENWID/2-TOWER_RADIUS;
+          r.y = h-rad-sw;
+
+          SDL_BlitSurface(cs, nullptr, display, &r);
+
+          return;
+      }
+
+  printf("calculate shadow for rad %i angle %i\n", rad, a);
+
+  // well no entry in the cache create one
+  auto sh = SDL_CreateRGBSurface(0, 2*TOWER_RADIUS, 2*rad+2*sw,32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+  auto entry = std::make_tuple(a, rad, sh);
+
+  // fill with transparenc
+  SDL_FillRect(sh, nullptr, SDL_MapRGBA(sh->format, 0, 0, 0, 0));
+
+  // draw the shadow into the surface
   for (int y = -rad-sw; y < rad+sw; y++)
       for (int x = -TOWER_RADIUS; x < TOWER_RADIUS; x++)
       {
@@ -1157,7 +1184,6 @@ static void putcircleshadow(int a, int h, int rad)
           float rox = cos(light_ang)*ox - sin(light_ang)*oz;
           float roz = sin(light_ang)*ox + cos(light_ang)*oz;
           float rx = cos(light_ang)*x - sin(light_ang)*z;
-          float rz = sin(light_ang)*x + cos(light_ang)*z;
 
           // now we are in shadow, iff the x position is less than wi from
           // the position of the object
@@ -1177,9 +1203,20 @@ static void putcircleshadow(int a, int h, int rad)
               if (x > TOWER_RADIUS-32)
                   s = 1.0 - ((1.0-s) * (0.5 + (TOWER_RADIUS-x)/64.0));
 
-              darkenPixel(x + SCREENWID/2, y+h, 100+155*s);
+              Uint32 * target = (Uint32*)((Uint8*)sh->pixels + ((y+rad+sw)*sh->pitch) + ((x+TOWER_RADIUS) * sh->format->BytesPerPixel));
+              *target = SDL_MapRGBA(sh->format, 0, 0, 0, 255-(100+155*s));
           }
       }
+
+  SDL_Rect r;
+  r.w = sh->w;
+  r.h = sh->h;
+  r.x = SCREENWID/2-TOWER_RADIUS;
+  r.y = h-rad-sw;
+
+  SDL_BlitSurface(sh, nullptr, display, &r);
+
+  circleShadowCache.push_back(entry);
 }
 
 
