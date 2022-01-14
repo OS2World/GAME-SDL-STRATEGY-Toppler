@@ -1330,24 +1330,37 @@ static void putcase(unsigned char w, long x, long h, int depth) {
   }
 }
 
-static void darkenrobot(int nr, int x, int y, int depth)
+static void drawdarkenedRobot(int nr, int x, int y, int depth)
 {
-  if (!config.use_shadows()) return;
+    auto obj = objectsprites.data(nr);
 
-  // darken the robot when it gets behind the tower (just like the steps)
-  auto r = objectsprites.data(nr);
+    // create copy of obj
+    // overdraw that one with a different surface that is black
+    // and translucent to darken it and finally blit
+    // that object
+    auto obj2 = SDL_CreateRGBSurface(0, obj->w, obj->h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
+    SDL_Surface *s = SDL_CreateRGBSurface(0, obj->w, obj->h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 
-  for (int rx = 0; rx < r->w; rx++)
-      for (int ry = 0; ry < r->h; ry++)
-      {
-          Uint32 * pixel = (uint32_t*)((uint8_t*)r->pixels + ry * r->pitch + rx * r->format->BytesPerPixel);
-          uint8_t rd, g, b, a;
-          SDL_GetRGBA(*pixel, r->format, &rd, &g, &b, &a);
-          if (a != 0)
-          {
-              scr_putbar(x+rx, y+ry, 1, 1, 0, 0, 0, depth);
-          }
-      }
+    SDL_BlitSurface(obj, nullptr, obj2, nullptr);
+
+    SDL_Rect r;
+
+    r.w = obj2->w;
+    r.h = obj2->h;
+    r.x = 0;
+    r.y = 0;
+
+    SDL_FillRect(s, &r, SDL_MapRGBA(s->format, 0, 0, 0, depth));
+
+    SDL_BlitSurface(s, nullptr, obj2, nullptr);
+
+    r.x = x;
+    r.y = y;
+
+    SDL_BlitSurface(obj2, nullptr, display, &r);
+
+    SDL_FreeSurface(s);
+    SDL_FreeSurface(obj2);
 }
 
 static void putcase_editor(unsigned char w, long x, long h, int state, int depth) {
@@ -1401,32 +1414,25 @@ static void putcase_editor(unsigned char w, long x, long h, int state, int depth
     break;
 
   case TB_ROBOT1:
-    scr_blit(objectsprites.data(ballst + 1), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
-    darkenrobot(ballst + 1, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2, depth);
+    drawdarkenedRobot(ballst + 1, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2, depth);
     break;
   case TB_ROBOT2:
-    scr_blit(objectsprites.data(ballst), x - (SPR_ROBOTWID / 2) + state / 2, h - SPR_ROBOTHEI/2);
-    darkenrobot(ballst, x - (SPR_ROBOTWID / 2)+state/2, h - SPR_ROBOTHEI/2, depth);
+    drawdarkenedRobot(ballst, x - (SPR_ROBOTWID / 2) + state / 2, h - SPR_ROBOTHEI/2, depth);
     break;
   case TB_ROBOT3:
-    scr_blit(objectsprites.data(ballst), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2);
-    darkenrobot(ballst, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2, depth);
+    drawdarkenedRobot(ballst, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2, depth);
     break;
   case TB_ROBOT4:
-    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8));
-    darkenrobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8), depth);
+    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8), depth);
     break;
   case TB_ROBOT5:
-    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count), x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2);
-    darkenrobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2, depth);
+    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2, depth);
     break;
   case TB_ROBOT6:
-    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count), x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2);
-    darkenrobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2, depth);
+    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2, depth);
     break;
   case TB_ROBOT7:
-    scr_blit(objectsprites.data(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count), x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2);
-    darkenrobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2, depth);
+    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2, depth);
     break;
   }
 }
@@ -1469,9 +1475,7 @@ static void putrobot(int t, int m, long x, long h, int depth)
       break;
   }
 
-  scr_blit(objectsprites.data(nr), x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI);
-
-  darkenrobot(nr, x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI, depth);
+  drawdarkenedRobot(nr, x + (SCREENWID / 2) - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI, depth);
 }
 
 void scr_writetext(long x, long y, const std::string & s, int maxchars) {
