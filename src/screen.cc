@@ -1413,7 +1413,9 @@ static void drawdarkenedRobot(int nr, int x, int y, int depth)
     auto obj2 = SDL_CreateRGBSurface(0, obj->w, obj->h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
     SDL_Surface *s = SDL_CreateRGBSurface(0, obj->w, obj->h, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 
+    SDL_SetSurfaceBlendMode(obj, SDL_BLENDMODE_NONE);
     SDL_BlitSurface(obj, nullptr, obj2, nullptr);
+    SDL_SetSurfaceBlendMode(obj, SDL_BLENDMODE_BLEND);
 
     SDL_Rect r;
 
@@ -1422,7 +1424,9 @@ static void drawdarkenedRobot(int nr, int x, int y, int depth)
     r.x = 0;
     r.y = 0;
 
-    SDL_FillRect(s, &r, SDL_MapRGBA(s->format, 0, 0, 0, depth));
+    SDL_FillRect(s, &r, SDL_MapRGBA(s->format, 255-depth, 255-depth, 255-depth, depth));
+
+    SDL_SetSurfaceBlendMode(s, SDL_BLENDMODE_MOD);
 
     SDL_BlitSurface(s, nullptr, obj2, nullptr);
 
