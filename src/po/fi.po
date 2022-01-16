@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 11:45+0100\n"
+"POT-Creation-Date: 2022-01-16 14:27+0100\n"
 "PO-Revision-Date: 2004-12-17 20:11+0200\n"
 "Last-Translator: basse <bastian.salmela@hel.fi>\n"
 "Language-Team: fi_FI <fi@li.org>\n"
@@ -657,11 +657,11 @@ msgstr "Kyllä"
 msgid "No"
 msgstr "Ei"
 
-#: src/screen.cc:2027
+#: src/screen.cc:2007
 msgid "REC"
 msgstr "REC"
 
-#: src/screen.cc:2028
+#: src/screen.cc:2008
 msgid "DEMO"
 msgstr "DEMO"
 
@@ -948,4 +948,3 @@ msgstr ""
 #: _build/nms_david2.txt:9
 msgid "Labyrinth"
 msgstr ""
-

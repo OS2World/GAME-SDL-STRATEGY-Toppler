@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 11:45+0100\n"
+"POT-Creation-Date: 2022-01-16 14:27+0100\n"
 "PO-Revision-Date: 2005-01-09 00:00+0100\n"
 "Last-Translator: Helder Correia <helder.correia@netcabo.pt>\n"
 "Language-Team: pt <pt@li.org>\n"
@@ -649,11 +649,11 @@ msgstr "Sim"
 msgid "No"
 msgstr "Nao"
 
-#: src/screen.cc:2027
+#: src/screen.cc:2007
 msgid "REC"
 msgstr "GRAVAR"
 
-#: src/screen.cc:2028
+#: src/screen.cc:2008
 msgid "DEMO"
 msgstr "DEMONSTRAÇAO"
 
@@ -942,4 +942,3 @@ msgstr ""
 #: _build/nms_david2.txt:9
 msgid "Labyrinth"
 msgstr ""
-

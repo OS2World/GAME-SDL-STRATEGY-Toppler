@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler_comments\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 11:45+0100\n"
+"POT-Creation-Date: 2022-01-16 14:27+0100\n"
 "PO-Revision-Date: 2006-06-20 00:21+0300\n"
 "Last-Translator: Eddy Petrişor <eddy.petrisor@gmail.com>\n"
 "Language-Team: Romanian <debian-l10n-romanian@lists.debian.org>\n"
@@ -693,11 +693,11 @@ msgid "No"
 msgstr "Nu"
 
 # XXX: cum să traduc?
-#: src/screen.cc:2027
+#: src/screen.cc:2007
 msgid "REC"
 msgstr "REC"
 
-#: src/screen.cc:2028
+#: src/screen.cc:2008
 msgid "DEMO"
 msgstr "DEMO"
 
@@ -987,4 +987,3 @@ msgstr ""
 #: _build/nms_david2.txt:9
 msgid "Labyrinth"
 msgstr ""
-

@@ -1118,26 +1118,6 @@ static void draw_tower_editor(long vert, long angle, int state) {
   }
 }
 
-static void darkenPixel(long x, long y, int amount)
-{
-    if (x > 0 && y > 0 && x < SCREENWID && y < SCREENHEI)
-    {
-        Uint32 * target = (Uint32*)((Uint8*)display->pixels + (y*display->pitch) + (x * display->format->BytesPerPixel));
-
-        Uint32 pixel = *target;
-
-        Uint8 r, g, b;
-
-        SDL_GetRGB(pixel, display->format, &r, &g, &b);
-
-        r = (int)r * amount / 255;
-        g = (int)g * amount / 255;
-        b = (int)b * amount / 255;
-
-        *target = SDL_MapRGB(display->format, r, g, b);
-    }
-}
-
 static void putcircleshadow(int a, int h, int rad)
 {
   int sw = 5;

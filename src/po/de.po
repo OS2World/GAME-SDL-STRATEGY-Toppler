@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 11:10+0100\n"
+"POT-Creation-Date: 2022-01-16 14:27+0100\n"
 "PO-Revision-Date: 2022-01-16 11:15+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -652,11 +652,11 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nein"
 
-#: src/screen.cc:2027
+#: src/screen.cc:2007
 msgid "REC"
 msgstr "REC"
 
-#: src/screen.cc:2028
+#: src/screen.cc:2008
 msgid "DEMO"
 msgstr "DEMO"
 
@@ -943,4 +943,3 @@ msgstr "Hullabaloo"
 #: _build/nms_david2.txt:9
 msgid "Labyrinth"
 msgstr "Labyrinth"
-
