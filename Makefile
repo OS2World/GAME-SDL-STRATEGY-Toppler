@@ -92,6 +92,20 @@ SOUNDS = datafile/sounds/alarm.wav datafile/sounds/boing.wav datafile/sounds/bub
 DATFILES += $(SOUNDS)
 
 #-------------------------------------------------------#
+# translation files
+#-------------------------------------------------------#
+
+TRANSLATIONFILES_PO := $(wildcard src/po/*.po)
+TRANSLATIONFILES_MO := $(patsubst src/po/%.po,_build/po/%.mo,$(TRANSLATIONFILES_PO))
+FILES_BINDIR += $(TRANSLATIONFILES_MO)
+
+$(info    VAR is $(TRANSLATIONFILES_MO))
+
+_build/po/%.mo: src/po/%.po
+	@mkdir -p $(dir $@)
+	msgfmt $< -o $@
+
+#-------------------------------------------------------#
 # rules to create the data files necesary for the cross #
 #-------------------------------------------------------#
 DATFILES += _build/cross.dat
@@ -384,6 +398,9 @@ MISSIONBUILTFILES = $(patsubst /%,_build/%.ttm,$(MISSIONFILES))
 .SECONDARY: $(MISSIONBUILTFILES)
 DATFILES += $(MISSIONBUILTFILES)
 
+# create the names files
+MISSIONNAMESFILES = $(patsubst /%,_build/nms_%.txt,$(MISSIONFILES))
+
 #-------------------------------------------------------#
 # rules to create the tool programs                     #
 #-------------------------------------------------------#
@@ -464,4 +481,16 @@ clean:
 
 .PHONY: all
 all: $(FILES_BINDIR)
+
+
+TRANSLATIONFILES_PO := $(wildcard src/po/*.po)
+
+.PHONY: translation
+translation: $(TRANSLATIONFILES_PO) _build/toppler.pot
+
+_build/toppler.pot: $(FILES_CPP) $(MISSIONNAMESFILES)
+	xgettext --c++ -o - -k_ -kN_ $(FILES_CPP) $(MISSIONNAMESFILES) > _build/toppler.pot
+
+src/po/%.po: _build/toppler.pot
+	msgmerge -U $@ _build/toppler.pot
 
