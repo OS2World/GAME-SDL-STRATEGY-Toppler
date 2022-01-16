@@ -882,7 +882,7 @@ msgstr "Le regarde-ciel"
 
 #: _build/nms_pasi2.txt:1
 msgid "Pasis 2 Towers"
-msgstr ""
+msgstr "Pasis 2 Tours"
 
 #: _build/nms_pasi2.txt:3
 msgid "Ventilation Shafts"
@@ -890,11 +890,11 @@ msgstr ""
 
 #: _build/nms_pasi2.txt:5
 msgid "Tower 2"
-msgstr ""
+msgstr "Tour 2"
 
 #: _build/nms_david1.txt:1
 msgid "Challenge 1"
-msgstr ""
+msgstr "Challenge 1"
 
 #: _build/nms_david1.txt:3
 msgid "Difficult jumps!"
@@ -934,16 +934,16 @@ msgstr ""
 
 #: _build/nms_david2.txt:3
 msgid "Waves"
-msgstr ""
+msgstr "Les Vagues"
 
 #: _build/nms_david2.txt:5
 msgid "Dragon tower"
-msgstr ""
+msgstr "La Tour du Dragon"
 
 #: _build/nms_david2.txt:7
 msgid "Hullabaloo"
-msgstr ""
+msgstr "Le Vacarme"
 
 #: _build/nms_david2.txt:9
 msgid "Labyrinth"
-msgstr ""
+msgstr "Le Labyrinthe"
