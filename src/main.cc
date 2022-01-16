@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
   setlocale(LC_CTYPE, "");
 
   DIR *dir = opendir("locale");
-  bindtextdomain("toppler", dir == NULL ? LOCALEDIR : "locale");
+  bindtextdomain("toppler", dir == nullptr ? LOCALEDIR : "locale");
   closedir(dir);
   textdomain("toppler");
 #endif
