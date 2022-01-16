@@ -1287,8 +1287,6 @@ static void putcaseshadow(unsigned char w, long a, long h, bool drawlevelrobotsh
               return;
           }
 
-      printf("create rect entry for wi %i, angle %i\n", wi, a);
-
       // well no entry in the cache create one
       auto sh = SDL_CreateRGBSurface(0, 2*TOWER_RADIUS, SPR_SLICEHEI+2*sw,32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
       auto entry = std::make_tuple(a, wi, sh);
