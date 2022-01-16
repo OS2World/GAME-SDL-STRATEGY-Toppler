@@ -387,11 +387,6 @@ DATFILES += $(MISSIONBUILTFILES)
 #-------------------------------------------------------#
 # rules to create the tool programs                     #
 #-------------------------------------------------------#
-.SECONDARY: _build/tools/colorreduction
-_build/tools/colorreduction: datafile/colorreduction.c
-	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
-
 .SECONDARY: _build/tools/assembler
 _build/tools/assembler: datafile/assembler.c
 	@mkdir -p $(dir $@)
