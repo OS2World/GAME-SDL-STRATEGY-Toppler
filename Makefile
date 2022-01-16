@@ -133,7 +133,7 @@ DATFILES += _build/menu.dat
 MENULEVELS_DIR=datafile/levels/mission1
 MENULEVELS=$(wildcard ${MENULEVELS_DIR}/*)
 .SECONDARY: _build/menu.dat
-_build/menu.dat: _build/tools/menu _build/tools/tower2inc ${MENULEVELS}
+_build/menu.dat: _build/tools/menu _build/tools/tower2inc datafile/menu_pov/menu.ini datafile/menu_pov/menu.pov ${MENULEVELS}
 	( cd _build && mkdir -p menu_pov )
 	( cd _build/menu_pov && ../tools/tower2inc "turm%i.inc" ../.. $(MENULEVELS) )
 	( cd _build/menu_pov && $(POVRAY) ../../datafile/menu_pov/menu.ini +L../../datafile/menu_pov -D 2>> ../pov.log )
