@@ -52,7 +52,6 @@ VERSION := $(shell cat src/version)
 ALL_SOURCES := $(wildcard src/*)
 
 PKGS += SDL2_mixer
-PKGS += libpng
 PKGS += sdl2
 PKGS += zlib
 
