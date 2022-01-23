@@ -22,7 +22,7 @@
 
 #include <cstdio>
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <fcntl.h>
 #endif
 
@@ -133,7 +133,7 @@ static void loadscores(FILE *f)
 
 static bool hsc_lock(void)
 {
-#ifndef WIN32
+#ifndef _WIN32
 
   if (globalHighscore)
   {
@@ -159,7 +159,7 @@ static bool hsc_lock(void)
 
 static void hsc_unlock(void)
 {
-#ifndef WIN32
+#ifndef _WIN32
 
   // free the lock
   if (globalHighscore)
@@ -179,7 +179,7 @@ void hsc_init(void) {
         scores[t].tower = 0;
     }
 
-#ifndef WIN32
+#ifndef _WIN32
 
     /* asume we use local highscore table */
     globalHighscore = false;
@@ -234,7 +234,7 @@ void hsc_init(void) {
 
     /* no dir to the global highscore table -> not global highscore table */
 
-#else // ifdef WIN32
+#else // ifdef _WIN32
 
     /* for non unix systems we use only local highscore tables */
     globalHighscore = false;

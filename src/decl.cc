@@ -27,7 +27,7 @@
 #include <unistd.h>
 #include <dirent.h>
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <pwd.h>
 #endif
 
@@ -96,7 +96,7 @@ bool dcl_fileexists(const std::string & n) {
 std::string homedir()
 {
 
-#ifndef WIN32
+#ifndef _WIN32
 
   return getenv("HOME");
 
@@ -111,7 +111,7 @@ std::string homedir()
 /* checks if home/.toppler exists and creates it, if not */
 static void checkdir(void) {
 
-#ifndef WIN32
+#ifndef _WIN32
 
   std::string n = homedir() + "/.toppler";
 
@@ -129,7 +129,7 @@ static void checkdir(void) {
 FILE *open_data_file(const std::string & name) {
 
 
-#ifndef WIN32
+#ifndef _WIN32
   FILE *f = NULL;
   // look into actual directory
   if (dcl_fileexists(name))
@@ -155,7 +155,7 @@ FILE *open_data_file(const std::string & name) {
 
 bool get_data_file_path(const std::string & name, std::string & f) {
 
-#ifndef WIN32
+#ifndef _WIN32
   // look into actual directory
   if (dcl_fileexists(name)) {
     f = name;
@@ -190,7 +190,7 @@ std::string local_file_name(const std::string & name)
     return name;
 #endif
 
-#ifndef WIN32
+#ifndef _WIN32
   return homedir() + "/.toppler/" + name;
 #else
   return name;
@@ -254,7 +254,7 @@ std::vector<std::string> alpha_scandir(const std::string & path, std::function<b
     return entries;
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static int
 utf8_mbtowc (void * conv, wchar_t *pwc, const unsigned char *s, int n)

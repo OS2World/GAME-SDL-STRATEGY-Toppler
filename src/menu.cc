@@ -747,7 +747,7 @@ static void men_highscore(unsigned long pt, int twr) {
 
     std::string name;
 
-#ifndef WIN32
+#ifndef _WIN32
     /* copy the login name into the name entered into the highscore table */
     name = getenv("LOGNAME");
 #endif

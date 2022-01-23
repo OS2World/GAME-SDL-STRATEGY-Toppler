@@ -28,6 +28,10 @@
 
 #include "decl.h"
 
+#ifdef _WIN32
+#include <direct.h>
+#endif
+
 #define TOWERWID 16
 
 /* tower block flags */
@@ -211,12 +215,13 @@ void lev_findmissions() {
       if (missionfiles(f.name))
           add_mission(f.name, true);
 
-#ifdef WIN32
+#ifdef _WIN32
+  std::string pathname;
   {
     char n[100];
-    getcwd(n, 100);
+    _getcwd(n, 100);
     pathname = n;
-    pathname = pathname + "\\"
+    pathname = pathname + "\\";
   }
 
 #else
@@ -226,7 +231,7 @@ void lev_findmissions() {
   for (auto & e : alpha_scandir(pathname, missionfiles))
       add_mission(e);
 
-#ifndef WIN32
+#ifndef _WIN32
 
   for (auto & e : alpha_scandir(homedir() + "/.toppler/", missionfiles))
       add_mission(e);
