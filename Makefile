@@ -97,8 +97,6 @@ TRANSLATIONFILES_PO := $(wildcard src/po/*.po)
 TRANSLATIONFILES_MO := $(patsubst src/po/%.po,locale/%/LC_MESSAGES/toppler.mo,$(TRANSLATIONFILES_PO))
 FILES_BINDIR += $(TRANSLATIONFILES_MO)
 
-$(info    VAR is $(TRANSLATIONFILES_MO))
-
 locale/%/LC_MESSAGES/toppler.mo: src/po/%.po
 	@mkdir -p $(dir $@)
 	msgfmt $< -o $@
