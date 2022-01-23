@@ -22,7 +22,6 @@ PREFIX = /usr
 BINDIR = $(PREFIX)/bin
 DATADIR = $(PREFIX)/share
 STATEDIR = $(PREFIX)/var/toppler
-LOCALEDIR = $(PREFIX)/locale
 DESTDIR =
 CROSS =
 
