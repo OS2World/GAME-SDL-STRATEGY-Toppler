@@ -66,7 +66,7 @@ DEFS += -DVERSION='"$(VERSION)"'
 DEFS += -DTOP_DATADIR='"$(DATADIR)/toppler/"'
 DEFS += -DHISCOREDIR='"$(STATEDIR)"'
 DEFS += -DENABLE_NLS=1
-DEFS += -DLOCALEDIR='"$(LOCALEDIR)"'
+DEFS += -DLOCALEDIR='"$(DATADIR)/locale"'
 
 FILES_H := $(wildcard src/*.h)
 FILES_CPP := $(wildcard src/*.cc)
