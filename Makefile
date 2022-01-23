@@ -103,8 +103,8 @@ locale/%/LC_MESSAGES/toppler.mo: src/po/%.po
 	msgfmt $< -o $@
 
 $(DATADIR)/locale/%/LC_MESSAGES/toppler.mo: locale/%/LC_MESSAGES/toppler.mo
-	$(INSTALL) -d $(dir $@)
-	$(INSTALL) $< $@
+	$(INSTALL) -m755 -d $(dir $@)
+	$(INSTALL) -m644 $< $@
 
 #-------------------------------------------------------#
 # rules to create the data files necesary for the cross #
@@ -498,8 +498,8 @@ src/po/%.po: _build/toppler.pot
 
 .PHONY: install
 install: toppler.dat toppler $(TRANSLATIONFILES_INST)
-	$(INSTALL) -d $(DATADIR)/toppler
-	$(INSTALL) -d $(BINDIR)
-	$(INSTALL) toppler.dat $(DATADIR)/toppler/toppler.dat
+	$(INSTALL) -m755 -d $(DATADIR)/toppler
+	$(INSTALL) -m755 -d $(BINDIR)
+	$(INSTALL) -m644 toppler.dat $(DATADIR)/toppler/toppler.dat
 	$(INSTALL) toppler $(BINDIR)/toppler
 
