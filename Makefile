@@ -496,7 +496,11 @@ src/po/%.po: _build/toppler.pot
 	msgmerge -U $@ _build/toppler.pot
 
 
-windist:
+#---------------------------------------------------------------------------------------#
+# packaging and installation stuff                                                      #
+#---------------------------------------------------------------------------------------#
+
+# TODO dist and windist..
 
 .PHONY: install
 install: toppler.dat toppler $(TRANSLATIONFILES_INST)
