@@ -1971,7 +1971,14 @@ static void putcross(long vert)
 
   for (int t = 0; t < 4; t++) {
     if (rob_kind(t) == OBJ_KIND_CROSS) {
-      i = (rob_angle(t) - 60) * 5;
+      // we need to figure out the scaling factor such that the
+      // factor is 5 when rob_angle is close to 60 and (SCREENWID/2) / 60 when rob_angle is close to 0 or 120
+      int64_t j = rob_angle(t) - 60;
+      if (j < 0) j = -j;
+      j *= (SCREENWID - 600);
+      j /= 6*12;
+      j += 500;
+      i = ((rob_angle(t) - 60) * j) / 100;
       y = (vert - rob_vertical(t)) * 4 + (SCREENHEI / 2) - SPR_CROSSHEI;
       if (y > -SPR_CROSSHEI && y < SCREENHEI)
         scr_blit(objectsprites.data(crossst + labs(rob_time(t)) % 120), i + (SCREENWID - SPR_CROSSWID) / 2, y);
