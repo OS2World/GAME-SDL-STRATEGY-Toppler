@@ -503,5 +503,6 @@ install: toppler.dat toppler $(TRANSLATIONFILES_INST)
 	$(INSTALL) -m755 -d $(DESTDIR)$(DATADIR)/toppler
 	$(INSTALL) -m755 -d $(DESTDIR)$(BINDIR)
 	$(INSTALL) -m644 toppler.dat $(DESTDIR)$(DATADIR)/toppler/toppler.dat
+	$(INSTALL) -m644 toppler.ogg $(DESTDIR)$(DATADIR)/toppler/toppler.ogg
 	$(INSTALL) toppler $(DESTDIR)$(BINDIR)/toppler
 
