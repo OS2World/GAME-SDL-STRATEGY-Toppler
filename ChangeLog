@@ -1,3 +1,26 @@
+Version 1.2
+
+User visible changes:
+- port to SDL2 with the accompanying benefits:
+  - proper fullscreen support
+  - resizeable window
+  - variable aspect ratio properly used (instead of letterboxing)
+- improved visuals:
+  - shadows behind objects (robots, tower elements)
+  - objects get darker as they receed behind the tower
+  - better quality for the colour reductions
+  - improved bonus level graphics (better horizontal match, better
+     antialiasing)
+  - fix a bug in sprite rendering that resulted in an ugly antialiasing border
+
+Under the hood
+- Drop autoconf stuff and use a makefile instead
+- fix all warnings
+- cleanups inside the datafile creation tools
+- remove the worst non-c++ stuff and replace by c++ nicer constructs
+   I think the code looks much better now
+- datafile optimisations (a slight bit smaller)
+
 Version 1.1.6
 
 - fix memory leaks
