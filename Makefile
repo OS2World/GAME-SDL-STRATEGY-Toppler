@@ -95,14 +95,14 @@ DATFILES += $(SOUNDS)
 
 TRANSLATIONFILES_PO := $(wildcard src/po/*.po)
 TRANSLATIONFILES_MO := $(patsubst src/po/%.po,locale/%/LC_MESSAGES/toppler.mo,$(TRANSLATIONFILES_PO))
-TRANSLATIONFILES_INST := $(patsubst src/po/%.po,$(DATADIR)/locale/%/LC_MESSAGES/toppler.mo,$(TRANSLATIONFILES_PO))
+TRANSLATIONFILES_INST := $(patsubst src/po/%.po,$(DESTDIR)$(DATADIR)/locale/%/LC_MESSAGES/toppler.mo,$(TRANSLATIONFILES_PO))
 FILES_BINDIR += $(TRANSLATIONFILES_MO)
 
 locale/%/LC_MESSAGES/toppler.mo: src/po/%.po
 	@mkdir -p $(dir $@)
 	msgfmt $< -o $@
 
-$(DATADIR)/locale/%/LC_MESSAGES/toppler.mo: locale/%/LC_MESSAGES/toppler.mo
+$(DESTDIR)$(DATADIR)/locale/%/LC_MESSAGES/toppler.mo: locale/%/LC_MESSAGES/toppler.mo
 	$(INSTALL) -m755 -d $(dir $@)
 	$(INSTALL) -m644 $< $@
 
@@ -496,10 +496,12 @@ src/po/%.po: _build/toppler.pot
 	msgmerge -U $@ _build/toppler.pot
 
 
+windist:
+
 .PHONY: install
 install: toppler.dat toppler $(TRANSLATIONFILES_INST)
-	$(INSTALL) -m755 -d $(DATADIR)/toppler
-	$(INSTALL) -m755 -d $(BINDIR)
-	$(INSTALL) -m644 toppler.dat $(DATADIR)/toppler/toppler.dat
-	$(INSTALL) toppler $(BINDIR)/toppler
+	$(INSTALL) -m755 -d $(DESTDIR)$(DATADIR)/toppler
+	$(INSTALL) -m755 -d $(DESTDIR)$(BINDIR)
+	$(INSTALL) -m644 toppler.dat $(DESTDIR)$(DATADIR)/toppler/toppler.dat
+	$(INSTALL) toppler $(DESTDIR)$(BINDIR)/toppler
 
