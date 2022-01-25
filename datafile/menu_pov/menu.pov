@@ -62,7 +62,7 @@ global_settings{
   object { zinnen translate z*8*current_layer brick_tex() }
 #end /* battlement */
 
-/* 
+/*
  * macros the towers must use
  */
 #macro step(dx)
@@ -84,17 +84,17 @@ global_settings{
 #macro boxx(dx)
   object {
       cylinder { <58,0,0>, <58,0,7>, 4
-	    texture { 
-		pigment { 
+	    texture {
+		pigment {
 		    color red 1 green 0.5 blue 0.0
 		}
 		finish {
 		    phong 1
 		    ambient 0.4
 		}
-	    } 
+	    }
       }
-      rotate z*(360/16)*dx 
+      rotate z*(360/16)*dx
       translate z*8*(current_layer-1)
   }
 #end /* boxx */
@@ -109,20 +109,20 @@ global_settings{
 #end /* layer */
 
 /*
- * Include a tower from file. 
+ * Include a tower from file.
  *
- * In the file you must #declare 2 variables: "farb" and "turm". 
- * farb is of type color, and turm should be a union, where you 
+ * In the file you must #declare 2 variables: "farb" and "turm".
+ * farb is of type color, and turm should be a union, where you
  * use only the above declared macroes.
  * eg.
  * #declare farb = color rgb <0.5, 0, 1>;
  * #declare turm = union { layer() step(0) step(1) layer() layer() };
- * 
+ *
  */
 #macro load_tower(towerfname)
   object {
     #include towerfname
-    union { 
+    union {
       object { turm }
       object { battlement() }
     }
@@ -156,7 +156,7 @@ plane {
 }
 
 union {
-  sphere { <0,0,0>,50000 
+  sphere { <0,0,0>,50000
      pigment { color rgb 1 }
      normal { bumps 200 scale 4500 }
      finish { ambient 0.8 }
