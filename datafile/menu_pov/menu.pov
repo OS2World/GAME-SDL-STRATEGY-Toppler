@@ -145,14 +145,13 @@ light_source { <1300,1700,300> color rgb <1,1,1> }
 plane {
   z, 0
   texture {
-    pigment { color rgb <0,0,0> }
+    pigment { color rgb <0,0,0.4> }
     finish {
       reflection 0.8
     }
-    normal {
-      waves
-      scale 20
-    }
+
+    normal { waves scale 10  }
+    normal { wrinkles scale 3  }
   }
 }
 
