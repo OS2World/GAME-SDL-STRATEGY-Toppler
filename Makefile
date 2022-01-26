@@ -408,7 +408,7 @@ MISSIONNAMESFILES = $(patsubst /%,_build/nms_%.txt,$(MISSIONFILES))
 .SECONDARY: _build/tools/assembler
 _build/tools/assembler: datafile/assembler.c
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/crearc
 _build/tools/crearc: datafile/crearc.cpp
@@ -418,42 +418,42 @@ _build/tools/crearc: datafile/crearc.cpp
 .SECONDARY: _build/tools/dude
 _build/tools/dude: datafile/dude.c
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/titles
 _build/tools/titles: datafile/titles.c
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/sprites
 _build/tools/sprites: datafile/sprites.c
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/scroller
 _build/tools/scroller: datafile/scroller.c
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/font
 _build/tools/font: datafile/font.c
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/cross
 _build/tools/cross: datafile/cross.c
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/graphics
 _build/tools/graphics: datafile/graphics.c datafile/colorreduction.h datafile/pngsaver.h
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/menu
 _build/tools/menu: datafile/menu.c
 	@mkdir -p $(dir $@)
-	$(CXX_NATIVE) $(CFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
+	$(CXX_NATIVE) $(CXXFLAGS) -o $@ $< $(PKG_CFLAGS_NATIVE) $(PKG_LIBS_NATIVE)
 
 .SECONDARY: _build/tools/tower2inc
 _build/tools/tower2inc: datafile/menu_pov/tower2inc.cc
