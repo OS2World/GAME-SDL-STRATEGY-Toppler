@@ -54,6 +54,9 @@ int main(int argn, char *args[]) {
   while (arg < images + 3) {
     inp = IMG_LoadPNG_RW(SDL_RWFromFile(args[arg], "rb"));
 
+    if (!inp)
+        inp = IMG_LoadTGA_RW(SDL_RWFromFile(args[arg], "rb"));
+
     if (arg == 3) {
       if (vertical) {
         out_colors = SDL_CreateRGBSurface(0, inp->w, inp->h * images, 32, 0xff0000, 0xff00, 0xff, 0);
@@ -69,6 +72,10 @@ int main(int argn, char *args[]) {
     SDL_FreeSurface(inp);
 
     inp = IMG_LoadPNG_RW(SDL_RWFromFile(args[arg+images], "rb"));
+
+    if (!inp)
+        inp = IMG_LoadTGA_RW(SDL_RWFromFile(args[arg+images], "rb"));
+
     SDL_BlitSurface(inp, NULL, out_mask, &r);
 
     if (vertical)

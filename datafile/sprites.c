@@ -148,6 +148,10 @@ void generate_submarine(SDL_Surface **c, SDL_Surface **m) {
         Uint32 pix = *((Uint32*)((Uint8*)img->pixels + y*img->pitch+x*img->format->BytesPerPixel));
         SDL_GetRGBA(pix, img->format, &r, &g, &b, &a);
 
+        if (a == 0) {
+            r = g = b = 0;
+        }
+
         *((Uint32*)((Uint8*)col->pixels + (y+i*80)*col->pitch + x*col->format->BytesPerPixel)) = SDL_MapRGB(col->format, r, g, b);
         *((Uint32*)((Uint8*)msk->pixels + (y+i*80)*msk->pitch + x*msk->format->BytesPerPixel)) = SDL_MapRGB(msk->format, a, a, a);
       }
@@ -167,6 +171,10 @@ void generate_submarine(SDL_Surface **c, SDL_Surface **m) {
         Uint8 r, g, b, a;
         Uint32 pix = *((Uint32*)((Uint8*)img->pixels + y*img->pitch+x*img->format->BytesPerPixel));
         SDL_GetRGBA(pix, img->format, &r, &g, &b, &a);
+
+        if (a == 0) {
+            r = g = b = 0;
+        }
 
         *((Uint32*)((Uint8*)col->pixels + (y+80*(i+9))*col->pitch + x*col->format->BytesPerPixel)) = SDL_MapRGB(col->format, r, g, b);
         *((Uint32*)((Uint8*)msk->pixels + (y+80*(i+9))*msk->pitch + x*msk->format->BytesPerPixel)) = SDL_MapRGB(msk->format, a, a, a);
