@@ -2,6 +2,7 @@
 #include <math.h>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <vector>
 
 #include "colorreduction.h"
 #include "pngsaver.h"
@@ -20,7 +21,7 @@
 #define zinnenrad       (radius + 48)
 
 SDL_Surface *display;
-SDL_Surface *brick, *zinne;
+SDL_Surface *brick, *zinne, *brickn, *zinnen;
 
 double lw = 10 * M_PI / 180;
 
@@ -221,27 +222,33 @@ void createdoor(double w, unsigned short ys, unsigned short xm, double doorwidth
 }
 
 
-void putstein_slice(unsigned short ys, unsigned short x1, unsigned short x2, double n) {
+// nax is the angle x rotation part of the normal of the texture to apply, 0 means the normal goes vertically
+// out of the screen
+void putstein_slice(unsigned short ys, unsigned short x1, unsigned short x2, double nax) {
   unsigned short x, y;
   long m;
-  Uint32 b, c1, c2, c3, a;
+  Uint32 b, a;
+  double c1, c2, c3;
 
-  n = -n;
+  // the coordinate system used:
+  // x axis: to the top of the tower
+  // y axis: to the right the screen
+  // z axis: into the screen (to be right handed)
 
-  if (n < 0.2) n = 0.2;
+  // the normal vector for the light
+  double ln[3] = { 0, sin(-2*lw), -cos(-2*lw) };
 
   for (y = 0; y < hoehe; y++) {
     for (x = x1; x < x2; x++) {
 
-
-      c1 = c2 = c3 = 0;
+      c1 = c2 = c3 = 0.0;
 
       for (a = 0; a < 8; a++) {
-        m = (long)((double)(x + (float)a / 8 - x1) / (x2 - x1) * brick->w + 0.5);
-        if (m >= brick->w)
-          m = brick->w - 1;
+        m = (long)((double)(x + (float)a / 8 - x1) / (x2 - x1) * brickn->w + 0.5);
+        if (m >= brickn->w)
+          m = brickn->w - 1;
 
-        b = *((Uint32 *)(((Uint8*)brick->pixels) + y * brick->pitch + m * brick->format->BytesPerPixel));
+        b = *((Uint32 *)(((Uint8*)brickn->pixels) + y * brickn->pitch + m * brickn->format->BytesPerPixel));
 
         c1 += b & 0xff;
         c2 += (b >> 8) & 0xff;
@@ -252,21 +259,49 @@ void putstein_slice(unsigned short ys, unsigned short x1, unsigned short x2, dou
       c2 /= 8;
       c3 /= 8;
 
-      c1 = (long)(c1 * n + 0.5);
-      c2 = (long)(c2 * n + 0.5);
-      c3 = (long)(c3 * n + 0.5);
+      c1 /= 255;
+      c2 /= 255;
+      c3 /= 255;
 
-      /*
-       if (c1 < 0)
-        c1 = 0;
-      if (c2 < 0)
-        c2 = 0;
-      if (c3 < 0)
-        c3 = 0;*/
+      c1 -= 0.5;
+      c2 -= 0.5;
+      c3 -= 0.5;
 
-      b = c3;
-      b = (b << 8) | c2;
-      b = (b << 8) | c1;
+      c1 *= 7;
+      c2 *= 7;
+
+      // calculate the normal vector for the brick totated by nax around the y axis
+      double nm[3] = { c2, sin(c1+nax), -cos(c1+nax) };
+
+
+      //calculate the angle between ln and nm
+
+      double cosa = nm[0]*ln[0] + nm[1]*ln[1] + nm[2]*ln[2];
+      cosa /= sqrt(nm[0]*nm[0]+nm[1]*nm[1]+nm[2]*nm[2]);
+      cosa /= sqrt(ln[0]*ln[0]+ln[1]*ln[1]+ln[2]*ln[2]);
+
+      double angle = fabs(acos(cosa));
+      double highlight = 4*angle;
+
+      double n = angle / (M_PI/1.7);
+      if (n > 1.0) n = 1.0;
+
+      double nh = highlight / (M_PI/2);
+      if (nh > 1.0) nh = 1.0;
+
+      //printf("[%f %f %f] %f\n", nm[0], nm[1], nm[2], n);
+
+      c1 = c2 = c3 = 0;//128-128*nh;
+      c1 = 200-200*n;
+      if (y == 0 || x == x1)
+      {
+          c1 = 4*c1/5;
+          c2 = c3 = c1;
+      }
+
+      b = (int)c3;
+      b = (b << 8) | (int)c2;
+      b = (b << 8) | (int)c1;
 
       putpixel(x, y + ys, b);
     }
@@ -274,16 +309,15 @@ void putstein_slice(unsigned short ys, unsigned short x1, unsigned short x2, dou
 }
 
 void createslice(double w, unsigned short ys) {
-  double e, n;
+  double e;
   int t;
 
   for (t = 0; t < steinzahl; t++) {
     e = 2 * M_PI * t / steinzahl + w;
     int x1 = (int)(radius * cos(e) + radius + 0.5);
     int x2 = (int)(radius * cos(e + wadd) + radius + 0.5);
-    n = sin(e + wadd + lw);
     if (x1 < x2)
-      putstein_slice(ys, x1, x2, n);
+      putstein_slice(ys, x1, x2, e+M_PI/2);
   }
 }
 
@@ -302,7 +336,7 @@ void createcyl(Uint16 r, FILE *out)
 }
 
 
-void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, double n, double e)
+void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, double n, double e, double nax)
 {
   unsigned short x, y;
   double m;
@@ -341,22 +375,23 @@ void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, d
 
   if (n < 0.2) n = 0.2;
 
+  double ln[3] = { 0, sin(-2*lw), -cos(-2*lw) };
+
   for (y = 0; y < hoehe * 3; y++) {
     for (x = 0; x < 2*zinnenrad; x++) {
 
       c1 = c2 = c3 = 0;
 
       for (a = 0; a < 8; a++) {
-        m = (x + (double)a / 8 - x1) / (x2 - x1) * zinne->w;
+        m = (x + (double)a / 8 - x1) / (x2 - x1) * zinne->w + 0.5;
 
         if ((m >= zinne->w) || (m < 0))
           b = 0;
         else
-          b = *((Uint32 *)(((Uint8*)zinne->pixels) + y * zinne->pitch + ((long)(m+0.5)) * zinne->format->BytesPerPixel));
+          b = *((Uint32 *)(((Uint8*)zinne->pixels) + y * zinne->pitch + ((long)m) * zinne->format->BytesPerPixel));
 
         /* outside of the texture, here it is possible that another texture is used */
         if (b == 0) {
-
 
           if (m < zinne->w/2) {
 
@@ -386,9 +421,64 @@ void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, d
           }
 
         } else {
-          c1 += n* (b & 0xff);
-          c2 += n* ((b >> 8) & 0xff);
-          c3 += n* ((b >> 16) & 0xff);
+
+          // inside texture, do the whole shenanigans again but using
+          // the bumpmap tecture
+
+          long m2 = (long)((double)(x + a/8.0 - x1) / (x2 - x1) * zinnen->w);
+          if (m2 >= zinnen->w)
+            m2 = zinnen->w - 1;
+          if (m2 < 0)
+            m2 = 0;
+
+          b = *((Uint32 *)(((Uint8*)zinnen->pixels) + y * zinnen->pitch + (long)m2 * zinnen->format->BytesPerPixel));
+
+          double c1n = b & 0xff;
+          double c2n = (b >> 8) & 0xff;
+          double c3n = (b >> 16) & 0xff;
+
+          c1n /= 255;
+          c2n /= 255;
+          c3n /= 255;
+
+          c1n -= 0.5;
+          c2n -= 0.5;
+          c3n -= 0.5;
+
+          c1n *= 7;
+          c2n *= 7;
+
+          // calculate the normal vector for the brick totated by nax around the y axis
+          double nm[3] = { c2n, sin(c1n+nax), -cos(c1n+nax) };
+
+          //calculate the angle between ln and nm
+
+          double cosa = nm[0]*ln[0] + nm[1]*ln[1] + nm[2]*ln[2];
+          cosa /= sqrt(nm[0]*nm[0]+nm[1]*nm[1]+nm[2]*nm[2]);
+          cosa /= sqrt(ln[0]*ln[0]+ln[1]*ln[1]+ln[2]*ln[2]);
+
+          double angle = fabs(acos(cosa));
+          double highlight = 4*angle;
+
+          double n = angle / (M_PI/1.7);
+          if (n > 1.0) n = 1.0;
+
+          double nh = highlight / (M_PI/2);
+          if (nh > 1.0) nh = 1.0;
+
+          //printf("[%f %f %f] %f\n", nm[0], nm[1], nm[2], n);
+
+          c1n = c2n = c3n = 0;//128-128*nh;
+          c1n = 200-200*n;
+          if (y == 0 || x == x1)
+          {
+              c1n = 4*c1n/5;
+              c2n = c3n = c1n;
+          }
+
+          c1 += c1n;
+          c2 += c2n;
+          c3 += c3n;
         }
       }
 
@@ -430,20 +520,21 @@ void createzinne(unsigned short ys, double w)
     x2 = (long)floor(zinnenrad * cos(e + wadd) + zinnenrad + 0.5);
     n = sin(e + wadd + lw);
     if ((x1 < x2) && (e < 3*M_PI/2-wadd/2) ) {
-      putstein_pinacle(ys, (int)x1, (int)x2, n, e+ wadd/2);
+      putstein_pinacle(ys, (int)x1, (int)x2, n, e+ wadd/2, e+M_PI/2);
       xl = x2;
       if (x1 < xmin) xmin = x1;
       if (x2 > xmax) xmax = x2;
     }
   }
 
-  for (t = steinzahl-1; t >= 0; t--) {
+  for (t = steinzahl-1; t >= 0; t--)
+  {
     e = 2 * M_PI * t / steinzahl + w;
     x1 = (long)floor(zinnenrad * cos(e) + zinnenrad + 0.5);
     x2 = (long)floor(zinnenrad * cos(e + wadd) + zinnenrad + 0.5);
     n = sin(e + wadd + lw);
     if ((x1 < x2) && (e >= 3*M_PI/2-wadd/2) ) {
-      putstein_pinacle(ys, (int)x1, (int)x2, n, e+ wadd/2);
+      putstein_pinacle(ys, (int)x1, (int)x2, n, e+ wadd/2, e+M_PI/2);
       xl = x2;
       if (x1 < xmin) xmin = x1;
       if (x2 > xmax) xmax = x2;
@@ -501,6 +592,133 @@ int main() {
 
   brick = IMG_LoadPNG_RW(SDL_RWFromFile("graphics_brick.png", "rb"));
   zinne = IMG_LoadPNG_RW(SDL_RWFromFile("graphics_pinacle.png", "rb"));
+
+  // create a normal map for the bricks... same size
+  brickn = SDL_CreateRGBSurface(0, brick->w, brick->h, 32, 0x00FF0000, 0xFF00, 0xFF, 0);
+  zinnen = SDL_CreateRGBSurface(0, zinne->w, zinne->h, 32, 0x00FF0000, 0xFF00, 0xFF, 0);
+  srand(10293);
+  // fill with random values
+  //
+  for (x = 0; x < brickn->w; x++)
+      for (y = 0; y < brickn->h; y++)
+          for (t = 0; t < brickn->format->BytesPerPixel; t++)
+              *((uint8_t*)brickn->pixels + (y*brickn->pitch + x * brickn->format->BytesPerPixel + t)) = 128 + rand() % 61 - 30;
+
+  // do some smoothing passes
+  for (int i = 0; i < 2; i++)
+  {
+      for (t = 0; t < brickn->format->BytesPerPixel; t++)
+      {
+          std::vector<uint8_t> sm(brickn->w * brickn->h);
+
+          for (x = 0; x < brickn->w; x++)
+              for (y = 0; y < brickn->h; y++)
+              {
+                  int a = 0;
+                  int b = 0;
+
+                  for (int dx = -1; dx <= 1; dx++)
+                      for (int dy = -1; dy <= 1; dy++)
+                          if (x+dx > 0 && x+dx < brickn->w && y+dy > 0 && y+dy < brickn->h)
+                          {
+                              a += *((uint8_t*)brickn->pixels + ((y+dy)*brickn->pitch + (x+dx) * brickn->format->BytesPerPixel + t));
+                              b++;
+                          }
+
+                  sm[y*brickn->w+x] = a/b;
+              }
+          for (x = 0; x < brickn->w; x++)
+              for (y = 0; y < brickn->h; y++)
+                  *((uint8_t*)brickn->pixels + (y*brickn->pitch + x * brickn->format->BytesPerPixel + t)) = sm[y*brickn->w+x];
+      }
+  }
+
+  // add a bevel around the border
+  for (y = 0; y < brickn->h; y++)
+  {
+      *((uint8_t*)brickn->pixels + (y*brickn->pitch + 0*brickn->format->BytesPerPixel + 1)) = 128;
+      *((uint8_t*)brickn->pixels + (y*brickn->pitch + 0*brickn->format->BytesPerPixel + 0)) = 128;
+      *((uint8_t*)brickn->pixels + (y*brickn->pitch + 1*brickn->format->BytesPerPixel + 0)) = 128-40;
+      *((uint8_t*)brickn->pixels + (y*brickn->pitch + (brickn->w-1)*brickn->format->BytesPerPixel + 0)) = 128+40;
+  }
+  for (x = 0; x < brickn->w; x++)
+  {
+      *((uint8_t*)brickn->pixels + (0*brickn->pitch + x*brickn->format->BytesPerPixel + 0)) = 128;
+      *((uint8_t*)brickn->pixels + (0*brickn->pitch + x*brickn->format->BytesPerPixel + 1)) = 128;
+      *((uint8_t*)brickn->pixels + (1*brickn->pitch + x*brickn->format->BytesPerPixel + 1)) = 128-40;
+      *((uint8_t*)brickn->pixels + ((brickn->h-1)*brickn->pitch + x * brickn->format->BytesPerPixel + 1)) = 128+40;
+  }
+
+  // same for the battlement texture
+  for (x = 0; x < zinnen->w; x++)
+      for (y = 0; y < zinnen->h; y++)
+          for (t = 0; t < zinnen->format->BytesPerPixel; t++)
+              *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + x * zinnen->format->BytesPerPixel + t)) = 128 + rand() % 61 - 30;
+
+  // do some smoothing passes
+  for (int i = 0; i < 2; i++)
+  {
+      for (t = 0; t < zinnen->format->BytesPerPixel; t++)
+      {
+          std::vector<uint8_t> sm(zinnen->w * zinnen->h);
+
+          for (x = 0; x < zinnen->w; x++)
+              for (y = 0; y < zinnen->h; y++)
+              {
+                  int a = 0;
+                  int b = 0;
+
+                  for (int dx = -1; dx <= 1; dx++)
+                      for (int dy = -1; dy <= 1; dy++)
+                          if (x+dx > 0 && x+dx < zinnen->w && y+dy > 0 && y+dy < zinnen->h)
+                          {
+                              a += *((uint8_t*)zinnen->pixels + ((y+dy)*zinnen->pitch + (x+dx) * zinnen->format->BytesPerPixel + t));
+                              b++;
+                          }
+
+                  sm[y*zinnen->w+x] = a/b;
+              }
+          for (x = 0; x < zinnen->w; x++)
+              for (y = 0; y < zinnen->h; y++)
+                  *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + x * zinnen->format->BytesPerPixel + t)) = sm[y*zinnen->w+x];
+      }
+  }
+
+  for (y = 0; y < zinnen->h; y++)
+  {
+      if (y < 21)
+      {
+          *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + 13*zinnen->format->BytesPerPixel + 1)) = 128;
+          *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + 13*zinnen->format->BytesPerPixel + 0)) = 128;
+          *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + 14*zinnen->format->BytesPerPixel + 0)) = 128-40;
+          *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + (zinnen->w-14)*zinnen->format->BytesPerPixel + 0)) = 128+40;
+      }
+      else
+      {
+          *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + 0*zinnen->format->BytesPerPixel + 1)) = 128;
+          *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + 0*zinnen->format->BytesPerPixel + 0)) = 128;
+          *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + 1*zinnen->format->BytesPerPixel + 0)) = 128-40;
+          *((uint8_t*)zinnen->pixels + (y*zinnen->pitch + (zinnen->w-1)*zinnen->format->BytesPerPixel + 0)) = 128+40;
+      }
+  }
+  for (x = 0; x < zinnen->w; x++)
+  {
+      if (x < 14 || x > 42)
+      {
+          *((uint8_t*)zinnen->pixels + (20*zinnen->pitch + x*zinnen->format->BytesPerPixel + 0)) = 128;
+          *((uint8_t*)zinnen->pixels + (20*zinnen->pitch + x*zinnen->format->BytesPerPixel + 1)) = 128;
+          *((uint8_t*)zinnen->pixels + (21*zinnen->pitch + x*zinnen->format->BytesPerPixel + 1)) = 128-40;
+          *((uint8_t*)zinnen->pixels + ((zinnen->h-1)*zinnen->pitch + x * zinnen->format->BytesPerPixel + 1)) = 128+40;
+      }
+      else
+      {
+          *((uint8_t*)zinnen->pixels + (0*zinnen->pitch + x*zinnen->format->BytesPerPixel + 0)) = 128;
+          *((uint8_t*)zinnen->pixels + (0*zinnen->pitch + x*zinnen->format->BytesPerPixel + 1)) = 128;
+          *((uint8_t*)zinnen->pixels + (1*zinnen->pitch + x*zinnen->format->BytesPerPixel + 1)) = 128-40;
+          *((uint8_t*)zinnen->pixels + ((zinnen->h-1)*zinnen->pitch + x * zinnen->format->BytesPerPixel + 1)) = 128+40;
+      }
+  }
+
 
   for (int ii = 0; ii < zinne->w * zinne->h; ii++)
     *(Uint32*)((Uint8*)zinne->pixels + ii * zinne->format->BytesPerPixel) =
