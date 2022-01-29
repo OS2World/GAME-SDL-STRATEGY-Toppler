@@ -1464,7 +1464,7 @@ static void putcase_editor(unsigned char w, long x, long h, int state, int depth
     break;
 
   case TB_BOX:
-    scr_blit(objectsprites.data(boxst + boxstate), x - (SPR_BOXWID / 2), h);
+    scr_blit(objectsprites.data(boxst + boxstate % 16), x - (SPR_BOXWID / 2), h);
     break;
 
   case TB_ROBOT1:
