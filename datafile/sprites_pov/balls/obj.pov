@@ -20,17 +20,17 @@ global_settings { assumed_gamma 1.8 }
 camera {  //  Camera Camera01
   orthographic
   location  <16,0,0>
-  sky       z  
-  up        <0,0,6>  
+  sky       z
+  up        <0,0,6>
   right     <6,0,0>
   look_at   <0,0,0>
 }
 
 light_source { <16,-10,10> color 1 }
 
-sphere { 
+sphere {
   0 3
-  texture { 
+  texture {
 #if (clock = 0)
   Copper_Texture
 #else
@@ -41,7 +41,7 @@ sphere {
 #end
 #end
   }
-  
+
 }
 
 global_settings {

@@ -4,6 +4,7 @@
   cylinder { <0,0,0> <2.5,5/3,0> 0.2 }
   cone { <2.5,5/3,0> 0.2 <3,2,0> 0 }
   texture { T2 }
+  rotate x*45*sin(rot*2*3.1415926)
 }
 
 union {
@@ -40,8 +41,7 @@ union {
     rotate x*180
   }
 
-  rotate x*rot*180
-  rotate z*180*rot+90*z
+  rotate y*rot*180
 
   scale 0.9
 }

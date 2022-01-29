@@ -203,10 +203,10 @@ int main() {
 
   for (s = 0; s < 8; s++) {
 
-    c = 16;
+    c = 32;
     fwrite(&c, 1, 1, outf);
 
-    for (n = 0; n < 16; n++) {
+    for (n = 0; n < 32; n++) {
       for (y = 0; y < 32; y++) {
         for (x = 0; x < 32; x++) {
           Uint8 b;

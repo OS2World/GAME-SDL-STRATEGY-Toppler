@@ -4,8 +4,8 @@
 camera {  //  Camera Camera01
   orthographic
   location  <16,0,3.5>
-  sky       z  
-  up        <0,0,7>  
+  sky       z
+  up        <0,0,7>
   right     <8,0,0>
   look_at   <0,0,3.5>
 }
@@ -16,8 +16,8 @@ difference {
   cylinder { <0,0,0> <0,0,7> 4 }
 #if (clock < 1)
   pigment { color Orange }
-  finish { 
-    phong 1 
+  finish {
+    phong 1
     ambient sin(clock*pi)
   }
 #else

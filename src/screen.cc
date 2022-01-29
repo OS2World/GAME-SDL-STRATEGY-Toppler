@@ -1430,7 +1430,7 @@ static void putcase_editor(unsigned char w, long x, long h, int state, int depth
     if (config.use_alpha_sprites()) scr_putbar(x-(SPR_ELEVAWID/2), h, SPR_ELEVAWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
   case TB_STATION_MIDDLE:
-    scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - SPR_SLICEHEI/2 + abs(state - 8));
+    scr_blit(restsprites.data((angle % SPR_ELEVAFRAMES) + elevatorsprite), x - (SPR_ELEVAWID / 2), h - SPR_SLICEHEI/2 + abs(state % 16 - 8));
     if (config.use_alpha_sprites()) scr_putbar(x-(SPR_ELEVAWID/2), h, SPR_ELEVAWID, TOWER_SLICE_HEIGHT, 0, 0, 0, depth);
     break;
   case TB_STATION_TOP:
@@ -1471,22 +1471,22 @@ static void putcase_editor(unsigned char w, long x, long h, int state, int depth
     drawdarkenedRobot(ballst + 1, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2, depth);
     break;
   case TB_ROBOT2:
-    drawdarkenedRobot(ballst, x - (SPR_ROBOTWID / 2) + state / 2, h - SPR_ROBOTHEI/2, depth);
+    drawdarkenedRobot(ballst, x - (SPR_ROBOTWID / 2) + state % 16 / 2, h - SPR_ROBOTHEI/2, depth);
     break;
   case TB_ROBOT3:
     drawdarkenedRobot(ballst, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2, depth);
     break;
   case TB_ROBOT4:
-    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state - 8), depth);
+    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI/2 + abs(state % 16 - 8), depth);
     break;
   case TB_ROBOT5:
-    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state - 8) * 2, depth);
+    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2), h - SPR_ROBOTHEI + abs(state % 16 - 8) * 2, depth);
     break;
   case TB_ROBOT6:
-    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + abs(state - 8), h - SPR_SLICEHEI/2, depth);
+    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + abs(state % 16 - 8), h - SPR_SLICEHEI/2, depth);
     break;
   case TB_ROBOT7:
-    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + 2 * abs(state - 8), h - SPR_SLICEHEI/2, depth);
+    drawdarkenedRobot(robots[lev_robotnr()].start + state % robots[lev_robotnr()].count, x - (SPR_ROBOTWID / 2) + 2 * abs(state % 16 - 8), h - SPR_SLICEHEI/2, depth);
     break;
   }
 }
@@ -1521,7 +1521,7 @@ static void putrobot(int t, int m, long x, long h, int depth)
 
     case OBJ_KIND_ROBOT_VERT:
     case OBJ_KIND_ROBOT_HORIZ:
-      nr = robots[lev_robotnr()].start + ((m / 2) % robots[lev_robotnr()].count);
+      nr = robots[lev_robotnr()].start + (m % robots[lev_robotnr()].count);
       break;
 
     default:
@@ -2188,7 +2188,7 @@ void scr_drawedit(long vpos, long apos, bool showtime) {
       scr_writetext_center(5, s);
   }
 
-  boxstate = (boxstate + 1) & 0xf;
+  boxstate = (boxstate + 1) & 0x1f;
 }
 
 static void put_scrollerlayer(long horiz, int layer) {
