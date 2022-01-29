@@ -19,7 +19,7 @@ Uint8 get_alpha(SDL_Surface *s, int x, int y) {
 void write_palette(FILE *out, SDL_Surface *s) {
   int i;
   Uint8 c = s->format->palette->ncolors - 1;
-  
+
   fwrite(&c, 1, 1, out);
 
   for (i = 0; i < s->format->palette->ncolors; i++) {
@@ -308,7 +308,7 @@ int main() {
     for (y = 0; y < 32; y++) {
       for (x = 0; x < 32; x++) {
           Uint8 b;
-  
+
           b = 255;
           fwrite(&b, 1, 1, outf);
           b = get_alpha(src, x, y);
@@ -325,10 +325,10 @@ int main() {
   {
     SDL_Surface *col2 = colorreduction(colors, 256);
     SDL_Surface *msk2 = colorreduction(mask, 256);
-  
+
     SDL_FreeSurface(colors);
     SDL_FreeSurface(mask);
-  
+
     colors = col2;
     mask = msk2;
   }
@@ -340,7 +340,7 @@ int main() {
       for (y = 0; y < 40; y++) {
         for (x = 0; x < 40; x++) {
           Uint8 b;
-  
+
           b = get_color(colors, x+s*40, y+n*40);
           fwrite(&b, 1, 1, outf);
           b = get_alpha(mask, x+s*40, y+n*40);
@@ -359,10 +359,10 @@ int main() {
   {
     SDL_Surface *col2 = colorreduction(colors, 256);
     SDL_Surface *msk2 = colorreduction(mask, 256);
-  
+
     SDL_FreeSurface(colors);
     SDL_FreeSurface(mask);
-  
+
     colors = col2;
     mask = msk2;
   }
