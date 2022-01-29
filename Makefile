@@ -187,7 +187,9 @@ _build/scroller.dat: _build/tools/scroller datafile/scroller.xcf
 
 .SECONDARY: _build/sprites_pov/robot%_rgb_colors.png _build/sprites_pov/robot%_rgb_mask.png
 _build/sprites_pov/robot%_rgb_colors.png _build/sprites_pov/robot%_rgb_mask.png: datafile/sprites_pov/environment.pov \
-             datafile/sprites_pov/robot%/obj.pov datafile/sprites_pov/robot%/obj.ini
+             datafile/sprites_pov/robot%/obj.pov datafile/sprites_pov/robot%/obj.ini \
+             _build/tools/assembler
+	( cd _build && mkdir -p sprites_pov  )
 	( cd _build/sprites_pov && mkdir -p robot$* && cd robot$* && $(POVRAY) ../../../datafile/sprites_pov/robot$*/obj.ini +L../../../datafile/sprites_pov/robot$* -D 2>> ../pov.log )
 	( cd _build && ./tools/assembler hm sprites_pov/robot$*_rgb sprites_pov/robot$*/*.png )
 
