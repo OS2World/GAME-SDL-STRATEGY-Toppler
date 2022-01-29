@@ -247,7 +247,7 @@ std::vector<std::string> alpha_scandir(const std::string & path, std::function<b
     {
         std::string n = i->d_name;
         if (filter(n))
-            entries.push_back(i->d_name);
+            entries.push_back(path + "/" + i->d_name);
     }
     ::closedir(dir);
     std::sort(entries.begin(), entries.end());
