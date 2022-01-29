@@ -184,41 +184,32 @@ _build/scroller.dat: _build/tools/scroller datafile/scroller.xcf
 #---------------------------------------------------------#
 # rules to create the data files necesary for the sprites #
 #---------------------------------------------------------#
+
+.SECONDARY: _build/sprites_pov/robot%_rgb_colors.png _build/sprites_pov/robot%_rgb_mask.png
+_build/sprites_pov/robot%_rgb_colors.png _build/sprites_pov/robot%_rgb_mask.png: datafile/sprites_pov/environment.pov \
+             datafile/sprites_pov/robot%/obj.pov datafile/sprites_pov/robot%/obj.ini
+	( cd _build/sprites_pov && mkdir -p robot$* && cd robot$* && $(POVRAY) ../../../datafile/sprites_pov/robot$*/obj.ini +L../../../datafile/sprites_pov/robot$* -D 2>> ../pov.log )
+	( cd _build && ./tools/assembler hm sprites_pov/robot$*_rgb sprites_pov/robot$*/*.png )
+
 DATFILES += _build/sprites.dat
 .SECONDARY: _build/sprites.dat
 _build/sprites.dat: _build/tools/sprites _build/tools/assembler \
              datafile/sprites_pov/box/obj.pov datafile/sprites_pov/box/obj.ini \
              datafile/sprites_pov/balls/obj.pov datafile/sprites_pov/balls/obj.ini \
              datafile/sprites_pov/snowball/obj.pov datafile/sprites_pov/snowball/obj.ini \
-             datafile/sprites_pov/robot0/obj.pov datafile/sprites_pov/robot0/obj.ini \
-             datafile/sprites_pov/robot1/obj.pov datafile/sprites_pov/robot1/obj.ini \
-             datafile/sprites_pov/robot2/obj.pov datafile/sprites_pov/robot2/obj.ini \
-             datafile/sprites_pov/robot3/obj.pov datafile/sprites_pov/robot3/obj.ini \
-             datafile/sprites_pov/robot4/obj.pov datafile/sprites_pov/robot4/obj.ini \
-             datafile/sprites_pov/robot5/obj.pov datafile/sprites_pov/robot5/obj.ini \
-             datafile/sprites_pov/robot6/obj.pov datafile/sprites_pov/robot6/obj.ini \
-             datafile/sprites_pov/robot7/obj.pov datafile/sprites_pov/robot7/obj.ini \
+             _build/sprites_pov/robot0_rgb_colors.png _build/sprites_pov/robot0_rgb_mask.png \
+             _build/sprites_pov/robot1_rgb_colors.png _build/sprites_pov/robot1_rgb_mask.png \
+             _build/sprites_pov/robot2_rgb_colors.png _build/sprites_pov/robot2_rgb_mask.png \
+             _build/sprites_pov/robot3_rgb_colors.png _build/sprites_pov/robot3_rgb_mask.png \
+             _build/sprites_pov/robot4_rgb_colors.png _build/sprites_pov/robot4_rgb_mask.png \
+             _build/sprites_pov/robot5_rgb_colors.png _build/sprites_pov/robot5_rgb_mask.png \
+             _build/sprites_pov/robot6_rgb_colors.png _build/sprites_pov/robot6_rgb_mask.png \
+             _build/sprites_pov/robot7_rgb_colors.png _build/sprites_pov/robot7_rgb_mask.png \
              datafile/sprites_pov/environment.pov \
              $(wildcard datafile/fish/render/*.tga) \
              $(wildcard datafile/submarine/render/*.tga) \
 	     datafile/sprites_torpedo_colors.png datafile/sprites_torpedo_mask.png
 	( cd _build && mkdir -p sprites_pov  )
-	( cd _build/sprites_pov && mkdir -p robot7 && cd robot7 && $(POVRAY) ../../../datafile/sprites_pov/robot7/obj.ini +L../../../datafile/sprites_pov/robot7 -D 2>> ../pov.log )
-	( cd _build/sprites_pov && mkdir -p robot6 && cd robot6 && $(POVRAY) ../../../datafile/sprites_pov/robot6/obj.ini +L../../../datafile/sprites_pov/robot6 -D 2>> ../pov.log )
-	( cd _build/sprites_pov && mkdir -p robot5 && cd robot5 && $(POVRAY) ../../../datafile/sprites_pov/robot5/obj.ini +L../../../datafile/sprites_pov/robot5 -D 2>> ../pov.log )
-	( cd _build/sprites_pov && mkdir -p robot4 && cd robot4 && $(POVRAY) ../../../datafile/sprites_pov/robot4/obj.ini +L../../../datafile/sprites_pov/robot4 -D 2>> ../pov.log )
-	( cd _build/sprites_pov && mkdir -p robot3 && cd robot3 && $(POVRAY) ../../../datafile/sprites_pov/robot3/obj.ini +L../../../datafile/sprites_pov/robot3 -D 2>> ../pov.log )
-	( cd _build/sprites_pov && mkdir -p robot2 && cd robot2 && $(POVRAY) ../../../datafile/sprites_pov/robot2/obj.ini +L../../../datafile/sprites_pov/robot2 -D 2>> ../pov.log )
-	( cd _build/sprites_pov && mkdir -p robot1 && cd robot1 && $(POVRAY) ../../../datafile/sprites_pov/robot1/obj.ini +L../../../datafile/sprites_pov/robot1 -D 2>> ../pov.log )
-	( cd _build/sprites_pov && mkdir -p robot0 && cd robot0 && $(POVRAY) ../../../datafile/sprites_pov/robot0/obj.ini +L../../../datafile/sprites_pov/robot0 -D 2>> ../pov.log )
-	( cd _build && ./tools/assembler hm sprites_pov/robot7_rgb sprites_pov/robot7/*.png )
-	( cd _build && ./tools/assembler hm sprites_pov/robot6_rgb sprites_pov/robot6/*.png )
-	( cd _build && ./tools/assembler hm sprites_pov/robot5_rgb sprites_pov/robot5/*.png )
-	( cd _build && ./tools/assembler hm sprites_pov/robot4_rgb sprites_pov/robot4/*.png )
-	( cd _build && ./tools/assembler hm sprites_pov/robot3_rgb sprites_pov/robot3/*.png )
-	( cd _build && ./tools/assembler hm sprites_pov/robot2_rgb sprites_pov/robot2/*.png )
-	( cd _build && ./tools/assembler hm sprites_pov/robot1_rgb sprites_pov/robot1/*.png )
-	( cd _build && ./tools/assembler hm sprites_pov/robot0_rgb sprites_pov/robot0/*.png )
 	( cd _build && ./tools/assembler v sprites_robots_rgb sprites_pov/robot*_rgb_colors.png sprites_pov/robot*_rgb_mask.png )
 	( cd _build && mv sprites_robots_rgb_colors.png sprites_robots_colors_rgb.png )
 	( cd _build && mv sprites_robots_rgb_mask.png sprites_robots_mask_rgb.png )
