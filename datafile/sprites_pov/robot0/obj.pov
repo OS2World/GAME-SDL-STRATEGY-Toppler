@@ -3,7 +3,7 @@
 #local sphere_size = 15*((sin(rot*2*3.141592)+1)/2+0.5);
 #local torus_thickness = 4;
 
-#local a1 = 90*(1-cos(rot*3.1415926))/2;    // starts fast and slows down to 90
+#local a1 = 90*(1-cos(rot*3.1415926))/2;
 
 union {
     union {
