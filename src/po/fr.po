@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 14:27+0100\n"
+"POT-Creation-Date: 2022-01-28 20:08+0000\n"
 "PO-Revision-Date: 2004-02-08 10:56+0100\n"
 "Last-Translator: Bill Allombert <ballombe@debian.org>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -553,7 +553,7 @@ msgstr "Défilement deux couches"
 
 #: src/menu.cc:458
 msgid "Shadows"
-msgstr ""
+msgstr "Ombres"
 
 #: src/menu.cc:474
 msgid "Alpha Options"
@@ -656,11 +656,11 @@ msgstr "Oui"
 msgid "No"
 msgstr "Non"
 
-#: src/screen.cc:2007
+#: src/screen.cc:2014
 msgid "REC"
 msgstr "ENREG"
 
-#: src/screen.cc:2008
+#: src/screen.cc:2015
 msgid "DEMO"
 msgstr "DÉMO"
 
@@ -886,7 +886,7 @@ msgstr "Pasis 2 Tours"
 
 #: _build/nms_pasi2.txt:3
 msgid "Ventilation Shafts"
-msgstr ""
+msgstr "Gaines d'aérations"
 
 #: _build/nms_pasi2.txt:5
 msgid "Tower 2"
