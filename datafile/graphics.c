@@ -410,9 +410,13 @@ void putstein_pinacle(unsigned short ys, unsigned short x1, unsigned short x2, d
             /* right void */
             if ((x + (double)a/8 < x1 + (b1 + b2) * (x2-x1)/zinne->w - nn) && (nn < 0)) {
 
-              b = *((Uint32 *)(((Uint8*)zinne->pixels) +
-                               y * zinne->pitch +
-                               (long)((x+(double)a/8 - x1 - (b1 + b2) * (x2-x1)/zinne->w) / (-nn-2) * b2 + b1 + 1.5) * zinne->format->BytesPerPixel));
+              long xx = ((x+(double)a/8 - x1 - (b1 + b2) * (x2-x1)/zinne->w) / (-nn-2) * b2 + b1 + 1.5);
+
+              if (xx < zinne->w && xx >= 0)
+                  b = *((Uint32 *)(((Uint8*)zinne->pixels) +
+                                   y * zinne->pitch + xx * zinne->format->BytesPerPixel));
+              else
+                  b = 0;
 
               c1 += n55 * (b & 0xff);
               c2 += n55 * ((b >> 8) & 0xff);
