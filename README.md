@@ -1,39 +1,99 @@
-TOWER TOPPLER
--------------
+# Tower Topper aka Nebulus
 
-Installation
-------------
+## Introduction
 
-Most of the installation is the normal
+In this puzzle platformer where you have to help a cute little green dude
+switch off some kind of "evil" mechanism. The "power off switch" is hidden
+somewhere in high towers. On your way to the target you need to avoid a lot of
+strange robots that guard the tower.
 
-./configure
-make
+That sounds all like a normal jump and run game. What makes this game different
+is that you walk arond the tower which is revolving on the screen, so that you
+only see the 180° that are currently visible.
+
+The game is a reimplementation of the old game known as Tower Toppler or Nebulus.
+At its time it was ported available for a lot of different platforms like PC,
+Atari, C64. The author was J.M.Phillips and was published by Hewson software.
+
+Here are a few shots of some of the available original versions
+
+![](/doc/old-amiga.png)
+![](/doc/old-atari.png)
+![](/doc/old-c64.png)
+![](/doc/old-cpc.png)
+![](/doc/old-cga.png)
+![](/doc/old-ega.png)
+
+
+Because I really enjoyed this game when it was published I reprogrammed it some years ago using PASCAL.
+I painted all the necessary graphics on my own (or used POVRAY) and finally got a program that behaves
+nearly identical if compared with the original.
+
+Some time ago I decided to port this version to LINUX and C using SDL for the graphic and sound
+output. And here is the result.
+
+## Status
+
+The game fully playable. Everything is in place. Some more sounds could be added, surely some bugs
+are left but there should be nothing too serious.
+
+There is a leveleditor that allows everyone to create new towers and missionfiles. So I am awaiting all your
+selfmade missions.
+
+## Latest changes
+
+Version 1.2
+
+![](/doc/TowerGraphicsCompare12.png)
+
+
+User visible changes:
+- port to SDL2 with the accompanying benefits:
+  - proper fullscreen support
+  - resizeable window
+  - variable aspect ratio properly used (instead of letterboxing) so you can finally enjoy Toppler on a widescreen
+- improved visuals:
+  - new brick textures that look quite a bit more 3d
+  - shadows behind objects (robots, tower elements)
+  - objects get darker as they receed behind the tower
+  - better quality for the colour reduced data resulting in all around better looking graphics (only slightly though)
+  - improved bonus level graphics (better horizontal match, better antialiasing)
+  - fix a bug in sprite rendering that resulted in an strange looking edge for objects
+  - smoother animation for the robots with twice the framerate and also slighty improved animations
+
+Under the hood
+- Drop autoconf stuff and use a makefile instead
+- fix all warnings
+- cleanups inside the datafile creation tools
+- remove the worst non-c++ stuff and replace by c++ nicer constructs I think the code looks much better now
+- datafile optimisations (a slight bit smaller though that got eaten up by the graphics improvements from above)
+
+For a complete release history look into doc/Changelog.md
+
+## Installation
+
+Just type 
+
+```
+make 
+```
+
+and if your want to install
+
+```
 make install
+```
 
-procedure except for the global highscore. If you want this feature
-then you need to call
+but you an also directly start the game from the source directory using 
 
-make global_highscore
+```
+./toppler 
+```
 
-afterwards. This changes the binary owner to root:games and sets the
-sticky bit for group. It also creates a directory in /usr/local/var
-named toppler and a file named toppler.hsc inside this directory. The
-binary will have write access to this directory and the file. But the
-normal user shouldn't. (to prevent them from cheating)
+## Game goal
 
-The rpm will install the global highscore file for you.
-
-If the program finds the global highscore file and has the neccessary
-rights to access it, it will always use this list. Otherwise the local
-file will be used. Which table is used, you can find out by looking at
-the output the program writes on stdout upon startup.
-
-Goal
-----
-
-The goal of the game is to reach the target door of each of the 8
-towers in currently 2 missions with this little green animal. This door
-is usually at the very top of the tower.
+The goal of the game is to reach the target door of each of the 
+towers in the packages mission. This door is usually at the very top of the tower.
 
 But finding the way by using elevators and walking trough a maze of
 doors and platforms is not the only problem you have to solve. There
@@ -49,9 +109,7 @@ you have the chance to get some bonus points by catching fish. All you
 have to do is to catch a fish in a bubble with your torpedo and then
 collect the fish.
 
-
-Commandline Parameters
-----------------------
+## Commandline Parameters
 
 -f starts the game in fullscreen mode. But be careful! If the game
 crashes it doesn't restore the original resolution, it stays in 640x480
@@ -60,27 +118,25 @@ pixel mode.
 -s makes the game silent. If you don't have a soundcard or for another
 reason get an "can't open audio" error try this option.
 
-Options Menu
-------------
+## Options Menu
 
-Game Options:
+### Game Options
 
 - Password: this menu entry allows you to define a password. The
 password us used to restart a mission from a tower that is not the
 first. You get a password for every third tower while you are playing
 
-- Lives: for the tough guys you cen decrease the number of lives you
+- Lives: for the tough guys you can decrease the number of lives you
 start the game
 
-- Status on top: if you prefere the game status at the bottom of the
+- Status on top: if you prefer the game status at the bottom of the
 screen. Here is the place to switch
 
 - Game speed: if you want faster gameplay, then this is the option for
 you. This option doesn't influence the behaviour. Only the delays
-between the frames is decreased. Providing you mashine does allow the
-game will run faster.
+between the frames is decreased. 
 
-Redefine Keys:
+### Redefine Keys
 
 The options here allow you to redefine the keys that are important for
 playing. Select the key you want to redefine. Press Enter and then the
@@ -89,7 +145,7 @@ old keys but just define an alternitive that has a lower priority than
 the original keys. So you can not use "p", because this is already used
 for pause.
 
-Graphics:
+### Graphics
 
 The submenus here allow you to finely tune the looks of tower toppler.
 Depending on your computers capabilities and you graphic card you can
@@ -123,14 +179,16 @@ complete (currently 3 layer) scroller. The 2 layer scroller only draws
 the front and the backround layer of the underwater scroller in the
 bonus level.
 
+- shadows: toggles drawing of shadows behind objects and fading objects to black as they receede behind the tower.
+Enable this to get a much more 3d-looking level display at the cost of a bit of performance.
+
 Bonuses:
 
-This toggle allows you to suppress bonus levels.  Some people don't enjoy
+This toggle allows you to suppress bonus levels. Some people don't enjoy
 hunting fish as much as climbing towers, this allows them to only play the
 fun part ;-).
 
-Speed Indicator
----------------
+### Speed Indicator
 
 In the normal tower climbing game there is an indicator displaying if
 your computer is fast enough for the current playing mode. If you can
@@ -143,11 +201,10 @@ can not run as fast as it needs to. Consider the following options:
 
 - switch off some of the alpha options
 
-Controls
---------
+### Controls
 
 In the menu you can select the mission you want to play next with the
-left and right cursor keys.  Press space or return on the start menu
+left and right cursor keys. Press space or return on the start menu
 item to start the game.
 
 The animal is controlled by the cursor keys and space (or return). Left
@@ -157,8 +214,8 @@ the normal platforms.)  If you are in front of a door press up to enter
 it.  Pressing the space key will either throw a snowball if you are
 standing still or make the animal jump if you are walking.
 
-For the Leveldesigner
----------------------
+### For the Leveldesigner
+
 
 The game finally has a leveleditor. Because I've been too lazy to make
 new graphics for special objects all tower objects are drawn using the
@@ -171,26 +228,33 @@ letters mean something.
 
 Otherwise the editor is relatively simple:
 
-help:
+#### help
 
-h    shows a list of all keys with explanations
+| key | description |
+|-----|:-----------:|
+| h | shows a list of all keys with explanations |
 
 You can move in the list with up, down and pgup, pgdown
 
-cursor movement:
+#### cursor movement
 
 cursor keys
-page up and down: 5 rows up and down
-y               half turn of the tower (for doors)
-HOME            go to starting position
 
-actions:
+| key | description |
+|-----|:-----------:|
+| page up and down | 5 rows up and down |
+| y | half turn of the tower (for doors) |
+| HOME | go to starting position |
 
-p    play, to test the level you are just editing
-ESC  leave the editor
-l    load tower
-o    save tower
-z    check consistency of tower
+#### actions
+
+| key | description |
+|-----|:-----------:|
+| p   | play, to test the level you are just editing |
+| ESC | leave the editor |
+| l |   load tower |
+| o |   save tower |
+| z |   check consistency of tower |
 
 The consistency check checks if all doors are exactly 3 layers high, if
 there isn't a undefined symbol in there and if there is always the
@@ -198,33 +262,36 @@ opposite platform for the elevators (without unremovable obstacles
 in between). If there is something wrong with the tower, the cursor
 moves to the position of the problem.
 
-editing:
+#### editing
 
-ins  inserts a row below the current position
-del  deletes the current row
+| key | description |
+|-----|:-----------:|
+| ins | inserts a row below the current position |
+| del | deletes the current row |
 
 with these actions you must be careful because they can destroy doors.
 
-objects:
+#### objects
 
-space   clear field
-
-q       normal pillar
-a       flashing box
-
-w       normal step
-s       vanishing step        shown as flashing step
-x       sliding step          shown as sideways moving step
-
-e       elevator top station
-d       elevator middle station
-c       elevator top station
+| key | description |
+|-----|:-----------:|
+| space |  clear field |
+| q  |     normal pillar |
+| a  |     flashing box |
+| w |      normal step |
+| s |      vanishing step        displayed as flashing step |
+| x |      sliding step          displayed as sideways moving step |
+| e |      elevator top station |
+| d |      elevator middle station |
+| c |      elevator top station |
 
 the elevator stations are shown by a moving platform. The platform is
 moving into the direction the elevator can move. So for the bottom
 stations the platform is repeatingly moving up and jumping down.
 
-1-7     the different kinds of robots
+| key | description |
+|-----|:-----------:|
+| 1-7 | the different kinds of robots |
 
 for the eye robot the movement is shown by the movement of the robot in
 the editor. The slow moving version moves half as far as the fast
@@ -235,17 +302,16 @@ standing still. This is the one that jumps on its place until the
 toppler gets near. The ball that has a sideway movement from it's
 beginning on is moving in the editor too.
 
-i       normal door
-k       target door           shown as flashing door
+| key | description |
+|-----|:-----------:|
+| i |      normal door |
+| k |      target door           displayed as flashing door |
 
-This action always places a whole door (in 3 layers) and tries to place
-a door on the opposite side, if it's empty. Doors should never be
-higher then 3 layers. The clear command (' ') will always remove the
-whole door but not the one on the opposite side of the tower.
+This action always places a whole door (in 3 layers) and tries to place a door on the opposite side, if it's empty. Doors should never be higher then 3 layers. The clear command (' ') will always remove the whole door but not the one on the opposite side of the tower.
 
 The target door command doesn't place a door on the opposite side
 
-parameter of the tower:
+#### parameter of the tower
 
 the parameter are always in a range of values. To allow fast
 alterations of the values the difference between the old and the
@@ -256,18 +322,18 @@ three and so on. This size is reset to one as soon as you change the
 direction of your changes. This sounds complicated but the best thing is to
 try it
 
-b       increase time
-n       decrease time
-
-v       open palette dialog
+| key | description |
+|-----|:-----------:|
+| b |      increase time |
+| n |      decrease time |
+| v |      open palette dialog |
 
 In the palette dialog up and down change the color you want to change.
 Left and Right change the value by one, PgUp and PgDown change by 10
 and the numbers make the value jump to 10 equally distributed positions on the
 scale
 
-Tower File Format
------------------
+### Tower File Format
 
 Just in case you are interested in the format of the tower file:
 
@@ -281,25 +347,27 @@ where each character represents one position on the tower. The
 following table explains the characters used for the tower bitmap and
 their meaning.
 
-   empty
-v  top elevator station
-+  middle elevator station
-^  bottom elevator station
-1  freeze ball
-2  jumping ball moving from the start
-3  jumping ball standing and then moving to you
-4  robot, up down
-5  robot, up down fast
-6  robot left right
-7  robot left right fast
-!  pillar
--  platform
-b  flashing box
-.  vanishng platform
->  slippery platform
-<  slippery platform
-#  normal door
-T  target door
+| character | description |
+|-----|:-----------:|
+| space|    empty |
+| v | top elevator station |
+| + | middle elevator station |
+| ^ | bottom elevator station |
+| 1 | freeze ball |
+| 2 | jumping ball moving from the start |
+| 3 | jumping ball standing and then moving to you |
+| 4 | robot, up down |
+| 5 | robot, up down fast |
+| 6 | robot left right |
+| 7 | robot left right fast |
+| ! | pillar |
+| - | platform |
+| b | flashing box |
+| . | vanishng platform |
+| > | slippery platform |
+| < | slippery platform |
+| # | normal door |
+| T | target door |
 
 The demo section is also not really obvious. The numbers represent
 states of the important keys. Each bit in the number corresponds to one
@@ -324,8 +392,7 @@ are changing as well it may be quite complicated to convert a mission
 file generated with an old version of tower toppler to a new version.
 But it will nearly always be possible to edit the tower files.
 
-Mission File Format
--------------------
+### Mission File Format
 
 And another paragraph for the interested ones. Here the format of the
 mission files is explained.
@@ -357,9 +424,7 @@ one word for the key state.
 
 So this should help to find your way into the code, if it's neccessary.
 
-
-Mission Creation
-----------------
+### Mission Creation
 
 With the key m in the level editor you start creating a new mission. Be
 aware that mission contain your towers in a compressed format and I
@@ -388,8 +453,7 @@ mission in the main menu.
 IMPORTANT: please check your towers, before you create a mission, for
 inconsistencies, because this is not done in the created mission file.
 
-Helpful Hints
--------------
+### Helpful Hints
 
 Finally some details about the inner workings of the game that might
 help design levels.
@@ -408,38 +472,34 @@ help design levels.
   2nd row on angle 0 (where the cursor is at the start HOME moves the
   cursor to this position)
 
-FILETYPES
----------
+### FILETYPES
 
-datafiles (graphics, sounds), readonly
+Where does the program look for the different files?
 
-  first in local directory,
-  then global (per compiler switch /usr/local/share/toppler)
+- datafiles (graphics, sounds), readonly
+  - first in local directory,
+  - then global (per compiler switch /usr/local/share/toppler)
 
-local configuration file, read/write/create
+- local configuration file, read/write/create
+  - in home directory
 
-  in home directory
+- level editor, new missions, towers read/write/create
+  - in home dir (/home/user/.toppler/...)
 
-level editor, new missions, towers read/write/create
+- highscore file, read/write/create
+  - in global dir, home,
 
-  in home dir (/home/user/.toppler/...)
-
-highscore file, read/write/create
-
-  in global dir, home,
-
-Signing
--------
-
-If it is necessary to sign the binary to get it to run on a device
-(like handhelds or smartphones) and this signing requires a fee, you
-are allowed to charge a small amount of money to get this signing fee
-back. Also, you are not required to publish the code that is necessary
-to communicate with the underlying device operating system. All other
-changes to the game must be published under the GPL.
-
-Contact
--------
+# Contact
 
 Webpage: toppler.sf.net
 Email  : roever@users.sf.net
+
+# Thank yous
+
+Thank you goes to all the people out there who sent me bug reports and praise. But ecspecially to
+- Pasi Kallinen for tons of improvements. He coded the menu system, the demos and provided many
+other features for the game,
+- Bastian Salmela for his very nice graphics,
+- Clarence Ball for his missions,
+- Andreas Wagner for the web page design.
+
