@@ -1,4 +1,4 @@
-Version 1.2
+# 30.01.2021 Version 1.2
 
 User visible changes:
 - port to SDL2 with the accompanying benefits:
@@ -6,22 +6,26 @@ User visible changes:
   - resizeable window
   - variable aspect ratio properly used (instead of letterboxing)
 - improved visuals:
+  - new brick textures that look quite a bit more 3d
   - shadows behind objects (robots, tower elements)
   - objects get darker as they receed behind the tower
   - better quality for the colour reductions
   - improved bonus level graphics (better horizontal match, better
      antialiasing)
   - fix a bug in sprite rendering that resulted in an ugly antialiasing border
+  - smoother animation for the robots with twice the framerate and also
+    slighty improved animations
 
 Under the hood
 - Drop autoconf stuff and use a makefile instead
-- fix all warnings
+- fix all warnings of modern compilers
 - cleanups inside the datafile creation tools
 - remove the worst non-c++ stuff and replace by c++ nicer constructs
    I think the code looks much better now
-- datafile optimisations (a slight bit smaller)
+- datafile optimisations (a slight bit smaller, though that got eaten up by
+   the graphics improvements from above)
 
-Version 1.1.6
+# 21.12.2012 Version 1.1.6
 
 - fix memory leaks
 - proper program ending instead of an uncaught exception
@@ -30,15 +34,16 @@ Version 1.1.6
 - included missions are now in the datafile insted of separate files
 - fix joystick support
 
-Versions 1.1.4, 1.1.5 not publicly announced and invalid
+# Versions 1.1.4, 1.1.5 
+not publicly announced and invalid
 
-Version 1.1.3
+# 30.10.2006 Version 1.1.3
 
 - add Mission "David 1"
 - internationalisation support for Windows
 - translations for Basque, Czech and Romanian
 
-Version 1.1.2
+# 21.01.2006 Version 1.1.2
 
 - another buildsystem update (by Volker Grabsch)
 - background music (by Angel Keha)
@@ -47,13 +52,13 @@ Version 1.1.2
 - swedish translation
 - small bug that made the toppler get stuck under very special conditions
 
-Version 1.1.1
+# 18.12.2004 Version 1.1.1
 
 - really include pasis mision this time
 - add finish translation
 - updated to the french translation
 
-Version 1.1.0
+# 05.12.2004 Version 1.1.0
 
 - remove a possibility for the toppler to get stuck, when the elevator fell down
 - make it possible to not use internationalisation for BeOS
@@ -65,7 +70,7 @@ Version 1.1.0
 - add 2 tower mission with 2 towers from Pasi Kallinen
 - make sticks in front of doors possible, so that elevators can pass doors now
 
-Version 1.0.6
+# 08.02.2004 Version 1.0.6
 
 - add 5000 points for each life left after the last tower is finished
 - more characters, should now be possible to add all unicode character,
@@ -73,19 +78,19 @@ Version 1.0.6
 - add characters for Esperanto ^c, ^g, ^h, ^j, ^s and ~u
 - fix mismatching new [] delete problem
 
-Version 1.0.5
+# 25.01.2004 Version 1.0.5
 
 - fix encoding bugs
-- fix ê letter
+- fix Ãª letter
 
-Version 1.0.4
+# 18.01.2003 Version 1.0.4
 
 - smoother toppler images
 - move bonus level switch into game menu
 - internationalze, add German, add French
 - add some french letters, resize letters for accents
 
-Version 1.0.3
+# 09.10.2003 Version 1.0.3
 
 - add switch to skip bonus level, thanks to Beni Cherniavsky
 - add checks for different video modis (thanks Stephane Marchesin)
@@ -95,26 +100,26 @@ Version 1.0.3
   a highscore screen with timeout text
   
 
-Version 1.0.2 8.Jun.2003
+# 08.06.2003 Version 1.0.2 
 
 - add check for sound on torpedo off, this fixes a crash
 - update the green dude to have a higher resolution
 - add not into README that signed versions of the game
   are allowed
 
-Version 1.0.1
+# 15.04.2003 Version 1.0.1
 
 - remove debug printf in highscore module
 - add asert after screen initialisation to check for failure
 
-Version 1.0.0 8.Mar.2003
+# 08.03.2003 Version 1.0.0 
 
 - check for the existence of the datafile
 - merge the 2 READMEs the have somehow appeared
 - some soundeffects for the bonusgame
 - GPL header for files
 
-Version 0.99.2
+# 23.02.2003 Version 0.99.2
 
 - make tower beeing destroyed completely, even if target toor is not at top
 - menu system cleanup, improvement in background image drawing
@@ -122,12 +127,12 @@ Version 0.99.2
 - check mission prior to starting if there are unknown building block in there
   this should allow to add new features and the old games might still work
 
-Version 0.99.1 18.Feb.2003
+# 18.02.2003 Version 0.99.1 
 
 - double file close on highscore saving lead to segmentation fault
 - on windoes systems highscore table asn't opened in binary mode
 
-Version 0.99.0 17.Feb.2003
+# 17.02.2003 Version 0.99.0 
 
 - fix highscore bug
 - replace all sprintf with snprintf to avoid buffer overflows
@@ -139,7 +144,7 @@ Version 0.99.0 17.Feb.2003
 - readme updates
 - add clarences 3rd mission
 
-Version 0.98.4 14.Jan.2003
+# 14.01.2003 Version 0.98.4 
 
 me:
 
@@ -168,7 +173,7 @@ me:
 - fix windows sound
 - fix keyboard problems on Windows systems and on some keyboards  
 
-Version 0.98.3 20.Dec.2002
+# 20.12.2002 Version 0.98.3 
 
 pasi:
 
@@ -218,7 +223,7 @@ me:
   last time
 - each tower can have a selectable robot
 
-Version 0.98.2
+# 26.11.2002 Version 0.98.2
 
 -when user selects "Quit game" from the game menu during
  game, do not show hiscores after that, but go directly
@@ -303,7 +308,7 @@ Version 0.98.2
  generalized text system as previously)
 
 
-Version 0.98.1 24.11.2002
+# 24.11.2002 Version 0.98.1 
 
 - Added a new config option "status_top"; this tells whether
   the status line is on top or bottom of screen.
@@ -376,7 +381,7 @@ me
 - workaround for SDL RLEAccel bug
 
 
-Version 0.98.0 18.11.2002
+# 18.11.2002 Version 0.98.0 
 
 pasi
 
@@ -438,7 +443,7 @@ my work
   graphics with new ones
 - alpha blended sprites
 
-Version 0.97.1
+# 06.10.2002 Version 0.97.1
 
 - improved autoconf and automake (hopefully)
 - switch from palettized to true color mode -> remove palette module
@@ -446,7 +451,7 @@ Version 0.97.1
 - fix name clash with standard scandir and alphasort
 - remove some warnings
 
-Version 0.97 28.09.2002
+# 28.09.2002 Version 0.97 
 
 work from pasi
 
@@ -483,7 +488,7 @@ my work
 - get rid of this terrible page wise saving of data, so I could finally remove
   the routines that were descrambling the data
 
-20.02.2002 Version 0.96
+# 20.02.2002 Version 0.96
 
 - first adaptions for background music
 - fix potential bug with robot drawing when a mission has more than 8 towers
@@ -491,7 +496,7 @@ my work
 - fix bug with some elevators that didn't work properly
 - better depth ordering in output of tower, should be always right now
 
-06.02.2002 Version 0.95
+# 06.02.2002 Version 0.95
 
 - changes to compile successfully on sparc
 - change some datatypes to Uintxx and Sintxx (from SDL)
@@ -501,7 +506,7 @@ my work
 - small buglet in leveleditor output routine that made robots flip from in front
   to behind the tower
 
-26.01.2002 Version 0.73
+# 26.01.2002 Version 0.73
 
 - fixed bug with wrong loops in robots that overwrote some global variables on windows
 - fixed bug in archive that made the font loader load one char too much
@@ -514,7 +519,7 @@ my work
 - include code to search for missions and list them (need some improvement like sorting and
   remove double entries)
 
-20.01.2002 Version 0.72
+# 20.01.2002 Version 0.72
 
 dthurston:
 - Added a manual page, stolen from Debian package
@@ -535,7 +540,7 @@ roever:
 - more sound effects (timeout, bonus points)
 - file open looks in actual directory as well as in data directory
 
-03.08.2001 Version 0.71
+# 03.08.2001 Version 0.71
 
 - moved score table into home directory
 - fixed bug in highscore table
@@ -548,7 +553,7 @@ roever:
 - volume change in ball bouncing doubled
 - fixed bug in pushing toppler aside when elevator falls down removed
 
-31.07.2001 Version 0.70
+# 31.07.2001 Version 0.70
 
 - add bonuslevel (but it uses ugly graphics)
 - add autoconf and automake support (I am a novice, so don't
@@ -556,11 +561,11 @@ roever:
 - push animal aside when the elevator comes down and the
   toppler is standing in the way
 
-26.07.2001 Version 0.63
+# 26.07.2001 Version 0.63
 
 - bugfix, buggy bonuslevel deactivated
 
-25.07.2001 Version 0.62
+# 25.07.2001 Version 0.62
 
 - renamed *.c to *.cc
 - added bonuslevel (with really poor graphics)
@@ -570,20 +575,20 @@ roever:
   and stop water in pause and when ESC
 - made the last bubbles diappear when drowned, shortened delay
 - added lots of #includes to make toppler compile onf RedHat (tanks to
-  Jean-Sébastien Lebacq)
+  Jean-SÃ©bastien Lebacq)
 - updated README with command line parameters
 - optimized scaling function a bit
 - change includes for SDL headers to be in subdirectors
 - fill the gaps at the screen side with water
 
-18.07.2001 Version 0.61
+# 18.07.2001 Version 0.61
 
 - fixed a nasty bug in drawing of highscores that made the game
   crash in many different points
 - Hide mousecursor in window
 - Add fullscreen option (Handle with care)
 
-15.07.2001 Version 0.60
+# 15.07.2001 Version 0.60
 
 - set windowtitle to "Nebulous"
 - made the elevator platform not get big when you get thrown off the
@@ -595,18 +600,19 @@ roever:
 - added more sounds
 - added a Makefile
 
-08.07.2001 Version 0.52
+# 08.07.2001 Version 0.52
 
 - removed some unused functions
 - more translations
 
-01.07.2001 Version 0.51
+# 01.07.2001 Version 0.51
 
 - major code cleanup
 - translate comments and functionname to english
 - some little bug fixed
 
 
-25.06.2001 Version 0.50
+# 25.06.2001 Version 0.50
 
 - initial release
+
