@@ -60,8 +60,8 @@
                <QPM:AuthorName>Andreas Röver</QPM:AuthorName>
                <QPM:ProductIconSmall></QPM:ProductIconSmall>
                <QPM:ProductIconLarge></QPM:ProductIconLarge>
-               <QPM:ProductDescriptionShort>Reimplementation of the old game (aka Nebulous)</QPM:ProductDescriptionShort>
-               <QPM:ProductDescriptionLong>Reimplementation of the old game (aka Nebulous). In the game you have to climb a tower with lots of strange inhabitants that try to push you down. Your only defence is a snowball you can throw and your skill to avoid these beings.</QPM:ProductDescriptionLong>
+               <QPM:ProductDescriptionShort>Reimplementation of the old game (aka Nebulus)</QPM:ProductDescriptionShort>
+               <QPM:ProductDescriptionLong>Reimplementation of the old game (aka Nebulus). In the game you have to climb a tower with lots of strange inhabitants that try to push you down. Your only defence is a snowball you can throw and your skill to avoid these beings.</QPM:ProductDescriptionLong>
                <QPM:ProductDescriptionURL>http://toppler.soureforge.net</QPM:ProductDescriptionURL>
                <QPM:ProductDescriptionEmbedURL></QPM:ProductDescriptionEmbedURL>
             </QPM:ProductDescription>
@@ -78,7 +78,7 @@
 
             <QPM:ContentDescription>
                <QPM:ContentTopic xmlmultiple="true">Games and Diversions/Action Adventure Games</QPM:ContentTopic>
-               <QPM:ContentKeyword>games,toppler,nebulus,nebulous</QPM:ContentKeyword>
+               <QPM:ContentKeyword>games,toppler,nebulus</QPM:ContentKeyword>
                <QPM:TargetOS>qnx6</QPM:TargetOS>
                <QPM:HostOS>none</QPM:HostOS>
                <QPM:DisplayEnvironment xmlmultiple="true">Photon</QPM:DisplayEnvironment>

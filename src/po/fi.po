@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 14:27+0100\n"
+"POT-Creation-Date: 2022-01-24 18:30+0100\n"
 "PO-Revision-Date: 2004-12-17 20:11+0200\n"
 "Last-Translator: basse <bastian.salmela@hel.fi>\n"
 "Language-Team: fi_FI <fi@li.org>\n"
@@ -430,8 +430,8 @@ msgstr "Laiton debug taso, otetaan oletustaso käyttöön.\n"
 
 #: src/main.cc:98
 #, c-format
-msgid "Nebulous version %s"
-msgstr "Nebulous Versio %s"
+msgid "Nebulus version %s"
+msgstr "Nebulus Versio %s"
 
 #: src/main.cc:113
 #, c-format
@@ -657,11 +657,11 @@ msgstr "Kyllä"
 msgid "No"
 msgstr "Ei"
 
-#: src/screen.cc:2007
+#: src/screen.cc:2014
 msgid "REC"
 msgstr "REC"
 
-#: src/screen.cc:2008
+#: src/screen.cc:2015
 msgid "DEMO"
 msgstr "DEMO"
 

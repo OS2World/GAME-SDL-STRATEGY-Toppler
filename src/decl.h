@@ -41,7 +41,7 @@ extern int currentScreenWidth;
 #define TOWER_STEPS_PER_COLUMN 8
 #define TOWER_ANGLES (TOWER_COLUMNS*TOWER_STEPS_PER_COLUMN)
 
-/* title sprite "NEBULOUS" width and height, in pixels */
+/* title sprite "NEBULUS" width and height, in pixels */
 #define SPR_TITLEWID 602
 #define SPR_TITLEHEI 90
 

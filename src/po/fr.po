@@ -430,8 +430,8 @@ msgstr "Niveau de débuggage illégal, utilise la valeur par défaut.\n"
 
 #: src/main.cc:98
 #, c-format
-msgid "Nebulous version %s"
-msgstr "Version de Nebulous %s"
+msgid "Nebulus version %s"
+msgstr "Version de Nebulus %s"
 
 #: src/main.cc:113
 #, c-format

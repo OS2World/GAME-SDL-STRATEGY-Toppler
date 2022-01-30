@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
   textdomain("toppler");
 #endif
 
-  printf(_("Nebulous version %s").c_str(), VERSION);
+  printf(_("Nebulus version %s").c_str(), VERSION);
   printf("\n");
 
 

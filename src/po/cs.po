@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 14:27+0100\n"
+"POT-Creation-Date: 2022-01-24 18:30+0100\n"
 "PO-Revision-Date: 2006-06-09 19:35+0200\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
@@ -423,8 +423,8 @@ msgstr "Chybná ladicí úroveň, používám výchozí.\n"
 
 #: src/main.cc:98
 #, c-format
-msgid "Nebulous version %s"
-msgstr "Nebulous verze %s"
+msgid "Nebulus version %s"
+msgstr "Nebulus verze %s"
 
 #: src/main.cc:113
 #, c-format
@@ -648,11 +648,11 @@ msgstr "Ano"
 msgid "No"
 msgstr "Ne"
 
-#: src/screen.cc:2007
+#: src/screen.cc:2014
 msgid "REC"
 msgstr "REC"
 
-#: src/screen.cc:2008
+#: src/screen.cc:2015
 msgid "DEMO"
 msgstr "DEMO"
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: toppler 1.1.1-1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 14:27+0100\n"
+"POT-Creation-Date: 2022-01-24 18:30+0100\n"
 "PO-Revision-Date: 2005-12-30 03:40+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -426,8 +426,8 @@ msgstr "Ogiltig felsökningsnivå, använder förvald.\n"
 
 #: src/main.cc:98
 #, c-format
-msgid "Nebulous version %s"
-msgstr "Nebulous version %s"
+msgid "Nebulus version %s"
+msgstr "Nebulus version %s"
 
 #: src/main.cc:113
 #, c-format
@@ -651,11 +651,11 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nej"
 
-#: src/screen.cc:2007
+#: src/screen.cc:2014
 msgid "REC"
 msgstr "REC"
 
-#: src/screen.cc:2008
+#: src/screen.cc:2015
 msgid "DEMO"
 msgstr "DEMO"
 

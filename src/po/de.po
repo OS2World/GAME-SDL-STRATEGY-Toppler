@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 14:27+0100\n"
+"POT-Creation-Date: 2022-01-24 18:30+0100\n"
 "PO-Revision-Date: 2022-01-16 11:15+0100\n"
 "Last-Translator: Andreas Röver <roever@users.sf.net>\n"
 "Language-Team: Deutsch <de@li.org>\n"
@@ -427,8 +427,8 @@ msgstr "Ungültiger Debuglevel, benutze Voreinstellung.\n"
 
 #: src/main.cc:98
 #, c-format
-msgid "Nebulous version %s"
-msgstr "Nebulous-Version %s"
+msgid "Nebulus version %s"
+msgstr "Nebulus-Version %s"
 
 #: src/main.cc:113
 #, c-format
@@ -652,11 +652,11 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nein"
 
-#: src/screen.cc:2007
+#: src/screen.cc:2014
 msgid "REC"
 msgstr "REC"
 
-#: src/screen.cc:2008
+#: src/screen.cc:2015
 msgid "DEMO"
 msgstr "DEMO"
 

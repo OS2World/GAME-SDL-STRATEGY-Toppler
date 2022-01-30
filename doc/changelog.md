@@ -590,7 +590,7 @@ roever:
 
 # 15.07.2001 Version 0.60
 
-- set windowtitle to "Nebulous"
+- set windowtitle to "Nebulus"
 - made the elevator platform not get big when you get thrown off the
   elevator and when the elevator drops down
 - bug when leaving the elevator at the bottom station it

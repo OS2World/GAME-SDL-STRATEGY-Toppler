@@ -21,7 +21,7 @@ Source0: %{name}-%{version}.tar.gz
 Summary: @FULLNAME@
 
 %description
-Reimplementation of the old game (aka Nebulous). In the game you have
+Reimplementation of the old game (aka Nebulus). In the game you have
 to climb a tower with lots of strange inhabitants that try to push you
 down. Your only defence is a snowball you can throw and your skill to
 avoid these beings.

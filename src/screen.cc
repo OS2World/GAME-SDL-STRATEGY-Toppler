@@ -661,7 +661,7 @@ void scr_reinit() {
 
   SDL_CreateWindowAndRenderer(SCREENWID, SCREENHEI, config.fullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0, &sdlWindow, &sdlRenderer);
   SDL_SetWindowMinimumSize(sdlWindow, 640, 480);
-  SDL_SetWindowTitle(sdlWindow, "Nebulous");
+  SDL_SetWindowTitle(sdlWindow, "Nebulus");
   SDL_SetWindowResizable(sdlWindow, SDL_TRUE);
 
   int width; int height;

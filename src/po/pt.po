@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 14:27+0100\n"
+"POT-Creation-Date: 2022-01-24 18:30+0100\n"
 "PO-Revision-Date: 2005-01-09 00:00+0100\n"
 "Last-Translator: Helder Correia <helder.correia@netcabo.pt>\n"
 "Language-Team: pt <pt@li.org>\n"
@@ -424,8 +424,8 @@ msgstr "Valor de nível de depuração ilegal, a usar valor por omissão.\n"
 
 #: src/main.cc:98
 #, c-format
-msgid "Nebulous version %s"
-msgstr "Nebulous versão %s"
+msgid "Nebulus version %s"
+msgstr "Nebulus versão %s"
 
 #: src/main.cc:113
 #, c-format
@@ -649,11 +649,11 @@ msgstr "Sim"
 msgid "No"
 msgstr "Nao"
 
-#: src/screen.cc:2007
+#: src/screen.cc:2014
 msgid "REC"
 msgstr "GRAVAR"
 
-#: src/screen.cc:2008
+#: src/screen.cc:2015
 msgid "DEMO"
 msgstr "DEMONSTRAÇAO"
 
