@@ -478,7 +478,7 @@ _build/tools/cremission: datafile/levels/cremission.cc
 #---------------------------------------------------------------------------------------#
 FILES_BINDIR += toppler.dat
 toppler.dat: _build/tools/crearc $(DATFILES)
-	./_build/tools/crearc toppler.dat $(DATFILES) $(MISSIONS)
+	./_build/tools/crearc toppler.dat $(DATFILES)
 
 
 .PHONY: clean
@@ -497,8 +497,6 @@ distclean:
 .PHONY: all
 all: $(FILES_BINDIR)
 
-
-TRANSLATIONFILES_PO := $(wildcard src/po/*.po)
 
 .PHONY: translation
 translation: $(TRANSLATIONFILES_PO) _build/toppler.pot
