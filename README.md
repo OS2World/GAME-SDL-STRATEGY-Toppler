@@ -363,7 +363,7 @@ their meaning.
 | ! | pillar |
 | - | platform |
 | b | flashing box |
-| . | vanishng platform |
+| . | vanishing platform |
 | > | slippery platform |
 | < | slippery platform |
 | # | normal door |
