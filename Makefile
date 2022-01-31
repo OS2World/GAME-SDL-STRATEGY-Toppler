@@ -470,6 +470,12 @@ toppler.dat: _build/tools/crearc $(DATFILES)
 clean:
 	rm -rf _build
 	rm toppler
+
+
+.PHONY: distclean
+distclean:
+	rm -rf _build
+	rm toppler
 	rm toppler.dat
 
 
