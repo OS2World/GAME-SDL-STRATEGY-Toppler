@@ -592,7 +592,7 @@ static std::string men_hiscores_background_proc(_menusystem *ms)
 
   if (ms) {
 
-    scr_blit(restsprites.data(menupicture), 0, 0);
+    scr_blit_center(restsprites.data(menupicture));
     scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
 
     switch (hiscores_state) {
@@ -692,7 +692,7 @@ static void show_scores(bool back = true, int mark = -1) {
 static void
 congrats_background_proc(void)
 {
-  scr_blit(restsprites.data(menupicture), 0, 0);
+  scr_blit_center(restsprites.data(menupicture));
   scr_blit(fontsprites.data(titledata), (SCREENWID - fontsprites.data(titledata)->w) / 2, 20);
 
   /* you can use up to 4 lines of text here, but please check
