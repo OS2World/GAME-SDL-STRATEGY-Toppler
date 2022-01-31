@@ -185,7 +185,15 @@ _build/scroller.dat: _build/tools/scroller datafile/scroller.xcf
 # rules to create the data files necesary for the sprites #
 #---------------------------------------------------------#
 
-.SECONDARY: _build/sprites_pov/robot%_rgb_colors.png _build/sprites_pov/robot%_rgb_mask.png
+.SECONDARY: _build/sprites_pov/robot0_rgb_colors.png _build/sprites_pov/robot0_rgb_mask.png
+.SECONDARY: _build/sprites_pov/robot1_rgb_colors.png _build/sprites_pov/robot1_rgb_mask.png
+.SECONDARY: _build/sprites_pov/robot2_rgb_colors.png _build/sprites_pov/robot2_rgb_mask.png
+.SECONDARY: _build/sprites_pov/robot3_rgb_colors.png _build/sprites_pov/robot3_rgb_mask.png
+.SECONDARY: _build/sprites_pov/robot4_rgb_colors.png _build/sprites_pov/robot4_rgb_mask.png
+.SECONDARY: _build/sprites_pov/robot5_rgb_colors.png _build/sprites_pov/robot5_rgb_mask.png
+.SECONDARY: _build/sprites_pov/robot6_rgb_colors.png _build/sprites_pov/robot6_rgb_mask.png
+.SECONDARY: _build/sprites_pov/robot7_rgb_colors.png _build/sprites_pov/robot7_rgb_mask.png
+.SECONDARY: _build/sprites_pov/robot8_rgb_colors.png _build/sprites_pov/robot8_rgb_mask.png
 _build/sprites_pov/robot%_rgb_colors.png _build/sprites_pov/robot%_rgb_mask.png: datafile/sprites_pov/environment.pov \
              datafile/sprites_pov/robot%/obj.pov datafile/sprites_pov/robot%/obj.ini \
              _build/tools/assembler
@@ -264,6 +272,7 @@ _build/dude.dat: _build/tools/dude datafile/dude.xcf
 # RULE FOR MISSION 1
 
 MISSIONFILES += /m1
+.SECONDARY: _build/m1.ttm _build/nms_m1.txt
 _build/m1.ttm _build/nms_m1.txt: _build/tools/cremission \
 	datafile/levels/mission1/m1t1 datafile/levels/mission1/m1t2 datafile/levels/mission1/m1t3 datafile/levels/mission1/m1t4 datafile/levels/mission1/m1t5 datafile/levels/mission1/m1t6 datafile/levels/mission1/m1t7 datafile/levels/mission1/m1t8
 	( cd _build && tools/cremission "Mission 1" m1 10 nms_m1.txt \
@@ -279,6 +288,7 @@ _build/m1.ttm _build/nms_m1.txt: _build/tools/cremission \
 # RULE FOR MISSION 2
 
 MISSIONFILES += /m2
+.SECONDARY: _build/m2.ttm _build/nms_m2.txt
 _build/m2.ttm _build/nms_m2.txt: _build/tools/cremission \
 	datafile/levels/mission2/m2t1 datafile/levels/mission2/m2t2 datafile/levels/mission2/m2t3 datafile/levels/mission2/m2t4 datafile/levels/mission2/m2t5 datafile/levels/mission2/m2t6 datafile/levels/mission2/m2t7 datafile/levels/mission2/m2t8
 	( cd _build && tools/cremission "Mission 2" m2 11 nms_m2.txt \
@@ -294,6 +304,7 @@ _build/m2.ttm _build/nms_m2.txt: _build/tools/cremission \
 # RULE FOR CLARENCE MISSION 1
 
 MISSIONFILES += /ball1
+.SECONDARY: _build/ball1.ttm _build/nms_ball1.txt
 _build/ball1.ttm _build/nms_ball1.txt: _build/tools/cremission \
 	datafile/levels/ball1/lev1 datafile/levels/ball1/lev2 datafile/levels/ball1/lev3 datafile/levels/ball1/lev4 datafile/levels/ball1/lev5 datafile/levels/ball1/lev6 datafile/levels/ball1/lev7 datafile/levels/ball1/lev8
 	( cd _build && tools/cremission "Ball 1" ball1 13 nms_ball1.txt \
@@ -309,6 +320,7 @@ _build/ball1.ttm _build/nms_ball1.txt: _build/tools/cremission \
 # RULE FOR CLARENCE MISSION 2
 
 MISSIONFILES += /ball2
+.SECONDARY: _build/ball2.ttm _build/nms_ball2.txt
 _build/ball2.ttm _build/nms_ball2.txt: _build/tools/cremission \
 	datafile/levels/ball2/lev1 datafile/levels/ball2/lev2 datafile/levels/ball2/lev3 datafile/levels/ball2/lev4 datafile/levels/ball2/lev5 datafile/levels/ball2/lev6 datafile/levels/ball2/lev7 datafile/levels/ball2/lev8
 	( cd _build && tools/cremission "Ball 2" ball2 14 nms_ball2.txt \
@@ -324,6 +336,7 @@ _build/ball2.ttm _build/nms_ball2.txt: _build/tools/cremission \
 # RULE FOR CLARENCE MISSION 3
 
 MISSIONFILES += /ball3
+.SECONDARY: _build/ball3.ttm _build/nms_ball3.txt
 _build/ball3.ttm _build/nms_ball3.txt: _build/tools/cremission \
 	datafile/levels/ball3/lev1 datafile/levels/ball3/lev2 datafile/levels/ball3/lev3 datafile/levels/ball3/lev4 datafile/levels/ball3/lev5 datafile/levels/ball3/lev6 datafile/levels/ball3/lev7 datafile/levels/ball3/lev8
 	( cd _build && tools/cremission "Ball 3" ball3 15 nms_ball3.txt \
@@ -339,6 +352,7 @@ _build/ball3.ttm _build/nms_ball3.txt: _build/tools/cremission \
 # RULE FOR PASIS MISSION 1
 
 MISSIONFILES += /abc
+.SECONDARY: _build/abc.ttm _build/nms_abc.txt
 _build/abc.ttm _build/nms_abc.txt: _build/tools/cremission \
 	datafile/levels/kallinen1/t1 datafile/levels/kallinen1/t2 datafile/levels/kallinen1/t3 datafile/levels/kallinen1/t4 datafile/levels/kallinen1/t5 datafile/levels/kallinen1/t6 datafile/levels/kallinen1/t7 datafile/levels/kallinen1/t8
 	( cd _build && tools/cremission "ABC Towers" abc 12 nms_abc.txt \
@@ -354,6 +368,7 @@ _build/abc.ttm _build/nms_abc.txt: _build/tools/cremission \
 # RULE FOR PASIS MISSION 2
 
 MISSIONFILES += /pasi2
+.SECONDARY: _build/pasi2.ttm _build/nms_pasi2.txt
 _build/pasi2.ttm _build/nms_pasi2.txt: _build/tools/cremission \
 	datafile/levels/kallinen2/t1 datafile/levels/kallinen2/t2
 	( cd _build && tools/cremission "Pasis 2 Towers" pasi2 12 nms_pasi2.txt \
