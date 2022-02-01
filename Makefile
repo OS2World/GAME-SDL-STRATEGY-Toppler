@@ -22,6 +22,9 @@ PREFIX = /usr
 BINDIR = $(PREFIX)/bin
 DATADIR = $(PREFIX)/share
 STATEDIR = /var/toppler
+LOCALEDIR = $(DATADIR)/locale
+MANDIR =  $(DATADIR)/man
+PKGDATADIR = $(DATADIR)/toppler
 DESTDIR =
 CROSS =
 
@@ -63,10 +66,10 @@ PKG_CFLAGS_NATIVE = $$($(PKG_CONFIG_NATIVE) --cflags $(PKGS_NATIVE))
 PKG_LIBS_NATIVE = $$($(PKG_CONFIG_NATIVE) --libs $(PKGS_NATIVE))
 
 DEFS += -DVERSION='"$(VERSION)"'
-DEFS += -DTOP_DATADIR='"$(DATADIR)/toppler/"'
+DEFS += -DTOP_DATADIR='"$(PKGDATADIR)"'
 DEFS += -DHISCOREDIR='"$(STATEDIR)"'
 DEFS += -DENABLE_NLS=1
-DEFS += -DLOCALEDIR='"$(DATADIR)/locale"'
+DEFS += -DLOCALEDIR='"$(LOCALEDIR)"'
 
 FILES_H := $(wildcard src/*.h)
 FILES_CPP := $(wildcard src/*.cc)
@@ -95,14 +98,14 @@ DATFILES += $(SOUNDS)
 
 TRANSLATIONFILES_PO := $(wildcard src/po/*.po)
 TRANSLATIONFILES_MO := $(patsubst src/po/%.po,locale/%/LC_MESSAGES/toppler.mo,$(TRANSLATIONFILES_PO))
-TRANSLATIONFILES_INST := $(patsubst src/po/%.po,$(DESTDIR)$(DATADIR)/locale/%/LC_MESSAGES/toppler.mo,$(TRANSLATIONFILES_PO))
+TRANSLATIONFILES_INST := $(patsubst src/po/%.po,$(DESTDIR)$(LOCALEDIR)/%/LC_MESSAGES/toppler.mo,$(TRANSLATIONFILES_PO))
 FILES_BINDIR += $(TRANSLATIONFILES_MO)
 
 locale/%/LC_MESSAGES/toppler.mo: src/po/%.po
 	@mkdir -p $(dir $@)
 	msgfmt $< -o $@
 
-$(DESTDIR)$(DATADIR)/locale/%/LC_MESSAGES/toppler.mo: locale/%/LC_MESSAGES/toppler.mo
+$(DESTDIR)$(LOCALEDIR)/%/LC_MESSAGES/toppler.mo: locale/%/LC_MESSAGES/toppler.mo
 	$(INSTALL) -m755 -d $(dir $@)
 	$(INSTALL) -m644 $< $@
 
@@ -516,9 +519,12 @@ src/po/%.po: _build/toppler.pot
 
 .PHONY: install
 install: toppler.dat toppler $(TRANSLATIONFILES_INST)
-	$(INSTALL) -m755 -d $(DESTDIR)$(DATADIR)/toppler
+	$(INSTALL) -m755 -d $(DESTDIR)$(PKGDATADIR)
 	$(INSTALL) -m755 -d $(DESTDIR)$(BINDIR)
-	$(INSTALL) -m644 toppler.dat $(DESTDIR)$(DATADIR)/toppler/toppler.dat
-	$(INSTALL) -m644 toppler.ogg $(DESTDIR)$(DATADIR)/toppler/toppler.ogg
+	$(INSTALL) -m755 -d $(DESTDIR)$(MANDIR)/man6
+	$(INSTALL) -m644 toppler.dat $(DESTDIR)$(PKGDATADIR)/toppler.dat
+	$(INSTALL) -m644 toppler.ogg $(DESTDIR)$(PKGDATADIR)/toppler.ogg
 	$(INSTALL) toppler $(DESTDIR)$(BINDIR)/toppler
+	$(INSTALL) dist/toppler.6 $(DESTDIR)$(MANDIR)/man6/toppler.6
+
 
