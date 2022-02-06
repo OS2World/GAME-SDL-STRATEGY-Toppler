@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR Andreas R?er.
 # Andreas Röver <roever@users.sf.net>, 2003, 2004.
-# basse <bastian.salmela@hel.fi>, 2004.
-#
+# basse <bastian.salmela@gmail.com>, 2004.
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-24 18:30+0100\n"
+"POT-Creation-Date: 2022-02-06 09:08+0100\n"
 "PO-Revision-Date: 2004-12-17 20:11+0200\n"
 "Last-Translator: basse <bastian.salmela@hel.fi>\n"
 "Language-Team: fi_FI <fi@li.org>\n"
@@ -25,7 +25,7 @@ msgstr "Tauko"
 
 #: src/game.cc:82
 msgid "You are entering the"
-msgstr ""
+msgstr "Saavut tornille"
 
 #: src/game.cc:87
 msgid "Nameless Tower"
@@ -282,7 +282,7 @@ msgstr "Tornin väri"
 
 #: src/leveledit.cc:307
 msgid "No problems found"
-msgstr "Ei ongelmia löytynyt"
+msgstr "Ongelmia ei löytynyt"
 
 #: src/leveledit.cc:308
 msgid "No starting step"
@@ -290,7 +290,7 @@ msgstr "Ei aloitus askelmaa"
 
 #: src/leveledit.cc:309
 msgid "Start is blocked"
-msgstr "Aloitus on estetty"
+msgstr "Aloituspiste on estetty"
 
 #: src/leveledit.cc:310
 msgid "Unknown block"
@@ -302,7 +302,7 @@ msgstr "Hissillä ei ole pysähdyspaikkaa"
 
 #: src/leveledit.cc:312
 msgid "Elevator is blocked"
-msgstr "Hissi on estetty"
+msgstr "Hissin kulku on estetty"
 
 #: src/leveledit.cc:313
 msgid "No opposing doorway"
@@ -362,7 +362,7 @@ msgstr "anna nimi"
 
 #: src/leveledit.cc:392
 msgid "tower no "
-msgstr "tornille nro "
+msgstr "torni nro "
 
 #: src/leveledit.cc:412
 msgid "Editor Key Help"
@@ -370,7 +370,7 @@ msgstr "Editorin näppäinohjeet"
 
 #: src/leveledit.cc:527
 msgid "cut#"
-msgstr "#Lines"
+msgstr "leikkaa#"
 
 #: src/leveledit.cc:565
 #, c-format
@@ -553,7 +553,7 @@ msgstr "2-tason tausta"
 
 #: src/menu.cc:458
 msgid "Shadows"
-msgstr ""
+msgstr "Varjot"
 
 #: src/menu.cc:474
 msgid "Alpha Options"
@@ -641,19 +641,19 @@ msgstr "DEBUG VALIKKO"
 msgid "Back to Game"
 msgstr "Takaisin peliin"
 
-#: src/menusys.cc:359
+#: src/menusys.cc:380
 msgid "Press fire"
 msgstr "Paina 'ammu'"
 
-#: src/menusys.cc:359
+#: src/menusys.cc:380
 msgid "Press space"
 msgstr "Paina välilyöntiä"
 
-#: src/menusys.cc:518
+#: src/menusys.cc:539
 msgid "Yes"
 msgstr "Kyllä"
 
-#: src/menusys.cc:528
+#: src/menusys.cc:549
 msgid "No"
 msgstr "Ei"
 
@@ -667,51 +667,51 @@ msgstr "DEMO"
 
 #: _build/nms_m1.txt:1
 msgid "Mission 1"
-msgstr ""
+msgstr "Tehtävä 1"
 
 #: _build/nms_m1.txt:3
 msgid "Tower of eyes"
-msgstr ""
+msgstr "Silmien torni"
 
 #: _build/nms_m1.txt:5
 msgid "Realm of robots"
-msgstr ""
+msgstr "Robottien valtakunta"
 
 #: _build/nms_m1.txt:7
 msgid "Trap of tricks"
-msgstr ""
+msgstr "Temppuansa"
 
 #: _build/nms_m1.txt:9
 msgid "Slippery slide"
-msgstr ""
+msgstr "Liukas Lätkä"
 
 #: _build/nms_m1.txt:11
 msgid "Broken path"
-msgstr ""
+msgstr "Rikkonainen reitti"
 
 #: _build/nms_m1.txt:13
 msgid "Swimmers delight"
-msgstr ""
+msgstr "Uimarin ilahdus"
 
 #: _build/nms_m1.txt:15
 msgid "Nasty one"
-msgstr ""
+msgstr "Inhottava"
 
 #: _build/nms_m1.txt:17
 msgid "Edge of doom"
-msgstr ""
+msgstr "Turmion reuna"
 
 #: _build/nms_m2.txt:1
 msgid "Mission 2"
-msgstr ""
+msgstr "Tehtävä 2"
 
 #: _build/nms_m2.txt:3
 msgid "Blink of the eye"
-msgstr ""
+msgstr "Silmänräpäys"
 
 #: _build/nms_m2.txt:5
 msgid "Robot's heaven"
-msgstr ""
+msgstr "Robottien taivas"
 
 #: _build/nms_m2.txt:7
 msgid "Trick of traps"
@@ -719,167 +719,167 @@ msgstr ""
 
 #: _build/nms_m2.txt:9
 msgid "No man's land"
-msgstr ""
+msgstr "Ei-kenenkään-maa"
 
 #: _build/nms_m2.txt:11
 msgid "Oh, *******!!"
-msgstr ""
+msgstr "Voi, *******!!"
 
 #: _build/nms_m2.txt:13
 msgid "Riddle of reason"
-msgstr ""
+msgstr "Syyn arvoitus"
 
 #: _build/nms_m2.txt:15
 msgid "Maze of mistakes"
-msgstr ""
+msgstr "Virheiden sokkelo"
 
 #: _build/nms_m2.txt:17
 msgid "Last trump"
-msgstr ""
+msgstr "Viimeinen valtti"
 
 #: _build/nms_ball1.txt:1
 msgid "Ball 1"
-msgstr ""
+msgstr "Pallo 1"
 
 #: _build/nms_ball1.txt:3
 msgid "Run and don't stop"
-msgstr ""
+msgstr "Juokse äläkä pysähdy"
 
 #: _build/nms_ball1.txt:5
 msgid "Watch your step"
-msgstr ""
+msgstr "Varo askeleitasi"
 
 #: _build/nms_ball1.txt:7
 msgid "Short, but deadly"
-msgstr ""
+msgstr "Lyhyt mutta tappava"
 
 #: _build/nms_ball1.txt:9
 msgid "The maddening"
-msgstr ""
+msgstr "Raivostuttava"
 
 #: _build/nms_ball1.txt:11
 msgid "Doom at every step"
-msgstr ""
+msgstr "Turmio jokaisella askeleella"
 
 #: _build/nms_ball1.txt:13
 msgid "Enemies everywhere"
-msgstr ""
+msgstr "Vihollisia kaikkialla"
 
 #: _build/nms_ball1.txt:15
 msgid "You will loose"
-msgstr ""
+msgstr "Tulet häviämään"
 
 #: _build/nms_ball1.txt:17
 msgid "Mind destroyer"
-msgstr ""
+msgstr "Tajunnanräjäyttäjä"
 
 #: _build/nms_ball2.txt:1
 msgid "Ball 2"
-msgstr ""
+msgstr "Pallo 2"
 
 #: _build/nms_ball2.txt:3
 msgid "Mind Trap"
-msgstr ""
+msgstr "Aivoansa"
 
 #: _build/nms_ball2.txt:5
 msgid "Breaking Tower"
-msgstr ""
+msgstr "Mureneva torni"
 
 #: _build/nms_ball2.txt:7
 msgid "Great Fall"
-msgstr ""
+msgstr "Suuri pudotus"
 
 #: _build/nms_ball2.txt:9
 msgid "Tower of Intrigue"
-msgstr ""
+msgstr "Juonittelun torni"
 
 #: _build/nms_ball2.txt:11
 msgid "Massacre"
-msgstr ""
+msgstr "Verilöyly"
 
 #: _build/nms_ball2.txt:13
 msgid "Bouncing Murders"
-msgstr ""
+msgstr "Pomppivat murhat"
 
 #: _build/nms_ball2.txt:15
 msgid "Trial and error"
-msgstr ""
+msgstr "Yritys ja erehdys"
 
 #: _build/nms_ball2.txt:17
 msgid "Tower of Pure Evil"
-msgstr ""
+msgstr "Silkkaa pahuutta"
 
 #: _build/nms_ball3.txt:1
 msgid "Ball 3"
-msgstr ""
+msgstr "Pallo 3"
 
 #: _build/nms_ball3.txt:3
 msgid "Annoying Tower"
-msgstr ""
+msgstr "Ärsyttävyyden torni"
 
 #: _build/nms_ball3.txt:5
 msgid "Cave of Failure"
-msgstr ""
+msgstr "Epäonnisen luola"
 
 #: _build/nms_ball3.txt:7
 msgid "Dividing path"
-msgstr ""
+msgstr "Haarautuva polku"
 
 #: _build/nms_ball3.txt:9
 msgid "No Way Out?"
-msgstr ""
+msgstr "Ei ulospääsyä?"
 
 #: _build/nms_ball3.txt:11
 msgid "Trap"
-msgstr ""
+msgstr "Ansa"
 
 #: _build/nms_ball3.txt:13
 msgid "Tower of Mystery"
-msgstr ""
+msgstr "Mystinen torni"
 
 #: _build/nms_ball3.txt:15
 msgid "Slip ... and die"
-msgstr ""
+msgstr "Liukastu ... ja kuole"
 
 #: _build/nms_ball3.txt:17
 msgid "Mission Impossible"
-msgstr ""
+msgstr "Mahdoton tehtävä"
 
 #: _build/nms_abc.txt:1
 msgid "ABC Towers"
-msgstr ""
+msgstr "ABC tornit"
 
 #: _build/nms_abc.txt:3
 msgid "Slices"
-msgstr ""
+msgstr "Siivut"
 
 #: _build/nms_abc.txt:5
 msgid "Corridors"
-msgstr ""
+msgstr "Käytävät"
 
 #: _build/nms_abc.txt:7
 msgid "Higher Ground"
-msgstr ""
+msgstr "Ylämailla"
 
 #: _build/nms_abc.txt:9
 msgid "No Icing"
-msgstr ""
+msgstr "Kuorruttamaton"
 
 #: _build/nms_abc.txt:11
 msgid "Three Layers"
-msgstr ""
+msgstr "Kolme kerrosta"
 
 #: _build/nms_abc.txt:13
 msgid "Two Ways"
-msgstr ""
+msgstr "Kaksi tapaa"
 
 #: _build/nms_abc.txt:15
 msgid "Spiral"
-msgstr ""
+msgstr "Spiraali"
 
 #: _build/nms_abc.txt:17
 msgid "Skygazer"
-msgstr ""
+msgstr "Taivaisiintuijottaja"
 
 #: _build/nms_pasi2.txt:1
 msgid "Pasis 2 Towers"
@@ -887,64 +887,64 @@ msgstr ""
 
 #: _build/nms_pasi2.txt:3
 msgid "Ventilation Shafts"
-msgstr ""
+msgstr "Ilmanvaihtokanavat"
 
 #: _build/nms_pasi2.txt:5
 msgid "Tower 2"
-msgstr ""
+msgstr "Torni 2"
 
 #: _build/nms_david1.txt:1
 msgid "Challenge 1"
-msgstr ""
+msgstr "Haaste 1"
 
 #: _build/nms_david1.txt:3
 msgid "Difficult jumps!"
-msgstr ""
+msgstr "Hankalat hypyt!"
 
 #: _build/nms_david1.txt:5
 msgid "Washout"
-msgstr ""
+msgstr "Huuhtelu"
 
 #: _build/nms_david1.txt:7
 msgid "Climbing and tricks"
-msgstr ""
+msgstr "Kiipeilyä ja temppuja"
 
 #: _build/nms_david1.txt:9
 msgid "Watch the robots"
-msgstr ""
+msgstr "Tarkkana robottien kanssa"
 
 #: _build/nms_david1.txt:11
 msgid "Two Halves"
-msgstr ""
+msgstr "Kaksi puoliskoa"
 
 #: _build/nms_david1.txt:13
 msgid "Turning up the heat"
-msgstr ""
+msgstr "Nostetaan lämpöä"
 
 #: _build/nms_david1.txt:15
 msgid "Confusing"
-msgstr ""
+msgstr "Hämmennys"
 
 #: _build/nms_david1.txt:17
 msgid "Short but dangerous"
-msgstr ""
+msgstr "Lyhyt mutta vaarallinen"
 
 #: _build/nms_david2.txt:1
 msgid "Challenge 2"
-msgstr ""
+msgstr "Haaste 2"
 
 #: _build/nms_david2.txt:3
 msgid "Waves"
-msgstr ""
+msgstr "Aallot"
 
 #: _build/nms_david2.txt:5
 msgid "Dragon tower"
-msgstr ""
+msgstr "Lohikäärmetorni"
 
 #: _build/nms_david2.txt:7
 msgid "Hullabaloo"
-msgstr ""
+msgstr "Hulabaloo"
 
 #: _build/nms_david2.txt:9
 msgid "Labyrinth"
-msgstr ""
+msgstr "Sokkelo"

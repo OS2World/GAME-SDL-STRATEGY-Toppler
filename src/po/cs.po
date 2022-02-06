@@ -1,14 +1,14 @@
 # Czech translation of Tower Toppler.
-# Copyright (C) YEAR Andreas R�ver
+# Copyright (C) YEAR Andreas Röver
 # This file is distributed under the same license as the toppler package.
-# Miroslav Kure <kurem@debian.cz>, 2006.
+# Miroslav Kure <kurem@debian.cz>, 2006, 2022.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: toppler\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-24 18:30+0100\n"
-"PO-Revision-Date: 2006-06-09 19:35+0200\n"
+"POT-Creation-Date: 2022-02-06 09:08+0100\n"
+"PO-Revision-Date: 2022-02-02 17:22+0100\n"
 "Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
 "Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
 "Language: cs\n"
@@ -546,7 +546,7 @@ msgstr "2 vrstvé posuny"
 
 #: src/menu.cc:458
 msgid "Shadows"
-msgstr ""
+msgstr "Stíny"
 
 #: src/menu.cc:474
 msgid "Alpha Options"
@@ -632,19 +632,19 @@ msgstr "LADICÍ MENU"
 msgid "Back to Game"
 msgstr "Zpět do hry"
 
-#: src/menusys.cc:359
+#: src/menusys.cc:380
 msgid "Press fire"
 msgstr "Stiskněte střelbu"
 
-#: src/menusys.cc:359
+#: src/menusys.cc:380
 msgid "Press space"
 msgstr "Stiskněte mezerník"
 
-#: src/menusys.cc:518
+#: src/menusys.cc:539
 msgid "Yes"
 msgstr "Ano"
 
-#: src/menusys.cc:528
+#: src/menusys.cc:549
 msgid "No"
 msgstr "Ne"
 
@@ -874,19 +874,19 @@ msgstr "Okulár"
 
 #: _build/nms_pasi2.txt:1
 msgid "Pasis 2 Towers"
-msgstr ""
+msgstr "Dvě věže"
 
 #: _build/nms_pasi2.txt:3
 msgid "Ventilation Shafts"
-msgstr ""
+msgstr "Ventilační šachty"
 
 #: _build/nms_pasi2.txt:5
 msgid "Tower 2"
-msgstr ""
+msgstr "Věž 2"
 
 #: _build/nms_david1.txt:1
 msgid "Challenge 1"
-msgstr ""
+msgstr "Výzva 1"
 
 #: _build/nms_david1.txt:3
 msgid "Difficult jumps!"
@@ -922,20 +922,20 @@ msgstr "Krátká a nebezpečná"
 
 #: _build/nms_david2.txt:1
 msgid "Challenge 2"
-msgstr ""
+msgstr "Výzva 2"
 
 #: _build/nms_david2.txt:3
 msgid "Waves"
-msgstr ""
+msgstr "Vlny"
 
 #: _build/nms_david2.txt:5
 msgid "Dragon tower"
-msgstr ""
+msgstr "Dračí věž"
 
 #: _build/nms_david2.txt:7
 msgid "Hullabaloo"
-msgstr ""
+msgstr "Kravál"
 
 #: _build/nms_david2.txt:9
 msgid "Labyrinth"
-msgstr ""
+msgstr "Labyrint"
