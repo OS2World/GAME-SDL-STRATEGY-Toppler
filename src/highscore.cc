@@ -21,6 +21,7 @@
 #include "screen.h"
 
 #include <cstdio>
+#include <unistd.h>
 
 #ifndef _WIN32
 #include <fcntl.h>

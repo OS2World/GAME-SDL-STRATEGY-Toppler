@@ -31,6 +31,27 @@ void set_men_bgproc(menubg_callback_proc proc) {
   menu_background_proc = proc;
 }
 
+
+// TODO these 2 can be replaced by std stuff once c++20 is more widespread
+template< class T, class U >
+constexpr bool cmp_less( T t, U u ) noexcept
+{
+    using UT = std::make_unsigned_t<T>;
+    using UU = std::make_unsigned_t<U>;
+    if constexpr (std::is_signed_v<T> == std::is_signed_v<U>)
+        return t < u;
+    else if constexpr (std::is_signed_v<T>)
+        return t < 0 ? true : UT(t) < u;
+    else
+        return u < 0 ? false : t < UU(u);
+}
+
+template< class T, class U >
+constexpr bool cmp_greater_equal( T t, U u ) noexcept
+{
+    return !cmp_less(t, u);
+}
+
 _menusystem *new_menu_system(const std::string & title, menuopt_callback_proc pr, int molen, int ystart)
 {
   _menusystem *ms = new _menusystem;
@@ -116,12 +137,12 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
   if (ms->wraparound) {
     if (ms->hilited < 0)
       ms->hilited = ms->moption.size() - 1;
-    else if (std::cmp_greater_equal(ms->hilited, ms->moption.size()))
+    else if (cmp_greater_equal(ms->hilited, ms->moption.size()))
       ms->hilited = 0;
   } else {
     if (ms->hilited < 0)
       ms->hilited = 0;
-    else if (std::cmp_greater_equal(ms->hilited, ms->moption.size()))
+    else if (cmp_greater_equal(ms->hilited, ms->moption.size()))
       ms->hilited = ms->moption.size() - 1;
   }
 
@@ -163,7 +184,7 @@ draw_menu_system(_menusystem *ms, Uint16 dx, Uint16 dy)
 
   yz = ms->ystart + (titlehei) * FONTHEI;
 
-  for (y = 0; (yz+y+1 < SCREENHEI) && (std::cmp_less(y+offs, ms->moption.size())); y++) {
+  for (y = 0; (yz+y+1 < SCREENHEI) && (cmp_less(y+offs, ms->moption.size())); y++) {
     realy = yz + y * FONTHEI;
     len = ms->moption[y+offs].oname.size();
     scrlen = scr_textlength(ms->moption[y+offs].oname, len);
@@ -265,7 +286,7 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
     }
 
     if ((ms->opt_steal_control >= 0) &&
-        (std::cmp_less(ms->opt_steal_control, ms->moption.size())) &&
+        (cmp_less(ms->opt_steal_control, ms->moption.size())) &&
         ms->moption[ms->opt_steal_control].oproc) {
       ms->key = key_sdlkey();
       ms->hilited = ms->opt_steal_control;
@@ -282,7 +303,7 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
 
       if (!stolen) {
         ms->curr_mtime = 0;
-        for (int tmpz = 0; std::cmp_less(tmpz, ms->moption.size()); tmpz++)
+        for (int tmpz = 0; cmp_less(tmpz, ms->moption.size()); tmpz++)
           if (ms->moption[tmpz].quickkey == ms->key) {
             ms->hilited = tmpz;
             ms->key = SDLK_UNKNOWN;
@@ -302,7 +323,7 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
               ms->hilited = (ms->hilited + 1) % ms->moption.size();
             } while (ms->moption[ms->hilited].oname.empty());
           } else {
-            if (std::cmp_less(ms->hilited, ms->moption.size())) {
+            if (cmp_less(ms->hilited, ms->moption.size())) {
               ms->hilited++;
               if (ms->moption[ms->hilited].oname.empty()) ms->hilited++;
             }
@@ -328,7 +349,7 @@ run_menu_system(_menusystem *ms, _menusystem *parent)
           }
           break;
         case fire_key:
-          if ((ms->hilited >= 0) && (std::cmp_less(ms->hilited, ms->moption.size())) &&
+          if ((ms->hilited >= 0) && (cmp_less(ms->hilited, ms->moption.size())) &&
               ms->moption[ms->hilited].oproc) {
             std::string tmpbuf = (*ms->moption[ms->hilited].oproc) (ms);
             if (!tmpbuf.empty())

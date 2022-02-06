@@ -59,22 +59,14 @@ archive::archive(FILE *stream) : f(stream)
 
         assert_msg(read == 1, "failed to read data");
 
-        /* load start from archive */
-        read = fread(&file.start, 1, 4, f);
-        assert_msg(read == 4, "failed to read data");
+        uint8_t buf[4*3];
 
-        read = fread(&file.size, 1, 4, f);
-        assert_msg(read == 4, "failed to read data");
+        read = fread(buf, 1, 4*3, f);
+        assert_msg(read == 3*4, "failed to read data");
 
-        read = fread(&file.compress, 1, 4, f);
-        assert_msg(read == 4, "failed to read data");
-
-        if constexpr (std::endian::native == std::endian::big)
-        {
-            file.start = byteswap(file.start);
-            file.size = byteswap(file.size);
-            file.compress = byteswap(file.compress);
-        }
+        file.start    = buf[0] + (buf[1] << 8) + (buf[ 2] << 16) + (buf[ 3] << 24);
+        file.size     = buf[4] + (buf[5] << 8) + (buf[ 6] << 16) + (buf[ 7] << 24);
+        file.compress = buf[8] + (buf[9] << 8) + (buf[10] << 16) + (buf[11] << 24);
     }
 }
 

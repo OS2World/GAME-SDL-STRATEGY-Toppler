@@ -128,7 +128,8 @@ std::vector<mission_node> missions;
 
 static bool missionfiles (const std::string & file)
 {
-  return file.ends_with(".ttm");
+  if (file.size() < 4) return false;
+  return file.substr(file.size()-4) == ".ttm";
 }
 
 #endif
