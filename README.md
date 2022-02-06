@@ -42,6 +42,15 @@ selfmade missions.
 
 ## Latest changes
 
+Version 1.3 6.Feb.2022 maintenance release
+
+- fix centering of background image in highscore menus
+- add a bigger icon
+- fix global highscore folder
+- data file is no longer re-created unnecessarily
+- install man-page
+- updated translation for Czech and Finnish language
+
 Version 1.2
 
 ![](/doc/TowerGraphicsCompare12.png)

@@ -1,4 +1,13 @@
-# 30.01.2021 Version 1.2
+# 06.02.2022 Version 1.3
+
+- fix centering of background image in highscore menus
+- add a bigger icon
+- fix global highscore folder
+- data file is no longer re-created unnecessarily
+- install man-page
+- updated translation for Czech and Finnish language
+
+# 30.01.2022 Version 1.2
 
 User visible changes:
 - port to SDL2 with the accompanying benefits:
