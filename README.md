@@ -8,7 +8,7 @@ somewhere in high towers. On your way to the target you need to avoid a lot of
 strange robots that guard the tower.
 
 That sounds all like a normal jump and run game. What makes this game different
-is that you walk arond the tower which is revolving on the screen, so that you
+is that you walk around the tower which is revolving on the screen, so that you
 only see the 180° that are currently visible.
 
 The game is a reimplementation of the old game known as Tower Toppler or Nebulus.
@@ -37,8 +37,8 @@ output. And here is the result.
 The game fully playable. Everything is in place. Some more sounds could be added, surely some bugs
 are left but there should be nothing too serious.
 
-There is a leveleditor that allows everyone to create new towers and missionfiles. So I am awaiting all your
-selfmade missions.
+There is a level editor that allows everyone to create new towers and mission files. So I am awaiting all your
+self-made missions.
 
 ## Latest changes
 
@@ -64,11 +64,11 @@ User visible changes:
 - improved visuals:
   - new brick textures that look quite a bit more 3d
   - shadows behind objects (robots, tower elements)
-  - objects get darker as they receed behind the tower
+  - objects get darker as they recede behind the tower
   - better quality for the colour reduced data resulting in all around better looking graphics (only slightly though)
   - improved bonus level graphics (better horizontal match, better antialiasing)
   - fix a bug in sprite rendering that resulted in an strange looking edge for objects
-  - smoother animation for the robots with twice the framerate and also slighty improved animations
+  - smoother animation for the robots with twice the framerate and also slightly improved animations
 
 Under the hood
 - Drop autoconf stuff and use a makefile instead
@@ -150,7 +150,7 @@ between the frames is decreased.
 The options here allow you to redefine the keys that are important for
 playing. Select the key you want to redefine. Press Enter and then the
 new key you want to use. Bare in mind, that you are not overwriting the
-old keys but just define an alternitive that has a lower priority than
+old keys but just define an alternative that has a lower priority than
 the original keys. So you can not use "p", because this is already used
 for pause.
 
@@ -159,7 +159,7 @@ for pause.
 The submenus here allow you to finely tune the looks of tower toppler.
 Depending on your computers capabilities and you graphic card you can
 change here between very low requirements and modest ones. I have an
-celeron 366 and can play Tower Toppler with everything switched on
+Intel Celeron 366 and can play Tower Toppler with everything switched on
 except for the expensive waves.
 
 - Fullscreen: Toggle between windowed and fullscreen display.
@@ -188,7 +188,7 @@ complete (currently 3 layer) scroller. The 2 layer scroller only draws
 the front and the backround layer of the underwater scroller in the
 bonus level.
 
-- shadows: toggles drawing of shadows behind objects and fading objects to black as they receede behind the tower.
+- shadows: toggles drawing of shadows behind objects and fading objects to black as they recede behind the tower.
 Enable this to get a much more 3d-looking level display at the cost of a bit of performance.
 
 Bonuses:
@@ -231,7 +231,7 @@ new graphics for special objects all tower objects are drawn using the
 existing graphics.
 
 Because the only thing you can rely on on a keyboard are the numbers
-and the letter keys I have used only these. The layout is choosen so
+and the letter keys I have used only these. The layout is chosen so
 that keys with a similar task are next to each other and not that the
 letters mean something.
 
@@ -326,7 +326,7 @@ the parameter are always in a range of values. To allow fast
 alterations of the values the difference between the old and the
 changed value increases every time you go into the same direction. So
 if you increase the time for the tower by pressing 'b' the first time
-the value increses by one the second time by two the third time by
+the value increases by one the second time by two the third time by
 three and so on. This size is reset to one as soon as you change the
 direction of your changes. This sounds complicated but the best thing is to
 try it
@@ -347,11 +347,11 @@ scale
 Just in case you are interested in the format of the tower file:
 
 The format is similar to the windows configuration format. Each section
-starts with its name in squarebrackets "[]". Unknown sections are
-ignored. Most sections are selfexplainatory, except for the data
+starts with its name in square brackets "[]". Unknown sections are
+ignored. Most sections are self-explanatory, except for the data
 section.
 
-This section has the towerheight in its first line followed by a table
+This section has the tower height in its first line followed by a table
 where each character represents one position on the tower. The
 following table explains the characters used for the tower bitmap and
 their meaning.
@@ -381,7 +381,7 @@ their meaning.
 The demo section is also not really obvious. The numbers represent
 states of the important keys. Each bit in the number corresponds to one
 key. If it is set the key is pressed, otherwise not. Because Tower
-Toppler is strictly deterministic and uses fixed intervalls for display
+Toppler is strictly deterministic and uses fixed intervals for display
 and update each line corresponds to one cycle of update and display.
 
 I can not promise that the program will be able to load the files if
@@ -390,7 +390,7 @@ these.
 
 Because of the ongoing development of Tower Toppler this format is
 likely to change. New sections may be added, other ones deprecated. I
-hope that the section format will help to achive backwards
+hope that the section format will help to achieve backwards
 compatibility but I promise, of course, nothing. If you have problems
 loading your old tower files, send them to me and I'll do my best to
 convert them.
@@ -398,7 +398,7 @@ convert them.
 Also, if you want to send me your missions, please do not send the
 mission files, but the towers. Because the mission files are binary and
 are changing as well it may be quite complicated to convert a mission
-file generated with an old version of tower toppler to a new version.
+file generated with an old version of Tower Toppler to a new version.
 But it will nearly always be possible to edit the tower files.
 
 ### Mission File Format
@@ -407,7 +407,7 @@ And another paragraph for the interested ones. Here the format of the
 mission files is explained.
 
 First in the mission files is the mission name. The first byte is the
-lenght of the string followed by the text itself. Then comes a
+length of the string followed by the text itself. Then comes a
 priority. This value is used to sort the missions in the game menu.
 Then comes the number of towers in the mission followed by the offset
 of the tower offset table (b bytes). This table contains 4 bytes for
@@ -416,7 +416,7 @@ The offset table is normally at the end of the file.
 
 Now to the towers. They are structured into sections just as the tower
 file is. The section header contains 5 bytes. One shows the section
-type. The other 4 the lenght in bytes of the section data. Then the
+type. The other 4 the length in bytes of the section data. Then the
 data follows. This allows the program to skip unknown sections.
 
 The section numbers can be found in level.cc.
@@ -431,7 +431,7 @@ in the source.
 The demo uses a run length encoding. One byte for the run length and
 one word for the key state.
 
-So this should help to find your way into the code, if it's neccessary.
+So this should help to find your way into the code, if it's necessary.
 
 ### Mission Creation
 
