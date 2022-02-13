@@ -27,6 +27,10 @@ MANDIR =  $(DATADIR)/man
 PKGDATADIR = $(DATADIR)/toppler
 DESTDIR =
 CROSS =
+INSTALL = install
+INSTALL_DIR = $(INSTALL) -m755 -d
+INSTALL_PROGRAM = $(INSTALL) -m755
+INSTALL_DATA = $(INSTALL) -m644
 
 CONVERT = convert
 CXX = $(CROSS)$(CXX_NATIVE)
@@ -519,12 +523,10 @@ src/po/%.po: _build/toppler.pot
 
 .PHONY: install
 install: toppler.dat toppler $(TRANSLATIONFILES_INST)
-	$(INSTALL) -m755 -d $(DESTDIR)$(PKGDATADIR)
-	$(INSTALL) -m755 -d $(DESTDIR)$(BINDIR)
-	$(INSTALL) -m755 -d $(DESTDIR)$(MANDIR)/man6
-	$(INSTALL) -m644 toppler.dat $(DESTDIR)$(PKGDATADIR)/toppler.dat
-	$(INSTALL) -m644 toppler.ogg $(DESTDIR)$(PKGDATADIR)/toppler.ogg
-	$(INSTALL) toppler $(DESTDIR)$(BINDIR)/toppler
-	$(INSTALL) dist/toppler.6 $(DESTDIR)$(MANDIR)/man6/toppler.6
-
-
+	$(INSTALL_DIR) $(DESTDIR)$(PKGDATADIR)
+	$(INSTALL_DIR) $(DESTDIR)$(BINDIR)
+	$(INSTALL_DIR) $(DESTDIR)$(MANDIR)/man6
+	$(INSTALL_DATA) toppler.dat $(DESTDIR)$(PKGDATADIR)/toppler.dat
+	$(INSTALL_DATA) toppler.ogg $(DESTDIR)$(PKGDATADIR)/toppler.ogg
+	$(INSTALL_PROGRAM) toppler $(DESTDIR)$(BINDIR)/toppler
+	$(INSTALL_DATA) dist/toppler.6 $(DESTDIR)$(MANDIR)/man6/toppler.6
