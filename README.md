@@ -290,8 +290,8 @@ moves to the position of the problem.
 
 | key | description |
 |-----|:-----------:|
-| ins | inserts a row below the current position |
-| del | deletes the current row |
+| ins and f | inserts a row below the current position |
+| del and g | deletes the current row |
 
 with these actions you must be careful because they can destroy doors.
 
