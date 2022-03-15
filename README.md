@@ -79,9 +79,24 @@ Under the hood
 
 For a complete release history look into doc/Changelog.md
 
-## Installation
+## Building and Installation
 
-Just type 
+Dependencies for building the game only are
+
+- SDL2_mixer  (with ogg support if you want music)
+- sdl2
+- zlib
+
+if you want to rebuild the datafile you also need
+
+- libpng
+- povray
+- gimp
+- blender
+- imagemagick
+
+
+If you got all these dependencies just type
 
 ```
 make 
