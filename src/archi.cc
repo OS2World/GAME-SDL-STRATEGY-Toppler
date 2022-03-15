@@ -21,8 +21,6 @@
 
 #include <zlib.h>
 
-#include <bit>
-
 archive::archive(FILE *stream) : f(stream)
 {
     size_t read = 0;

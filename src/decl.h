@@ -21,6 +21,7 @@
 
 #include <string>
 #include <functional>
+#include <vector>
 
 /* screen width and height, in pixels. */
 extern int currentScreenWidth;
