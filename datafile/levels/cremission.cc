@@ -27,8 +27,8 @@ int main(int argn, char *args[]) {
 
   int i;
 
-  if (argn < 4) {
-      printf("Usage: %s mission_name mission_file_name priority towerfile [towerfile ...]\n", args[0]);
+  if (argn < 6) {
+      printf("Usage: %s mission_name mission_file_name priority textoutputfile towerfile [towerfile ...]\n", args[0]);
       return 1;
   }
 
