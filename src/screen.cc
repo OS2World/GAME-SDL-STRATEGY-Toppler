@@ -30,6 +30,8 @@
 #include "keyb.h"
 #include "configuration.h"
 
+#include <algorithm>
+
 static SDL_Surface *display = nullptr;
 static SDL_Window *sdlWindow = nullptr;
 static SDL_Renderer *sdlRenderer = nullptr;
@@ -1797,7 +1799,7 @@ static void putthings(long vert, long a, long angle) {
     /* calc the x pos where the thing has to be drawn */
     int x = sintab[a % TOWER_ANGLES] + (SCREENWID/2);
 
-    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
+    int depth = clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
 
     int slice = 0;
     int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;
@@ -1822,7 +1824,7 @@ static void putthings(long vert, long a, long angle) {
       /* ok calc the angle the robots needs to be drawn at */
       int rob_a = (rob_angle(rob) - 4 + angle) & (TOWER_ANGLES - 1);
 
-      int depth = std::clamp(400-2*(sintab[(rob_a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
+      int depth = clamp(400-2*(sintab[(rob_a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
 
       /* check if the robot is "inside" the current column */
       if (rob_a == a)
@@ -1897,7 +1899,7 @@ static void putthings_editor(long vert, long a, long angle, int state) {
     /* calc the x pos where the thing has to be drawn */
     int x = sintab[a % TOWER_ANGLES] + (SCREENWID/2);
 
-    int depth = std::clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
+    int depth = clamp(400-2*(sintab[(a+TOWER_ANGLES/4) % TOWER_ANGLES]+TOWER_RADIUS+SPR_STEPWID/2+1), 0, 205);
 
     int slice = 0;
     int ypos = SCREENHEI / 2 - SPR_SLICEHEI + vert;

@@ -218,4 +218,12 @@ typedef int mbstate_t;
 size_t mbrtowc (wchar_t * out, const char *s, int n, mbstate_t * st);
 #endif
 
+template<class T>
+T clamp(T v, T lo, T hi )
+{
+    if (v > hi) return hi;
+    if (v < lo) return lo;
+    return v;
+}
+
 #endif

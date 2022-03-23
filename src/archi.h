@@ -23,7 +23,6 @@
 
 #include <vector>
 #include <string>
-#include <string_view>
 #include <memory>
 
 #include <cstdio>
@@ -104,7 +103,7 @@ class archive {
 
         ~archive();
 
-        file open(std::string_view name);
+        file open(const std::string & name);
 
         const auto & filelist() const { return files; }
 

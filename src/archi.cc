@@ -68,7 +68,7 @@ archive::~archive()
     fclose(f);
 }
 
-archive::file archive::open(std::string_view name)
+archive::file archive::open(const std::string & name)
 {
     for (auto & ff : files)
     {

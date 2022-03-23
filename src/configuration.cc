@@ -140,8 +140,8 @@ configuration::configuration(const std::string & glob, const std::string & local
 
     fname = local;
 
-    i_start_lives = std::clamp(i_start_lives, 1, 3);
-    i_game_speed = std::clamp(i_game_speed, 0, MAX_GAME_SPEED);
+    i_start_lives = clamp(i_start_lives, 1, 3);
+    i_game_speed = clamp(i_game_speed, 0, MAX_GAME_SPEED);
 }
 
 configuration::~configuration(void)
