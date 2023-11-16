@@ -46,7 +46,7 @@ static bool parse_arguments(int argc, char *argv[]) {
       if (parm >= '0' && parm <= '9') {
         printf(_("Debug level is now %c.\n").c_str(), parm);
         config.debug_level(parm - '0');
-      } else printf(_("Illegal debug level value, using default.\n").c_str());
+      } else printf("%s", _("Illegal debug level value, using default.\n").c_str());
     } else {
       printhelp();
       return false;
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
     atexit(QuitFunction);
     srand(time(0));
     startgame();
-    printf(_("Thanks for playing!\n").c_str());
+    printf("%s", _("Thanks for playing!\n").c_str());
     SDL_ShowCursor(mouse);
     SDL_Quit();
   }
