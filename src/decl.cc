@@ -21,6 +21,7 @@
 
 #include <SDL.h>
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <sys/stat.h>

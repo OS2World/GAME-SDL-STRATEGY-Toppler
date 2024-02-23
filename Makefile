@@ -522,7 +522,7 @@ src/po/%.po: _build/toppler.pot
 # TODO dist and windist..
 
 .PHONY: install
-install: toppler.dat toppler $(TRANSLATIONFILES_INST)
+install: toppler $(TRANSLATIONFILES_INST)
 	$(INSTALL_DIR) $(DESTDIR)$(PKGDATADIR)
 	$(INSTALL_DIR) $(DESTDIR)$(BINDIR)
 	$(INSTALL_DIR) $(DESTDIR)$(MANDIR)/man6
