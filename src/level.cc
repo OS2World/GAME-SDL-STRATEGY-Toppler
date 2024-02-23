@@ -27,6 +27,7 @@
 #endif
 
 #include "decl.h"
+#include <algorithm>
 
 #ifdef _WIN32
 #include <direct.h>
