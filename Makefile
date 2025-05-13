@@ -18,10 +18,10 @@
 # along with this program; if not, write to the Free Software
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1335 USA
 
-PREFIX = /usr
+PREFIX = /@unixroot/usr/local
 BINDIR = $(PREFIX)/bin
 DATADIR = $(PREFIX)/share
-STATEDIR = /var/toppler
+STATEDIR = /@unixroot/var/toppler
 LOCALEDIR = $(DATADIR)/locale
 MANDIR =  $(DATADIR)/man
 PKGDATADIR = $(DATADIR)/toppler
@@ -36,9 +36,10 @@ CONVERT = convert
 CXX = $(CROSS)$(CXX_NATIVE)
 CXX_NATIVE = g++
 CXXFLAGS = -Wall -Wextra -g -O2 -std=c++17
-EXEEXT = $(if $(filter %-w64-mingw32.static-,$(CROSS)),.exe,)
+# EXEEXT = $(if $(filter %-w64-mingw32.static-,$(CROSS)),.exe,)
+EXEEXT = .exe
 INSTALL = install
-LDFLAGS =
+LDFLAGS = -Zomf -Zhigh-mem -lintl
 MSGFMT = msgfmt
 MSGMERGE = msgmerge
 PKG_CONFIG = $(CROSS)$(PKG_CONFIG_NATIVE)
@@ -72,7 +73,7 @@ PKG_LIBS_NATIVE = $$($(PKG_CONFIG_NATIVE) --libs $(PKGS_NATIVE))
 DEFS += -DVERSION='"$(VERSION)"'
 DEFS += -DTOP_DATADIR='"$(PKGDATADIR)"'
 DEFS += -DHISCOREDIR='"$(STATEDIR)"'
-DEFS += -DENABLE_NLS=1
+# DEFS += -DENABLE_NLS=1
 DEFS += -DLOCALEDIR='"$(LOCALEDIR)"'
 
 FILES_H := $(wildcard src/*.h)
@@ -491,7 +492,7 @@ toppler.dat: _build/tools/crearc $(DATFILES)
 .PHONY: clean
 clean:
 	rm -rf _build
-	rm toppler
+	rm toppler$(EXEEXT)
 
 
 .PHONY: distclean
